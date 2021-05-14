@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.hellothomas.jedi.client.config.ExecutorConfig
+org.springframework.context.ApplicationContextInitializer=\
+com.hellothomas.jedi.client.config.MonitorApplicationInitializer
+org.springframework.boot.env.EnvironmentPostProcessor=\
+com.hellothomas.jedi.client.config.MonitorApplicationInitializer

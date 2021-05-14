@@ -1,0 +1,23 @@
+logging:
+  level:
+    com:
+      hellothomas.jedi.config: debug
+    root: info
+  pattern:
+    console: 'logback: %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %class#%method@%line
+      : %msg %n'
+server:
+  port: 8081
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      auto-commit: true
+      connection-test-query: SELECT 1
+      connection-timeout: 10000
+      idle-timeout: 30000
+      max-lifetime: 200000 # ACS容器平台存在“240s断开空闲连接”的特性,须小于240s
+      maximum-pool-size: 30
+      minimum-idle: 10
+  profiles:
+    active: local

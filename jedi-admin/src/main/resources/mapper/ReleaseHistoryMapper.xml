@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hellothomas.jedi.admin.infrastructure.mapper.ReleaseHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.hellothomas.jedi.admin.domain.ReleaseHistory">
+    <id column="Id" jdbcType="BIGINT" property="id" />
+    <result column="namespace_name" jdbcType="VARCHAR" property="namespaceName" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="executor_name" jdbcType="VARCHAR" property="executorName" />
+    <result column="release_id" jdbcType="BIGINT" property="releaseId" />
+    <result column="previous_release_id" jdbcType="BIGINT" property="previousReleaseId" />
+    <result column="operation" jdbcType="TINYINT" property="operation" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+    <result column="data_change_created_by" jdbcType="VARCHAR" property="dataChangeCreatedBy" />
+    <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
+    <result column="data_change_last_modified_by" jdbcType="VARCHAR" property="dataChangeLastModifiedBy" />
+    <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hellothomas.jedi.admin.domain.ReleaseHistory">
+    <result column="operation_context" jdbcType="LONGVARCHAR" property="operationContext" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    Id, namespace_name, app_id, executor_name, release_id, previous_release_id, operation, 
+    is_deleted, data_change_created_by, data_change_created_time, data_change_last_modified_by, 
+    data_change_last_modified_time
+  </sql>
+  <sql id="Blob_Column_List">
+    operation_context
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.hellothomas.jedi.admin.domain.ReleaseHistoryExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from release_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.hellothomas.jedi.admin.domain.ReleaseHistoryExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from release_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from release_history
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from release_history
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hellothomas.jedi.admin.domain.ReleaseHistoryExample">
+    delete from release_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hellothomas.jedi.admin.domain.ReleaseHistory" useGeneratedKeys="true" keyProperty="id">
+    insert into release_history (Id, namespace_name, app_id, 
+      executor_name, release_id, previous_release_id, 
+      operation, is_deleted, data_change_created_by, 
+      data_change_created_time, data_change_last_modified_by, 
+      data_change_last_modified_time, operation_context
+      )
+    values (#{id,jdbcType=BIGINT}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, 
+      #{executorName,jdbcType=VARCHAR}, #{releaseId,jdbcType=BIGINT}, #{previousReleaseId,jdbcType=BIGINT}, 
+      #{operation,jdbcType=TINYINT}, #{isDeleted,jdbcType=BIT}, #{dataChangeCreatedBy,jdbcType=VARCHAR}, 
+      #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, 
+      #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}, #{operationContext,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hellothomas.jedi.admin.domain.ReleaseHistory" useGeneratedKeys="true" keyProperty="id">
+    insert into release_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        Id,
+      </if>
+      <if test="namespaceName != null">
+        namespace_name,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="executorName != null">
+        executor_name,
+      </if>
+      <if test="releaseId != null">
+        release_id,
+      </if>
+      <if test="previousReleaseId != null">
+        previous_release_id,
+      </if>
+      <if test="operation != null">
+        operation,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="dataChangeCreatedBy != null">
+        data_change_created_by,
+      </if>
+      <if test="dataChangeCreatedTime != null">
+        data_change_created_time,
+      </if>
+      <if test="dataChangeLastModifiedBy != null">
+        data_change_last_modified_by,
+      </if>
+      <if test="dataChangeLastModifiedTime != null">
+        data_change_last_modified_time,
+      </if>
+      <if test="operationContext != null">
+        operation_context,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="namespaceName != null">
+        #{namespaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="executorName != null">
+        #{executorName,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseId != null">
+        #{releaseId,jdbcType=BIGINT},
+      </if>
+      <if test="previousReleaseId != null">
+        #{previousReleaseId,jdbcType=BIGINT},
+      </if>
+      <if test="operation != null">
+        #{operation,jdbcType=TINYINT},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=BIT},
+      </if>
+      <if test="dataChangeCreatedBy != null">
+        #{dataChangeCreatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="dataChangeCreatedTime != null">
+        #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dataChangeLastModifiedBy != null">
+        #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="dataChangeLastModifiedTime != null">
+        #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operationContext != null">
+        #{operationContext,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hellothomas.jedi.admin.domain.ReleaseHistoryExample" resultType="java.lang.Long">
+    select count(*) from release_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update release_history
+    <set>
+      <if test="record.id != null">
+        Id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.namespaceName != null">
+        namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appId != null">
+        app_id = #{record.appId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.executorName != null">
+        executor_name = #{record.executorName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.releaseId != null">
+        release_id = #{record.releaseId,jdbcType=BIGINT},
+      </if>
+      <if test="record.previousReleaseId != null">
+        previous_release_id = #{record.previousReleaseId,jdbcType=BIGINT},
+      </if>
+      <if test="record.operation != null">
+        operation = #{record.operation,jdbcType=TINYINT},
+      </if>
+      <if test="record.isDeleted != null">
+        is_deleted = #{record.isDeleted,jdbcType=BIT},
+      </if>
+      <if test="record.dataChangeCreatedBy != null">
+        data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataChangeCreatedTime != null">
+        data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.dataChangeLastModifiedBy != null">
+        data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataChangeLastModifiedTime != null">
+        data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.operationContext != null">
+        operation_context = #{record.operationContext,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update release_history
+    set Id = #{record.id,jdbcType=BIGINT},
+      namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
+      app_id = #{record.appId,jdbcType=VARCHAR},
+      executor_name = #{record.executorName,jdbcType=VARCHAR},
+      release_id = #{record.releaseId,jdbcType=BIGINT},
+      previous_release_id = #{record.previousReleaseId,jdbcType=BIGINT},
+      operation = #{record.operation,jdbcType=TINYINT},
+      is_deleted = #{record.isDeleted,jdbcType=BIT},
+      data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
+      data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      operation_context = #{record.operationContext,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update release_history
+    set Id = #{record.id,jdbcType=BIGINT},
+      namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
+      app_id = #{record.appId,jdbcType=VARCHAR},
+      executor_name = #{record.executorName,jdbcType=VARCHAR},
+      release_id = #{record.releaseId,jdbcType=BIGINT},
+      previous_release_id = #{record.previousReleaseId,jdbcType=BIGINT},
+      operation = #{record.operation,jdbcType=TINYINT},
+      is_deleted = #{record.isDeleted,jdbcType=BIT},
+      data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
+      data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hellothomas.jedi.admin.domain.ReleaseHistory">
+    update release_history
+    <set>
+      <if test="namespaceName != null">
+        namespace_name = #{namespaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="executorName != null">
+        executor_name = #{executorName,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseId != null">
+        release_id = #{releaseId,jdbcType=BIGINT},
+      </if>
+      <if test="previousReleaseId != null">
+        previous_release_id = #{previousReleaseId,jdbcType=BIGINT},
+      </if>
+      <if test="operation != null">
+        operation = #{operation,jdbcType=TINYINT},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=BIT},
+      </if>
+      <if test="dataChangeCreatedBy != null">
+        data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="dataChangeCreatedTime != null">
+        data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dataChangeLastModifiedBy != null">
+        data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="dataChangeLastModifiedTime != null">
+        data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operationContext != null">
+        operation_context = #{operationContext,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hellothomas.jedi.admin.domain.ReleaseHistory">
+    update release_history
+    set namespace_name = #{namespaceName,jdbcType=VARCHAR},
+      app_id = #{appId,jdbcType=VARCHAR},
+      executor_name = #{executorName,jdbcType=VARCHAR},
+      release_id = #{releaseId,jdbcType=BIGINT},
+      previous_release_id = #{previousReleaseId,jdbcType=BIGINT},
+      operation = #{operation,jdbcType=TINYINT},
+      is_deleted = #{isDeleted,jdbcType=BIT},
+      data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
+      data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      operation_context = #{operationContext,jdbcType=LONGVARCHAR}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hellothomas.jedi.admin.domain.ReleaseHistory">
+    update release_history
+    set namespace_name = #{namespaceName,jdbcType=VARCHAR},
+      app_id = #{appId,jdbcType=VARCHAR},
+      executor_name = #{executorName,jdbcType=VARCHAR},
+      release_id = #{releaseId,jdbcType=BIGINT},
+      previous_release_id = #{previousReleaseId,jdbcType=BIGINT},
+      operation = #{operation,jdbcType=TINYINT},
+      is_deleted = #{isDeleted,jdbcType=BIT},
+      data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
+      data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

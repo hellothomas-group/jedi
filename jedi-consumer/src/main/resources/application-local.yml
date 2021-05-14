@@ -1,0 +1,61 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+    consumer:
+      auto:
+        commit:
+          interval:
+            ms: 1000
+      auto-offset-reset: latest #earliest #latest
+      enable-auto-commit: true
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        group:
+          id: defaultConsumerGroup1
+        request:
+          timeout:
+            ms: 180000
+        session:
+          timeout:
+            ms: 120000
+    listener:
+      missing-topics-fatal: false
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/my_monitor?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+      &serverTimezone=Asia/Shanghai
+    username: root
+    password: 222222
+
+management:
+#  endpoint:
+#    beans:
+#      enabled: true
+  endpoints:
+#    enabled-by-default: false
+    web:
+      exposure:
+        include: '*'
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+swagger:
+  enable: true
+  base-package: com.hellothomas.jedi.consumer.api
+  title: Jedi-Consumer-Service
+  host: 127.0.0.1:8080
+  description: Jedi-Consumer服务
+  version: 1.0.0
+  contact:
+    name: Thomas
+    url: https://www.hellothomas.com
+    email: tyty2017@qq.com
+
+consumer:
+  type: HTTP
+  url: http://127.0.0.1:8080
+  executor-ticker-topic: executor-ticker
+  executor-task-topic: executor-task
+  executor-shutdown-topic: executor-shutdown
+  custom-notification-topic: custom-notification

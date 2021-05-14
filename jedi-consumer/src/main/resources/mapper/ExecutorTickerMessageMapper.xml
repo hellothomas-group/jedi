@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTickerMessageMapper">
+  <resultMap id="BaseResultMap" type="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="namespace" jdbcType="VARCHAR" property="namespace" />
+    <result column="message_type" jdbcType="VARCHAR" property="messageType" />
+    <result column="pool_name" jdbcType="VARCHAR" property="poolName" />
+    <result column="core_pool_size" jdbcType="INTEGER" property="corePoolSize" />
+    <result column="maximum_pool_size" jdbcType="INTEGER" property="maximumPoolSize" />
+    <result column="pool_size" jdbcType="INTEGER" property="poolSize" />
+    <result column="active_count" jdbcType="INTEGER" property="activeCount" />
+    <result column="largest_pool_size" jdbcType="INTEGER" property="largestPoolSize" />
+    <result column="queue_type" jdbcType="VARCHAR" property="queueType" />
+    <result column="queue_size" jdbcType="INTEGER" property="queueSize" />
+    <result column="queue_remaining_capacity" jdbcType="INTEGER" property="queueRemainingCapacity" />
+    <result column="task_count" jdbcType="BIGINT" property="taskCount" />
+    <result column="completed_task_count" jdbcType="BIGINT" property="completedTaskCount" />
+    <result column="reject_count" jdbcType="BIGINT" property="rejectCount" />
+    <result column="is_shutdown" jdbcType="TINYINT" property="isShutdown" />
+    <result column="is_terminated" jdbcType="TINYINT" property="isTerminated" />
+    <result column="host" jdbcType="VARCHAR" property="host" />
+    <result column="record_time" jdbcType="TIMESTAMP" property="recordTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, app_id, namespace, message_type, pool_name, core_pool_size, maximum_pool_size, 
+    pool_size, active_count, largest_pool_size, queue_type, queue_size, queue_remaining_capacity, 
+    task_count, completed_task_count, reject_count, is_shutdown, is_terminated, host, 
+    record_time, create_time, update_time
+  </sql>
+  <select id="selectByExample" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessageExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from executor_ticker_message
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from executor_ticker_message
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from executor_ticker_message
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessageExample">
+    delete from executor_ticker_message
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
+    insert into executor_ticker_message (id, app_id, namespace, 
+      message_type, pool_name, core_pool_size, 
+      maximum_pool_size, pool_size, active_count, 
+      largest_pool_size, queue_type, queue_size, 
+      queue_remaining_capacity, task_count, completed_task_count, 
+      reject_count, is_shutdown, is_terminated, 
+      host, record_time, create_time, 
+      update_time)
+    values (#{id,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, 
+      #{messageType,jdbcType=VARCHAR}, #{poolName,jdbcType=VARCHAR}, #{corePoolSize,jdbcType=INTEGER}, 
+      #{maximumPoolSize,jdbcType=INTEGER}, #{poolSize,jdbcType=INTEGER}, #{activeCount,jdbcType=INTEGER}, 
+      #{largestPoolSize,jdbcType=INTEGER}, #{queueType,jdbcType=VARCHAR}, #{queueSize,jdbcType=INTEGER}, 
+      #{queueRemainingCapacity,jdbcType=INTEGER}, #{taskCount,jdbcType=BIGINT}, #{completedTaskCount,jdbcType=BIGINT}, 
+      #{rejectCount,jdbcType=BIGINT}, #{isShutdown,jdbcType=TINYINT}, #{isTerminated,jdbcType=TINYINT}, 
+      #{host,jdbcType=VARCHAR}, #{recordTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
+    insert into executor_ticker_message
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="namespace != null">
+        namespace,
+      </if>
+      <if test="messageType != null">
+        message_type,
+      </if>
+      <if test="poolName != null">
+        pool_name,
+      </if>
+      <if test="corePoolSize != null">
+        core_pool_size,
+      </if>
+      <if test="maximumPoolSize != null">
+        maximum_pool_size,
+      </if>
+      <if test="poolSize != null">
+        pool_size,
+      </if>
+      <if test="activeCount != null">
+        active_count,
+      </if>
+      <if test="largestPoolSize != null">
+        largest_pool_size,
+      </if>
+      <if test="queueType != null">
+        queue_type,
+      </if>
+      <if test="queueSize != null">
+        queue_size,
+      </if>
+      <if test="queueRemainingCapacity != null">
+        queue_remaining_capacity,
+      </if>
+      <if test="taskCount != null">
+        task_count,
+      </if>
+      <if test="completedTaskCount != null">
+        completed_task_count,
+      </if>
+      <if test="rejectCount != null">
+        reject_count,
+      </if>
+      <if test="isShutdown != null">
+        is_shutdown,
+      </if>
+      <if test="isTerminated != null">
+        is_terminated,
+      </if>
+      <if test="host != null">
+        host,
+      </if>
+      <if test="recordTime != null">
+        record_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="namespace != null">
+        #{namespace,jdbcType=VARCHAR},
+      </if>
+      <if test="messageType != null">
+        #{messageType,jdbcType=VARCHAR},
+      </if>
+      <if test="poolName != null">
+        #{poolName,jdbcType=VARCHAR},
+      </if>
+      <if test="corePoolSize != null">
+        #{corePoolSize,jdbcType=INTEGER},
+      </if>
+      <if test="maximumPoolSize != null">
+        #{maximumPoolSize,jdbcType=INTEGER},
+      </if>
+      <if test="poolSize != null">
+        #{poolSize,jdbcType=INTEGER},
+      </if>
+      <if test="activeCount != null">
+        #{activeCount,jdbcType=INTEGER},
+      </if>
+      <if test="largestPoolSize != null">
+        #{largestPoolSize,jdbcType=INTEGER},
+      </if>
+      <if test="queueType != null">
+        #{queueType,jdbcType=VARCHAR},
+      </if>
+      <if test="queueSize != null">
+        #{queueSize,jdbcType=INTEGER},
+      </if>
+      <if test="queueRemainingCapacity != null">
+        #{queueRemainingCapacity,jdbcType=INTEGER},
+      </if>
+      <if test="taskCount != null">
+        #{taskCount,jdbcType=BIGINT},
+      </if>
+      <if test="completedTaskCount != null">
+        #{completedTaskCount,jdbcType=BIGINT},
+      </if>
+      <if test="rejectCount != null">
+        #{rejectCount,jdbcType=BIGINT},
+      </if>
+      <if test="isShutdown != null">
+        #{isShutdown,jdbcType=TINYINT},
+      </if>
+      <if test="isTerminated != null">
+        #{isTerminated,jdbcType=TINYINT},
+      </if>
+      <if test="host != null">
+        #{host,jdbcType=VARCHAR},
+      </if>
+      <if test="recordTime != null">
+        #{recordTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessageExample" resultType="java.lang.Long">
+    select count(*) from executor_ticker_message
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update executor_ticker_message
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appId != null">
+        app_id = #{record.appId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.namespace != null">
+        namespace = #{record.namespace,jdbcType=VARCHAR},
+      </if>
+      <if test="record.messageType != null">
+        message_type = #{record.messageType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.poolName != null">
+        pool_name = #{record.poolName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.corePoolSize != null">
+        core_pool_size = #{record.corePoolSize,jdbcType=INTEGER},
+      </if>
+      <if test="record.maximumPoolSize != null">
+        maximum_pool_size = #{record.maximumPoolSize,jdbcType=INTEGER},
+      </if>
+      <if test="record.poolSize != null">
+        pool_size = #{record.poolSize,jdbcType=INTEGER},
+      </if>
+      <if test="record.activeCount != null">
+        active_count = #{record.activeCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.largestPoolSize != null">
+        largest_pool_size = #{record.largestPoolSize,jdbcType=INTEGER},
+      </if>
+      <if test="record.queueType != null">
+        queue_type = #{record.queueType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.queueSize != null">
+        queue_size = #{record.queueSize,jdbcType=INTEGER},
+      </if>
+      <if test="record.queueRemainingCapacity != null">
+        queue_remaining_capacity = #{record.queueRemainingCapacity,jdbcType=INTEGER},
+      </if>
+      <if test="record.taskCount != null">
+        task_count = #{record.taskCount,jdbcType=BIGINT},
+      </if>
+      <if test="record.completedTaskCount != null">
+        completed_task_count = #{record.completedTaskCount,jdbcType=BIGINT},
+      </if>
+      <if test="record.rejectCount != null">
+        reject_count = #{record.rejectCount,jdbcType=BIGINT},
+      </if>
+      <if test="record.isShutdown != null">
+        is_shutdown = #{record.isShutdown,jdbcType=TINYINT},
+      </if>
+      <if test="record.isTerminated != null">
+        is_terminated = #{record.isTerminated,jdbcType=TINYINT},
+      </if>
+      <if test="record.host != null">
+        host = #{record.host,jdbcType=VARCHAR},
+      </if>
+      <if test="record.recordTime != null">
+        record_time = #{record.recordTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update executor_ticker_message
+    set id = #{record.id,jdbcType=VARCHAR},
+      app_id = #{record.appId,jdbcType=VARCHAR},
+      namespace = #{record.namespace,jdbcType=VARCHAR},
+      message_type = #{record.messageType,jdbcType=VARCHAR},
+      pool_name = #{record.poolName,jdbcType=VARCHAR},
+      core_pool_size = #{record.corePoolSize,jdbcType=INTEGER},
+      maximum_pool_size = #{record.maximumPoolSize,jdbcType=INTEGER},
+      pool_size = #{record.poolSize,jdbcType=INTEGER},
+      active_count = #{record.activeCount,jdbcType=INTEGER},
+      largest_pool_size = #{record.largestPoolSize,jdbcType=INTEGER},
+      queue_type = #{record.queueType,jdbcType=VARCHAR},
+      queue_size = #{record.queueSize,jdbcType=INTEGER},
+      queue_remaining_capacity = #{record.queueRemainingCapacity,jdbcType=INTEGER},
+      task_count = #{record.taskCount,jdbcType=BIGINT},
+      completed_task_count = #{record.completedTaskCount,jdbcType=BIGINT},
+      reject_count = #{record.rejectCount,jdbcType=BIGINT},
+      is_shutdown = #{record.isShutdown,jdbcType=TINYINT},
+      is_terminated = #{record.isTerminated,jdbcType=TINYINT},
+      host = #{record.host,jdbcType=VARCHAR},
+      record_time = #{record.recordTime,jdbcType=TIMESTAMP},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
+    update executor_ticker_message
+    <set>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="namespace != null">
+        namespace = #{namespace,jdbcType=VARCHAR},
+      </if>
+      <if test="messageType != null">
+        message_type = #{messageType,jdbcType=VARCHAR},
+      </if>
+      <if test="poolName != null">
+        pool_name = #{poolName,jdbcType=VARCHAR},
+      </if>
+      <if test="corePoolSize != null">
+        core_pool_size = #{corePoolSize,jdbcType=INTEGER},
+      </if>
+      <if test="maximumPoolSize != null">
+        maximum_pool_size = #{maximumPoolSize,jdbcType=INTEGER},
+      </if>
+      <if test="poolSize != null">
+        pool_size = #{poolSize,jdbcType=INTEGER},
+      </if>
+      <if test="activeCount != null">
+        active_count = #{activeCount,jdbcType=INTEGER},
+      </if>
+      <if test="largestPoolSize != null">
+        largest_pool_size = #{largestPoolSize,jdbcType=INTEGER},
+      </if>
+      <if test="queueType != null">
+        queue_type = #{queueType,jdbcType=VARCHAR},
+      </if>
+      <if test="queueSize != null">
+        queue_size = #{queueSize,jdbcType=INTEGER},
+      </if>
+      <if test="queueRemainingCapacity != null">
+        queue_remaining_capacity = #{queueRemainingCapacity,jdbcType=INTEGER},
+      </if>
+      <if test="taskCount != null">
+        task_count = #{taskCount,jdbcType=BIGINT},
+      </if>
+      <if test="completedTaskCount != null">
+        completed_task_count = #{completedTaskCount,jdbcType=BIGINT},
+      </if>
+      <if test="rejectCount != null">
+        reject_count = #{rejectCount,jdbcType=BIGINT},
+      </if>
+      <if test="isShutdown != null">
+        is_shutdown = #{isShutdown,jdbcType=TINYINT},
+      </if>
+      <if test="isTerminated != null">
+        is_terminated = #{isTerminated,jdbcType=TINYINT},
+      </if>
+      <if test="host != null">
+        host = #{host,jdbcType=VARCHAR},
+      </if>
+      <if test="recordTime != null">
+        record_time = #{recordTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
+    update executor_ticker_message
+    set app_id = #{appId,jdbcType=VARCHAR},
+      namespace = #{namespace,jdbcType=VARCHAR},
+      message_type = #{messageType,jdbcType=VARCHAR},
+      pool_name = #{poolName,jdbcType=VARCHAR},
+      core_pool_size = #{corePoolSize,jdbcType=INTEGER},
+      maximum_pool_size = #{maximumPoolSize,jdbcType=INTEGER},
+      pool_size = #{poolSize,jdbcType=INTEGER},
+      active_count = #{activeCount,jdbcType=INTEGER},
+      largest_pool_size = #{largestPoolSize,jdbcType=INTEGER},
+      queue_type = #{queueType,jdbcType=VARCHAR},
+      queue_size = #{queueSize,jdbcType=INTEGER},
+      queue_remaining_capacity = #{queueRemainingCapacity,jdbcType=INTEGER},
+      task_count = #{taskCount,jdbcType=BIGINT},
+      completed_task_count = #{completedTaskCount,jdbcType=BIGINT},
+      reject_count = #{rejectCount,jdbcType=BIGINT},
+      is_shutdown = #{isShutdown,jdbcType=TINYINT},
+      is_terminated = #{isTerminated,jdbcType=TINYINT},
+      host = #{host,jdbcType=VARCHAR},
+      record_time = #{recordTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

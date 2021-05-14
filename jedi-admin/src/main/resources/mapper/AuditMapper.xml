@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hellothomas.jedi.admin.infrastructure.mapper.AuditMapper">
+  <resultMap id="BaseResultMap" type="com.hellothomas.jedi.admin.domain.Audit">
+    <id column="Id" jdbcType="BIGINT" property="id" />
+    <result column="entity_name" jdbcType="VARCHAR" property="entityName" />
+    <result column="entity_id" jdbcType="BIGINT" property="entityId" />
+    <result column="operation_name" jdbcType="VARCHAR" property="operationName" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+    <result column="data_change_created_by" jdbcType="VARCHAR" property="dataChangeCreatedBy" />
+    <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
+    <result column="data_change_last_modified_by" jdbcType="VARCHAR" property="dataChangeLastModifiedBy" />
+    <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    Id, entity_name, entity_id, operation_name, comment, is_deleted, data_change_created_by, 
+    data_change_created_time, data_change_last_modified_by, data_change_last_modified_time
+  </sql>
+  <select id="selectByExample" parameterType="com.hellothomas.jedi.admin.domain.AuditExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from audit
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from audit
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from audit
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hellothomas.jedi.admin.domain.AuditExample">
+    delete from audit
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hellothomas.jedi.admin.domain.Audit" useGeneratedKeys="true" keyProperty="id">
+    insert into audit (Id, entity_name, entity_id, 
+      operation_name, comment, is_deleted, 
+      data_change_created_by, data_change_created_time, 
+      data_change_last_modified_by, data_change_last_modified_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{entityName,jdbcType=VARCHAR}, #{entityId,jdbcType=BIGINT}, 
+      #{operationName,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, #{isDeleted,jdbcType=BIT}, 
+      #{dataChangeCreatedBy,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, 
+      #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hellothomas.jedi.admin.domain.Audit" useGeneratedKeys="true" keyProperty="id">
+    insert into audit
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        Id,
+      </if>
+      <if test="entityName != null">
+        entity_name,
+      </if>
+      <if test="entityId != null">
+        entity_id,
+      </if>
+      <if test="operationName != null">
+        operation_name,
+      </if>
+      <if test="comment != null">
+        comment,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="dataChangeCreatedBy != null">
+        data_change_created_by,
+      </if>
+      <if test="dataChangeCreatedTime != null">
+        data_change_created_time,
+      </if>
+      <if test="dataChangeLastModifiedBy != null">
+        data_change_last_modified_by,
+      </if>
+      <if test="dataChangeLastModifiedTime != null">
+        data_change_last_modified_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="entityName != null">
+        #{entityName,jdbcType=VARCHAR},
+      </if>
+      <if test="entityId != null">
+        #{entityId,jdbcType=BIGINT},
+      </if>
+      <if test="operationName != null">
+        #{operationName,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=BIT},
+      </if>
+      <if test="dataChangeCreatedBy != null">
+        #{dataChangeCreatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="dataChangeCreatedTime != null">
+        #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dataChangeLastModifiedBy != null">
+        #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="dataChangeLastModifiedTime != null">
+        #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hellothomas.jedi.admin.domain.AuditExample" resultType="java.lang.Long">
+    select count(*) from audit
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update audit
+    <set>
+      <if test="record.id != null">
+        Id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.entityName != null">
+        entity_name = #{record.entityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.entityId != null">
+        entity_id = #{record.entityId,jdbcType=BIGINT},
+      </if>
+      <if test="record.operationName != null">
+        operation_name = #{record.operationName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.comment != null">
+        comment = #{record.comment,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDeleted != null">
+        is_deleted = #{record.isDeleted,jdbcType=BIT},
+      </if>
+      <if test="record.dataChangeCreatedBy != null">
+        data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataChangeCreatedTime != null">
+        data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.dataChangeLastModifiedBy != null">
+        data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataChangeLastModifiedTime != null">
+        data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update audit
+    set Id = #{record.id,jdbcType=BIGINT},
+      entity_name = #{record.entityName,jdbcType=VARCHAR},
+      entity_id = #{record.entityId,jdbcType=BIGINT},
+      operation_name = #{record.operationName,jdbcType=VARCHAR},
+      comment = #{record.comment,jdbcType=VARCHAR},
+      is_deleted = #{record.isDeleted,jdbcType=BIT},
+      data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
+      data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hellothomas.jedi.admin.domain.Audit">
+    update audit
+    <set>
+      <if test="entityName != null">
+        entity_name = #{entityName,jdbcType=VARCHAR},
+      </if>
+      <if test="entityId != null">
+        entity_id = #{entityId,jdbcType=BIGINT},
+      </if>
+      <if test="operationName != null">
+        operation_name = #{operationName,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        comment = #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=BIT},
+      </if>
+      <if test="dataChangeCreatedBy != null">
+        data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="dataChangeCreatedTime != null">
+        data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dataChangeLastModifiedBy != null">
+        data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="dataChangeLastModifiedTime != null">
+        data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hellothomas.jedi.admin.domain.Audit">
+    update audit
+    set entity_name = #{entityName,jdbcType=VARCHAR},
+      entity_id = #{entityId,jdbcType=BIGINT},
+      operation_name = #{operationName,jdbcType=VARCHAR},
+      comment = #{comment,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=BIT},
+      data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
+      data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
