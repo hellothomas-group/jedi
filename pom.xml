@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.hellothomas</groupId>
+    <groupId>xyz.hellothomas</groupId>
     <artifactId>jedi</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
@@ -48,13 +48,13 @@
             </dependency>
 
             <dependency>
-                <groupId>com.hellothomas</groupId>
+                <groupId>xyz.hellothomas</groupId>
                 <artifactId>jedi-biz</artifactId>
                 <version>${jedi.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.hellothomas</groupId>
+                <groupId>xyz.hellothomas</groupId>
                 <artifactId>jedi-core</artifactId>
                 <version>${jedi.version}</version>
             </dependency>
