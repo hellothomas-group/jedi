@@ -6,16 +6,42 @@
 
     <groupId>xyz.hellothomas</groupId>
     <artifactId>jedi</artifactId>
-    <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
-    <modules>
-        <module>jedi-consumer</module>
-        <module>jedi-config</module>
-        <module>jedi-admin</module>
-        <module>jedi-biz</module>
-        <module>jedi-core</module>
-        <module>jedi-client</module>
-    </modules>
+    <packaging>pom</packaging>
+    <name>jedi</name>
+    <description>Dynamic Thread Pool Executor</description>
+    <url>https://github.com/hellotyty/jedi</url>
+
+    <organization>
+        <name>hellothomas</name>
+        <url>http://www.hellothomas.xyz</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>hellothomas</id>
+            <name>Yuan Tang</name>
+            <email>tyty2017@qq.com</email>
+            <organization>hellothomas</organization>
+            <organizationUrl>http://www.hellothomas.xyz</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/hellotyty/jedi</url>
+        <connection>scm:git:git://github.com:hellotyty/jedi.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:hellotyty/jedi.git</developerConnection>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,9 +58,21 @@
         <google.guava.version>30.1-jre</google.guava.version>
         <!-- Plugins Version -->
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <versions-maven-plugin.version>2.3</versions-maven-plugin.version>
+        <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
+        <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
     </properties>
+
+    <modules>
+        <module>jedi-consumer</module>
+        <module>jedi-config</module>
+        <module>jedi-admin</module>
+        <module>jedi-biz</module>
+        <module>jedi-core</module>
+        <module>jedi-client</module>
+    </modules>
 
     <dependencyManagement>
         <dependencies>
@@ -143,8 +181,25 @@
                         <execution>
                             <id>attach-sources</id>
                             <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
                                 <goal>jar</goal>
                             </goals>
+                            <configuration>
+                                <!--  add this to disable checking  -->
+                                <doclint>none</doclint>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
@@ -152,6 +207,31 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
                     <version>${versions-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>${nexus-staging-maven-plugin.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${maven-gpg-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -174,5 +254,16 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 </project>
