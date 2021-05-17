@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hellothomas.jedi.biz.infrastructure.mapper.InstanceConfigMapper">
-  <resultMap id="BaseResultMap" type="com.hellothomas.jedi.biz.domain.InstanceConfig">
+<mapper namespace="xyz.hellothomas.jedi.biz.infrastructure.mapper.InstanceConfigMapper">
+  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.biz.domain.InstanceConfig">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="instance_id" jdbcType="BIGINT" property="instanceId" />
     <result column="config_namespace_name" jdbcType="VARCHAR" property="configNamespaceName" />
@@ -74,7 +74,7 @@
     id, instance_id, config_namespace_name, config_app_id, config_executor_name, release_key, 
     release_delivery_time, data_change_created_time, data_change_last_modified_time
   </sql>
-  <select id="selectByExample" parameterType="com.hellothomas.jedi.biz.domain.InstanceConfigExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.biz.domain.InstanceConfigExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -98,13 +98,13 @@
     delete from instance_config
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.hellothomas.jedi.biz.domain.InstanceConfigExample">
+  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.biz.domain.InstanceConfigExample">
     delete from instance_config
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.hellothomas.jedi.biz.domain.InstanceConfig" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.biz.domain.InstanceConfig" useGeneratedKeys="true" keyProperty="id">
     insert into instance_config (id, instance_id, config_namespace_name, 
       config_app_id, config_executor_name, release_key, 
       release_delivery_time, data_change_created_time, 
@@ -114,7 +114,7 @@
       #{releaseDeliveryTime,jdbcType=TIMESTAMP}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, 
       #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.hellothomas.jedi.biz.domain.InstanceConfig" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.biz.domain.InstanceConfig" useGeneratedKeys="true" keyProperty="id">
     insert into instance_config
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -175,7 +175,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.hellothomas.jedi.biz.domain.InstanceConfigExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="xyz.hellothomas.jedi.biz.domain.InstanceConfigExample" resultType="java.lang.Long">
     select count(*) from instance_config
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -231,7 +231,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hellothomas.jedi.biz.domain.InstanceConfig">
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.biz.domain.InstanceConfig">
     update instance_config
     <set>
       <if test="instanceId != null">
@@ -261,7 +261,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hellothomas.jedi.biz.domain.InstanceConfig">
+  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.biz.domain.InstanceConfig">
     update instance_config
     set instance_id = #{instanceId,jdbcType=BIGINT},
       config_namespace_name = #{configNamespaceName,jdbcType=VARCHAR},

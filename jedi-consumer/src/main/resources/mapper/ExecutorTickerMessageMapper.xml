@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTickerMessageMapper">
-  <resultMap id="BaseResultMap" type="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
+<mapper namespace="xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTickerMessageMapper">
+  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
     <result column="namespace" jdbcType="VARCHAR" property="namespace" />
@@ -89,7 +89,7 @@
     task_count, completed_task_count, reject_count, is_shutdown, is_terminated, host, 
     record_time, create_time, update_time
   </sql>
-  <select id="selectByExample" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessageExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessageExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -113,13 +113,13 @@
     delete from executor_ticker_message
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <delete id="deleteByExample" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessageExample">
+  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessageExample">
     delete from executor_ticker_message
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
     insert into executor_ticker_message (id, app_id, namespace, 
       message_type, pool_name, core_pool_size, 
       maximum_pool_size, pool_size, active_count, 
@@ -137,7 +137,7 @@
       #{host,jdbcType=VARCHAR}, #{recordTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
     insert into executor_ticker_message
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -276,7 +276,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessageExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessageExample" resultType="java.lang.Long">
     select count(*) from executor_ticker_message
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -384,7 +384,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
     update executor_ticker_message
     <set>
       <if test="appId != null">
@@ -453,7 +453,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
+  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessage">
     update executor_ticker_message
     set app_id = #{appId,jdbcType=VARCHAR},
       namespace = #{namespace,jdbcType=VARCHAR},

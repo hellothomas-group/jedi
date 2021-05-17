@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hellothomas.jedi.admin.infrastructure.mapper.ExecutorMapper">
-  <resultMap id="BaseResultMap" type="com.hellothomas.jedi.admin.domain.Executor">
+<mapper namespace="xyz.hellothomas.jedi.admin.infrastructure.mapper.ExecutorMapper">
+  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.admin.domain.Executor">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="namespace_name" jdbcType="VARCHAR" property="namespaceName" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
@@ -74,7 +74,7 @@
     id, namespace_name, app_id, executor_name, is_deleted, data_change_created_by, data_change_created_time, 
     data_change_last_modified_by, data_change_last_modified_time
   </sql>
-  <select id="selectByExample" parameterType="com.hellothomas.jedi.admin.domain.ExecutorExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.admin.domain.ExecutorExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -98,13 +98,13 @@
     delete from executor
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.hellothomas.jedi.admin.domain.ExecutorExample">
+  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.admin.domain.ExecutorExample">
     delete from executor
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.hellothomas.jedi.admin.domain.Executor" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.admin.domain.Executor" useGeneratedKeys="true" keyProperty="id">
     insert into executor (id, namespace_name, app_id, 
       executor_name, is_deleted, data_change_created_by, 
       data_change_created_time, data_change_last_modified_by, 
@@ -114,7 +114,7 @@
       #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, 
       #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.hellothomas.jedi.admin.domain.Executor" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.admin.domain.Executor" useGeneratedKeys="true" keyProperty="id">
     insert into executor
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -175,7 +175,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.hellothomas.jedi.admin.domain.ExecutorExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="xyz.hellothomas.jedi.admin.domain.ExecutorExample" resultType="java.lang.Long">
     select count(*) from executor
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -231,7 +231,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hellothomas.jedi.admin.domain.Executor">
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.admin.domain.Executor">
     update executor
     <set>
       <if test="namespaceName != null">
@@ -261,7 +261,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hellothomas.jedi.admin.domain.Executor">
+  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.admin.domain.Executor">
     update executor
     set namespace_name = #{namespaceName,jdbcType=VARCHAR},
       app_id = #{appId,jdbcType=VARCHAR},

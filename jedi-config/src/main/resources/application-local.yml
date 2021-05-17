@@ -16,7 +16,7 @@ server:
 
 swagger:
   enable: true
-  base-package: com.hellothomas.jedi.config.api
+  base-package: xyz.hellothomas.jedi.config.api
   title: Jedi-Config-Service
   host: 127.0.0.1:8081
   description: Jedi-Config服务

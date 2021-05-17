@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hellothomas.jedi.admin.infrastructure.mapper.ItemMapper">
-  <resultMap id="BaseResultMap" type="com.hellothomas.jedi.admin.domain.Item">
+<mapper namespace="xyz.hellothomas.jedi.admin.infrastructure.mapper.ItemMapper">
+  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.admin.domain.Item">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="executor_id" jdbcType="BIGINT" property="executorId" />
     <result column="configuration" jdbcType="VARCHAR" property="configuration" />
@@ -74,7 +74,7 @@
     id, executor_id, configuration, comment, is_deleted, data_change_created_by, data_change_created_time,
     data_change_last_modified_by, data_change_last_modified_time
   </sql>
-  <select id="selectByExample" parameterType="com.hellothomas.jedi.admin.domain.ItemExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.admin.domain.ItemExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -98,13 +98,13 @@
     delete from item
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.hellothomas.jedi.admin.domain.ItemExample">
+  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.admin.domain.ItemExample">
     delete from item
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.hellothomas.jedi.admin.domain.Item" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.admin.domain.Item" useGeneratedKeys="true" keyProperty="id">
     insert into item (id, executor_id, configuration,
       comment, is_deleted, data_change_created_by,
       data_change_created_time, data_change_last_modified_by,
@@ -114,7 +114,7 @@
       #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
       #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.hellothomas.jedi.admin.domain.Item" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.admin.domain.Item" useGeneratedKeys="true" keyProperty="id">
     insert into item
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -175,7 +175,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.hellothomas.jedi.admin.domain.ItemExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="xyz.hellothomas.jedi.admin.domain.ItemExample" resultType="java.lang.Long">
     select count(*) from item
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -231,7 +231,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hellothomas.jedi.admin.domain.Item">
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.admin.domain.Item">
     update item
     <set>
       <if test="executorId != null">
@@ -261,7 +261,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hellothomas.jedi.admin.domain.Item">
+  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.admin.domain.Item">
     update item
     set executor_id = #{executorId,jdbcType=BIGINT},
       configuration = #{configuration,jdbcType=VARCHAR},

@@ -42,7 +42,7 @@ mybatis:
 
 swagger:
   enable: true
-  base-package: com.hellothomas.jedi.consumer.api
+  base-package: xyz.hellothomas.jedi.consumer.api
   title: Jedi-Consumer-Service
   host: 127.0.0.1:8080
   description: Jedi-Consumer服务

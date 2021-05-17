@@ -15,9 +15,9 @@ spring:
     active: dev
 logging:
   level:
-    com:
+    xyz:
       hellothomas: debug
-    com.hellothomas.jedi.consumer.infrastructure.mapper: info
+    xyz.hellothomas.jedi.consumer.infrastructure.mapper: info
     root: info
   pattern:
     console: 'logback: %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %class#%method@%line

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hellothomas.jedi.biz.infrastructure.mapper.ReleaseMapper">
-  <resultMap id="BaseResultMap" type="com.hellothomas.jedi.biz.domain.Release">
+<mapper namespace="xyz.hellothomas.jedi.biz.infrastructure.mapper.ReleaseMapper">
+  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.biz.domain.Release">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="release_key" jdbcType="VARCHAR" property="releaseKey" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -16,7 +16,7 @@
     <result column="data_change_last_modified_by" jdbcType="VARCHAR" property="dataChangeLastModifiedBy" />
     <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
   </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hellothomas.jedi.biz.domain.Release">
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="xyz.hellothomas.jedi.biz.domain.Release">
     <result column="configurations" jdbcType="LONGVARCHAR" property="configurations" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -85,7 +85,7 @@
   <sql id="Blob_Column_List">
     configurations
   </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="com.hellothomas.jedi.biz.domain.ReleaseExample" resultMap="ResultMapWithBLOBs">
+  <select id="selectByExampleWithBLOBs" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">
       distinct
@@ -101,7 +101,7 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" parameterType="com.hellothomas.jedi.biz.domain.ReleaseExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -127,13 +127,13 @@
     delete from `release`
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.hellothomas.jedi.biz.domain.ReleaseExample">
+  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseExample">
     delete from `release`
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.hellothomas.jedi.biz.domain.Release" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.biz.domain.Release" useGeneratedKeys="true" keyProperty="id">
     insert into `release` (id, release_key, name, 
       comment, namespace_name, app_id, 
       executor_name, is_abandoned, is_deleted, 
@@ -147,7 +147,7 @@
       #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}, 
       #{configurations,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.hellothomas.jedi.biz.domain.Release" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.biz.domain.Release" useGeneratedKeys="true" keyProperty="id">
     insert into `release`
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -238,7 +238,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.hellothomas.jedi.biz.domain.ReleaseExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseExample" resultType="java.lang.Long">
     select count(*) from `release`
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -333,7 +333,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hellothomas.jedi.biz.domain.Release">
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.biz.domain.Release">
     update `release`
     <set>
       <if test="releaseKey != null">
@@ -378,7 +378,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hellothomas.jedi.biz.domain.Release">
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="xyz.hellothomas.jedi.biz.domain.Release">
     update `release`
     set release_key = #{releaseKey,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
@@ -395,7 +395,7 @@
       configurations = #{configurations,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hellothomas.jedi.biz.domain.Release">
+  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.biz.domain.Release">
     update `release`
     set release_key = #{releaseKey,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},

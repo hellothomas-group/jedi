@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hellothomas.jedi.admin.infrastructure.mapper.NamespaceMapper">
-  <resultMap id="BaseResultMap" type="com.hellothomas.jedi.admin.domain.Namespace">
+<mapper namespace="xyz.hellothomas.jedi.admin.infrastructure.mapper.NamespaceMapper">
+  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.admin.domain.Namespace">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
@@ -77,7 +77,7 @@
     id, name, description, org_id, org_name, owner_name, owner_email, is_deleted, data_change_created_by, 
     data_change_created_time, data_change_last_modified_by, data_change_last_modified_time
   </sql>
-  <select id="selectByExample" parameterType="com.hellothomas.jedi.admin.domain.NamespaceExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.admin.domain.NamespaceExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -101,13 +101,13 @@
     delete from namespace
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.hellothomas.jedi.admin.domain.NamespaceExample">
+  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.admin.domain.NamespaceExample">
     delete from namespace
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.hellothomas.jedi.admin.domain.Namespace" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.admin.domain.Namespace" useGeneratedKeys="true" keyProperty="id">
     insert into namespace (id, name, description, 
       org_id, org_name, owner_name, 
       owner_email, is_deleted, data_change_created_by, 
@@ -119,7 +119,7 @@
       #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, 
       #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.hellothomas.jedi.admin.domain.Namespace" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.admin.domain.Namespace" useGeneratedKeys="true" keyProperty="id">
     insert into namespace
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -198,7 +198,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.hellothomas.jedi.admin.domain.NamespaceExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="xyz.hellothomas.jedi.admin.domain.NamespaceExample" resultType="java.lang.Long">
     select count(*) from namespace
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -266,7 +266,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hellothomas.jedi.admin.domain.Namespace">
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.admin.domain.Namespace">
     update namespace
     <set>
       <if test="name != null">
@@ -305,7 +305,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hellothomas.jedi.admin.domain.Namespace">
+  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.admin.domain.Namespace">
     update namespace
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},

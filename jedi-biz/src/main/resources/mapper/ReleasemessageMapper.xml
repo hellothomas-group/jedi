@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hellothomas.jedi.biz.infrastructure.mapper.ReleaseMessageMapper">
-  <resultMap id="BaseResultMap" type="com.hellothomas.jedi.biz.domain.ReleaseMessage">
+<mapper namespace="xyz.hellothomas.jedi.biz.infrastructure.mapper.ReleaseMessageMapper">
+  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.biz.domain.ReleaseMessage">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="message" jdbcType="VARCHAR" property="message" />
     <result column="data_change_last_time" jdbcType="TIMESTAMP" property="dataChangeLastTime" />
@@ -67,7 +67,7 @@
   <sql id="Base_Column_List">
     id, message, data_change_last_time
   </sql>
-  <select id="selectByExample" parameterType="com.hellothomas.jedi.biz.domain.ReleaseMessageExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseMessageExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -91,19 +91,19 @@
     delete from release_message
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.hellothomas.jedi.biz.domain.ReleaseMessageExample">
+  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseMessageExample">
     delete from release_message
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.hellothomas.jedi.biz.domain.ReleaseMessage" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseMessage" useGeneratedKeys="true" keyProperty="id">
     insert into release_message (id, message, data_change_last_time
       )
     values (#{id,jdbcType=BIGINT}, #{message,jdbcType=VARCHAR}, #{dataChangeLastTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.hellothomas.jedi.biz.domain.ReleaseMessage" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseMessage" useGeneratedKeys="true" keyProperty="id">
     insert into release_message
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -128,7 +128,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.hellothomas.jedi.biz.domain.ReleaseMessageExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseMessageExample" resultType="java.lang.Long">
     select count(*) from release_message
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -160,7 +160,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hellothomas.jedi.biz.domain.ReleaseMessage">
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseMessage">
     update release_message
     <set>
       <if test="message != null">
@@ -172,7 +172,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hellothomas.jedi.biz.domain.ReleaseMessage">
+  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseMessage">
     update release_message
     set message = #{message,jdbcType=VARCHAR},
       data_change_last_time = #{dataChangeLastTime,jdbcType=TIMESTAMP}
@@ -191,7 +191,7 @@
     from release_message
     order by id desc limit 1
   </select>
-  <insert id="save" parameterType="com.hellothomas.jedi.biz.domain.ReleaseMessage" useGeneratedKeys="true"
+  <insert id="save" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseMessage" useGeneratedKeys="true"
           keyProperty="id">
     insert into release_message (message, data_change_last_time
       )

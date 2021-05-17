@@ -1,0 +1,36 @@
+package xyz.hellothomas.jedi.client.constants;
+
+import java.util.concurrent.TimeUnit;
+
+/**
+ * @author 80234613 唐圆
+ * @date 2021/3/23 12:51
+ * @descripton
+ * @version 1.0
+ */
+public class Constants {
+    public static final int loadConfigQPS = 2; //2 times per second
+    public static final int longPollQPS = 2; //2 times per second
+    public static final long longPollingInitialDelayInMills = 2000;//2 seconds
+    public static final long onErrorRetryInterval = 1;//1 second
+    public static final int refreshInterval = 5;
+    public static final TimeUnit refreshIntervalTimeUnit = TimeUnit.MINUTES;
+    public static final long maxConfigCacheSize = 500;//500 cache key
+    public static final long configCacheExpireTime = 1;//1 minute
+    public static final TimeUnit configCacheExpireTimeUnit = TimeUnit.MINUTES;//1 minute
+
+    public static final String MONITOR_CONFIG_PREFIX = "monitor";
+    public static final String MONITOR_CONFIG_ENABLE_KEY = "monitor.enable";
+    public static final String MONITOR_CONFIG_URL_KEY = "monitor.url";
+    public static final String MONITOR_CONFIG_NAMESPACE_KEY = "monitor.namespace";
+    public static final String MONITOR_CONFIG_APP_ID_KEY = "monitor.app-id";
+    public static final String MONITOR_CONFIG_EXECUTORS_KEY = "monitor.executors";
+
+    public static final String DEFAULT_EXECUTOR_NAME = "defaultExecutor";
+    public static final String JEDI_BOOTSTRAP_PROPERTY_SOURCE_NAME = "JediBootstrapPropertySources";;
+
+
+    private Constants() {
+        throw new IllegalStateException("Utility class");
+    }
+}

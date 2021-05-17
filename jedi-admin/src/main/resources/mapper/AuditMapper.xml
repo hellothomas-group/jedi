@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hellothomas.jedi.admin.infrastructure.mapper.AuditMapper">
-  <resultMap id="BaseResultMap" type="com.hellothomas.jedi.admin.domain.Audit">
+<mapper namespace="xyz.hellothomas.jedi.admin.infrastructure.mapper.AuditMapper">
+  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.admin.domain.Audit">
     <id column="Id" jdbcType="BIGINT" property="id" />
     <result column="entity_name" jdbcType="VARCHAR" property="entityName" />
     <result column="entity_id" jdbcType="BIGINT" property="entityId" />
@@ -75,7 +75,7 @@
     Id, entity_name, entity_id, operation_name, comment, is_deleted, data_change_created_by, 
     data_change_created_time, data_change_last_modified_by, data_change_last_modified_time
   </sql>
-  <select id="selectByExample" parameterType="com.hellothomas.jedi.admin.domain.AuditExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.admin.domain.AuditExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -99,13 +99,13 @@
     delete from audit
     where Id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.hellothomas.jedi.admin.domain.AuditExample">
+  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.admin.domain.AuditExample">
     delete from audit
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.hellothomas.jedi.admin.domain.Audit" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.admin.domain.Audit" useGeneratedKeys="true" keyProperty="id">
     insert into audit (Id, entity_name, entity_id, 
       operation_name, comment, is_deleted, 
       data_change_created_by, data_change_created_time, 
@@ -117,7 +117,7 @@
       #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.hellothomas.jedi.admin.domain.Audit" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.admin.domain.Audit" useGeneratedKeys="true" keyProperty="id">
     insert into audit
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -184,7 +184,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.hellothomas.jedi.admin.domain.AuditExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="xyz.hellothomas.jedi.admin.domain.AuditExample" resultType="java.lang.Long">
     select count(*) from audit
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -244,7 +244,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hellothomas.jedi.admin.domain.Audit">
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.admin.domain.Audit">
     update audit
     <set>
       <if test="entityName != null">
@@ -277,7 +277,7 @@
     </set>
     where Id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hellothomas.jedi.admin.domain.Audit">
+  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.admin.domain.Audit">
     update audit
     set entity_name = #{entityName,jdbcType=VARCHAR},
       entity_id = #{entityId,jdbcType=BIGINT},
