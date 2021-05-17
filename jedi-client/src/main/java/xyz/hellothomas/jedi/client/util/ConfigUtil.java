@@ -28,7 +28,7 @@ public class ConfigUtil {
             return enable;
         }
 
-        enable = Boolean.valueOf(getRequiredProperty(MONITOR_CONFIG_ENABLE_KEY));
+        enable = Boolean.valueOf(getRequiredProperty(JEDI_CONFIG_ENABLE_KEY));
 
         return enable;
     }
@@ -38,7 +38,7 @@ public class ConfigUtil {
             return url;
         }
 
-        url = getRequiredProperty(MONITOR_CONFIG_URL_KEY);
+        url = getRequiredProperty(JEDI_CONFIG_URL_KEY);
 
         return url;
     }
@@ -48,7 +48,7 @@ public class ConfigUtil {
             return namespace;
         }
 
-        namespace = getRequiredProperty(MONITOR_CONFIG_NAMESPACE_KEY);
+        namespace = getRequiredProperty(JEDI_CONFIG_NAMESPACE_KEY);
 
         return namespace;
     }
@@ -58,7 +58,7 @@ public class ConfigUtil {
             return appId;
         }
 
-        appId = getRequiredProperty(MONITOR_CONFIG_APP_ID_KEY);
+        appId = getRequiredProperty(JEDI_CONFIG_APP_ID_KEY);
 
         return appId;
     }

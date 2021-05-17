@@ -23,20 +23,20 @@ import java.util.concurrent.Executor;
 @Slf4j
 @Configuration
 @Import(JediExecutorRegistrar.class)
-@ConditionalOnProperty(value = "monitor.enable", havingValue = "true")
+@ConditionalOnProperty(value = Constants.JEDI_CONFIG_ENABLE_KEY, havingValue = "true")
 public class JediExecutorAutoConfig {
 
-    @Bean(name = {Constants.DEFAULT_EXECUTOR_NAME})
+    @Bean(name = {Constants.JEDI_DEFAULT_EXECUTOR_NAME})
     public Executor defaultExecutor(JediConfig jediConfig, AbstractNotificationService notificationService) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
         JediThreadPoolProperty jediThreadPoolProperty =
                 jediConfig.getExecutors().stream()
-                        .filter(i -> i != null && Constants.DEFAULT_EXECUTOR_NAME.equals(i.getName()))
+                        .filter(i -> i != null && Constants.JEDI_DEFAULT_EXECUTOR_NAME.equals(i.getName()))
                         .findFirst()
                         .orElse(JediThreadPoolProperty.builder()
-                                .name(Constants.DEFAULT_EXECUTOR_NAME)
+                                .name(Constants.JEDI_DEFAULT_EXECUTOR_NAME)
                                 .build());
         jediThreadPoolProperty.setNotificationService(notificationService);
-        log.debug("{}配置为:{}", Constants.DEFAULT_EXECUTOR_NAME, jediThreadPoolProperty);
+        log.debug("{}配置为:{}", Constants.JEDI_DEFAULT_EXECUTOR_NAME, jediThreadPoolProperty);
 
         return new JediThreadPoolExecutor(jediThreadPoolProperty);
     }

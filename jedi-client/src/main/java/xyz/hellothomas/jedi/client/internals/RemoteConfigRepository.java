@@ -130,7 +130,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     private Properties transformJediConfigToProperties(JediExecutorConfig jediExecutorConfig) {
         Properties result = new Properties();
         jediExecutorConfig.getConfigurations().forEach((key, value) -> {
-            String propertyKey = STRING_JOINER_PROPERTY.join(Constants.MONITOR_CONFIG_PREFIX,
+            String propertyKey = STRING_JOINER_PROPERTY.join(Constants.JEDI_CONFIG_PREFIX,
                     jediExecutorConfig.getExecutorName(), key);
             result.put(propertyKey, value);
         });

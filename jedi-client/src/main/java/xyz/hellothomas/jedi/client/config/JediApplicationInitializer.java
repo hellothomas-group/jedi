@@ -27,28 +27,28 @@ import java.util.List;
 @Order(value = 0)
 public class JediApplicationInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>,
         EnvironmentPostProcessor {
-    private static final String[] JEDI_SYSTEM_PROPERTIES = {Constants.MONITOR_CONFIG_ENABLE_KEY, Constants.MONITOR_CONFIG_URL_KEY,
-            Constants.MONITOR_CONFIG_NAMESPACE_KEY, Constants.MONITOR_CONFIG_APP_ID_KEY};
+    private static final String[] JEDI_SYSTEM_PROPERTIES = {Constants.JEDI_CONFIG_ENABLE_KEY, Constants.JEDI_CONFIG_URL_KEY,
+            Constants.JEDI_CONFIG_NAMESPACE_KEY, Constants.JEDI_CONFIG_APP_ID_KEY};
     private static final Splitter EXECUTOR_SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        Boolean monitorEnable = environment.getProperty(Constants.MONITOR_CONFIG_ENABLE_KEY, Boolean.class, false);
+        Boolean jediEnable = environment.getProperty(Constants.JEDI_CONFIG_ENABLE_KEY, Boolean.class, false);
 
-        if (!monitorEnable) {
+        if (!jediEnable) {
             return;
         }
 
-        // should always initialize system properties like monitor.app-id in the first place
+        // should always initialize system properties like jedi.app-id in the first place
         initializeSystemProperty(environment);
     }
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
-        Boolean monitorEnable = applicationContext.getEnvironment().getProperty(Constants.MONITOR_CONFIG_ENABLE_KEY,
+        Boolean jediEnable = applicationContext.getEnvironment().getProperty(Constants.JEDI_CONFIG_ENABLE_KEY,
                 Boolean.class, false);
 
-        if (!monitorEnable) {
+        if (!jediEnable) {
             return;
         }
 
@@ -84,9 +84,9 @@ public class JediApplicationInitializer implements ApplicationContextInitializer
      * @param environment
      */
     private void initializeConfig(ConfigurableEnvironment environment) {
-        String executors = environment.getProperty(Constants.MONITOR_CONFIG_EXECUTORS_KEY);
+        String executors = environment.getProperty(Constants.JEDI_CONFIG_EXECUTORS_KEY);
         if (StringUtils.isBlank(executors)) {
-            log.warn("未配置{}, 将使用默认executor:{}", Constants.MONITOR_CONFIG_EXECUTORS_KEY, Constants.DEFAULT_EXECUTOR_NAME);
+            log.warn("未配置{}, 将使用默认executor:{}", Constants.JEDI_CONFIG_EXECUTORS_KEY, Constants.JEDI_DEFAULT_EXECUTOR_NAME);
             return;
         }
 

@@ -21,7 +21,7 @@ import java.security.cert.X509Certificate;
  * @version 1.0
  */
 public class JediRemotingUtil {
-    public static final String MONITOR_ACCESS_TOKEN = "MONITOR-ACCESS-TOKEN";
+    public static final String JEDI_ACCESS_TOKEN = "JEDI-ACCESS-TOKEN";
     private static final TrustManager[] TRUST_ALL_CERTS = new TrustManager[]{new X509TrustManager() {
         @Override
         public X509Certificate[] getAcceptedIssuers() {
@@ -91,7 +91,7 @@ public class JediRemotingUtil {
             connection.setRequestProperty("Accept-Charset", "application/json;charset=UTF-8");
 
             if (accessToken != null && accessToken.trim().length() > 0) {
-                connection.setRequestProperty(MONITOR_ACCESS_TOKEN, accessToken);
+                connection.setRequestProperty(JEDI_ACCESS_TOKEN, accessToken);
             }
 
             // do connection
@@ -145,7 +145,7 @@ public class JediRemotingUtil {
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "monitor-rpc remoting error(" + e.getMessage() + "), for " +
+            return new ReturnT<String>(ReturnT.FAIL_CODE, "jedi-rpc remoting error(" + e.getMessage() + "), for " +
                     "url : " + url);
         } finally {
             try {

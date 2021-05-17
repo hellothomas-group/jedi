@@ -70,7 +70,7 @@ public class JediThreadPoolExecutorOnKafkaTest {
     }
 
     @Test
-    public void afterExecuteMonitorRunnable() {
+    public void afterExecuteJediRunnable() {
         KafkaNotificationService kafkaNotificationService = new KafkaNotificationService(newKafkaProperty(), "LW12.04"
                 , "dev");
         JediThreadPoolExecutor executor = new JediThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS,
@@ -89,7 +89,7 @@ public class JediThreadPoolExecutorOnKafkaTest {
     }
 
     @Test
-    public void executeMonitorRunnableRejectException() {
+    public void executeJediRunnableRejectException() {
         KafkaNotificationService kafkaNotificationService = new KafkaNotificationService(newKafkaProperty(), "LW12.04"
                 , "dev");
         JediThreadPoolExecutor executor = new JediThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS,

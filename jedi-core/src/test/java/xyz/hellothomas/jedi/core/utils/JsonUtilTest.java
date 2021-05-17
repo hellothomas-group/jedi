@@ -17,7 +17,7 @@ public class JsonUtilTest {
                 "\"content\":\"content\",\"recordTime\":\"2021-01-10 22:14:56\",\"host\":\"127.0.0.1\"}}";
         ReturnT<CustomNotification> returnT = JsonUtil.deserializeReturnT(returnTString, CustomNotification.class);
         System.out.println(returnT);
-        // java.lang.ClassCastException: java.util.LinkedHashMap cannot be cast to com.hellothomas.monitor.core.dto
+        // java.lang.ClassCastException: java.util.LinkedHashMap cannot be cast to xyz.hellothomas.jedi.core.dto
         // .AbstractNotification
         CustomNotification CustomNotification = returnT.getContent();
         System.out.println(CustomNotification);
@@ -48,7 +48,7 @@ public class JsonUtilTest {
                 "\"content\":\"content\",\"recordTime\":\"2021-01-10 22:14:56\",\"host\":\"127.0.0.1\"}}";
         ReturnT<CustomNotification> returnT = JsonUtil.deserialize(returnTString, ReturnT.class);
         System.out.println(returnT);
-        // java.lang.ClassCastException: java.util.LinkedHashMap cannot be cast to com.hellothomas.monitor.core.dto
+        // java.lang.ClassCastException: java.util.LinkedHashMap cannot be cast to xyz.hellothomas.jedi.core.dto
         // .AbstractNotification
         AbstractNotification message1 = returnT.getContent();
         System.out.println(message1);

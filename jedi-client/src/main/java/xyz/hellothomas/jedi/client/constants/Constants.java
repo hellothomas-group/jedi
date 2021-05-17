@@ -19,14 +19,15 @@ public class Constants {
     public static final long configCacheExpireTime = 1;//1 minute
     public static final TimeUnit configCacheExpireTimeUnit = TimeUnit.MINUTES;//1 minute
 
-    public static final String MONITOR_CONFIG_PREFIX = "monitor";
-    public static final String MONITOR_CONFIG_ENABLE_KEY = "monitor.enable";
-    public static final String MONITOR_CONFIG_URL_KEY = "monitor.url";
-    public static final String MONITOR_CONFIG_NAMESPACE_KEY = "monitor.namespace";
-    public static final String MONITOR_CONFIG_APP_ID_KEY = "monitor.app-id";
-    public static final String MONITOR_CONFIG_EXECUTORS_KEY = "monitor.executors";
+    public static final String JEDI_CONFIG_PREFIX = "jedi";
+    public static final String JEDI_CONFIG_ENABLE_KEY = "jedi.enable";
+    public static final String JEDI_CONFIG_URL_KEY = "jedi.url";
+    public static final String JEDI_CONFIG_NAMESPACE_KEY = "jedi.namespace";
+    public static final String JEDI_CONFIG_APP_ID_KEY = "jedi.app-id";
+    public static final String JEDI_CONFIG_EXECUTORS_KEY = "jedi.executors";
+    public static final String JEDI_CONFIG_BEAN_NAME = "jediConfig";
 
-    public static final String DEFAULT_EXECUTOR_NAME = "defaultExecutor";
+    public static final String JEDI_DEFAULT_EXECUTOR_NAME = "jediDefaultExecutor";
     public static final String JEDI_BOOTSTRAP_PROPERTY_SOURCE_NAME = "JediBootstrapPropertySources";;
 
 

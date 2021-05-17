@@ -47,7 +47,6 @@ import java.util.List;
 @Slf4j
 public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, EnvironmentAware, BeanFactoryAware {
     private static final String NOTIFICATION_SERVICE_BEAN_NAME = "notificationService";
-    private static final String MONITOR_CONFIG_BEAN_NAME = "jediConfig";
     private static final String CONSUMER_HTTP_KEY = "url";
     private static final Splitter EXECUTOR_SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
     private static final Joiner STRING_JOINER_PROPERTY = Joiner.on(".");
@@ -58,9 +57,9 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
     @SneakyThrows
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        ((DefaultListableBeanFactory) this.beanFactory).registerSingleton(MONITOR_CONFIG_BEAN_NAME,
+        ((DefaultListableBeanFactory) this.beanFactory).registerSingleton(Constants.JEDI_CONFIG_BEAN_NAME,
                 this.jediConfig);
-        log.info("{} 注册beanFactory", MONITOR_CONFIG_BEAN_NAME);
+        log.info("{} 注册beanFactory", Constants.JEDI_CONFIG_BEAN_NAME);
 
         AbstractNotificationService notificationService = buildNotificationService(jediConfig.getUrl(),
                 jediConfig.getNamespace(), jediConfig.getAppId());
@@ -70,7 +69,7 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
         log.info("{} 注册beanFactory", NOTIFICATION_SERVICE_BEAN_NAME);
 
         jediConfig.getExecutors().stream()
-                .filter(i -> i != null && !Constants.DEFAULT_EXECUTOR_NAME.equals(i.getName()))
+                .filter(i -> i != null && !Constants.JEDI_DEFAULT_EXECUTOR_NAME.equals(i.getName()))
                 .forEach(j -> {
                     j.setNotificationService(notificationService);
 
@@ -90,13 +89,13 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
     public void setEnvironment(Environment environment) {
         Iterable sources = ConfigurationPropertySources.get(environment);
         Binder binder = new Binder(sources);
-        BindResult<JediProperty> bindResult = binder.bind(Constants.MONITOR_CONFIG_PREFIX, JediProperty.class);
+        BindResult<JediProperty> bindResult = binder.bind(Constants.JEDI_CONFIG_PREFIX, JediProperty.class);
 
         JediProperty jediProperty = bindResult.orElse(null);
 
         jediConfig = new JediConfig();
         BeanUtils.copyProperties(jediProperty, jediConfig);
-        jediConfig.setExecutors(buildMonitorConfigExecutors(jediProperty.getExecutors(), binder));
+        jediConfig.setExecutors(buildJediConfigExecutors(jediProperty.getExecutors(), binder));
 
         log.debug("jediConfig:{}", jediConfig);
     }
@@ -129,20 +128,20 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
         return new NullNotificationService(appId, namespace);
     }
 
-    private List<JediThreadPoolProperty> buildMonitorConfigExecutors(String executors, Binder binder) {
+    private List<JediThreadPoolProperty> buildJediConfigExecutors(String executors, Binder binder) {
         List<String> executorNames = EXECUTOR_SPLITTER.splitToList(executors);
         List<JediThreadPoolProperty> executorProperties = new ArrayList<>();
         for (String executorName : executorNames) {
-            JediThreadPoolProperty jediThreadPoolProperty = buildDynamicThreadPoolProperty(executorName, binder);
+            JediThreadPoolProperty jediThreadPoolProperty = buildJediThreadPoolProperty(executorName, binder);
             executorProperties.add(jediThreadPoolProperty);
         }
 
         return executorProperties;
     }
 
-    private JediThreadPoolProperty buildDynamicThreadPoolProperty(String executor, Binder binder) {
-        String dynamicThreadPoolPropertyPrefix = STRING_JOINER_PROPERTY.join(Constants.MONITOR_CONFIG_PREFIX, executor);
-        BindResult<JediThreadPoolProperty> bindResult = binder.bind(dynamicThreadPoolPropertyPrefix,
+    private JediThreadPoolProperty buildJediThreadPoolProperty(String executor, Binder binder) {
+        String jediThreadPoolPropertyPrefix = STRING_JOINER_PROPERTY.join(Constants.JEDI_CONFIG_PREFIX, executor);
+        BindResult<JediThreadPoolProperty> bindResult = binder.bind(jediThreadPoolPropertyPrefix,
                 JediThreadPoolProperty.class);
         JediThreadPoolProperty jediThreadPoolProperty =
                 bindResult.orElse(JediThreadPoolProperty.builder().build());

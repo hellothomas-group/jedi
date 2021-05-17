@@ -63,7 +63,7 @@ public class JediThreadPoolExecutorOnHttpTest {
     }
 
     @Test
-    public void afterExecuteMonitorRunnable() {
+    public void afterExecuteJediRunnable() {
         HttpNotificationService httpNotificationService = new HttpNotificationService("http://127.0.0.1:8080", "LW12" +
                 ".04", "dev");
         JediThreadPoolExecutor executor = new JediThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS,
@@ -82,7 +82,7 @@ public class JediThreadPoolExecutorOnHttpTest {
     }
 
     @Test
-    public void executeMonitorRunnableRejectException() {
+    public void executeJediRunnableRejectException() {
         HttpNotificationService httpNotificationService = new HttpNotificationService("http://127.0.0.1:8080", "LW12" +
                 ".04", "dev");
         JediThreadPoolExecutor executor = new JediThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS,
