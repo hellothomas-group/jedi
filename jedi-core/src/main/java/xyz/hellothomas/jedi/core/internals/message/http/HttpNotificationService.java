@@ -5,7 +5,7 @@ import xyz.hellothomas.jedi.core.dto.consumer.AbstractNotification;
 import xyz.hellothomas.jedi.core.enums.HttpNotificationPath;
 import xyz.hellothomas.jedi.core.enums.MessageType;
 import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
-import xyz.hellothomas.jedi.core.utils.MonitorRemotingUtil;
+import xyz.hellothomas.jedi.core.utils.JediRemotingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +89,7 @@ public class HttpNotificationService extends AbstractNotificationService {
     public void send(Object request, MessageType messageType) {
         String requestUrl = messageServerUrl + HttpNotificationPath.getPathByMessageType(messageType);
         LOGGER.trace("send to {}, message: {}", requestUrl, request);
-        ReturnT<String> result = MonitorRemotingUtil.postBody(requestUrl, null, 3,
+        ReturnT<String> result = JediRemotingUtil.postBody(requestUrl, null, 3,
                 request, String.class);
         LOGGER.trace("result: {}", result);
     }

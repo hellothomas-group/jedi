@@ -6,17 +6,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.context.request.async.DeferredResult;
-import xyz.hellothomas.jedi.core.dto.config.JediConfigNotification;
+import xyz.hellothomas.jedi.core.dto.config.JediExecutorConfigNotification;
 
 import java.util.List;
 import java.util.Map;
 
 public class DeferredResultWrapper implements Comparable<DeferredResultWrapper> {
-    private static final ResponseEntity<List<JediConfigNotification>>
+    private static final ResponseEntity<List<JediExecutorConfigNotification>>
             NOT_MODIFIED_RESPONSE_LIST = new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 
     private Map<String, String> normalizedExecutorNameToOriginalExecutorName;
-    private DeferredResult<ResponseEntity<List<JediConfigNotification>>> result;
+    private DeferredResult<ResponseEntity<List<JediExecutorConfigNotification>>> result;
 
 
     public DeferredResultWrapper(long timeoutInMilli) {
@@ -39,15 +39,15 @@ public class DeferredResultWrapper implements Comparable<DeferredResultWrapper> 
     }
 
 
-    public void setResult(JediConfigNotification notification) {
+    public void setResult(JediExecutorConfigNotification notification) {
         setResult(Lists.newArrayList(notification));
     }
 
-    public void setResult(List<JediConfigNotification> notifications) {
+    public void setResult(List<JediExecutorConfigNotification> notifications) {
         result.setResult(new ResponseEntity<>(notifications, HttpStatus.OK));
     }
 
-    public DeferredResult<ResponseEntity<List<JediConfigNotification>>> getResult() {
+    public DeferredResult<ResponseEntity<List<JediExecutorConfigNotification>>> getResult() {
         return result;
     }
 

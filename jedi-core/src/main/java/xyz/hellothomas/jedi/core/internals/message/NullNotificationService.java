@@ -2,7 +2,7 @@ package xyz.hellothomas.jedi.core.internals.message;
 
 import xyz.hellothomas.jedi.core.dto.consumer.*;
 import xyz.hellothomas.jedi.core.enums.MessageType;
-import xyz.hellothomas.jedi.core.internals.executor.DynamicThreadPoolExecutor;
+import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 
 /**
  * @author Thomas
@@ -26,7 +26,7 @@ public class NullNotificationService extends AbstractNotificationService {
     }
 
     @Override
-    public ExecutorTickerNotification buildExecutorTickerNotification(DynamicThreadPoolExecutor executor) {
+    public ExecutorTickerNotification buildExecutorTickerNotification(JediThreadPoolExecutor executor) {
         return null;
     }
 

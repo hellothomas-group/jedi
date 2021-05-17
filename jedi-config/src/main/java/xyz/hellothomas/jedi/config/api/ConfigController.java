@@ -11,7 +11,7 @@ import xyz.hellothomas.jedi.biz.common.utils.ReleaseMessageKeyGenerator;
 import xyz.hellothomas.jedi.biz.domain.Release;
 import xyz.hellothomas.jedi.config.application.config.ConfigService;
 import xyz.hellothomas.jedi.config.common.utils.InstanceConfigAuditUtil;
-import xyz.hellothomas.jedi.core.dto.config.JediConfig;
+import xyz.hellothomas.jedi.core.dto.config.JediExecutorConfig;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,12 +41,12 @@ public class ConfigController {
     }
 
     @GetMapping(value = "/{namespace}/{appId}/{executorName}")
-    public JediConfig queryConfig(@PathVariable String namespace, @PathVariable String appId,
-                                  @PathVariable String executorName,
-                                  @RequestParam(value = "releaseKey", defaultValue = "-1") String clientSideReleaseKey,
-                                  @RequestParam(value = "ip", required = false) String clientIp,
-                                  @RequestParam(value = "notificationId", defaultValue = "-1") long notificationId,
-                                  HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public JediExecutorConfig queryConfig(@PathVariable String namespace, @PathVariable String appId,
+                                          @PathVariable String executorName,
+                                          @RequestParam(value = "releaseKey", defaultValue = "-1") String clientSideReleaseKey,
+                                          @RequestParam(value = "ip", required = false) String clientIp,
+                                          @RequestParam(value = "notificationId", defaultValue = "-1") long notificationId,
+                                          HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (Strings.isNullOrEmpty(clientIp)) {
             clientIp = tryToGetClientIp(request);
         }
@@ -79,11 +79,11 @@ public class ConfigController {
             return null;
         }
 
-        JediConfig jediConfig = new JediConfig(namespace, appId, executorName, release.getReleaseKey());
-        jediConfig.setConfigurations(transferReleaseConfigurations(release));
+        JediExecutorConfig jediExecutorConfig = new JediExecutorConfig(namespace, appId, executorName, release.getReleaseKey());
+        jediExecutorConfig.setConfigurations(transferReleaseConfigurations(release));
 
         log.info("Jedi.Config.Found:{}", assembleKey(namespace, appId, executorName));
-        return jediConfig;
+        return jediExecutorConfig;
     }
 
     Map<String, String> transferReleaseConfigurations(Release release) {

@@ -20,7 +20,7 @@ import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.config.application.message.DeferredResultWrapper;
 import xyz.hellothomas.jedi.config.application.message.ReleaseMessageListener;
 import xyz.hellothomas.jedi.config.application.message.ReleaseMessageServiceWithCache;
-import xyz.hellothomas.jedi.core.dto.config.JediConfigNotification;
+import xyz.hellothomas.jedi.core.dto.config.JediExecutorConfigNotification;
 import xyz.hellothomas.jedi.core.utils.JediThreadFactory;
 
 import java.lang.reflect.Type;
@@ -49,7 +49,7 @@ import static xyz.hellothomas.jedi.core.constants.Constants.NOTIFICATION_ID_PLAC
 @Slf4j
 public class CalibrationController implements ReleaseMessageListener {
     private static final Splitter STRING_SPLITTER = Splitter.on(NAMESPACE_EXECUTOR_SEPARATOR).omitEmptyStrings();
-    private static final Type NOTIFICATIONS_TYPE_REFERENCE = new TypeToken<List<JediConfigNotification>>() {
+    private static final Type NOTIFICATIONS_TYPE_REFERENCE = new TypeToken<List<JediExecutorConfigNotification>>() {
     }.getType();
 
     private final Multimap<String, DeferredResultWrapper> deferredResults =
@@ -68,12 +68,12 @@ public class CalibrationController implements ReleaseMessageListener {
     }
 
     @GetMapping
-    public DeferredResult<ResponseEntity<List<JediConfigNotification>>> pollNotification(
+    public DeferredResult<ResponseEntity<List<JediExecutorConfigNotification>>> pollNotification(
             @RequestParam(value = "namespace") String namespace,
             @RequestParam(value = "appId") String appId,
             @RequestParam(value = "notifications") String notificationsAsString,
             @RequestParam(value = "ip", required = false) String clientIp) {
-        List<JediConfigNotification> notifications = null;
+        List<JediExecutorConfigNotification> notifications = null;
 
         try {
             notifications =
@@ -126,7 +126,7 @@ public class CalibrationController implements ReleaseMessageListener {
         List<ReleaseMessage> latestReleaseMessages =
                 releaseMessageService.findLatestReleaseMessagesGroupByMessages(watchedKeys);
 
-        List<JediConfigNotification> newNotifications =
+        List<JediExecutorConfigNotification> newNotifications =
                 getJediConfigNotifications(executorNames, clientSideNotifications, watchedKeysMap,
                         latestReleaseMessages);
 
@@ -137,11 +137,11 @@ public class CalibrationController implements ReleaseMessageListener {
         return deferredResultWrapper.getResult();
     }
 
-    private List<JediConfigNotification> getJediConfigNotifications(Set<String> executorNames,
-                                                                    Map<String, Long> clientSideNotifications,
-                                                                    Map<String, String> watchedKeysMap,
-                                                                    List<ReleaseMessage> latestReleaseMessages) {
-        List<JediConfigNotification> newNotifications = Lists.newArrayList();
+    private List<JediExecutorConfigNotification> getJediConfigNotifications(Set<String> executorNames,
+                                                                            Map<String, Long> clientSideNotifications,
+                                                                            Map<String, String> watchedKeysMap,
+                                                                            List<ReleaseMessage> latestReleaseMessages) {
+        List<JediExecutorConfigNotification> newNotifications = Lists.newArrayList();
         if (!CollectionUtils.isEmpty(latestReleaseMessages)) {
             Map<String, Long> latestNotifications = Maps.newHashMap();
             for (ReleaseMessage releaseMessage : latestReleaseMessages) {
@@ -153,7 +153,7 @@ public class CalibrationController implements ReleaseMessageListener {
                 String executorWatchedKey = watchedKeysMap.get(executorName);
                 long latestId = latestNotifications.getOrDefault(executorWatchedKey, NOTIFICATION_ID_PLACEHOLDER);
                 if (latestId > clientSideId) {
-                    JediConfigNotification notification = new JediConfigNotification(executorName, latestId);
+                    JediExecutorConfigNotification notification = new JediExecutorConfigNotification(executorName, latestId);
                     newNotifications.add(notification);
                 }
             }
@@ -184,7 +184,7 @@ public class CalibrationController implements ReleaseMessageListener {
         //create a new list to avoid ConcurrentModificationException
         List<DeferredResultWrapper> results = Lists.newArrayList(deferredResults.get(content));
 
-        JediConfigNotification configNotification = new JediConfigNotification(changedExecutor, message.getId());
+        JediExecutorConfigNotification configNotification = new JediExecutorConfigNotification(changedExecutor, message.getId());
 
         //do async notification if too many clients
         if (results.size() > DEFAULT_RELEASE_MESSAGE_NOTIFICATION_BATCH) {

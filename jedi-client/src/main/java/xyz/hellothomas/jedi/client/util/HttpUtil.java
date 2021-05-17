@@ -3,8 +3,8 @@ package xyz.hellothomas.jedi.client.util;
 import com.google.common.base.Function;
 import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
-import xyz.hellothomas.jedi.client.exception.JediConfigException;
-import xyz.hellothomas.jedi.client.exception.JediConfigStatusCodeException;
+import xyz.hellothomas.jedi.client.exception.JediClientException;
+import xyz.hellothomas.jedi.client.exception.JediClientStatusCodeException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +27,7 @@ public class HttpUtil {
      * @param httpRequest  the request
      * @param responseType the response type
      * @return the response
-     * @throws JediConfigException if any error happened or response code is neither 200 nor 304
+     * @throws JediClientException if any error happened or response code is neither 200 nor 304
      */
     public static <T> HttpResponse<T> doGet(HttpRequest httpRequest, final Class<T> responseType) {
         Function<String, T> convertResponse = new Function<String, T>() {
@@ -46,7 +46,7 @@ public class HttpUtil {
      * @param httpRequest  the request
      * @param responseType the response type
      * @return the response
-     * @throws JediConfigException if any error happened or response code is neither 200 nor 304
+     * @throws JediClientException if any error happened or response code is neither 200 nor 304
      */
     public static <T> HttpResponse<T> doGet(HttpRequest httpRequest, final Type responseType) {
         Function<String, T> convertResponse = new Function<String, T>() {
@@ -112,7 +112,7 @@ public class HttpUtil {
                     throw ex;
                 }
                 // for status codes like 404, IOException is expected when calling conn.getInputStream()
-                throw new JediConfigStatusCodeException(statusCode, ex);
+                throw new JediClientStatusCodeException(statusCode, ex);
             }
 
             if (statusCode == 200) {
@@ -122,10 +122,10 @@ public class HttpUtil {
             if (statusCode == 304) {
                 return new HttpResponse<>(statusCode, null);
             }
-        } catch (JediConfigStatusCodeException ex) {
+        } catch (JediClientStatusCodeException ex) {
             throw ex;
         } catch (Throwable ex) {
-            throw new JediConfigException("Could not complete get operation", ex);
+            throw new JediClientException("Could not complete get operation", ex);
         } finally {
             if (isr != null) {
                 try {
@@ -144,7 +144,7 @@ public class HttpUtil {
             }
         }
 
-        throw new JediConfigStatusCodeException(statusCode,
+        throw new JediClientStatusCodeException(statusCode,
                 String.format("Get operation failed for %s", httpRequest.getUrl()));
     }
 

@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadFactory;
  * @description
  * @version 1.0
  */
-public class DynamicThreadPoolProperty {
+public class JediThreadPoolProperty {
     private static final int DEFAULT_CORE_POOL_SIZE = 10;
     private static final int DEFAULT_MAX_POOL_SIZE = 20;
     private static final int DEFAULT_KEEP_ALIVE_SECONDS = 60;
@@ -37,8 +37,8 @@ public class DynamicThreadPoolProperty {
     private AbstractNotificationService notificationService;
     private String name = DEFAULT_POOL_NAME + System.currentTimeMillis();
 
-    public static DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder builder() {
-        return new DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder();
+    public static JediThreadPoolPropertyBuilder builder() {
+        return new JediThreadPoolPropertyBuilder();
     }
 
     public int getCorePoolSize() {
@@ -131,16 +131,16 @@ public class DynamicThreadPoolProperty {
 
     @Override
     public String toString() {
-        return "DynamicThreadPoolProperty(corePoolSize=" + this.getCorePoolSize() + ", maxPoolSize=" + this.getMaxPoolSize() + ", keepAliveSeconds=" + this.getKeepAliveSeconds() + ", queueCapacity=" + this.getQueueCapacity() + ", allowCoreThreadTimeOut=" + this.isAllowCoreThreadTimeOut() + ", name=" + this.getName() + ", rejectedExecutionHandler=" + this.getRejectedExecutionHandler() + ", notificationService=" + this.getNotificationService() + ", workQueue=" + this.getWorkQueue() + ", threadFactory=" + this.getThreadFactory() + ", tickerCycle=" + this.getTickerCycle() + ")";
+        return "JediThreadPoolProperty(corePoolSize=" + this.getCorePoolSize() + ", maxPoolSize=" + this.getMaxPoolSize() + ", keepAliveSeconds=" + this.getKeepAliveSeconds() + ", queueCapacity=" + this.getQueueCapacity() + ", allowCoreThreadTimeOut=" + this.isAllowCoreThreadTimeOut() + ", name=" + this.getName() + ", rejectedExecutionHandler=" + this.getRejectedExecutionHandler() + ", notificationService=" + this.getNotificationService() + ", workQueue=" + this.getWorkQueue() + ", threadFactory=" + this.getThreadFactory() + ", tickerCycle=" + this.getTickerCycle() + ")";
     }
 
-    public DynamicThreadPoolProperty() {
+    public JediThreadPoolProperty() {
     }
 
-    public DynamicThreadPoolProperty(int corePoolSize, int maxPoolSize, int keepAliveSeconds, int queueCapacity,
-                                     boolean allowCoreThreadTimeOut, String name, String rejectedExecutionHandler,
-                                     AbstractNotificationService notificationService,
-                                     BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, int tickerCycle) {
+    public JediThreadPoolProperty(int corePoolSize, int maxPoolSize, int keepAliveSeconds, int queueCapacity,
+                                  boolean allowCoreThreadTimeOut, String name, String rejectedExecutionHandler,
+                                  AbstractNotificationService notificationService,
+                                  BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, int tickerCycle) {
         this.corePoolSize = corePoolSize;
         this.maxPoolSize = maxPoolSize;
         this.keepAliveSeconds = keepAliveSeconds;
@@ -154,7 +154,7 @@ public class DynamicThreadPoolProperty {
         this.tickerCycle = tickerCycle;
     }
 
-    public static class DynamicThreadPoolPropertyBuilder {
+    public static class JediThreadPoolPropertyBuilder {
         private int corePoolSize = DEFAULT_CORE_POOL_SIZE;
         private int maxPoolSize = DEFAULT_MAX_POOL_SIZE;
         private int keepAliveSeconds = DEFAULT_KEEP_ALIVE_SECONDS;
@@ -167,73 +167,73 @@ public class DynamicThreadPoolProperty {
         private ThreadFactory threadFactory = Executors.defaultThreadFactory();
         private int tickerCycle = DEFAULT_TICKER_CYCLE;
 
-        DynamicThreadPoolPropertyBuilder() {
+        JediThreadPoolPropertyBuilder() {
         }
 
-        public DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder corePoolSize(int corePoolSize) {
+        public JediThreadPoolPropertyBuilder corePoolSize(int corePoolSize) {
             this.corePoolSize = corePoolSize;
             return this;
         }
 
-        public DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder maxPoolSize(int maxPoolSize) {
+        public JediThreadPoolPropertyBuilder maxPoolSize(int maxPoolSize) {
             this.maxPoolSize = maxPoolSize;
             return this;
         }
 
-        public DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder keepAliveSeconds(int keepAliveSeconds) {
+        public JediThreadPoolPropertyBuilder keepAliveSeconds(int keepAliveSeconds) {
             this.keepAliveSeconds = keepAliveSeconds;
             return this;
         }
 
-        public DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder queueCapacity(int queueCapacity) {
+        public JediThreadPoolPropertyBuilder queueCapacity(int queueCapacity) {
             this.queueCapacity = queueCapacity;
             return this;
         }
 
-        public DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder allowCoreThreadTimeOut(boolean allowCoreThreadTimeOut) {
+        public JediThreadPoolPropertyBuilder allowCoreThreadTimeOut(boolean allowCoreThreadTimeOut) {
             this.allowCoreThreadTimeOut = allowCoreThreadTimeOut;
             return this;
         }
 
-        public DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder name(String name) {
+        public JediThreadPoolPropertyBuilder name(String name) {
             this.name = name;
             return this;
         }
 
-        public DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder rejectedExecutionHandler(String rejectedExecutionHandler) {
+        public JediThreadPoolPropertyBuilder rejectedExecutionHandler(String rejectedExecutionHandler) {
             this.rejectedExecutionHandler = rejectedExecutionHandler;
             return this;
         }
 
-        public DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder notificationService(AbstractNotificationService notificationService) {
+        public JediThreadPoolPropertyBuilder notificationService(AbstractNotificationService notificationService) {
             this.notificationService = notificationService;
             return this;
         }
 
-        public DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder workQueue(BlockingQueue<Runnable> workQueue) {
+        public JediThreadPoolPropertyBuilder workQueue(BlockingQueue<Runnable> workQueue) {
             this.workQueue = workQueue;
             return this;
         }
 
-        public DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder threadFactory(ThreadFactory threadFactory) {
+        public JediThreadPoolPropertyBuilder threadFactory(ThreadFactory threadFactory) {
             this.threadFactory = threadFactory;
             return this;
         }
 
-        public DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder tickerCycle(int tickerCycle) {
+        public JediThreadPoolPropertyBuilder tickerCycle(int tickerCycle) {
             this.tickerCycle = tickerCycle;
             return this;
         }
 
-        public DynamicThreadPoolProperty build() {
-            return new DynamicThreadPoolProperty(this.corePoolSize, this.maxPoolSize, this.keepAliveSeconds,
+        public JediThreadPoolProperty build() {
+            return new JediThreadPoolProperty(this.corePoolSize, this.maxPoolSize, this.keepAliveSeconds,
                     this.queueCapacity, this.allowCoreThreadTimeOut, this.name, this.rejectedExecutionHandler,
                     this.notificationService, this.workQueue, this.threadFactory, this.tickerCycle);
         }
 
         @Override
         public String toString() {
-            return "DynamicThreadPoolProperty.DynamicThreadPoolPropertyBuilder(corePoolSize=" + this.corePoolSize +
+            return "JediThreadPoolProperty.JediThreadPoolPropertyBuilder(corePoolSize=" + this.corePoolSize +
                     ", maxPoolSize=" + this.maxPoolSize + ", keepAliveSeconds=" + this.keepAliveSeconds + ", " +
                     "queueCapacity=" + this.queueCapacity + ", allowCoreThreadTimeOut=" + this.allowCoreThreadTimeOut + ", name=" + this.name + ", rejectedExecutionHandler=" + this.rejectedExecutionHandler + ", notificationService=" + this.notificationService + ", workQueue=" + this.workQueue + ", threadFactory=" + this.threadFactory + ", tickerCycle=" + this.tickerCycle + ")";
         }

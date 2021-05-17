@@ -2,7 +2,7 @@ package xyz.hellothomas.jedi.core.dto.config;
 
 import java.util.Map;
 
-public class JediConfig {
+public class JediExecutorConfig {
 
     private String namespaceName;
 
@@ -14,13 +14,13 @@ public class JediConfig {
 
     private String releaseKey;
 
-    public JediConfig() {
+    public JediExecutorConfig() {
     }
 
-    public JediConfig(String namespaceName,
-                      String appId,
-                      String executorName,
-                      String releaseKey) {
+    public JediExecutorConfig(String namespaceName,
+                              String appId,
+                              String executorName,
+                              String releaseKey) {
         this.namespaceName = namespaceName;
         this.appId = appId;
         this.executorName = executorName;
@@ -69,7 +69,7 @@ public class JediConfig {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("JediConfig{");
+        final StringBuilder sb = new StringBuilder("JediExecutorConfig{");
         sb.append("namespaceName='").append(namespaceName).append('\'');
         sb.append(", appId='").append(appId).append('\'');
         sb.append(", executorName='").append(executorName).append('\'');

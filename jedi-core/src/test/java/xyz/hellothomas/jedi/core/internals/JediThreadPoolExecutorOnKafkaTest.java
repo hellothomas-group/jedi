@@ -1,8 +1,8 @@
 package xyz.hellothomas.jedi.core.internals;
 
 import xyz.hellothomas.jedi.core.dto.consumer.CustomNotification;
-import xyz.hellothomas.jedi.core.internals.executor.DynamicThreadPoolExecutor;
-import xyz.hellothomas.jedi.core.internals.executor.MonitorRunnable;
+import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
+import xyz.hellothomas.jedi.core.internals.executor.JediRunnable;
 import xyz.hellothomas.jedi.core.internals.message.kafka.KafkaNotificationService;
 import xyz.hellothomas.jedi.core.internals.message.kafka.KafkaProperty;
 import xyz.hellothomas.jedi.core.utils.SleepUtil;
@@ -19,13 +19,13 @@ import java.util.concurrent.TimeUnit;
 import static org.apache.kafka.clients.CommonClientConfigs.SECURITY_PROTOCOL_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.*;
 
-public class DynamicThreadPoolExecutorOnKafkaTest {
+public class JediThreadPoolExecutorOnKafkaTest {
 
     @Test
     public void shutdown() {
         KafkaNotificationService kafkaNotificationService = new KafkaNotificationService(newKafkaProperty(), "LW12.04"
                 , "dev");
-        DynamicThreadPoolExecutor executor = new DynamicThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS,
+        JediThreadPoolExecutor executor = new JediThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(10), "testPool", kafkaNotificationService);
         executor.submit(() -> {
             System.out.println("execute job...");
@@ -41,7 +41,7 @@ public class DynamicThreadPoolExecutorOnKafkaTest {
     public void shutdownNow() {
         KafkaNotificationService kafkaNotificationService = new KafkaNotificationService(newKafkaProperty(), "LW12.04"
                 , "dev");
-        DynamicThreadPoolExecutor executor = new DynamicThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS,
+        JediThreadPoolExecutor executor = new JediThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(10), "testPool", kafkaNotificationService);
         executor.submit(() -> {
             System.out.println("execute job...");
@@ -58,7 +58,7 @@ public class DynamicThreadPoolExecutorOnKafkaTest {
     public void afterExecute() {
         KafkaNotificationService kafkaNotificationService = new KafkaNotificationService(newKafkaProperty(), "LW12.04"
                 , "dev");
-        DynamicThreadPoolExecutor executor = new DynamicThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS,
+        JediThreadPoolExecutor executor = new JediThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(10), "testPool", kafkaNotificationService);
         executor.submit(() -> {
             System.out.println("execute job...");
@@ -73,10 +73,10 @@ public class DynamicThreadPoolExecutorOnKafkaTest {
     public void afterExecuteMonitorRunnable() {
         KafkaNotificationService kafkaNotificationService = new KafkaNotificationService(newKafkaProperty(), "LW12.04"
                 , "dev");
-        DynamicThreadPoolExecutor executor = new DynamicThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS,
+        JediThreadPoolExecutor executor = new JediThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(10), "testPool", kafkaNotificationService);
         SleepUtil.sleep(2000);
-        executor.submit(new MonitorRunnable(executor, "taskTest1",
+        executor.submit(new JediRunnable(executor, "taskTest1",
                 () -> {
                     System.out.println("run start " + LocalDateTime.now());
                     System.out.println("execute job...");
@@ -92,13 +92,13 @@ public class DynamicThreadPoolExecutorOnKafkaTest {
     public void executeMonitorRunnableRejectException() {
         KafkaNotificationService kafkaNotificationService = new KafkaNotificationService(newKafkaProperty(), "LW12.04"
                 , "dev");
-        DynamicThreadPoolExecutor executor = new DynamicThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS,
+        JediThreadPoolExecutor executor = new JediThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(1), "testPool", kafkaNotificationService);
         int threadCount = 1;
         while (threadCount <= 3) {
             int threadIndex = threadCount++;
             try {
-                executor.execute(new MonitorRunnable(executor, "taskTest" + threadIndex,
+                executor.execute(new JediRunnable(executor, "taskTest" + threadIndex,
                         () -> {
                             System.out.println("execute job" + threadIndex + "...");
                             SleepUtil.sleep(1500);
@@ -116,7 +116,7 @@ public class DynamicThreadPoolExecutorOnKafkaTest {
     public void executeRejectException() {
         KafkaNotificationService kafkaNotificationService = new KafkaNotificationService(newKafkaProperty(), "LW12.04"
                 , "dev");
-        DynamicThreadPoolExecutor executor = new DynamicThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS,
+        JediThreadPoolExecutor executor = new JediThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(1), "testPool", kafkaNotificationService);
         int threadCount = 1;
         while (threadCount <= 3) {
@@ -139,7 +139,7 @@ public class DynamicThreadPoolExecutorOnKafkaTest {
     public void execute() {
         KafkaNotificationService kafkaNotificationService = new KafkaNotificationService(newKafkaProperty(), "LW12.04"
                 , "dev");
-        DynamicThreadPoolExecutor executor = new DynamicThreadPoolExecutor(1, 10, 5, TimeUnit.SECONDS,
+        JediThreadPoolExecutor executor = new JediThreadPoolExecutor(1, 10, 5, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(2), "testPool", kafkaNotificationService);
         Random random = new Random();
         int threadCount = 1;

@@ -20,7 +20,7 @@ import java.security.cert.X509Certificate;
  * @description
  * @version 1.0
  */
-public class MonitorRemotingUtil {
+public class JediRemotingUtil {
     public static final String MONITOR_ACCESS_TOKEN = "MONITOR-ACCESS-TOKEN";
     private static final TrustManager[] TRUST_ALL_CERTS = new TrustManager[]{new X509TrustManager() {
         @Override
@@ -36,7 +36,7 @@ public class MonitorRemotingUtil {
         public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
         }
     }};
-    private static Logger logger = LoggerFactory.getLogger(MonitorRemotingUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(JediRemotingUtil.class);
 
     // trust-https start
     private static void trustAllHosts(HttpsURLConnection connection) {

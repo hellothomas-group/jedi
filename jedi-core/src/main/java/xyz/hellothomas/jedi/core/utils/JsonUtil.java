@@ -2,12 +2,13 @@ package xyz.hellothomas.jedi.core.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import xyz.hellothomas.jedi.core.dto.ReturnT;
 import xyz.hellothomas.jedi.core.dto.consumer.AbstractNotification;
 import xyz.hellothomas.jedi.core.enums.ErrorCodeEnum;
-import xyz.hellothomas.jedi.core.exception.MyException;
+import xyz.hellothomas.jedi.core.exception.JediCoreException;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,6 +24,7 @@ public class JsonUtil {
 
     static {
         OBJECT_MAPPER.findAndRegisterModules();
+        OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     private JsonUtil() {
@@ -33,7 +35,7 @@ public class JsonUtil {
         try {
             return OBJECT_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new MyException(ErrorCodeEnum.JSON_SERIALIZE_ERROR, e);
+            throw new JediCoreException(ErrorCodeEnum.JSON_SERIALIZE_ERROR, e);
         }
     }
 
@@ -41,7 +43,7 @@ public class JsonUtil {
         try {
             return OBJECT_MAPPER.readValue(content, valueType);
         } catch (IOException e) {
-            throw new MyException(ErrorCodeEnum.JSON_DESERIALIZE_ERROR, content, e);
+            throw new JediCoreException(ErrorCodeEnum.JSON_DESERIALIZE_ERROR, content, e);
         }
     }
 
@@ -54,7 +56,7 @@ public class JsonUtil {
             returnT.setContent(body);
             return returnT;
         } catch (JsonProcessingException e) {
-            throw new MyException(ErrorCodeEnum.JSON_DESERIALIZE_ERROR, content, e);
+            throw new JediCoreException(ErrorCodeEnum.JSON_DESERIALIZE_ERROR, content, e);
         }
     }
 
@@ -66,7 +68,7 @@ public class JsonUtil {
             List<T> list = mapper.readValue(listJson, type);
             return list;
         } catch (JsonProcessingException e) {
-            throw new MyException(ErrorCodeEnum.JSON_DESERIALIZE_ERROR, listJson, e);
+            throw new JediCoreException(ErrorCodeEnum.JSON_DESERIALIZE_ERROR, listJson, e);
         }
     }
 }

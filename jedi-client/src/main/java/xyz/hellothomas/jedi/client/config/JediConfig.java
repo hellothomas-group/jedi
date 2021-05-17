@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import xyz.hellothomas.jedi.core.internals.executor.DynamicThreadPoolProperty;
+import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class MonitorConfig {
+public class JediConfig {
     private boolean enable;
 
     private String url;
@@ -28,5 +28,5 @@ public class MonitorConfig {
     private String appId;
 
     @NestedConfigurationProperty
-    private List<DynamicThreadPoolProperty> executors = new ArrayList<>();
+    private List<JediThreadPoolProperty> executors = new ArrayList<>();
 }

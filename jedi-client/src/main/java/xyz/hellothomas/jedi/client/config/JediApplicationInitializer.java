@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Slf4j
 @Order(value = 0)
-public class MonitorApplicationInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>,
+public class JediApplicationInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>,
         EnvironmentPostProcessor {
     private static final String[] JEDI_SYSTEM_PROPERTIES = {Constants.MONITOR_CONFIG_ENABLE_KEY, Constants.MONITOR_CONFIG_URL_KEY,
             Constants.MONITOR_CONFIG_NAMESPACE_KEY, Constants.MONITOR_CONFIG_APP_ID_KEY};

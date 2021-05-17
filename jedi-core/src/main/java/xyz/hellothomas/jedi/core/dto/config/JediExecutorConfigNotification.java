@@ -1,15 +1,15 @@
 package xyz.hellothomas.jedi.core.dto.config;
 
-public class JediConfigNotification {
+public class JediExecutorConfigNotification {
     private String executorName;
 
     private long notificationId;
 
     //for json converter
-    public JediConfigNotification() {
+    public JediExecutorConfigNotification() {
     }
 
-    public JediConfigNotification(String executorName, long notificationId) {
+    public JediExecutorConfigNotification(String executorName, long notificationId) {
         this.executorName = executorName;
         this.notificationId = notificationId;
     }
@@ -32,7 +32,7 @@ public class JediConfigNotification {
 
     @Override
     public String toString() {
-        return "JediConfigNotification{" +
+        return "JediExecutorConfigNotification{" +
                 "executorName='" + executorName + '\'' +
                 ", notificationId='" + notificationId +
                 '}';

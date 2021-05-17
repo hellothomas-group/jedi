@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class MonitorProperty {
+public class JediProperty {
     private boolean enable;
 
     private String url;

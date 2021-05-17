@@ -26,8 +26,8 @@ import xyz.hellothomas.jedi.client.util.ExceptionUtil;
 import xyz.hellothomas.jedi.client.util.HttpRequest;
 import xyz.hellothomas.jedi.client.util.HttpResponse;
 import xyz.hellothomas.jedi.client.util.HttpUtil;
-import xyz.hellothomas.jedi.core.internals.executor.DynamicThreadPoolExecutor;
-import xyz.hellothomas.jedi.core.internals.executor.DynamicThreadPoolProperty;
+import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
+import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty;
 import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
 import xyz.hellothomas.jedi.core.internals.message.NullNotificationService;
 import xyz.hellothomas.jedi.core.internals.message.http.HttpNotificationService;
@@ -45,37 +45,37 @@ import java.util.List;
  * @version 1.0
  */
 @Slf4j
-public class ExecutorRegistrar implements ImportBeanDefinitionRegistrar, EnvironmentAware, BeanFactoryAware {
+public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, EnvironmentAware, BeanFactoryAware {
     private static final String NOTIFICATION_SERVICE_BEAN_NAME = "notificationService";
-    private static final String MONITOR_CONFIG_BEAN_NAME = "monitorConfig";
+    private static final String MONITOR_CONFIG_BEAN_NAME = "jediConfig";
     private static final String CONSUMER_HTTP_KEY = "url";
     private static final Splitter EXECUTOR_SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
     private static final Joiner STRING_JOINER_PROPERTY = Joiner.on(".");
 
-    private MonitorConfig monitorConfig;
+    private JediConfig jediConfig;
     private BeanFactory beanFactory;
 
     @SneakyThrows
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         ((DefaultListableBeanFactory) this.beanFactory).registerSingleton(MONITOR_CONFIG_BEAN_NAME,
-                this.monitorConfig);
+                this.jediConfig);
         log.info("{} 注册beanFactory", MONITOR_CONFIG_BEAN_NAME);
 
-        AbstractNotificationService notificationService = buildNotificationService(monitorConfig.getUrl(),
-                monitorConfig.getNamespace(), monitorConfig.getAppId());
+        AbstractNotificationService notificationService = buildNotificationService(jediConfig.getUrl(),
+                jediConfig.getNamespace(), jediConfig.getAppId());
 
         ((DefaultListableBeanFactory) this.beanFactory).registerSingleton(NOTIFICATION_SERVICE_BEAN_NAME,
                 notificationService);
         log.info("{} 注册beanFactory", NOTIFICATION_SERVICE_BEAN_NAME);
 
-        monitorConfig.getExecutors().stream()
+        jediConfig.getExecutors().stream()
                 .filter(i -> i != null && !Constants.DEFAULT_EXECUTOR_NAME.equals(i.getName()))
                 .forEach(j -> {
                     j.setNotificationService(notificationService);
 
                     GenericBeanDefinition genericBeanDefinition = new GenericBeanDefinition();
-                    genericBeanDefinition.setBeanClass(DynamicThreadPoolExecutor.class);
+                    genericBeanDefinition.setBeanClass(JediThreadPoolExecutor.class);
 
                     ConstructorArgumentValues constructorArgumentValues = new ConstructorArgumentValues();
                     constructorArgumentValues.addIndexedArgumentValue(0, j);
@@ -90,15 +90,15 @@ public class ExecutorRegistrar implements ImportBeanDefinitionRegistrar, Environ
     public void setEnvironment(Environment environment) {
         Iterable sources = ConfigurationPropertySources.get(environment);
         Binder binder = new Binder(sources);
-        BindResult<MonitorProperty> bindResult = binder.bind(Constants.MONITOR_CONFIG_PREFIX, MonitorProperty.class);
+        BindResult<JediProperty> bindResult = binder.bind(Constants.MONITOR_CONFIG_PREFIX, JediProperty.class);
 
-        MonitorProperty monitorProperty = bindResult.orElse(null);
+        JediProperty jediProperty = bindResult.orElse(null);
 
-        monitorConfig = new MonitorConfig();
-        BeanUtils.copyProperties(monitorProperty, monitorConfig);
-        monitorConfig.setExecutors(buildMonitorConfigExecutors(monitorProperty.getExecutors(), binder));
+        jediConfig = new JediConfig();
+        BeanUtils.copyProperties(jediProperty, jediConfig);
+        jediConfig.setExecutors(buildMonitorConfigExecutors(jediProperty.getExecutors(), binder));
 
-        log.debug("monitorConfig:{}", monitorConfig);
+        log.debug("jediConfig:{}", jediConfig);
     }
 
     private AbstractNotificationService buildNotificationService(String url, String namespace, String appId) {
@@ -129,26 +129,26 @@ public class ExecutorRegistrar implements ImportBeanDefinitionRegistrar, Environ
         return new NullNotificationService(appId, namespace);
     }
 
-    private List<DynamicThreadPoolProperty> buildMonitorConfigExecutors(String executors, Binder binder) {
+    private List<JediThreadPoolProperty> buildMonitorConfigExecutors(String executors, Binder binder) {
         List<String> executorNames = EXECUTOR_SPLITTER.splitToList(executors);
-        List<DynamicThreadPoolProperty> executorProperties = new ArrayList<>();
+        List<JediThreadPoolProperty> executorProperties = new ArrayList<>();
         for (String executorName : executorNames) {
-            DynamicThreadPoolProperty dynamicThreadPoolProperty = buildDynamicThreadPoolProperty(executorName, binder);
-            executorProperties.add(dynamicThreadPoolProperty);
+            JediThreadPoolProperty jediThreadPoolProperty = buildDynamicThreadPoolProperty(executorName, binder);
+            executorProperties.add(jediThreadPoolProperty);
         }
 
         return executorProperties;
     }
 
-    private DynamicThreadPoolProperty buildDynamicThreadPoolProperty(String executor, Binder binder) {
+    private JediThreadPoolProperty buildDynamicThreadPoolProperty(String executor, Binder binder) {
         String dynamicThreadPoolPropertyPrefix = STRING_JOINER_PROPERTY.join(Constants.MONITOR_CONFIG_PREFIX, executor);
-        BindResult<DynamicThreadPoolProperty> bindResult = binder.bind(dynamicThreadPoolPropertyPrefix,
-                DynamicThreadPoolProperty.class);
-        DynamicThreadPoolProperty dynamicThreadPoolProperty =
-                bindResult.orElse(DynamicThreadPoolProperty.builder().build());
-        dynamicThreadPoolProperty.setName(executor);
+        BindResult<JediThreadPoolProperty> bindResult = binder.bind(dynamicThreadPoolPropertyPrefix,
+                JediThreadPoolProperty.class);
+        JediThreadPoolProperty jediThreadPoolProperty =
+                bindResult.orElse(JediThreadPoolProperty.builder().build());
+        jediThreadPoolProperty.setName(executor);
 
-        return dynamicThreadPoolProperty;
+        return jediThreadPoolProperty;
     }
 
     @Override

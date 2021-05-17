@@ -3,42 +3,45 @@ package xyz.hellothomas.jedi.core.internals.executor;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
 
+import java.util.concurrent.Callable;
+
 /**
  * @author Thomas
  * @date 2021/1/15 16:37
  * @description
  * @version 1.0
  */
-public class MonitorRunnable implements Runnable {
+public class JediCallable implements Callable {
     private final String taskName;
     private final String poolName;
-    private final Runnable runnable;
+    private final Callable callable;
     private final AbstractNotificationService notificationService;
 
-    public MonitorRunnable(DynamicThreadPoolExecutor executor, String taskName, Runnable runnable) {
+    public JediCallable(Callable callable, JediThreadPoolExecutor executor, String taskName) {
         this.taskName = taskName;
         this.poolName = executor.getPoolName();
-        this.runnable = runnable;
+        this.callable = callable;
         this.notificationService = executor.getNotificationService();
     }
 
-    public MonitorRunnable(String poolName, String taskName, AbstractNotificationService notificationService,
-                           Runnable runnable) {
+    public JediCallable(Callable callable, String poolName, String taskName,
+                        AbstractNotificationService notificationService) {
         this.taskName = taskName;
         this.poolName = poolName;
-        this.runnable = runnable;
+        this.callable = callable;
         this.notificationService = notificationService;
     }
 
     @Override
-    public void run() {
-        long startTime = System.nanoTime();
+    public Object call() throws Exception {
+        Long startTime = System.nanoTime();
         try {
-            runnable.run();
+            return callable.call();
         } finally {
             long diff = System.nanoTime() - startTime;
             ExecutorTaskNotification executorTaskNotification =
-                    notificationService.buildExecutorTaskNotification(taskName, poolName, diff);
+                    notificationService.buildExecutorTaskNotification(taskName
+                            , poolName, diff);
             notificationService.pushNotification(executorTaskNotification);
         }
     }

@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.core.dto.consumer.*;
 import xyz.hellothomas.jedi.core.enums.MessageType;
-import xyz.hellothomas.jedi.core.internals.executor.DynamicThreadPoolExecutor;
+import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 import xyz.hellothomas.jedi.core.utils.NetUtil;
 
 import java.time.LocalDateTime;
@@ -40,7 +40,7 @@ public abstract class AbstractNotificationService {
         this.namespace = namespace;
     }
 
-    public ExecutorTickerNotification buildExecutorTickerNotification(DynamicThreadPoolExecutor executor) {
+    public ExecutorTickerNotification buildExecutorTickerNotification(JediThreadPoolExecutor executor) {
         ExecutorTickerNotification executorTickerNotification = new ExecutorTickerNotification();
         executorTickerNotification.setPoolName(executor.getPoolName());
         executorTickerNotification.setCorePoolSize(executor.getCorePoolSize());

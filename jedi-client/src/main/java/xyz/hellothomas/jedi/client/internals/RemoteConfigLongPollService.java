@@ -12,11 +12,11 @@ import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.client.constants.Constants;
-import xyz.hellothomas.jedi.client.exception.JediConfigException;
+import xyz.hellothomas.jedi.client.exception.JediClientException;
 import xyz.hellothomas.jedi.client.schedule.ExponentialSchedulePolicy;
 import xyz.hellothomas.jedi.client.schedule.SchedulePolicy;
 import xyz.hellothomas.jedi.client.util.*;
-import xyz.hellothomas.jedi.core.dto.config.JediConfigNotification;
+import xyz.hellothomas.jedi.core.dto.config.JediExecutorConfigNotification;
 import xyz.hellothomas.jedi.core.utils.JediThreadFactory;
 import xyz.hellothomas.jedi.core.utils.NetUtil;
 
@@ -68,7 +68,7 @@ public class RemoteConfigLongPollService {
         this.namespace = ConfigUtil.getNamespace();
         this.appId = ConfigUtil.getAppId();
 
-        m_responseType = new TypeToken<List<JediConfigNotification>>() {
+        m_responseType = new TypeToken<List<JediExecutorConfigNotification>>() {
         }.getType();
         gson = new Gson();
         m_longPollRateLimiter = RateLimiter.create(Constants.longPollQPS);
@@ -105,8 +105,8 @@ public class RemoteConfigLongPollService {
             });
         } catch (Throwable ex) {
             m_longPollStarted.set(false);
-            JediConfigException exception =
-                    new JediConfigException("Schedule long polling refresh failed", ex);
+            JediClientException exception =
+                    new JediClientException("Schedule long polling refresh failed", ex);
             logger.warn(ExceptionUtil.getDetailMessage(exception));
         }
     }
@@ -134,7 +134,7 @@ public class RemoteConfigLongPollService {
                 HttpRequest request = new HttpRequest(queryUrl);
                 request.setReadTimeout(LONG_POLLING_READ_TIMEOUT);
 
-                final HttpResponse<List<JediConfigNotification>> response =
+                final HttpResponse<List<JediExecutorConfigNotification>> response =
                         HttpUtil.doGet(request, m_responseType);
 
                 logger.debug("Long polling response: {}, queryUrl: {}", response.getStatusCode(), queryUrl);
@@ -160,11 +160,11 @@ public class RemoteConfigLongPollService {
         }
     }
 
-    private void notify(List<JediConfigNotification> notifications) {
+    private void notify(List<JediExecutorConfigNotification> notifications) {
         if (notifications == null || notifications.isEmpty()) {
             return;
         }
-        for (JediConfigNotification notification : notifications) {
+        for (JediExecutorConfigNotification notification : notifications) {
             String executorName = notification.getExecutorName();
             //create a new list to avoid ConcurrentModificationException
             RemoteConfigRepository toBeNotified = m_longPollExecutors.get(executorName);
@@ -176,8 +176,8 @@ public class RemoteConfigLongPollService {
         }
     }
 
-    private void updateNotifications(List<JediConfigNotification> deltaNotifications) {
-        for (JediConfigNotification notification : deltaNotifications) {
+    private void updateNotifications(List<JediExecutorConfigNotification> deltaNotifications) {
+        for (JediExecutorConfigNotification notification : deltaNotifications) {
             if (Strings.isNullOrEmpty(notification.getExecutorName())) {
                 continue;
             }
@@ -213,9 +213,9 @@ public class RemoteConfigLongPollService {
     }
 
     String assembleNotifications(Map<String, Long> notificationsMap) {
-        List<JediConfigNotification> notifications = Lists.newArrayList();
+        List<JediExecutorConfigNotification> notifications = Lists.newArrayList();
         for (Map.Entry<String, Long> entry : notificationsMap.entrySet()) {
-            JediConfigNotification notification = new JediConfigNotification(entry.getKey(), entry.getValue());
+            JediExecutorConfigNotification notification = new JediExecutorConfigNotification(entry.getKey(), entry.getValue());
             notifications.add(notification);
         }
         return gson.toJson(notifications);

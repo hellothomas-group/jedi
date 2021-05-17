@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import xyz.hellothomas.jedi.client.constants.Constants;
 import xyz.hellothomas.jedi.client.internals.PropertySourcesProcessor;
-import xyz.hellothomas.jedi.core.internals.executor.DynamicThreadPoolExecutor;
-import xyz.hellothomas.jedi.core.internals.executor.DynamicThreadPoolProperty;
+import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
+import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty;
 import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
 
 import java.util.concurrent.Executor;
@@ -22,23 +22,23 @@ import java.util.concurrent.Executor;
  */
 @Slf4j
 @Configuration
-@Import(ExecutorRegistrar.class)
+@Import(JediExecutorRegistrar.class)
 @ConditionalOnProperty(value = "monitor.enable", havingValue = "true")
-public class ExecutorConfig {
+public class JediExecutorAutoConfig {
 
     @Bean(name = {Constants.DEFAULT_EXECUTOR_NAME})
-    public Executor defaultExecutor(MonitorConfig monitorConfig, AbstractNotificationService notificationService) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        DynamicThreadPoolProperty dynamicThreadPoolProperty =
-                monitorConfig.getExecutors().stream()
+    public Executor defaultExecutor(JediConfig jediConfig, AbstractNotificationService notificationService) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+        JediThreadPoolProperty jediThreadPoolProperty =
+                jediConfig.getExecutors().stream()
                         .filter(i -> i != null && Constants.DEFAULT_EXECUTOR_NAME.equals(i.getName()))
                         .findFirst()
-                        .orElse(DynamicThreadPoolProperty.builder()
+                        .orElse(JediThreadPoolProperty.builder()
                                 .name(Constants.DEFAULT_EXECUTOR_NAME)
                                 .build());
-        dynamicThreadPoolProperty.setNotificationService(notificationService);
-        log.debug("{}配置为:{}", Constants.DEFAULT_EXECUTOR_NAME, dynamicThreadPoolProperty);
+        jediThreadPoolProperty.setNotificationService(notificationService);
+        log.debug("{}配置为:{}", Constants.DEFAULT_EXECUTOR_NAME, jediThreadPoolProperty);
 
-        return new DynamicThreadPoolExecutor(dynamicThreadPoolProperty);
+        return new JediThreadPoolExecutor(jediThreadPoolProperty);
     }
 
     @Bean

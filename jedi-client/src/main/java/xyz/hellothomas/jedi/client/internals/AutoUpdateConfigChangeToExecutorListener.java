@@ -10,7 +10,7 @@ import xyz.hellothomas.jedi.client.ConfigChangeListener;
 import xyz.hellothomas.jedi.client.enums.PropertyChangeType;
 import xyz.hellothomas.jedi.client.model.ConfigChange;
 import xyz.hellothomas.jedi.client.model.ConfigChangeEvent;
-import xyz.hellothomas.jedi.core.internals.executor.DynamicThreadPoolExecutor;
+import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -37,8 +37,8 @@ public class AutoUpdateConfigChangeToExecutorListener implements ConfigChangeLis
             return;
         }
 
-        DynamicThreadPoolExecutor executor = applicationContext.getBean(changeEvent.getExecutor(),
-                DynamicThreadPoolExecutor.class);
+        JediThreadPoolExecutor executor = applicationContext.getBean(changeEvent.getExecutor(),
+                JediThreadPoolExecutor.class);
         for (String key : keys) {
             ConfigChange configChange = changeEvent.getChange(key);
             logger.debug("key: {}, ConfigChange: {}", key, configChange);

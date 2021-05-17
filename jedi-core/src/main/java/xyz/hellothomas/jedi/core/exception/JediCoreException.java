@@ -10,27 +10,25 @@ import java.text.MessageFormat;
  * @descripton
  * @version 1.0
  */
-public class MyException extends RuntimeException {
+public class JediCoreException extends RuntimeException {
     private final String code;
 
-    public MyException(ICodeEnum codeEnum) {
+    public JediCoreException(ICodeEnum codeEnum) {
         super(codeEnum.getMessage());
         this.code = codeEnum.getCode();
     }
 
-    public MyException(ICodeEnum codeEnum, Object... params) {
+    public JediCoreException(ICodeEnum codeEnum, Object... params) {
         super(MessageFormat.format(codeEnum.getMessage(), params));
         this.code = codeEnum.getCode();
     }
 
     @Override
     public String toString() {
-        return "MyException{ code=" + code + ", message=" + this.getMessage() + " }";
+        return "JediCoreException{ code=" + code + ", message=" + this.getMessage() + " }";
     }
 
     public String getCode() {
         return code;
     }
-
-
 }

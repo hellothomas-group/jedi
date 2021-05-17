@@ -12,15 +12,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.client.constants.Constants;
 import xyz.hellothomas.jedi.client.enums.ConfigSourceType;
-import xyz.hellothomas.jedi.client.exception.JediConfigException;
-import xyz.hellothomas.jedi.client.exception.JediConfigStatusCodeException;
+import xyz.hellothomas.jedi.client.exception.JediClientException;
+import xyz.hellothomas.jedi.client.exception.JediClientStatusCodeException;
 import xyz.hellothomas.jedi.client.schedule.ExponentialSchedulePolicy;
 import xyz.hellothomas.jedi.client.schedule.SchedulePolicy;
 import xyz.hellothomas.jedi.client.util.ConfigUtil;
 import xyz.hellothomas.jedi.client.util.HttpRequest;
 import xyz.hellothomas.jedi.client.util.HttpResponse;
 import xyz.hellothomas.jedi.client.util.HttpUtil;
-import xyz.hellothomas.jedi.core.dto.config.JediConfig;
+import xyz.hellothomas.jedi.core.dto.config.JediExecutorConfig;
 import xyz.hellothomas.jedi.core.utils.JediThreadFactory;
 import xyz.hellothomas.jedi.core.utils.NetUtil;
 
@@ -44,7 +44,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     private static final Escaper queryParamEscaper = UrlEscapers.urlFormParameterEscaper();
 
     private final RemoteConfigLongPollService m_remoteConfigLongPollService;
-    private volatile AtomicReference<JediConfig> m_configCache;
+    private volatile AtomicReference<JediExecutorConfig> m_configCache;
     private final String url;
     private final String namespace;
     private final String appId;
@@ -111,8 +111,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
     @Override
     protected synchronized void sync() {
-        JediConfig previous = m_configCache.get();
-        JediConfig current = loadJediConfig();
+        JediExecutorConfig previous = m_configCache.get();
+        JediExecutorConfig current = loadJediConfig();
 
         //reference equals means HTTP 304
         if (previous != current) {
@@ -127,17 +127,17 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         }
     }
 
-    private Properties transformJediConfigToProperties(JediConfig jediConfig) {
+    private Properties transformJediConfigToProperties(JediExecutorConfig jediExecutorConfig) {
         Properties result = new Properties();
-        jediConfig.getConfigurations().forEach((key, value) -> {
+        jediExecutorConfig.getConfigurations().forEach((key, value) -> {
             String propertyKey = STRING_JOINER_PROPERTY.join(Constants.MONITOR_CONFIG_PREFIX,
-                    jediConfig.getExecutorName(), key);
+                    jediExecutorConfig.getExecutorName(), key);
             result.put(propertyKey, value);
         });
         return result;
     }
 
-    private JediConfig loadJediConfig() {
+    private JediExecutorConfig loadJediConfig() {
         if (!m_loadConfigRateLimiter.tryAcquire(5, TimeUnit.SECONDS)) {
             //wait at most 5 seconds
             try {
@@ -158,7 +158,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
         try {
 
-            HttpResponse<JediConfig> response = HttpUtil.doGet(request, JediConfig.class);
+            HttpResponse<JediExecutorConfig> response = HttpUtil.doGet(request, JediExecutorConfig.class);
             m_loadConfigFailSchedulePolicy.success();
 
             if (response.getStatusCode() == 304) {
@@ -166,20 +166,20 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
                 return m_configCache.get();
             }
 
-            JediConfig result = response.getBody();
+            JediExecutorConfig result = response.getBody();
 
             logger.debug("Loaded config for {}: {}", executor, result);
 
             return result;
-        } catch (JediConfigStatusCodeException ex) {
-            JediConfigStatusCodeException statusCodeException = ex;
+        } catch (JediClientStatusCodeException ex) {
+            JediClientStatusCodeException statusCodeException = ex;
             //config not found
             if (ex.getStatusCode() == 404) {
                 String message = String.format(
                         "Could not find config for executor - namespace: %s, appId: %s " +
                                 "please check whether the configs are released in Jedi!",
                         namespace, appId);
-                statusCodeException = new JediConfigStatusCodeException(ex.getStatusCode(),
+                statusCodeException = new JediClientStatusCodeException(ex.getStatusCode(),
                         message);
             }
             exception = statusCodeException;
@@ -190,12 +190,12 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         String message = String.format(
                 "Load Jedi Config failed - namespace: %s, appId: %s, executor: %s, queryUrl: %s",
                 namespace, appId, executor, queryUrl);
-        throw new JediConfigException(message, exception);
+        throw new JediClientException(message, exception);
     }
 
     String assembleQueryConfigUrl(String uri, String namespace, String appId, String executor,
                                   long remoteNotificationId,
-                                  JediConfig previousConfig) {
+                                  JediExecutorConfig previousConfig) {
 
         String path = "configs/%s/%s/%s";
         List<String> pathParams =

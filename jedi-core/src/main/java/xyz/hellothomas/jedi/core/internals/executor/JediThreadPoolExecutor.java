@@ -19,8 +19,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * @description
  * @version 1.0
  */
-public class DynamicThreadPoolExecutor extends ThreadPoolExecutor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DynamicThreadPoolExecutor.class);
+public class JediThreadPoolExecutor extends ThreadPoolExecutor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JediThreadPoolExecutor.class);
 
     /**
      * 线程池名称，一般以业务名称命名，方便区分
@@ -52,60 +52,60 @@ public class DynamicThreadPoolExecutor extends ThreadPoolExecutor {
      */
     private AbstractNotificationService notificationService;
 
-    public DynamicThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
-                                     BlockingQueue<Runnable> workQueue, String poolName,
-                                     AbstractNotificationService notificationService) {
+    public JediThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
+                                  BlockingQueue<Runnable> workQueue, String poolName,
+                                  AbstractNotificationService notificationService) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
         this.poolName = poolName;
         this.notificationService = notificationService;
         startTickerThread();
     }
 
-    public DynamicThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
-                                     BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory,
-                                     String poolName, AbstractNotificationService notificationService) {
+    public JediThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
+                                  BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory,
+                                  String poolName, AbstractNotificationService notificationService) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
         this.poolName = poolName;
         this.notificationService = notificationService;
         startTickerThread();
     }
 
-    public DynamicThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
-                                     BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler,
-                                     String poolName, AbstractNotificationService notificationService) {
+    public JediThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
+                                  BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler,
+                                  String poolName, AbstractNotificationService notificationService) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, handler);
         this.poolName = poolName;
         this.notificationService = notificationService;
         startTickerThread();
     }
 
-    public DynamicThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
-                                     BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory,
-                                     RejectedExecutionHandler handler,
-                                     String poolName, AbstractNotificationService notificationService) {
+    public JediThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
+                                  BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory,
+                                  RejectedExecutionHandler handler,
+                                  String poolName, AbstractNotificationService notificationService) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
         this.poolName = poolName;
         this.notificationService = notificationService;
         startTickerThread();
     }
 
-    public DynamicThreadPoolExecutor(DynamicThreadPoolProperty dynamicThreadPoolProperty) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        super(dynamicThreadPoolProperty.getCorePoolSize(), dynamicThreadPoolProperty.getMaxPoolSize(),
-                dynamicThreadPoolProperty.getKeepAliveSeconds(),
+    public JediThreadPoolExecutor(JediThreadPoolProperty jediThreadPoolProperty) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        super(jediThreadPoolProperty.getCorePoolSize(), jediThreadPoolProperty.getMaxPoolSize(),
+                jediThreadPoolProperty.getKeepAliveSeconds(),
                 TimeUnit.SECONDS,
-                dynamicThreadPoolProperty.getWorkQueue(),
-                dynamicThreadPoolProperty.getThreadFactory());
-        this.poolName = dynamicThreadPoolProperty.getName();
-        this.notificationService = dynamicThreadPoolProperty.getNotificationService();
-        this.tickerCycle = dynamicThreadPoolProperty.getTickerCycle();
+                jediThreadPoolProperty.getWorkQueue(),
+                jediThreadPoolProperty.getThreadFactory());
+        this.poolName = jediThreadPoolProperty.getName();
+        this.notificationService = jediThreadPoolProperty.getNotificationService();
+        this.tickerCycle = jediThreadPoolProperty.getTickerCycle();
 
-        if (dynamicThreadPoolProperty.isAllowCoreThreadTimeOut()) {
+        if (jediThreadPoolProperty.isAllowCoreThreadTimeOut()) {
             this.allowCoreThreadTimeOut(true);
         }
 
-        if (StringUtils.isNotBlank(dynamicThreadPoolProperty.getRejectedExecutionHandler())) {
+        if (StringUtils.isNotBlank(jediThreadPoolProperty.getRejectedExecutionHandler())) {
             this.setRejectedExecutionHandler((RejectedExecutionHandler)
-                    Class.forName(dynamicThreadPoolProperty.getRejectedExecutionHandler()).newInstance());
+                    Class.forName(jediThreadPoolProperty.getRejectedExecutionHandler()).newInstance());
         }
 
         startTickerThread();
