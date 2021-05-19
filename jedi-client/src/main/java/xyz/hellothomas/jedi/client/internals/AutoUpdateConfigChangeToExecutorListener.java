@@ -47,9 +47,9 @@ public class AutoUpdateConfigChangeToExecutorListener implements ConfigChangeLis
                 continue;
             }
 
-            String dynamicThreadPoolPropertyName = CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_CAMEL,
+            String jediThreadPoolPropertyName = CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_CAMEL,
                     PROPERTY_SPLITTER.splitToList(key).get(2));
-            switch (dynamicThreadPoolPropertyName) {
+            switch (jediThreadPoolPropertyName) {
                 case "corePoolSize":
                     executor.setCorePoolSize(Integer.parseInt(configChange.getNewValue()));
                     break;
@@ -65,6 +65,8 @@ public class AutoUpdateConfigChangeToExecutorListener implements ConfigChangeLis
                 case "allowCoreThreadTimeOut":
                     executor.allowCoreThreadTimeOut(Boolean.parseBoolean(configChange.getNewValue()));
                     break;
+                default:
+                    logger.info("not supported jediThreadPoolPropertyName:{}", jediThreadPoolPropertyName);
             }
         }
     }

@@ -1,3 +1,4 @@
+mvn versions:set -DnewVersion=0.0.2
 
 mvn clean install -N
 mvn clean install -pl jedi-core
