@@ -2,9 +2,9 @@ package xyz.hellothomas.jedi.core.internals.executor;
 
 import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -28,7 +28,7 @@ public class JediThreadPoolProperty {
     private int queueCapacity = DEFAULT_QUEUE_CAPACITY;
     private int tickerCycle = DEFAULT_TICKER_CYCLE;
     private boolean allowCoreThreadTimeOut = DEFAULT_ALLOW_CORE_THREAD_TIMEOUT;
-    private BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(queueCapacity);
+    private BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>(queueCapacity);
     private ThreadFactory threadFactory = Executors.defaultThreadFactory();
     private String rejectedExecutionHandler;
     /**
@@ -163,7 +163,7 @@ public class JediThreadPoolProperty {
         private String name = DEFAULT_POOL_NAME + System.currentTimeMillis();
         private String rejectedExecutionHandler;
         private AbstractNotificationService notificationService;
-        private BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(queueCapacity);
+        private BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>(queueCapacity);
         private ThreadFactory threadFactory = Executors.defaultThreadFactory();
         private int tickerCycle = DEFAULT_TICKER_CYCLE;
 
