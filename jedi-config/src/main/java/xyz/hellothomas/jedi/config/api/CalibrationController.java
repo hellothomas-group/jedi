@@ -38,8 +38,8 @@ import static xyz.hellothomas.jedi.core.constants.Constants.NAMESPACE_EXECUTOR_S
 import static xyz.hellothomas.jedi.core.constants.Constants.NOTIFICATION_ID_PLACEHOLDER;
 
 /**
- * @author
- * @date 2021/2/1 22:36Thomas
+ * @author Thomas
+ * @date 2021/2/1 22:36
  * @description 配置校准
  * @version 1.0
  */
