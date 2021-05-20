@@ -122,8 +122,8 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         }
 
         if (current != null) {
-            logger.debug(String.format("Jedi.Client.Configs.%s", current.getExecutorName()),
-                    current.getReleaseKey());
+            logger.debug(String.format("Jedi.Client.Configs.%s:%s", current.getExecutorName(),
+                    current.getReleaseKey()));
         }
     }
 
