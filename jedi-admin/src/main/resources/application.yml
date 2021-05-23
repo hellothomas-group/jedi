@@ -1,6 +1,6 @@
 logging:
   level:
-    com:
+    xyz:
       hellothomas.jedi: debug
     root: info
   pattern:
