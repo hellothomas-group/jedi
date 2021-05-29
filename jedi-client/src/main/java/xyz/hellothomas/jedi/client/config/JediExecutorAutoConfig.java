@@ -41,8 +41,15 @@ public class JediExecutorAutoConfig {
         return new JediThreadPoolExecutor(jediThreadPoolProperty);
     }
 
+    /**
+     * see the {@link Bean @Bean} javadocs for details
+     * on working with {@code BeanFactoryPostProcessor} types such as
+     * {@code PropertySourcesPlaceholderConfigurer}
+     *
+     * @return
+     */
     @Bean
-    public PropertySourcesProcessor propertySourcesProcessor() {
+    public static PropertySourcesProcessor propertySourcesProcessor() {
         return new PropertySourcesProcessor();
     }
 }
