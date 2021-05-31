@@ -5,6 +5,7 @@ import com.google.common.base.Splitter;
 import com.google.common.reflect.TypeToken;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -33,6 +34,7 @@ import xyz.hellothomas.jedi.core.internals.message.NullNotificationService;
 import xyz.hellothomas.jedi.core.internals.message.http.HttpNotificationService;
 import xyz.hellothomas.jedi.core.internals.message.kafka.KafkaNotificationService;
 import xyz.hellothomas.jedi.core.internals.message.kafka.KafkaProperty;
+import xyz.hellothomas.jedi.core.utils.JediThreadFactory;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -95,7 +97,10 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
 
         jediConfig = new JediConfig();
         BeanUtils.copyProperties(jediProperty, jediConfig);
-        jediConfig.setExecutors(buildJediConfigExecutors(jediProperty.getExecutors(), binder));
+
+        if (StringUtils.isNotBlank(jediProperty.getExecutors())) {
+            jediConfig.setExecutors(buildJediConfigExecutors(jediProperty.getExecutors(), binder));
+        }
 
         log.debug("jediConfig:{}", jediConfig);
     }
@@ -146,6 +151,7 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
         JediThreadPoolProperty jediThreadPoolProperty =
                 bindResult.orElse(JediThreadPoolProperty.builder().build());
         jediThreadPoolProperty.setName(executor);
+        jediThreadPoolProperty.setThreadFactory(JediThreadFactory.create(executor, false));
 
         return jediThreadPoolProperty;
     }

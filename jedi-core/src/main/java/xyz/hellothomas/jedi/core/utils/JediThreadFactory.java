@@ -83,7 +83,7 @@ public class JediThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable runnable) {
-        Thread thread = new Thread(threadGroup, runnable,//
+        Thread thread = new Thread(threadGroup, runnable,
                 threadGroup.getName() + "-" + namePrefix + "-" + threadNumber.getAndIncrement());
         thread.setDaemon(daemon);
         if (thread.getPriority() != Thread.NORM_PRIORITY) {
