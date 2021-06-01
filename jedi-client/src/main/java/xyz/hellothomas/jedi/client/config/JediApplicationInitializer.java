@@ -27,7 +27,8 @@ import java.util.List;
 @Order(value = 0)
 public class JediApplicationInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>,
         EnvironmentPostProcessor {
-    private static final String[] JEDI_SYSTEM_PROPERTIES = {Constants.JEDI_CONFIG_ENABLE_KEY, Constants.JEDI_CONFIG_URL_KEY,
+    private static final String[] JEDI_SYSTEM_PROPERTIES = {Constants.JEDI_CONFIG_ENABLE_KEY,
+            Constants.JEDI_CONFIG_URL_KEY,
             Constants.JEDI_CONFIG_NAMESPACE_KEY, Constants.JEDI_CONFIG_APP_ID_KEY};
     private static final Splitter EXECUTOR_SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
 
@@ -79,14 +80,20 @@ public class JediApplicationInitializer implements ApplicationContextInitializer
     }
 
     /**
-     * Initialize Jedi Configurations Just after environment is ready.
+     * Initialize Jedi Configurations Just once
      *
      * @param environment
      */
     private void initializeConfig(ConfigurableEnvironment environment) {
+        if (environment.getPropertySources().contains(Constants.JEDI_BOOTSTRAP_PROPERTY_SOURCE_NAME)) {
+            //already initialized
+            return;
+        }
+
         String executors = environment.getProperty(Constants.JEDI_CONFIG_EXECUTORS_KEY);
         if (StringUtils.isBlank(executors)) {
-            log.warn("未配置{}, 将使用默认executor:{}", Constants.JEDI_CONFIG_EXECUTORS_KEY, Constants.JEDI_DEFAULT_EXECUTOR_NAME);
+            log.warn("未配置{}, 将使用默认executor:{}", Constants.JEDI_CONFIG_EXECUTORS_KEY,
+                    Constants.JEDI_DEFAULT_EXECUTOR_NAME);
             return;
         }
 
