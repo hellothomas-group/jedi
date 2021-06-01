@@ -7,10 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import xyz.hellothomas.jedi.client.constants.Constants;
 import xyz.hellothomas.jedi.client.internals.PropertySourcesProcessor;
-import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
-import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty;
-import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
-import xyz.hellothomas.jedi.core.utils.JediThreadFactory;
 
 
 /**
@@ -24,23 +20,6 @@ import xyz.hellothomas.jedi.core.utils.JediThreadFactory;
 @Import(JediExecutorRegistrar.class)
 @ConditionalOnProperty(value = Constants.JEDI_CONFIG_ENABLE_KEY, havingValue = "true")
 public class JediExecutorAutoConfig {
-
-    @Bean(name = {Constants.JEDI_DEFAULT_EXECUTOR_NAME})
-    public JediThreadPoolExecutor defaultExecutor(JediConfig jediConfig,
-                                                  AbstractNotificationService notificationService) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        JediThreadPoolProperty jediThreadPoolProperty =
-                jediConfig.getExecutors().stream()
-                        .filter(i -> i != null && Constants.JEDI_DEFAULT_EXECUTOR_NAME.equals(i.getName()))
-                        .findFirst()
-                        .orElse(JediThreadPoolProperty.builder()
-                                .name(Constants.JEDI_DEFAULT_EXECUTOR_NAME)
-                                .threadFactory(JediThreadFactory.create(Constants.JEDI_DEFAULT_EXECUTOR_NAME, false))
-                                .build());
-        jediThreadPoolProperty.setNotificationService(notificationService);
-        log.debug("{}配置为:{}", Constants.JEDI_DEFAULT_EXECUTOR_NAME, jediThreadPoolProperty);
-
-        return new JediThreadPoolExecutor(jediThreadPoolProperty);
-    }
 
     /**
      * see the {@link Bean @Bean} javadocs for details

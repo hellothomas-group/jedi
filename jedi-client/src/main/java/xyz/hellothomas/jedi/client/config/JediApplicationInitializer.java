@@ -1,6 +1,7 @@
 package xyz.hellothomas.jedi.client.config;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.SpringApplication;
@@ -90,15 +91,16 @@ public class JediApplicationInitializer implements ApplicationContextInitializer
             return;
         }
 
+        List<String> executorNames;
         String executors = environment.getProperty(Constants.JEDI_CONFIG_EXECUTORS_KEY);
         if (StringUtils.isBlank(executors)) {
             log.warn("未配置{}, 将使用默认executor:{}", Constants.JEDI_CONFIG_EXECUTORS_KEY,
                     Constants.JEDI_DEFAULT_EXECUTOR_NAME);
-            return;
+            executorNames = Lists.newArrayList(Constants.JEDI_DEFAULT_EXECUTOR_NAME);
+        } else {
+            log.debug("Jedi bootstrap executors: {}", executors);
+            executorNames = EXECUTOR_SPLITTER.splitToList(executors);
         }
-
-        log.debug("Jedi bootstrap executors: {}", executors);
-        List<String> executorNames = EXECUTOR_SPLITTER.splitToList(executors);
 
         CompositePropertySource composite =
                 new CompositePropertySource(Constants.JEDI_BOOTSTRAP_PROPERTY_SOURCE_NAME);

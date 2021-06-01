@@ -61,17 +61,16 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         ((DefaultListableBeanFactory) this.beanFactory).registerSingleton(Constants.JEDI_CONFIG_BEAN_NAME,
                 this.jediConfig);
-        log.info("{} 注册beanFactory", Constants.JEDI_CONFIG_BEAN_NAME);
+        log.info("{} registered.", Constants.JEDI_CONFIG_BEAN_NAME);
 
         AbstractNotificationService notificationService = buildNotificationService(jediConfig.getUrl(),
                 jediConfig.getNamespace(), jediConfig.getAppId());
 
         ((DefaultListableBeanFactory) this.beanFactory).registerSingleton(NOTIFICATION_SERVICE_BEAN_NAME,
                 notificationService);
-        log.info("{} 注册beanFactory", NOTIFICATION_SERVICE_BEAN_NAME);
+        log.info("{} registered.", NOTIFICATION_SERVICE_BEAN_NAME);
 
         jediConfig.getExecutors().stream()
-                .filter(i -> i != null && !Constants.JEDI_DEFAULT_EXECUTOR_NAME.equals(i.getName()))
                 .forEach(j -> {
                     j.setNotificationService(notificationService);
 
@@ -83,7 +82,7 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
                     genericBeanDefinition.setConstructorArgumentValues(constructorArgumentValues);
 
                     registry.registerBeanDefinition(j.getName(), genericBeanDefinition);
-                    log.info("{} 注册beanFactory", j.getName());
+                    log.info("{} registered, config: {}", j.getName(), j);
                 });
     }
 
@@ -98,9 +97,11 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
         jediConfig = new JediConfig();
         BeanUtils.copyProperties(jediProperty, jediConfig);
 
-        if (StringUtils.isNotBlank(jediProperty.getExecutors())) {
-            jediConfig.setExecutors(buildJediConfigExecutors(jediProperty.getExecutors(), binder));
+        if (StringUtils.isBlank(jediProperty.getExecutors())) {
+            jediProperty.setExecutors(Constants.JEDI_DEFAULT_EXECUTOR_NAME);
         }
+
+        jediConfig.setExecutors(buildJediConfigExecutors(jediProperty.getExecutors(), binder));
 
         log.debug("jediConfig:{}", jediConfig);
     }
