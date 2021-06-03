@@ -1,9 +1,13 @@
 package xyz.hellothomas.jedi.admin.application;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
+import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.application.message.MessageSender;
 import xyz.hellothomas.jedi.admin.domain.Audit;
 import xyz.hellothomas.jedi.admin.domain.Executor;
@@ -16,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import static xyz.hellothomas.jedi.biz.common.constants.Constants.DEFAULT_PAGE_SIZE;
 import static xyz.hellothomas.jedi.biz.common.constants.Constants.JEDI_RELEASE_TOPIC;
 
 @Slf4j
@@ -81,6 +86,29 @@ public class ExecutorService {
                 .andAppIdEqualTo(appId)
                 .andIsDeletedEqualTo(false);
         return executorMapper.selectByExample(executorExample);
+    }
+
+    public PageResult<Executor> findExecutors(String namespace, String appId, PageHelperRequest pageHelperRequest) {
+        ExecutorExample executorExample = new ExecutorExample();
+        executorExample.createCriteria().andNamespaceNameEqualTo(namespace)
+                .andAppIdEqualTo(appId)
+                .andIsDeletedEqualTo(false);
+
+        int pageSize = pageHelperRequest.getPageSize();
+        int pageNum = pageHelperRequest.getPageNum();
+        pageSize = (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
+        PageHelper.startPage(pageNum, pageSize);
+
+
+        List<Executor> executors = executorMapper.selectByExample(executorExample);
+        PageInfo<Executor> pageInfo = new PageInfo<>(executors);
+
+        return PageResult.<Executor>builder()
+                .content(pageInfo.getList())
+                .total(pageInfo.getTotal())
+                .pageNum(pageInfo.getPageNum())
+                .pageSize(pageInfo.getPageSize())
+                .build();
     }
 
     public boolean isNamespaceUnique(String namespace, String appId, String executor) {

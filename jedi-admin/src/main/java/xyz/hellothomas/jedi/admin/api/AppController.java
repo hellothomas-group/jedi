@@ -3,12 +3,15 @@ package xyz.hellothomas.jedi.admin.api;
 import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.admin.api.dto.AppRequest;
 import xyz.hellothomas.jedi.admin.api.dto.AppResponse;
+import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
+import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.application.AppService;
 import xyz.hellothomas.jedi.admin.domain.App;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -64,9 +67,21 @@ public class AppController {
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps")
-    public List<AppResponse> getAppNamespaces(@PathVariable("namespaceName") String namespaceName) {
-        List<App> appNamespaces = appService.findByNamespaceName(namespaceName);
+    public PageResult<AppResponse> getAppNamespaces(@PathVariable("namespaceName") String namespaceName,
+                                                    PageHelperRequest pageHelperRequest) {
+        PageResult<App> appsPage = appService.findByNamespaceName(namespaceName, pageHelperRequest);
 
-        return LocalBeanUtils.batchTransform(AppResponse.class, appNamespaces);
+        return transform2PageResult(appsPage);
+    }
+
+    private PageResult<AppResponse> transform2PageResult(PageResult<App> appPageResult) {
+        List<App> apps = appPageResult.getContent();
+        List<AppResponse> appResponses = new ArrayList<>(apps.size());
+        for (App app : apps) {
+            appResponses.add(LocalBeanUtils.transform(AppResponse.class, app));
+        }
+
+        return new PageResult<>(appResponses, appPageResult.getTotal(), appPageResult.getPageNum(),
+                appPageResult.getPageSize());
     }
 }

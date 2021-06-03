@@ -1,9 +1,7 @@
 package xyz.hellothomas.jedi.admin.application;
 
-import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.domain.App;
 import xyz.hellothomas.jedi.admin.domain.Audit;
 import xyz.hellothomas.jedi.admin.domain.Namespace;
@@ -15,8 +13,6 @@ import xyz.hellothomas.jedi.biz.infrastructure.exception.ServiceException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-
-import static xyz.hellothomas.jedi.biz.common.constants.Constants.DEFAULT_PAGE_SIZE;
 
 @Service
 public class NamespaceService {
@@ -53,17 +49,11 @@ public class NamespaceService {
         auditService.audit(Namespace.class.getSimpleName(), id, Audit.OP.DELETE, operator);
     }
 
-    public List<Namespace> findAll(PageHelperRequest pageHelperRequest) {
+    public List<Namespace> findAll() {
         NamespaceExample namespaceExample = new NamespaceExample();
         namespaceExample.createCriteria();
 
-        int pageSize = pageHelperRequest.getPageSize();
-        int pageNum = pageHelperRequest.getPageNum();
-        pageSize = (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
-        PageHelper.startPage(pageNum, pageSize);
-
-        List<Namespace> namespaces = namespaceMapper.selectByExample(namespaceExample);
-        return namespaces;
+        return namespaceMapper.selectByExample(namespaceExample);
     }
 
     public List<Namespace> findByDescription(String description) {

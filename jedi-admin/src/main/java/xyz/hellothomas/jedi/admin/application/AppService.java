@@ -1,5 +1,7 @@
 package xyz.hellothomas.jedi.admin.application;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -7,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
+import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.domain.*;
 import xyz.hellothomas.jedi.admin.infrastructure.mapper.AppMapper;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
@@ -17,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import static xyz.hellothomas.jedi.biz.common.constants.Constants.DEFAULT_PAGE_SIZE;
 
 @Slf4j
 @Service
@@ -48,6 +54,27 @@ public class AppService {
                 .andIsDeletedEqualTo(false);
 
         return appMapper.selectByExample(appExample);
+    }
+
+    public PageResult<App> findByNamespaceName(String namespaceName, PageHelperRequest pageHelperRequest) {
+        AppExample appExample = new AppExample();
+        appExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
+                .andIsDeletedEqualTo(false);
+
+        int pageSize = pageHelperRequest.getPageSize();
+        int pageNum = pageHelperRequest.getPageNum();
+        pageSize = (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
+        PageHelper.startPage(pageNum, pageSize);
+
+        List<App> apps = appMapper.selectByExample(appExample);
+        PageInfo<App> pageInfo = new PageInfo<>(apps);
+
+        return PageResult.<App>builder()
+                .content(pageInfo.getList())
+                .total(pageInfo.getTotal())
+                .pageNum(pageInfo.getPageNum())
+                .pageSize(pageInfo.getPageSize())
+                .build();
     }
 
     public App findOne(String namespaceName, String appId) {

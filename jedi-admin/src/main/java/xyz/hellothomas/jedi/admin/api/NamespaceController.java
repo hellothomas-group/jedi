@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.admin.api.dto.NamespaceRequest;
 import xyz.hellothomas.jedi.admin.api.dto.NamespaceResponse;
-import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.application.NamespaceService;
 import xyz.hellothomas.jedi.admin.domain.Namespace;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
@@ -59,11 +58,10 @@ public class NamespaceController {
     }
 
     @GetMapping("/namespaces")
-    public List<NamespaceResponse> find(@RequestParam(value = "name", required = false) String name,
-                                        PageHelperRequest pageHelperRequest) {
+    public List<NamespaceResponse> find(@RequestParam(value = "name", required = false) String name) {
         List<Namespace> app;
         if (StringUtils.isBlank(name)) {
-            app = namespaceService.findAll(pageHelperRequest);
+            app = namespaceService.findAll();
         } else {
             app = new ArrayList<>();
             Namespace namespace = namespaceService.findOne(name);
