@@ -74,6 +74,14 @@ public class AppController {
         return transform2PageResult(appsPage);
     }
 
+    @GetMapping("/namespaces/{namespaceName}/apps/{appId}")
+    public AppResponse getAppNamespaces(@PathVariable("namespaceName") String namespaceName,
+                                        @PathVariable("appId") String appId) {
+        App app = appService.findOne(namespaceName, appId);
+
+        return LocalBeanUtils.transform(AppResponse.class, app);
+    }
+
     private PageResult<AppResponse> transform2PageResult(PageResult<App> appPageResult) {
         List<App> apps = appPageResult.getContent();
         List<AppResponse> appResponses = new ArrayList<>(apps.size());
