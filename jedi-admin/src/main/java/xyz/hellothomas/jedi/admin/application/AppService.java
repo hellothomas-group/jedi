@@ -60,6 +60,7 @@ public class AppService {
         AppExample appExample = new AppExample();
         appExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
                 .andIsDeletedEqualTo(false);
+        appExample.setOrderByClause("id");
 
         int pageSize = pageHelperRequest.getPageSize();
         int pageNum = pageHelperRequest.getPageNum();

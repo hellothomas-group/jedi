@@ -93,6 +93,7 @@ public class ExecutorService {
         executorExample.createCriteria().andNamespaceNameEqualTo(namespace)
                 .andAppIdEqualTo(appId)
                 .andIsDeletedEqualTo(false);
+        executorExample.setOrderByClause("id");
 
         int pageSize = pageHelperRequest.getPageSize();
         int pageNum = pageHelperRequest.getPageNum();
