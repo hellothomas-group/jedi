@@ -5,8 +5,12 @@ import xyz.hellothomas.jedi.admin.api.dto.ExecutorResponse;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.application.ExecutorService;
+import xyz.hellothomas.jedi.admin.application.ItemService;
+import xyz.hellothomas.jedi.admin.application.ReleaseService;
 import xyz.hellothomas.jedi.admin.domain.Executor;
+import xyz.hellothomas.jedi.admin.domain.Item;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
+import xyz.hellothomas.jedi.biz.domain.Release;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
 
@@ -17,9 +21,13 @@ import java.util.List;
 public class ExecutorController {
 
     private final ExecutorService executorService;
+    private final ReleaseService releaseService;
+    private final ItemService itemService;
 
-    public ExecutorController(ExecutorService executorService) {
+    public ExecutorController(ExecutorService executorService, ReleaseService releaseService, ItemService itemService) {
         this.executorService = executorService;
+        this.releaseService = releaseService;
+        this.itemService = itemService;
     }
 
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}")
@@ -34,7 +42,11 @@ public class ExecutorController {
 
         Executor executor = executorService.save(namespaceName, appId, executorName, operator);
 
-        return LocalBeanUtils.transform(ExecutorResponse.class, executor);
+        ExecutorResponse executorResponse = LocalBeanUtils.transform(ExecutorResponse.class, executor);
+        // 创建后 Item为默认修改状态，待发布
+        executorResponse.setItemModified(true);
+
+        return executorResponse;
     }
 
     @DeleteMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}")
@@ -54,7 +66,21 @@ public class ExecutorController {
     public PageResult<ExecutorResponse> find(@PathVariable("namespaceName") String namespaceName,
                                              @PathVariable("appId") String appId, PageHelperRequest pageHelperRequest) {
         PageResult<Executor> executorsPage = executorService.findExecutors(namespaceName, appId, pageHelperRequest);
-        return transform2PageResult(executorsPage);
+        PageResult<ExecutorResponse> executorResponsePage = transform2PageResult(executorsPage);
+
+        executorResponsePage.getContent().forEach(i -> {
+            Item item = itemService.findOneByExecutorId(i.getId());
+            if (item == null) {
+                return;
+            }
+            Release release = releaseService.findLatestActiveRelease(i.getNamespaceName(), i.getAppId(),
+                    i.getExecutorName());
+            if (release == null || !item.getConfiguration().equals(release.getConfigurations())) {
+                i.setItemModified(true);
+            }
+        });
+
+        return executorResponsePage;
     }
 
     @GetMapping("/executors/{executorId}")
@@ -63,7 +89,19 @@ public class ExecutorController {
         if (executor == null) {
             throw new NotFoundException(String.format("executor not found for %s", executorId));
         }
-        return LocalBeanUtils.transform(ExecutorResponse.class, executor);
+        ExecutorResponse executorResponse = LocalBeanUtils.transform(ExecutorResponse.class, executor);
+
+        Item item = itemService.findOneByExecutorId(executor.getId());
+        if (item == null) {
+            return executorResponse;
+        }
+        Release release = releaseService.findLatestActiveRelease(executor.getNamespaceName(), executor.getAppId(),
+                executor.getExecutorName());
+        if (release == null || !item.getConfiguration().equals(release.getConfigurations())) {
+            executorResponse.setItemModified(true);
+        }
+
+        return executorResponse;
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}")
@@ -75,7 +113,19 @@ public class ExecutorController {
             throw new NotFoundException(
                     String.format("executor not found for %s %s %s", namespaceName, appId, executorName));
         }
-        return LocalBeanUtils.transform(ExecutorResponse.class, executor);
+        ExecutorResponse executorResponse = LocalBeanUtils.transform(ExecutorResponse.class, executor);
+
+        Item item = itemService.findOneByExecutorId(executor.getId());
+        if (item == null) {
+            return executorResponse;
+        }
+        Release release = releaseService.findLatestActiveRelease(executor.getNamespaceName(), executor.getAppId(),
+                executor.getExecutorName());
+        if (release == null || !item.getConfiguration().equals(release.getConfigurations())) {
+            executorResponse.setItemModified(true);
+        }
+
+        return executorResponse;
     }
 
     private PageResult<ExecutorResponse> transform2PageResult(PageResult<Executor> executorPageResult) {

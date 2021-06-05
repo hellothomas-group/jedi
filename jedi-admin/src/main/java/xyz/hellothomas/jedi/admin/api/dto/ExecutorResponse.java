@@ -18,4 +18,6 @@ public class ExecutorResponse extends BaseResponse {
     private String appId;
 
     private String executorName;
+
+    private boolean itemModified;
 }
