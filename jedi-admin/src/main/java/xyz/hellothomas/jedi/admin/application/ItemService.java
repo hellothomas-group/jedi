@@ -120,6 +120,23 @@ public class ItemService {
     }
 
     @Transactional
+    public Item saveByExecutor(Executor executor, String configuration, String comment, String operator) {
+        Item item = new Item();
+        item.setExecutorId(executor.getId());
+        item.setConfiguration(configuration);
+        item.setComment(comment);
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        item.setDataChangeCreatedBy(operator);
+        item.setDataChangeCreatedTime(currentDateTime);
+        item.setDataChangeLastModifiedBy(operator);
+        item.setDataChangeLastModifiedTime(currentDateTime);
+
+        itemMapper.insertSelective(item);
+        return item;
+    }
+
+    @Transactional
     public int update(Item item) {
         int updatedRows = itemMapper.updateByPrimaryKey(item);
 

@@ -58,6 +58,27 @@ public class ItemController {
         return LocalBeanUtils.transform(ItemResponse.class, managedEntity);
     }
 
+    @PutMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/items")
+    public ItemResponse update(@PathVariable("namespaceName") String namespaceName,
+                               @PathVariable("appId") String appId,
+                               @PathVariable("executorName") String executorName,
+                               @RequestParam("configuration") String configuration,
+                               @RequestParam(name = "comment", required = false) String comment,
+                               @RequestParam("operator") String operator) {
+        Item managedEntity = itemService.findOne(namespaceName, appId, executorName);
+        if (managedEntity == null || managedEntity.getIsDeleted()) {
+            throw new BadRequestException("item not exist");
+        }
+
+        managedEntity.setComment(comment);
+        managedEntity.setConfiguration(configuration);
+        managedEntity.setDataChangeLastModifiedBy(operator);
+        managedEntity.setDataChangeLastModifiedTime(LocalDateTime.now());
+        itemService.update(managedEntity);
+
+        return LocalBeanUtils.transform(ItemResponse.class, managedEntity);
+    }
+
     //    @PreAcquireNamespaceLock
     @DeleteMapping("/items/{itemId}")
     public void delete(@PathVariable("itemId") long itemId, @RequestParam String operator) {
