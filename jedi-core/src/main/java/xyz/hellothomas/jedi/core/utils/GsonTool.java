@@ -92,6 +92,20 @@ public class GsonTool {
         );
     }
 
+    /**
+     * json字符串是否合法
+     * @param content
+     * @return
+     */
+    public static boolean isJSONValid(String content) {
+        try {
+            gson.fromJson(content, Object.class);
+            return true;
+        } catch (JsonSyntaxException ex) {
+            return false;
+        }
+    }
+
     public static class ParameterizedType4ReturnT implements ParameterizedType {
         private final Class raw;
         private final Type[] args;

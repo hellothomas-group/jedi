@@ -7,6 +7,7 @@ import xyz.hellothomas.jedi.admin.domain.Item;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
+import xyz.hellothomas.jedi.core.utils.JsonUtil;
 
 import java.time.LocalDateTime;
 
@@ -65,6 +66,10 @@ public class ItemController {
                                @RequestParam("configuration") String configuration,
                                @RequestParam(name = "comment", required = false) String comment,
                                @RequestParam("operator") String operator) {
+        if (!JsonUtil.isJSONValid(configuration)) {
+            throw new BadRequestException("configuration invalid, must be json");
+        }
+
         Item managedEntity = itemService.findOne(namespaceName, appId, executorName);
         if (managedEntity == null || managedEntity.getIsDeleted()) {
             throw new BadRequestException("item not exist");

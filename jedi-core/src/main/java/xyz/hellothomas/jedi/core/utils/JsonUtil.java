@@ -71,4 +71,18 @@ public class JsonUtil {
             throw new JediCoreException(ErrorCodeEnum.JSON_DESERIALIZE_ERROR, listJson, e);
         }
     }
+
+    /**
+     * json字符串是否合法
+     * @param content
+     * @return
+     */
+    public static boolean isJSONValid(String content) {
+        try {
+            OBJECT_MAPPER.readTree(content);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
 }
