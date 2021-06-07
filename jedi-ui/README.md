@@ -1,4 +1,4 @@
-# y
+# jedi
 
 > jedi-ui
 
