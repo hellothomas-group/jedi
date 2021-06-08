@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import xyz.hellothomas.jedi.core.dto.ReturnT;
-import xyz.hellothomas.jedi.core.dto.consumer.AbstractNotification;
 import xyz.hellothomas.jedi.core.enums.ErrorCodeEnum;
 import xyz.hellothomas.jedi.core.exception.JediCoreException;
 
@@ -64,9 +63,8 @@ public class JsonUtil {
         try {
             ObjectMapper mapper = new ObjectMapper();
             //反序列化List
-            JavaType type = mapper.getTypeFactory().constructParametricType(List.class, AbstractNotification.class);
-            List<T> list = mapper.readValue(listJson, type);
-            return list;
+            JavaType type = mapper.getTypeFactory().constructParametricType(List.class, valueType);
+            return mapper.readValue(listJson, type);
         } catch (JsonProcessingException e) {
             throw new JediCoreException(ErrorCodeEnum.JSON_DESERIALIZE_ERROR, listJson, e);
         }
