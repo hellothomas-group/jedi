@@ -93,29 +93,29 @@
               </el-table>
             </div>
             <el-dialog title="更新线程池配置" :visible.sync="updateExecutorDialogFormVisible">
-            <el-form :model="updateExecutorForm" :rules="updateExecutorFormRules" ref="updateExecutorForm">
-              <el-form-item label="配置" :label-width="formLabelWidth" prop="configuration">
-                <el-input v-model="updateExecutorForm.configuration" autocomplete="off"
-                          placeholder="json格式"></el-input>
-              </el-form-item>
+            <el-form :model="updateExecutorForm" ref="updateExecutorForm">
               <el-form-item label="corePoolSize" :label-width="formLabelWidth" prop="corePoolSize">
-                <el-input v-model="updateExecutorForm.corePoolSize" autocomplete="off"
+                <el-input v-model="updateExecutorForm.configuration.corePoolSize" autocomplete="off"
                           placeholder="正整数"></el-input>
               </el-form-item>
               <el-form-item label="maxPoolSize" :label-width="formLabelWidth" prop="maxPoolSize">
-                <el-input v-model="updateExecutorForm.maxPoolSize" autocomplete="off"
+                <el-input v-model="updateExecutorForm.configuration.maxPoolSize" autocomplete="off"
+                          placeholder="正整数"></el-input>
+              </el-form-item>
+              <el-form-item label="queueCapacity" :label-width="formLabelWidth" prop="queueCapacity">
+                <el-input v-model="updateExecutorForm.configuration.queueCapacity" autocomplete="off"
                           placeholder="正整数"></el-input>
               </el-form-item>
               <el-form-item label="keepAliveSeconds" :label-width="formLabelWidth" prop="keepAliveSeconds">
-                <el-input v-model="updateExecutorForm.keepAliveSeconds" autocomplete="off"
+                <el-input v-model="updateExecutorForm.configuration.keepAliveSeconds" autocomplete="off"
                           placeholder="正整数"></el-input>
               </el-form-item>
               <el-form-item label="tickerCycle" :label-width="formLabelWidth" prop="tickerCycle">
-                <el-input v-model="updateExecutorForm.tickerCycle" autocomplete="off"
+                <el-input v-model="updateExecutorForm.configuration.tickerCycle" autocomplete="off"
                           placeholder="正整数"></el-input>
               </el-form-item>
               <el-form-item label="allowCoreThreadTimeOut" :label-width="formLabelWidth" prop="allowCoreThreadTimeOut">
-                <el-input v-model="updateExecutorForm.allowCoreThreadTimeOut" autocomplete="off"
+                <el-input v-model="updateExecutorForm.configuration.allowCoreThreadTimeOut" autocomplete="off"
                           placeholder="正整数"></el-input>
               </el-form-item>
               <el-form-item label="备注" :label-width="formLabelWidth" prop="comment" >
@@ -178,15 +178,6 @@ export default {
   components: {},
   props: [],
   data () {
-    const checkJson = (rule, value, callback) => {
-      try {
-        JSON.parse(value)
-      } catch (e) {
-        console.log('json 格式错误')
-        callback(new Error('json格式错误'))
-      }
-      callback()
-    }
     return {
       app: {
         id: undefined,
@@ -217,16 +208,6 @@ export default {
         dataChangeLastModifiedTime: undefined,
         itemModified: undefined
       },
-      selectedExecutorItem: {
-        id: undefined,
-        executorId: undefined,
-        configuration: undefined,
-        comment: undefined,
-        dataChangeCreatedBy: undefined,
-        dataChangeLastModifiedBy: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: undefined
-      },
       createExecutorDialogFormVisible: false,
       updateExecutorDialogFormVisible: false,
       releaseExecutorDialogFormVisible: false,
@@ -239,12 +220,14 @@ export default {
         namespace: undefined,
         appId: undefined,
         executorName: undefined,
-        configuration: undefined,
-        corePoolSize: undefined,
-        maxPoolSize: undefined,
-        keepAliveSeconds: undefined,
-        tickerCycle: undefined,
-        allowCoreThreadTimeOut: undefined,
+        configuration: {
+          corePoolSize: undefined,
+          maxPoolSize: undefined,
+          queueCapacity: undefined,
+          keepAliveSeconds: undefined,
+          tickerCycle: undefined,
+          allowCoreThreadTimeOut: undefined
+        },
         comment: undefined
       },
       releaseExecutorForm: {
@@ -259,11 +242,6 @@ export default {
         newExecutor: [
           {required: true, message: '请输入线程池名称', trigger: 'blur'},
           {min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur'}
-        ]
-      },
-      updateExecutorFormRules: {
-        configuration: [
-          {required: true, validator: checkJson, message: '请输入正确的json格式且不能为空', trigger: 'blur'}
         ]
       },
       releaseExecutorFormRules: {
@@ -500,10 +478,18 @@ export default {
       console.log('updating...' + form.executorName)
       this.updateExecutorDialogFormVisible = false
 
+      for (let attr in form.configuration) {
+        if (!form.configuration[attr]) {
+          form.configuration[attr] = undefined
+        }
+      }
+
+      console.log('更新的配置为: ' + JSON.stringify(form.configuration))
+
       this.axios.put('/admin/namespaces/' + form.namespace + '/apps/' +
         form.appId + '/executors/' + form.executorName + '/items', null, {
         params: {
-          configuration: form.configuration,
+          configuration: JSON.stringify(form.configuration),
           comment: form.comment,
           operator: '80234613'
         }
@@ -523,7 +509,7 @@ export default {
       this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName + '/items'
       ).then(res => {
         console.log(res)
-        this.updateExecutorForm.configuration = res.data.configuration
+        this.updateExecutorForm.configuration = JSON.parse(res.data.configuration)
         this.updateExecutorDialogFormVisible = true
       }).catch(function (error) {
         console.log(error)
