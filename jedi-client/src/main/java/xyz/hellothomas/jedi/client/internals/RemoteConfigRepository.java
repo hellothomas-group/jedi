@@ -1,5 +1,6 @@
 package xyz.hellothomas.jedi.client.internals;
 
+import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -129,9 +130,11 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
     private Properties transformJediConfigToProperties(JediExecutorConfig jediExecutorConfig) {
         Properties result = new Properties();
-        jediExecutorConfig.getConfigurations().forEach((key, value) -> {
+        jediExecutorConfig.getConfigurations().forEach((lowerCamelKey, value) -> {
+            // 查询回来的key格式是 lowerCamel,转为 lower-hyphen
+            String lowerHyphenKey = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_HYPHEN, lowerCamelKey);
             String propertyKey = STRING_JOINER_PROPERTY.join(Constants.JEDI_CONFIG_PREFIX,
-                    jediExecutorConfig.getExecutorName(), key);
+                    jediExecutorConfig.getExecutorName(), lowerHyphenKey);
             result.put(propertyKey, value);
         });
         return result;
