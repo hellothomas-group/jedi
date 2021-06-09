@@ -237,7 +237,7 @@ export default {
         name: undefined,
         comment: undefined
       },
-      formLabelWidth: '120px',
+      formLabelWidth: '20%',
       creatExecutorFormRules: {
         newExecutor: [
           {required: true, message: '请输入线程池名称', trigger: 'blur'},
