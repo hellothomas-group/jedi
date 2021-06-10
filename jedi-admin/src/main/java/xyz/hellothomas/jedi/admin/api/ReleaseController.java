@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
+import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.api.dto.ReleaseResponse;
 import xyz.hellothomas.jedi.admin.application.ExecutorService;
 import xyz.hellothomas.jedi.admin.application.ReleaseService;
@@ -16,6 +17,7 @@ import xyz.hellothomas.jedi.biz.common.utils.ReleaseMessageKeyGenerator;
 import xyz.hellothomas.jedi.biz.domain.Release;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -67,23 +69,24 @@ public class ReleaseController {
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/releases/all")
-    public List<ReleaseResponse> findAllReleases(@PathVariable("namespaceName") String namespaceName,
-                                                 @PathVariable("appId") String appId,
-                                                 @PathVariable("executorName") String executorName,
-                                                 PageHelperRequest pageHelperRequest) {
-        List<Release> releases = releaseService.findAllReleases(namespaceName, appId, executorName, pageHelperRequest);
-        return LocalBeanUtils.batchTransform(ReleaseResponse.class, releases);
+    public PageResult<ReleaseResponse> findAllReleases(@PathVariable("namespaceName") String namespaceName,
+                                                       @PathVariable("appId") String appId,
+                                                       @PathVariable("executorName") String executorName,
+                                                       PageHelperRequest pageHelperRequest) {
+        PageResult<Release> releasesPage = releaseService.findAllReleases(namespaceName, appId, executorName,
+                pageHelperRequest);
+        return transform2PageResult(releasesPage);
     }
 
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/releases/active")
-    public List<ReleaseResponse> findActiveReleases(@PathVariable("namespaceName") String namespaceName,
-                                                    @PathVariable("appId") String appId,
-                                                    @PathVariable("executorName") String executorName,
-                                                    PageHelperRequest pageHelperRequest) {
-        List<Release> releases = releaseService.findActiveReleases(namespaceName, appId, executorName,
+    public PageResult<ReleaseResponse> findActiveReleases(@PathVariable("namespaceName") String namespaceName,
+                                                          @PathVariable("appId") String appId,
+                                                          @PathVariable("executorName") String executorName,
+                                                          PageHelperRequest pageHelperRequest) {
+        PageResult<Release> releasesPage = releaseService.findActiveReleases(namespaceName, appId, executorName,
                 pageHelperRequest);
-        return LocalBeanUtils.batchTransform(ReleaseResponse.class, releases);
+        return transform2PageResult(releasesPage);
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/releases/latest")
@@ -135,5 +138,16 @@ public class ReleaseController {
         //send release message
         messageSender.sendMessage(ReleaseMessageKeyGenerator.generate(namespaceName, appId, executorName),
                 JEDI_RELEASE_TOPIC);
+    }
+
+    private PageResult<ReleaseResponse> transform2PageResult(PageResult<Release> releasePageResult) {
+        List<Release> releases = releasePageResult.getContent();
+        List<ReleaseResponse> releaseResponses = new ArrayList<>(releases.size());
+        for (Release release : releases) {
+            releaseResponses.add(LocalBeanUtils.transform(ReleaseResponse.class, release));
+        }
+
+        return new PageResult<>(releaseResponses, releasePageResult.getTotal(), releasePageResult.getPageNum(),
+                releasePageResult.getPageSize());
     }
 }

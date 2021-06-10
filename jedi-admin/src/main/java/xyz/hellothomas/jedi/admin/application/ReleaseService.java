@@ -1,11 +1,13 @@
 package xyz.hellothomas.jedi.admin.application;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
+import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.common.enums.ReleaseOperationEnum;
 import xyz.hellothomas.jedi.admin.common.utils.ReleaseKeyGenerator;
 import xyz.hellothomas.jedi.admin.domain.Audit;
@@ -83,8 +85,8 @@ public class ReleaseService {
         return result.isEmpty() ? null : result.get(0);
     }
 
-    public List<Release> findAllReleases(String namespaceName, String appId, String executorName,
-                                         PageHelperRequest pageHelperRequest) {
+    public PageResult<Release> findAllReleases(String namespaceName, String appId, String executorName,
+                                               PageHelperRequest pageHelperRequest) {
         ReleaseExample releaseExample = new ReleaseExample();
         releaseExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
                 .andAppIdEqualTo(appId)
@@ -96,11 +98,19 @@ public class ReleaseService {
         pageSize = (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
         PageHelper.startPage(pageNum, pageSize);
 
-        return releaseMapper.selectByExampleWithBLOBs(releaseExample);
+        List<Release> releases = releaseMapper.selectByExampleWithBLOBs(releaseExample);
+        PageInfo<Release> pageInfo = new PageInfo<>(releases);
+
+        return PageResult.<Release>builder()
+                .content(pageInfo.getList())
+                .total(pageInfo.getTotal())
+                .pageNum(pageInfo.getPageNum())
+                .pageSize(pageInfo.getPageSize())
+                .build();
     }
 
-    public List<Release> findActiveReleases(String namespaceName, String appId, String executorName,
-                                            PageHelperRequest pageHelperRequest) {
+    public PageResult<Release> findActiveReleases(String namespaceName, String appId, String executorName,
+                                                  PageHelperRequest pageHelperRequest) {
         ReleaseExample releaseExample = new ReleaseExample();
         releaseExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
                 .andAppIdEqualTo(appId)
@@ -113,7 +123,15 @@ public class ReleaseService {
         pageSize = (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
         PageHelper.startPage(pageNum, pageSize);
 
-        return releaseMapper.selectByExampleWithBLOBs(releaseExample);
+        List<Release> releases = releaseMapper.selectByExampleWithBLOBs(releaseExample);
+        PageInfo<Release> pageInfo = new PageInfo<>(releases);
+
+        return PageResult.<Release>builder()
+                .content(pageInfo.getList())
+                .total(pageInfo.getTotal())
+                .pageNum(pageInfo.getPageNum())
+                .pageSize(pageInfo.getPageSize())
+                .build();
     }
 
     private List<Release> findActiveReleasesBetween(String namespaceName, String appId, String executorName,
@@ -206,9 +224,9 @@ public class ReleaseService {
         PageHelperRequest pageHelperRequest = new PageHelperRequest();
         pageHelperRequest.setPageNum(1);
         pageHelperRequest.setPageSize(2);
-        List<Release> twoLatestActiveReleases = findActiveReleases(namespaceName, appId, executorName,
+        PageResult<Release> twoLatestActiveReleases = findActiveReleases(namespaceName, appId, executorName,
                 pageHelperRequest);
-        if (twoLatestActiveReleases == null || twoLatestActiveReleases.size() < 2) {
+        if (twoLatestActiveReleases == null || twoLatestActiveReleases.getContent() == null || twoLatestActiveReleases.getContent().size() < 2) {
             throw new BadRequestException(String.format(
                     "Can't rollback executor(namespaceName=%s, appId=%s, executorName=%s) because there is only one " +
                             "active release",
@@ -223,7 +241,9 @@ public class ReleaseService {
         releaseMapper.insert(release);
 
         releaseHistoryService.createReleaseHistory(namespaceName, appId, executorName,
-                twoLatestActiveReleases.get(1).getId(), release.getId(), ReleaseOperationEnum.ROLLBACK.getValue(), null, operator);
+                twoLatestActiveReleases.getContent().get(1).getId(), release.getId(),
+                ReleaseOperationEnum.ROLLBACK.getValue(),
+                null, operator);
 
         return release;
     }

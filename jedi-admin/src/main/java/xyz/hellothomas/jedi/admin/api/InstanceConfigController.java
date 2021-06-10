@@ -1,6 +1,8 @@
 package xyz.hellothomas.jedi.admin.api;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import org.springframework.util.CollectionUtils;
@@ -8,10 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.hellothomas.jedi.admin.api.dto.InstanceConfigResponse;
-import xyz.hellothomas.jedi.admin.api.dto.InstanceResponse;
-import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
-import xyz.hellothomas.jedi.admin.api.dto.PageResult;
+import xyz.hellothomas.jedi.admin.api.dto.*;
 import xyz.hellothomas.jedi.admin.application.InstanceService;
 import xyz.hellothomas.jedi.admin.application.ReleaseService;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
@@ -20,15 +19,14 @@ import xyz.hellothomas.jedi.biz.domain.InstanceConfig;
 import xyz.hellothomas.jedi.biz.domain.Release;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/instances")
 public class InstanceConfigController {
+    private static final Splitter RELEASES_SPLITTER = Splitter.on(",").omitEmptyStrings()
+            .trimResults();
     private final ReleaseService releaseService;
     private final InstanceService instanceService;
 
@@ -88,6 +86,81 @@ public class InstanceConfigController {
                 .build();
     }
 
+    @GetMapping("/by-executor-and-releases-not-in")
+    public List<InstanceResponse> getByReleasesNotIn(@RequestParam("namespaceName") String namespaceName,
+                                                     @RequestParam("appId") String appId,
+                                                     @RequestParam("executorName") String executorName,
+                                                     @RequestParam("releaseIds") String releaseIds) {
+        Set<Long> releaseIdSet = RELEASES_SPLITTER.splitToList(releaseIds).stream().map(Long::parseLong)
+                .collect(Collectors.toSet());
+
+        List<Release> releases = releaseService.findByReleaseIds(releaseIdSet);
+
+        if (CollectionUtils.isEmpty(releases)) {
+            throw new NotFoundException(String.format("releases not found for %s", releaseIds));
+        }
+
+        Set<String> releaseKeys = releases.stream().map(Release::getReleaseKey).collect(Collectors
+                .toSet());
+
+        List<InstanceConfig> instanceConfigs = instanceService
+                .findInstanceConfigsByExecutorWithReleaseKeysNotIn(namespaceName, appId, executorName,
+                        releaseKeys);
+
+        Multimap<Long, InstanceConfig> instanceConfigMap = HashMultimap.create();
+        Set<String> otherReleaseKeys = Sets.newHashSet();
+
+        for (InstanceConfig instanceConfig : instanceConfigs) {
+            instanceConfigMap.put(instanceConfig.getInstanceId(), instanceConfig);
+            otherReleaseKeys.add(instanceConfig.getReleaseKey());
+        }
+
+        List<Instance> instances = instanceService.findInstancesByIds(instanceConfigMap.keySet());
+
+        if (CollectionUtils.isEmpty(instances)) {
+            return Collections.emptyList();
+        }
+
+        List<InstanceResponse> instanceResponses = LocalBeanUtils.batchTransform(InstanceResponse.class, instances);
+
+        List<Release> otherReleases = releaseService.findByReleaseKeys(otherReleaseKeys);
+        Map<String, ReleaseResponse> releaseMap = Maps.newHashMap();
+
+        for (Release release : otherReleases) {
+            //unset configurations to save space
+            release.setConfigurations(null);
+            ReleaseResponse releaseResponse = LocalBeanUtils.transform(ReleaseResponse.class, release);
+            releaseMap.put(release.getReleaseKey(), releaseResponse);
+        }
+
+        for (InstanceResponse instanceResponse : instanceResponses) {
+            Collection<InstanceConfig> configs = instanceConfigMap.get(instanceResponse.getId());
+            List<InstanceConfigResponse> configResponses = configs.stream().map(instanceConfig -> {
+                InstanceConfigResponse instanceConfigResponse = new InstanceConfigResponse();
+                instanceConfigResponse.setRelease(releaseMap.get(instanceConfig.getReleaseKey()));
+                instanceConfigResponse.setReleaseDeliveryTime(instanceConfig.getReleaseDeliveryTime());
+                instanceConfigResponse.setDataChangeLastModifiedTime(instanceConfig
+                        .getDataChangeLastModifiedTime());
+                return instanceConfigResponse;
+            }).collect(Collectors.toList());
+            instanceResponse.setConfigs(configResponses);
+        }
+
+        return instanceResponses;
+    }
+
+    @GetMapping("/by-namespace")
+    public PageResult<InstanceResponse> getInstancesByExecutor(
+            @RequestParam("namespaceName") String namespaceName, @RequestParam("appId") String appId,
+            @RequestParam("executorName") String executorName,
+            @RequestParam(value = "instanceId", required = false) String instanceId,
+            PageHelperRequest pageHelperRequest) {
+        PageResult<Instance> instancesPage = instanceService.findInstancesByExecutor(namespaceName, appId, executorName,
+                pageHelperRequest);
+
+        return transform2PageResult(instancesPage);
+    }
+
     @GetMapping("/by-namespace/count")
     public long getInstancesCountByNamespace(@RequestParam("namespaceName") String namespaceName,
                                              @RequestParam("appId") String appId,
@@ -96,5 +169,16 @@ public class InstanceConfigController {
         PageResult<Instance> instances = instanceService.findInstancesByExecutor(namespaceName, appId,
                 executorName, pageHelperRequest);
         return instances.getTotal();
+    }
+
+    private PageResult<InstanceResponse> transform2PageResult(PageResult<Instance> instancePageResult) {
+        List<Instance> instances = instancePageResult.getContent();
+        List<InstanceResponse> instanceResponses = new ArrayList<>(instances.size());
+        for (Instance instance : instances) {
+            instanceResponses.add(LocalBeanUtils.transform(InstanceResponse.class, instance));
+        }
+
+        return new PageResult<>(instanceResponses, instancePageResult.getTotal(), instancePageResult.getPageNum(),
+                instancePageResult.getPageSize());
     }
 }
