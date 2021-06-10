@@ -1,43 +1,69 @@
 <template>
-  <div style="height: 100%">
+  <div>
     <el-container>
-      <el-container>
-        <el-header>
-          <h2>Jedi线程池管理平台</h2>
-        </el-header>
-        <el-container>
-          <el-aside width="20%">
-            <div>
-              <el-tag type="info">所属环境: {{this.executor.namespaceName}}</el-tag>
-              <el-tag type="info">所属应用: {{this.executor.appId}}</el-tag>
-            </div>
-            <div>
-              <ul style="list-style:none; margin:0px; width:80%;">
-                <li>
-                  <div class="title">线程池名称</div>
-                  <div class="value">{{this.executor.executorName}}</div>
-                </li>
-                <el-divider></el-divider>
-                <li>
-                  <div class="title">线程池负责人</div>
-                  <div class="value">{{this.executor.dataChangeCreatedBy}}</div>
-                </li>
-                <el-divider></el-divider>
-                <li>
-                  <div class="title">线程池配置</div>
-                  <div class="value">{{this.item.configuration}}</div>
-                </li>
-                <el-divider></el-divider>
-                <li>
-                  <div class="title">配置最近更新时间</div>
-                  <div class="value">{{this.item.dataChangeLastModifiedTime}}</div>
-                </li>
-              </ul>
-            </div>
-          </el-aside>
-          <el-main><h3>仪表板</h3></el-main>
-        </el-container>
-      </el-container>
+        <el-aside width="15%" style="margin-left: 20px">
+          <el-row class="tac">
+            <el-col :span="12">
+              <div style="text-align: center;">
+                <el-tag type="info" @click="forwardNamespace()"
+                        onmouseover="this.style.background='#99a9bf';"
+                        onmouseleave="this.style.background='#f4f4f5';" style="margin-bottom: 5px">所属环境:
+                  {{this.executor.namespaceName}}</el-tag>
+                <el-tag type="info" @click="forwardApp(executor.namespaceName, executor.appId)"
+                        onmouseover="this.style.background='#99a9bf';"
+                        onmouseleave="this.style.background='#f4f4f5';" style="margin-bottom: 5px">所属应用:
+                  {{this.executor.appId}}</el-tag>
+                <el-tag type="info" style="margin-bottom: 5px">线程池名称: {{this.executor.executorName}}</el-tag>
+              </div>
+              <el-menu
+                default-active="/item"
+                class="el-menu-vertical-demo"
+                unique-opened
+                router
+                @open="handleOpen"
+                @close="handleClose"
+                @select="handleSelect">
+                <el-submenu index="1">
+                  <template slot="title">
+                    <i class="el-icon-menu"></i>
+                    <span>线程池信息</span>
+                  </template>
+                  <el-menu-item index="/item"
+                                :route="{path:'/item',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">配置信息
+                  </el-menu-item>
+                  <el-menu-item index="/release" :route="{path:'/release',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">发布信息</el-menu-item>
+                  <el-submenu index="1-2">
+                    <template slot="title">实例信息</template>
+                    <el-menu-item index="/instance/active-release"
+                                  :route="{path:'/instance/active-release',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">最新配置实例</el-menu-item>
+                    <el-menu-item index="/instance/inactive-release"
+                                  :route="{path:'/instance/inactive-release',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">非最新配置实例</el-menu-item>
+                    <el-menu-item index="/instance/all"
+                                  :route="{path:'/instance/all',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">全部实例</el-menu-item>
+                  </el-submenu>
+                </el-submenu>
+                <el-menu-item index="/task"
+                              :route="{path:'/task',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">
+                  <i class="el-icon-document"></i>
+                  <span slot="title">线程池任务</span>
+                </el-menu-item>
+                <el-menu-item index="/alarm"
+                              :route="{path:'/alarm',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">
+                  <i class="el-icon-setting"></i>
+                  <span slot="title">线程池报警</span>
+                </el-menu-item>
+                <el-menu-item index="/custom"
+                              :route="{path:'/custom',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">
+                  <i class="el-icon-document"></i>
+                  <span slot="title">自定义消息</span>
+                </el-menu-item>
+              </el-menu>
+            </el-col>
+          </el-row>
+        </el-aside>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
     </el-container>
   </div>
 </template>
@@ -52,16 +78,6 @@ export default {
         namespaceName: undefined,
         appId: undefined,
         executorName: undefined,
-        dataChangeCreatedBy: undefined,
-        dataChangeLastModifiedBy: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: undefined
-      },
-      item: {
-        id: undefined,
-        executorId: undefined,
-        configuration: undefined,
-        comment: undefined,
         dataChangeCreatedBy: undefined,
         dataChangeLastModifiedBy: undefined,
         dataChangeCreatedTime: undefined,
@@ -82,7 +98,7 @@ export default {
       this.executor.namespaceName = this.$route.query.namespace
       this.executor.appId = this.$route.query.appId
       this.executor.executorName = this.$route.query.executor
-      this.asyncQueryExecutor(this.$route.query.namespace, this.$route.query.appId, this.executor.executorName)
+      this.asyncQueryExecutor(this.$route.query.namespace, this.$route.query.appId, this.$route.query.executor)
     }
   },
   mounted () {},
@@ -95,19 +111,6 @@ export default {
       ).then(res => {
         console.log(res)
         this.executor = res.data
-        this.asyncQueryItem(namespaceName, appId, executorName)
-      }).catch(function (error) {
-        console.log(error)
-      })
-    },
-    asyncQueryItem (namespaceName, appId, executorName) {
-      console.log('asyncQueryItem')
-      console.log(executorName)
-
-      this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName + '/items'
-      ).then(res => {
-        console.log(res)
-        this.item = res.data
       }).catch(function (error) {
         console.log(error)
       })
@@ -120,6 +123,34 @@ export default {
     },
     currentPage (pageNum) {
       this.pagination.pageNum = pageNum
+    },
+    handleOpen (key, keyPath) {
+      console.log(key, keyPath)
+    },
+    handleClose (key, keyPath) {
+      console.log(key, keyPath)
+    },
+    handleSelect (key, keyPath) {
+      console.log(key, keyPath)
+    },
+    forwardApp (namespaceName, appId) {
+      console.log('forwardApp')
+      this.$router.push({
+        path: '/app',
+        query: {
+          namespace: namespaceName,
+          appId: appId
+        }
+      })
+    },
+    forwardNamespace () {
+      console.log('forwardNamespace')
+      this.$router.push({
+        path: '/home',
+        query: {
+          namespace: undefined
+        }
+      })
     }
   }
 }
@@ -130,24 +161,6 @@ export default {
     /*background-color: #F5F5F5;*/
     color: #333;
     line-height: 20px;
-  }
-  li{
-    position:relative;
-    margin-top: 50px;
-  }
-  .title{
-    position: absolute;
-    width: 30%;
-    text-align: justify;
-    text-align-last: justify;
-  }
-  .title:before{
-    position: absolute;
-    left: 100%;
-    content: '\FF1A';
-  }
-  .value{
-    padding-left: 20%;
   }
   .el-aside {
     color: #333;
@@ -162,5 +175,8 @@ export default {
     margin: 0px;
     /*统一设置高度为100%*/
     height: 100%;
+  }
+  .el-col-12 {
+    width: 100%;
   }
 </style>

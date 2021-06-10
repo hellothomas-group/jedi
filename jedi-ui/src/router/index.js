@@ -5,6 +5,14 @@ import My from '@/components/My'
 import Namespace from '@/components/Namespace'
 import SingleApp from '../components/SingleApp'
 import Executor from '../components/Executor'
+import Item from '../components/Item'
+import Release from '../components/Release'
+import Task from '../components/Task'
+import Alarm from '../components/Alarm'
+import Custom from '../components/Custom'
+import ActiveReleaseInstance from '../components/ActiveReleaseInstance'
+import InactiveReleaseInstance from '../components/InactiveReleaseInstance'
+import Instance from '../components/Instance'
 
 Vue.use(Router)
 
@@ -51,7 +59,49 @@ export default new Router({
     {
       path: '/executor',
       name: 'Executor',
-      component: Executor
+      component: Executor,
+      children: [
+        {
+          path: '/item',
+          name: 'Item',
+          component: Item
+        },
+        {
+          path: '/release',
+          name: 'Release',
+          component: Release
+        },
+        {
+          path: '/instance/active-release',
+          name: 'ActiveReleaseInstance',
+          component: ActiveReleaseInstance
+        },
+        {
+          path: '/instance/inactive-release',
+          name: 'InactiveReleaseInstance',
+          component: InactiveReleaseInstance
+        },
+        {
+          path: '/instance/all',
+          name: 'Instance',
+          component: Instance
+        },
+        {
+          path: '/task',
+          name: 'Task',
+          component: Task
+        },
+        {
+          path: '/alarm',
+          name: 'Alarm',
+          component: Alarm
+        },
+        {
+          path: '/custom',
+          name: 'Custom',
+          component: Custom
+        }
+      ]
     }
   ]
 })

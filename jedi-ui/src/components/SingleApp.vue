@@ -1,27 +1,26 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 85%">
     <el-container>
-      <el-header>
-        <h1>Jedi线程池管理平台</h1>
-      </el-header>
       <el-container>
         <el-aside width="25%">
-          <div>
-            <el-tag type="info">所属环境: {{this.app.namespaceName}}</el-tag>
+          <div style="text-align: center">
+            <el-tag type="info" @click="forwardNamespace()"
+                    onmouseover="this.style.background='#99a9bf';" onmouseleave="this.style.background='#f4f4f5';">所属环境:
+              {{this.app.namespaceName}}</el-tag>
           </div>
           <div>
             <ul style="list-style:none; margin:0px; width:80%;">
-              <li >
+              <li class="li">
                 <div class="title">应用名称</div>
                 <div class="value">{{this.app.appId}}</div>
               </li>
               <el-divider></el-divider>
-              <li >
+              <li class="li">
                 <div class="title">应用描述</div>
                 <div class="value">{{this.app.appDescription}}</div>
               </li>
               <el-divider></el-divider>
-              <li >
+              <li class="li">
                 <div class="title">应用负责人</div>
                 <div class="value">{{this.app.dataChangeCreatedBy}}</div>
               </li>
@@ -31,7 +30,7 @@
         <el-container>
           <el-main>
             <div style="text-align:right;padding-right: 10px;">
-              <el-button type="text" @click="createExecutorDialogFormVisible = true">创建线程池</el-button>
+              <el-button type="text" style="font-size: 16px" @click="createExecutorDialogFormVisible = true">创建线程池</el-button>
             </div>
             <el-dialog title="线程池信息" :visible.sync="createExecutorDialogFormVisible">
               <el-form :model="newExecutorForm" :rules="creatExecutorFormRules" ref="newExecutorForm">
@@ -71,23 +70,25 @@
                       placeholder="输入关键字搜索"/>
                   </template>
                   <template slot-scope="scope">
-                    <el-button
-                      size="mini"
-                      @click="handleQuery(scope.$index, scope.row)">详情</el-button>
-                    <el-button
-                      size="mini"
-                      @click="handleConfig(scope.$index, scope.row)">配置</el-button>
-                    <el-tooltip :disabled="!scope.row.itemModified" content="配置有修改,待发布" placement="top">
-                    <el-badge :is-dot="scope.row.itemModified" class="item">
-                    <el-button
-                      size="mini"
-                      @click="handleRelease(scope.$index, scope.row)">发布</el-button>
-                    </el-badge>
-                    </el-tooltip>
-                    <el-button
-                      size="mini"
-                      type="danger"
-                      @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    <div class="tdr">
+                      <el-button
+                        size="mini"
+                        @click="handleQuery(scope.$index, scope.row)">详情</el-button>
+                      <el-button
+                        size="mini"
+                        @click="handleConfig(scope.$index, scope.row)">配置</el-button>
+                      <el-tooltip :disabled="!scope.row.itemModified" content="配置有修改,待发布" placement="top">
+                        <el-badge :is-dot="scope.row.itemModified" class="item">
+                          <el-button
+                            size="mini"
+                            @click="handleRelease(scope.$index, scope.row)">发布</el-button>
+                        </el-badge>
+                      </el-tooltip>
+                      <el-button
+                        size="mini"
+                        type="danger"
+                        @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    </div>
                   </template>
                 </el-table-column>
               </el-table>
@@ -104,7 +105,7 @@
               </el-form-item>
               <el-form-item label="queueCapacity" :label-width="formLabelWidth" prop="queueCapacity">
                 <el-input v-model="updateExecutorForm.configuration.queueCapacity" autocomplete="off"
-                          placeholder="正整数"></el-input>
+                          placeholder="正整数,若改小则重启时生效"></el-input>
               </el-form-item>
               <el-form-item label="keepAliveSeconds" :label-width="formLabelWidth" prop="keepAliveSeconds">
                 <el-input v-model="updateExecutorForm.configuration.keepAliveSeconds" autocomplete="off"
@@ -546,6 +547,15 @@ export default {
         console.log(error)
         Utils.$emit('releaseExecutorFail', error)
       })
+    },
+    forwardNamespace () {
+      console.log('forwardNamespace')
+      this.$router.push({
+        path: '/home',
+        query: {
+          namespace: undefined
+        }
+      })
     }
   },
   beforeDestroy () {
@@ -568,7 +578,7 @@ export default {
   .el-aside {
     color: #333;
   }
-  li{
+  .li{
     position:relative;
     margin-top: 50px;
   }
@@ -585,6 +595,7 @@ export default {
   }
   .value{
     padding-left: 20%;
+    text-align: center;
   }
   .el-pagination {
     text-align: right;
@@ -608,6 +619,11 @@ export default {
     margin-top: 5px;
     margin-right: 15px;
     margin-left: 15px;
+  }
+  .tdr {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
   }
 
 </style>

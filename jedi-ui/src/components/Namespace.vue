@@ -1,6 +1,5 @@
 <template>
   <div>
-    <el-header><h1>Jedi线程池管理平台</h1></el-header>
     <div>
       <el-form ref="elForm" :model="selectNamespaceForm" :rules="rules" size="medium" label-width="100px">
         <el-form-item label="环境选择" prop="namespace" style="width: 200px;margin-top: 22px">
@@ -12,7 +11,7 @@
         </el-form-item>
       </el-form>
       <div style="text-align:right;padding-right: 25px;">
-        <el-button type="text" @click="createExecutorDialogFormVisible = true">创建应用</el-button>
+        <el-button type="text" style="font-size: 16px" @click="createExecutorDialogFormVisible = true">创建应用</el-button>
       </div>
       <el-dialog title="应用信息" :visible.sync="createExecutorDialogFormVisible">
         <el-form :model="newAppForm" :rules="newAppRules" ref="form">
@@ -31,13 +30,15 @@
           <el-button type="primary" @click="submitForm('form')">确 定</el-button>
         </div>
       </el-dialog>
-      <el-row :gutter="50" style="margin-left: 2px;margin-right: 2px;">
-        <el-col :span="6" v-for="(item, index) in apps" :key="index">
-          <div class="grid-content bg-purple" style="display: flex; align-items: center; justify-content: center;"
-               @click="forwardSingleApp(item)" onmouseover="this.style.background='#99a9bf';" onmouseleave="this.style.background='#d3dce6';">
-            <h2>{{item.appId}}<br>{{item.appDescription}}</h2>
-          </div>
-        </el-col>
+      <el-row :gutter="50" style="margin-left: 2px;margin-right: 2px; text-align: center">
+        <div>
+          <el-col :span="6" v-for="(item, index) in apps" :key="index">
+            <div class="grid-content bg-purple" style="display: flex; align-items: center; justify-content: center;"
+                 @click="forwardSingleApp(item)" onmouseover="this.style.background='#99a9bf';" onmouseleave="this.style.background='#d3dce6';">
+              <h2>{{item.appId}}<br>{{item.appDescription}}</h2>
+            </div>
+          </el-col>
+        </div>
       </el-row>
     </div>
     <div style="margin-right: 25px;">
