@@ -6,7 +6,7 @@
           <el-table
             :data="releases.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
             style="width: 100%"
-            :row-class-name="tableRowClassName">
+            :row-class-name="tableRowClassName" :cell-class-name="isAbandonedClassName">
             <el-table-column
               label="id"
               prop="id">
@@ -22,7 +22,7 @@
             <el-table-column
               label="是否废弃"
               prop="isAbandoned"
-              :formatter = "booleanFormatter">
+              :formatter = "isAbandonedFormatter">
             </el-table-column>
             <el-table-column
               align="right">
@@ -176,7 +176,7 @@ export default {
       this.pagination.pageNum = pageNum
       this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
     },
-    booleanFormatter (row, index) {
+    isAbandonedFormatter (row, column, cellValue, index) {
       if (row.isAbandoned === true) {
         row.isAbandoned = '已废弃'
       }
@@ -184,6 +184,13 @@ export default {
         row.isAbandoned = '未废弃'
       }
       return row.isAbandoned
+    },
+    isAbandonedClassName (row, column, cellValue, index) {
+      if (row.columnIndex === 3 && row.row.isAbandoned === '已废弃') {
+        return 'warning-row'
+      } else {
+        return ''
+      }
     }
   }
 }

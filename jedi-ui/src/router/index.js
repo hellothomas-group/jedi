@@ -13,6 +13,7 @@ import Custom from '../components/Custom'
 import ActiveReleaseInstance from '../components/ActiveReleaseInstance'
 import InactiveReleaseInstance from '../components/InactiveReleaseInstance'
 import Instance from '../components/Instance'
+import ExecutorStatus from '../components/ExecutorStatus'
 
 Vue.use(Router)
 
@@ -65,6 +66,11 @@ export default new Router({
           path: '/item',
           name: 'Item',
           component: Item
+        },
+        {
+          path: '/executor-status',
+          name: 'ExecutorStatus',
+          component: ExecutorStatus
         },
         {
           path: '/release',

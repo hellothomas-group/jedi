@@ -3,15 +3,15 @@
     <el-container>
         <el-aside width="15%" style="margin-left: 20px">
           <el-row class="tac">
-            <el-col :span="12">
+            <el-col :span="12" class="my-el-col-12">
               <div style="text-align: center;">
                 <el-tag type="info" @click="forwardNamespace()"
                         onmouseover="this.style.background='#99a9bf';"
-                        onmouseleave="this.style.background='#f4f4f5';" style="margin-bottom: 5px">所属环境:
+                        onmouseleave="this.style.background='#f4f4f5';" style="margin-bottom: 5px;cursor: pointer;">所属环境:
                   {{this.executor.namespaceName}}</el-tag>
                 <el-tag type="info" @click="forwardApp(executor.namespaceName, executor.appId)"
                         onmouseover="this.style.background='#99a9bf';"
-                        onmouseleave="this.style.background='#f4f4f5';" style="margin-bottom: 5px">所属应用:
+                        onmouseleave="this.style.background='#f4f4f5';" style="margin-bottom: 5px;cursor: pointer;">所属应用:
                   {{this.executor.appId}}</el-tag>
                 <el-tag type="info" style="margin-bottom: 5px">线程池名称: {{this.executor.executorName}}</el-tag>
               </div>
@@ -30,6 +30,9 @@
                   </template>
                   <el-menu-item index="/item"
                                 :route="{path:'/item',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">配置信息
+                  </el-menu-item>
+                  <el-menu-item index="/executor-status"
+                                :route="{path:'/executor-status',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">实时状态
                   </el-menu-item>
                   <el-menu-item index="/release" :route="{path:'/release',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">发布信息</el-menu-item>
                   <el-submenu index="1-2">
@@ -176,7 +179,7 @@ export default {
     /*统一设置高度为100%*/
     height: 100%;
   }
-  .el-col-12 {
-    width: 100%;
+  .my-el-col-12 {
+    width: 100% !important;
   }
 </style>

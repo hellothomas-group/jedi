@@ -4,7 +4,7 @@
       <el-container>
         <el-aside width="25%">
           <div style="text-align: center">
-            <el-tag type="info" @click="forwardNamespace()"
+            <el-tag type="info" style="cursor: pointer;" @click="forwardNamespace()"
                     onmouseover="this.style.background='#99a9bf';" onmouseleave="this.style.background='#f4f4f5';">所属环境:
               {{this.app.namespaceName}}</el-tag>
           </div>
