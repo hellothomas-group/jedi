@@ -73,127 +73,127 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        formLabelWidth: '20%',
-        executor: {
-          id: undefined,
-          namespaceName: undefined,
-          appId: undefined,
-          executorName: undefined,
-          dataChangeCreatedBy: undefined,
-          dataChangeLastModifiedBy: undefined,
-          dataChangeCreatedTime: undefined,
-          dataChangeLastModifiedTime: undefined
-        },
-        releases: [],
-        search: '',
-        selectedReleaseDialogFormVisible: false,
-        pagination: {
-          total: 0,
-          pageNum: 1,
-          pageSize: 10
-        },
-        selectedRelease: {
-          id: undefined,
-          releaseKey: undefined,
-          name: undefined,
-          namespaceName: undefined,
-          appId: undefined,
-          executorName: undefined,
-          configurations: undefined,
-          comment: undefined,
-          isAbandoned: undefined,
-          dataChangeCreatedBy: undefined,
-          dataChangeLastModifiedBy: undefined,
-          dataChangeCreatedTime: undefined,
-          dataChangeLastModifiedTime: undefined
+export default {
+  data () {
+    return {
+      formLabelWidth: '20%',
+      executor: {
+        id: undefined,
+        namespaceName: undefined,
+        appId: undefined,
+        executorName: undefined,
+        dataChangeCreatedBy: undefined,
+        dataChangeLastModifiedBy: undefined,
+        dataChangeCreatedTime: undefined,
+        dataChangeLastModifiedTime: undefined
+      },
+      releases: [],
+      search: '',
+      selectedReleaseDialogFormVisible: false,
+      pagination: {
+        total: 0,
+        pageNum: 1,
+        pageSize: 10
+      },
+      selectedRelease: {
+        id: undefined,
+        releaseKey: undefined,
+        name: undefined,
+        namespaceName: undefined,
+        appId: undefined,
+        executorName: undefined,
+        configurations: undefined,
+        comment: undefined,
+        isAbandoned: undefined,
+        dataChangeCreatedBy: undefined,
+        dataChangeLastModifiedBy: undefined,
+        dataChangeCreatedTime: undefined,
+        dataChangeLastModifiedTime: undefined
+      }
+    }
+  },
+  created () {
+    console.log(this.$route.query.executor)
+    if (this.$route.query) {
+      this.asyncQueryExecutor(this.$route.query.namespace, this.$route.query.appId, this.$route.query.executor)
+    }
+  },
+  methods: {
+    asyncQueryExecutor (namespaceName, appId, executorName) {
+      console.log('asyncQueryExecutor')
+      console.log(executorName)
+
+      this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName
+      ).then(res => {
+        console.log(res)
+        this.executor = res.data
+        this.asyncQueryReleases(namespaceName, appId, executorName)
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
+    asyncQueryReleases (namespaceName, appId, executorName) {
+      console.log('asyncQueryReleases')
+      console.log(executorName)
+
+      this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
+        '/releases/all', {
+        params: {
+          pageNum: this.pagination.pageNum,
+          pageSize: this.pagination.pageSize
         }
+      }).then(res => {
+        console.log(res)
+        this.releases = res.data.content
+        this.pagination.total = res.data.total
+        this.pagination.pageNum = res.data.pageNum
+        this.pagination.pageSize = res.data.pageSize
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
+    handleReleaseDetail (index, row) {
+      console.log(index, row)
+      this.selectedRelease = row
+      this.selectedReleaseDialogFormVisible = true
+    },
+    tableRowClassName ({row, rowIndex}) {
+      if (rowIndex % 2 === 1) {
+        return 'success-row'
+      } else {
+        return ''
       }
     },
-    created () {
-      console.log(this.$route.query.executor)
-      if (this.$route.query) {
-        this.asyncQueryExecutor(this.$route.query.namespace, this.$route.query.appId, this.$route.query.executor)
-      }
+    nextPage (pageNum) {
+      this.pagination.pageNum = pageNum
+      this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
     },
-    methods: {
-      asyncQueryExecutor (namespaceName, appId, executorName) {
-        console.log('asyncQueryExecutor')
-        console.log(executorName)
-
-        this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName
-        ).then(res => {
-          console.log(res)
-          this.executor = res.data
-          this.asyncQueryReleases(namespaceName, appId, executorName)
-        }).catch(function (error) {
-          console.log(error)
-        })
-      },
-      asyncQueryReleases (namespaceName, appId, executorName) {
-        console.log('asyncQueryReleases')
-        console.log(executorName)
-
-        this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
-          '/releases/all', {
-          params: {
-            pageNum: this.pagination.pageNum,
-            pageSize: this.pagination.pageSize
-          }
-        }).then(res => {
-          console.log(res)
-          this.releases = res.data.content
-          this.pagination.total = res.data.total
-          this.pagination.pageNum = res.data.pageNum
-          this.pagination.pageSize = res.data.pageSize
-        }).catch(function (error) {
-          console.log(error)
-        })
-      },
-      handleReleaseDetail (index, row) {
-        console.log(index, row)
-        this.selectedRelease = row
-        this.selectedReleaseDialogFormVisible = true
-      },
-      tableRowClassName ({row, rowIndex}) {
-        if (rowIndex % 2 === 1) {
-          return 'success-row'
-        } else {
-          return ''
-        }
-      },
-      nextPage (pageNum) {
-        this.pagination.pageNum = pageNum
-        this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
-      },
-      prevPage (pageNum) {
-        this.pagination.pageNum = pageNum
-        this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
-      },
-      currentPage (pageNum) {
-        this.pagination.pageNum = pageNum
-        this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
-      },
-      isAbandonedFormatter (row, column, cellValue, index) {
-        if (row.isAbandoned === true) {
-          row.isAbandoned = '已废弃'
-        }
-        if (row.isAbandoned === false) {
-          row.isAbandoned = '未废弃'
-        }
-        return row.isAbandoned
-      },
-      isAbandonedClassName (row, column, cellValue, index) {
-        if (row.columnIndex === 3 && row.row.isAbandoned === '已废弃') {
-          return 'warning-row'
-        } else {
-          return ''
-        }
+    prevPage (pageNum) {
+      this.pagination.pageNum = pageNum
+      this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
+    },
+    currentPage (pageNum) {
+      this.pagination.pageNum = pageNum
+      this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
+    },
+    isAbandonedFormatter (row, column, cellValue, index) {
+      if (row.isAbandoned === true) {
+        row.isAbandoned = '已废弃'
+      }
+      if (row.isAbandoned === false) {
+        row.isAbandoned = '未废弃'
+      }
+      return row.isAbandoned
+    },
+    isAbandonedClassName (row, column, cellValue, index) {
+      if (row.columnIndex === 3 && row.row.isAbandoned === '已废弃') {
+        return 'warning-row'
+      } else {
+        return ''
       }
     }
   }
+}
 </script>
 
 <style scoped>

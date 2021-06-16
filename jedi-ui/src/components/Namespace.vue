@@ -33,7 +33,8 @@
       <el-row :gutter="50" style="margin-left: 2px;margin-right: 2px; text-align: center">
         <div>
           <el-col :span="6" v-for="(item, index) in apps" :key="index">
-            <div class="grid-content bg-purple" style="display: flex; align-items: center; justify-content: center;"
+            <div class="grid-content bg-purple" style="display: flex; align-items: center; justify-content: center;
+            cursor: pointer;"
                  @click="forwardSingleApp(item)" onmouseover="this.style.background='#99a9bf';" onmouseleave="this.style.background='#d3dce6';">
               <h2>{{item.appId}}<br>{{item.appDescription}}</h2>
             </div>
