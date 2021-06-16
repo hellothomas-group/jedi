@@ -24,5 +24,5 @@ public class InstanceResponse {
 
     private List<InstanceConfigResponse> configs;
 
-    private LocalDateTime dataChangeLastModifiedTime;
+    private LocalDateTime dataChangeCreatedTime;
 }

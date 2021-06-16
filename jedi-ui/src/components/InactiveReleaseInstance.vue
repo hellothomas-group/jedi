@@ -23,7 +23,7 @@
         </el-table-column>
         <el-table-column
         label="配置获取时间"
-        prop="dataChangeLastModifiedTime">
+        prop="configs[0].dataChangeLastModifiedTime">
         </el-table-column>
         <el-table-column
         align="right">
