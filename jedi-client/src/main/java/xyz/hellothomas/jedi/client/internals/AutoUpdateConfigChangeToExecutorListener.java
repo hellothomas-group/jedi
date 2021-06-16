@@ -11,8 +11,10 @@ import xyz.hellothomas.jedi.client.enums.PropertyChangeType;
 import xyz.hellothomas.jedi.client.model.ConfigChange;
 import xyz.hellothomas.jedi.client.model.ConfigChangeEvent;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
+import xyz.hellothomas.jedi.core.utils.ResizableCapacityLinkedBlockingQueue;
 
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class AutoUpdateConfigChangeToExecutorListener implements ConfigChangeListener {
@@ -55,6 +57,18 @@ public class AutoUpdateConfigChangeToExecutorListener implements ConfigChangeLis
                     break;
                 case "maxPoolSize":
                     executor.setMaximumPoolSize(Integer.parseInt(configChange.getNewValue()));
+                    break;
+                case "queueCapacity":
+                    BlockingQueue queue = executor.getQueue();
+                    if (queue instanceof ResizableCapacityLinkedBlockingQueue) {
+                        boolean result =
+                                ((ResizableCapacityLinkedBlockingQueue) queue).resizeCapacity(Integer.parseInt(configChange.getNewValue()));
+                        if (!result) {
+                            logger.info("queueCapacity can only increase unless restart");
+                        }
+                    } else {
+                        logger.info("BlockingQueue not support resize queueCapacity");
+                    }
                     break;
                 case "keepAliveSeconds":
                     executor.setKeepAliveTime(Long.parseLong(configChange.getNewValue()), TimeUnit.SECONDS);
