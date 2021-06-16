@@ -34,6 +34,9 @@ public class StaticConfigController {
     @Value("${consumer.type}")
     private String consumerType;
 
+    @Value("${consumer.url}")
+    private String consumerUrl;
+
     @GetMapping(value = "/consumer/{namespace}/{appId}")
     @ApiOperation("consumer")
     public ConsumerProperty consumer(@PathVariable String namespace, @PathVariable String appId) {
@@ -55,7 +58,7 @@ public class StaticConfigController {
             consumerProperty.setType(ConsumerTypeEnum.KAFKA.getEnumValue());
             consumerProperty.setConfigDetails(configProperty);
         } else {
-            configProperty.put("url", "http://127.0.0.1:8080");
+            configProperty.put("url", consumerUrl);
 
             consumerProperty.setType(ConsumerTypeEnum.HTTP.getEnumValue());
             consumerProperty.setConfigDetails(configProperty);

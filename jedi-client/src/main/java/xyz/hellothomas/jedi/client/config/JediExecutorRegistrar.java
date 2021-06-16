@@ -35,6 +35,7 @@ import xyz.hellothomas.jedi.core.internals.message.http.HttpNotificationService;
 import xyz.hellothomas.jedi.core.internals.message.kafka.KafkaNotificationService;
 import xyz.hellothomas.jedi.core.internals.message.kafka.KafkaProperty;
 import xyz.hellothomas.jedi.core.utils.JediThreadFactory;
+import xyz.hellothomas.jedi.core.utils.ResizableCapacityLinkedBlockingQueue;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -153,6 +154,7 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
                 bindResult.orElse(JediThreadPoolProperty.builder().build());
         jediThreadPoolProperty.setName(executor);
         jediThreadPoolProperty.setThreadFactory(JediThreadFactory.create(executor, false));
+        jediThreadPoolProperty.setWorkQueue(new ResizableCapacityLinkedBlockingQueue<>(jediThreadPoolProperty.getQueueCapacity()));
 
         return jediThreadPoolProperty;
     }
