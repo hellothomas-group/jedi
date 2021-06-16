@@ -107,6 +107,10 @@ public class InstanceConfigController {
                 .findInstanceConfigsByExecutorWithReleaseKeysNotIn(namespaceName, appId, executorName,
                         releaseKeys);
 
+        if (CollectionUtils.isEmpty(instanceConfigs)) {
+            return Collections.emptyList();
+        }
+
         Multimap<Long, InstanceConfig> instanceConfigMap = HashMultimap.create();
         Set<String> otherReleaseKeys = Sets.newHashSet();
 
@@ -116,10 +120,6 @@ public class InstanceConfigController {
         }
 
         List<Instance> instances = instanceService.findInstancesByIds(instanceConfigMap.keySet());
-
-        if (CollectionUtils.isEmpty(instances)) {
-            return Collections.emptyList();
-        }
 
         List<InstanceResponse> instanceResponses = LocalBeanUtils.batchTransform(InstanceResponse.class, instances);
 
