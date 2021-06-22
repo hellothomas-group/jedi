@@ -51,7 +51,7 @@ public class NamespaceService {
 
     public List<Namespace> findAll() {
         NamespaceExample namespaceExample = new NamespaceExample();
-        namespaceExample.createCriteria();
+        namespaceExample.createCriteria().andIsDeletedEqualTo(false);
 
         return namespaceMapper.selectByExample(namespaceExample);
     }
