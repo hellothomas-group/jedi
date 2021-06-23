@@ -1,11 +1,12 @@
 package xyz.hellothomas.jedi.consumer.application;
 
-import xyz.hellothomas.jedi.consumer.domain.ExecutorShutdownMessage;
-import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorShutdownMessageMapper;
-import xyz.hellothomas.jedi.core.dto.consumer.ExecutorShutdownNotification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import xyz.hellothomas.jedi.consumer.domain.ExecutorShutdownMessage;
+import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorShutdownMessageMapper;
+import xyz.hellothomas.jedi.core.dto.consumer.ExecutorShutdownNotification;
+import xyz.hellothomas.jedi.core.enums.MessageType;
 
 import java.time.LocalDateTime;
 
@@ -17,13 +18,14 @@ import java.time.LocalDateTime;
  */
 @Slf4j
 @Service
-public class ExecutorShutdownService {
+public class ExecutorShutdownService implements NotificationService<ExecutorShutdownNotification> {
     private final ExecutorShutdownMessageMapper executorShutdownMessageMapper;
 
     public ExecutorShutdownService(ExecutorShutdownMessageMapper executorShutdownMessageMapper) {
         this.executorShutdownMessageMapper = executorShutdownMessageMapper;
     }
 
+    @Override
     public void save(ExecutorShutdownNotification executorShutdownNotification) {
         ExecutorShutdownMessage executorShutdownMessage = new ExecutorShutdownMessage();
         BeanUtils.copyProperties(executorShutdownNotification, executorShutdownMessage);
@@ -31,5 +33,10 @@ public class ExecutorShutdownService {
         executorShutdownMessage.setUpdateTime(LocalDateTime.now());
         log.info("executorShutdownMessage:{}", executorShutdownMessage);
         executorShutdownMessageMapper.insert(executorShutdownMessage);
+    }
+
+    @Override
+    public boolean match(ExecutorShutdownNotification notification) {
+        return MessageType.EXECUTOR_SHUTDOWN.getTypeValue().equals(notification.getMessageType());
     }
 }

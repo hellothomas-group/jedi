@@ -1,14 +1,13 @@
 package xyz.hellothomas.jedi.consumer.application;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.kafka.annotation.KafkaListener;
 import xyz.hellothomas.jedi.core.dto.consumer.CustomNotification;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorShutdownNotification;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTickerNotification;
 import xyz.hellothomas.jedi.core.utils.JsonUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Thomas
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
  * @version 1.0
  */
 @Slf4j
-@Component
 public class KafkaConsumer {
     private final ExecutorTickerService executorTickerService;
     private final ExecutorTaskService executorTaskService;

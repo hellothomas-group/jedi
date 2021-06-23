@@ -59,3 +59,6 @@ consumer:
   executor-task-topic: executor-task
   executor-shutdown-topic: executor-shutdown
   custom-notification-topic: custom-notification
+
+consumer-service:
+  aspect.logging.enable: true

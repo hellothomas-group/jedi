@@ -1,11 +1,12 @@
 package xyz.hellothomas.jedi.consumer.application;
 
-import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage;
-import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMessageMapper;
-import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage;
+import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMessageMapper;
+import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
+import xyz.hellothomas.jedi.core.enums.MessageType;
 
 import java.time.LocalDateTime;
 
@@ -17,13 +18,14 @@ import java.time.LocalDateTime;
  */
 @Slf4j
 @Service
-public class ExecutorTaskService {
+public class ExecutorTaskService implements NotificationService<ExecutorTaskNotification> {
     private final ExecutorTaskMessageMapper executorTaskMessageMapper;
 
     public ExecutorTaskService(ExecutorTaskMessageMapper executorTaskMessageMapper) {
         this.executorTaskMessageMapper = executorTaskMessageMapper;
     }
 
+    @Override
     public void save(ExecutorTaskNotification executorTaskNotification) {
         ExecutorTaskMessage executorTaskMessage = new ExecutorTaskMessage();
         BeanUtils.copyProperties(executorTaskNotification, executorTaskMessage);
@@ -31,5 +33,10 @@ public class ExecutorTaskService {
         executorTaskMessage.setUpdateTime(LocalDateTime.now());
         log.info("executorTaskMessage:{}", executorTaskMessage);
         executorTaskMessageMapper.insert(executorTaskMessage);
+    }
+
+    @Override
+    public boolean match(ExecutorTaskNotification notification) {
+        return MessageType.EXECUTOR_TASK.getTypeValue().equals(notification.getMessageType());
     }
 }
