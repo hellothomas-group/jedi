@@ -1,4 +1,4 @@
-package xyz.hellothomas.jedi.consumer.domain;
+package xyz.hellothomas.jedi.admin.domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

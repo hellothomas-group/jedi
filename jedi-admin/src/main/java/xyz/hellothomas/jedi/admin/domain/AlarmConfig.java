@@ -1,7 +1,8 @@
-package xyz.hellothomas.jedi.consumer.domain;
+package xyz.hellothomas.jedi.admin.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import xyz.hellothomas.jedi.biz.domain.BaseEntity;
 
 @Getter
 @Setter

@@ -1,8 +1,8 @@
-package xyz.hellothomas.jedi.consumer.infrastructure.mapper;
+package xyz.hellothomas.jedi.admin.infrastructure.mapper;
 
 import org.apache.ibatis.annotations.Param;
-import xyz.hellothomas.jedi.consumer.domain.AlarmConfig;
-import xyz.hellothomas.jedi.consumer.domain.AlarmConfigExample;
+import xyz.hellothomas.jedi.admin.domain.AlarmConfig;
+import xyz.hellothomas.jedi.admin.domain.AlarmConfigExample;
 
 import java.util.List;
 
