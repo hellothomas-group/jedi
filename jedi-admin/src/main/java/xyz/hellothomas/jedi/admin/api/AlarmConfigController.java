@@ -30,13 +30,4 @@ public class AlarmConfigController {
 
         return null;
     }
-
-    @PostMapping(value = "executors/{executorId}/alarm-configs")
-    @ApiOperation("create")
-    public AlarmConfigResponse create(@PathVariable("executorId") Long executorId,
-                                      @RequestParam("configuration") String configuration,
-                                      @RequestParam("operator") String operator) {
-
-        return null;
-    }
 }
