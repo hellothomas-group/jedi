@@ -176,3 +176,40 @@ CREATE TABLE `app` (
   KEY `data_change_last_modified_time` (`data_change_last_modified_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='应用定义';
 
+CREATE TABLE `users` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `username` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
+  `password` varchar(64) NOT NULL DEFAULT 'default' COMMENT '密码',
+  `email` varchar(64) NOT NULL DEFAULT 'default' COMMENT '邮箱地址',
+  `enabled` tinyint(4) DEFAULT NULL COMMENT '是否有效',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+
+CREATE TABLE `role` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `role_name` varchar(256) NOT NULL DEFAULT '' COMMENT 'roleName',
+  `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
+  `data_change_created_by` varchar(32) DEFAULT '' COMMENT '创建人邮箱前缀',
+  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `data_change_last_modified_by` varchar(32) DEFAULT '' COMMENT '最后修改人邮箱前缀',
+  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  KEY `IX_roleName` (`role_name`(191)),
+  KEY `IX_dataChange_LastTime` (`data_change_last_modified_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
+
+CREATE TABLE `user_role` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `user_id` varchar(128) DEFAULT '' COMMENT '用户身份标识',
+  `role_id` int(10) unsigned DEFAULT NULL COMMENT 'roleId',
+  `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
+  `data_change_created_by` varchar(32) DEFAULT '' COMMENT '创建人邮箱前缀',
+  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `data_change_last_modified_by` varchar(32) DEFAULT '' COMMENT '最后修改人邮箱前缀',
+  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  KEY `IX_dataChange_lastTime` (`data_change_last_modified_time`),
+  KEY `IX_roleId` (`role_id`),
+  KEY `IX_userId_roleId` (`user_id`,`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户和role的绑定表';
+
