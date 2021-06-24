@@ -34,7 +34,7 @@ CREATE TABLE `release` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='发布';
 
 CREATE TABLE `release_history` (
-  `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `namespace_name` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
   `app_id` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'appId',
   `executor_name` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'executorName',
@@ -128,7 +128,7 @@ CREATE TABLE `executor_lock` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='executor的编辑锁';
 
 CREATE TABLE `audit` (
-  `Id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `entity_name` varchar(50) NOT NULL DEFAULT 'default' COMMENT '表名',
   `entity_id` int(11) unsigned DEFAULT NULL COMMENT '记录ID',
   `operation_name` varchar(50) NOT NULL DEFAULT 'default' COMMENT '操作类型',
@@ -138,7 +138,7 @@ CREATE TABLE `audit` (
   `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `data_change_last_modified_by` varchar(32) DEFAULT '' COMMENT '最后修改人邮箱前缀',
   `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
-  PRIMARY KEY (`Id`),
+  PRIMARY KEY (`id`),
   KEY `data_change_last_modified_time` (`data_change_last_modified_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='日志审计表';
 

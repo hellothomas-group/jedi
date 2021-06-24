@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="xyz.hellothomas.jedi.admin.infrastructure.mapper.ReleaseHistoryMapper">
   <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.admin.domain.ReleaseHistory">
-    <id column="Id" jdbcType="BIGINT" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="namespace_name" jdbcType="VARCHAR" property="namespaceName" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
     <result column="executor_name" jdbcType="VARCHAR" property="executorName" />
@@ -77,7 +77,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    Id, namespace_name, app_id, executor_name, release_id, previous_release_id, operation, 
+    id, namespace_name, app_id, executor_name, release_id, previous_release_id, operation, 
     is_deleted, data_change_created_by, data_change_created_time, data_change_last_modified_by, 
     data_change_last_modified_time
   </sql>
@@ -120,11 +120,11 @@
     ,
     <include refid="Blob_Column_List" />
     from release_history
-    where Id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from release_history
-    where Id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.admin.domain.ReleaseHistoryExample">
     delete from release_history
@@ -133,7 +133,7 @@
     </if>
   </delete>
   <insert id="insert" parameterType="xyz.hellothomas.jedi.admin.domain.ReleaseHistory" useGeneratedKeys="true" keyProperty="id">
-    insert into release_history (Id, namespace_name, app_id, 
+    insert into release_history (id, namespace_name, app_id, 
       executor_name, release_id, previous_release_id, 
       operation, is_deleted, data_change_created_by, 
       data_change_created_time, data_change_last_modified_by, 
@@ -150,7 +150,7 @@
     insert into release_history
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        Id,
+        id,
       </if>
       <if test="namespaceName != null">
         namespace_name,
@@ -241,7 +241,7 @@
     update release_history
     <set>
       <if test="record.id != null">
-        Id = #{record.id,jdbcType=BIGINT},
+        id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.namespaceName != null">
         namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
@@ -286,7 +286,7 @@
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
     update release_history
-    set Id = #{record.id,jdbcType=BIGINT},
+    set id = #{record.id,jdbcType=BIGINT},
       namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
       app_id = #{record.appId,jdbcType=VARCHAR},
       executor_name = #{record.executorName,jdbcType=VARCHAR},
@@ -305,7 +305,7 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update release_history
-    set Id = #{record.id,jdbcType=BIGINT},
+    set id = #{record.id,jdbcType=BIGINT},
       namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
       app_id = #{record.appId,jdbcType=VARCHAR},
       executor_name = #{record.executorName,jdbcType=VARCHAR},
@@ -361,7 +361,7 @@
         operation_context = #{operationContext,jdbcType=LONGVARCHAR},
       </if>
     </set>
-    where Id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="xyz.hellothomas.jedi.admin.domain.ReleaseHistory">
     update release_history
@@ -377,7 +377,7 @@
       data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
       data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
       operation_context = #{operationContext,jdbcType=LONGVARCHAR}
-    where Id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.admin.domain.ReleaseHistory">
     update release_history
@@ -392,6 +392,6 @@
       data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
       data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
       data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
-    where Id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

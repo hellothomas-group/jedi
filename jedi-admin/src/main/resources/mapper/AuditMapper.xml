@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="xyz.hellothomas.jedi.admin.infrastructure.mapper.AuditMapper">
   <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.admin.domain.Audit">
-    <id column="Id" jdbcType="BIGINT" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="entity_name" jdbcType="VARCHAR" property="entityName" />
     <result column="entity_id" jdbcType="BIGINT" property="entityId" />
     <result column="operation_name" jdbcType="VARCHAR" property="operationName" />
@@ -72,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    Id, entity_name, entity_id, operation_name, comment, is_deleted, data_change_created_by, 
+    id, entity_name, entity_id, operation_name, comment, is_deleted, data_change_created_by, 
     data_change_created_time, data_change_last_modified_by, data_change_last_modified_time
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.admin.domain.AuditExample" resultMap="BaseResultMap">
@@ -93,11 +93,11 @@
     select 
     <include refid="Base_Column_List" />
     from audit
-    where Id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from audit
-    where Id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.admin.domain.AuditExample">
     delete from audit
@@ -106,7 +106,7 @@
     </if>
   </delete>
   <insert id="insert" parameterType="xyz.hellothomas.jedi.admin.domain.Audit" useGeneratedKeys="true" keyProperty="id">
-    insert into audit (Id, entity_name, entity_id, 
+    insert into audit (id, entity_name, entity_id, 
       operation_name, comment, is_deleted, 
       data_change_created_by, data_change_created_time, 
       data_change_last_modified_by, data_change_last_modified_time
@@ -121,7 +121,7 @@
     insert into audit
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        Id,
+        id,
       </if>
       <if test="entityName != null">
         entity_name,
@@ -194,7 +194,7 @@
     update audit
     <set>
       <if test="record.id != null">
-        Id = #{record.id,jdbcType=BIGINT},
+        id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.entityName != null">
         entity_name = #{record.entityName,jdbcType=VARCHAR},
@@ -230,7 +230,7 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update audit
-    set Id = #{record.id,jdbcType=BIGINT},
+    set id = #{record.id,jdbcType=BIGINT},
       entity_name = #{record.entityName,jdbcType=VARCHAR},
       entity_id = #{record.entityId,jdbcType=BIGINT},
       operation_name = #{record.operationName,jdbcType=VARCHAR},
@@ -275,7 +275,7 @@
         data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where Id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.admin.domain.Audit">
     update audit
@@ -288,6 +288,6 @@
       data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
       data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
       data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
-    where Id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
