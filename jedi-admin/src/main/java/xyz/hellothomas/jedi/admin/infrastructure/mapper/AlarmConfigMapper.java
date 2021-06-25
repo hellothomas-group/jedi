@@ -19,7 +19,7 @@ public interface AlarmConfigMapper {
 
     List<AlarmConfig> selectByExample(AlarmConfigExample example);
 
-    AlarmConfig selectByPrimaryKey(Integer id);
+    AlarmConfig selectByPrimaryKey(Long id);
 
     int updateByExampleSelective(@Param("record") AlarmConfig record, @Param("example") AlarmConfigExample example);
 

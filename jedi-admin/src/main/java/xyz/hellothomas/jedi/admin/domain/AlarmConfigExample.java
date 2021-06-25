@@ -165,63 +165,213 @@ public class AlarmConfigExample {
             return (Criteria) this;
         }
 
-        public Criteria andExecutorIdIsNull() {
-            addCriterion("executor_id is null");
+        public Criteria andNamespaceNameIsNull() {
+            addCriterion("namespace_name is null");
             return (Criteria) this;
         }
 
-        public Criteria andExecutorIdIsNotNull() {
-            addCriterion("executor_id is not null");
+        public Criteria andNamespaceNameIsNotNull() {
+            addCriterion("namespace_name is not null");
             return (Criteria) this;
         }
 
-        public Criteria andExecutorIdEqualTo(Long value) {
-            addCriterion("executor_id =", value, "executorId");
+        public Criteria andNamespaceNameEqualTo(String value) {
+            addCriterion("namespace_name =", value, "namespaceName");
             return (Criteria) this;
         }
 
-        public Criteria andExecutorIdNotEqualTo(Long value) {
-            addCriterion("executor_id <>", value, "executorId");
+        public Criteria andNamespaceNameNotEqualTo(String value) {
+            addCriterion("namespace_name <>", value, "namespaceName");
             return (Criteria) this;
         }
 
-        public Criteria andExecutorIdGreaterThan(Long value) {
-            addCriterion("executor_id >", value, "executorId");
+        public Criteria andNamespaceNameGreaterThan(String value) {
+            addCriterion("namespace_name >", value, "namespaceName");
             return (Criteria) this;
         }
 
-        public Criteria andExecutorIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("executor_id >=", value, "executorId");
+        public Criteria andNamespaceNameGreaterThanOrEqualTo(String value) {
+            addCriterion("namespace_name >=", value, "namespaceName");
             return (Criteria) this;
         }
 
-        public Criteria andExecutorIdLessThan(Long value) {
-            addCriterion("executor_id <", value, "executorId");
+        public Criteria andNamespaceNameLessThan(String value) {
+            addCriterion("namespace_name <", value, "namespaceName");
             return (Criteria) this;
         }
 
-        public Criteria andExecutorIdLessThanOrEqualTo(Long value) {
-            addCriterion("executor_id <=", value, "executorId");
+        public Criteria andNamespaceNameLessThanOrEqualTo(String value) {
+            addCriterion("namespace_name <=", value, "namespaceName");
             return (Criteria) this;
         }
 
-        public Criteria andExecutorIdIn(List<Long> values) {
-            addCriterion("executor_id in", values, "executorId");
+        public Criteria andNamespaceNameLike(String value) {
+            addCriterion("namespace_name like", value, "namespaceName");
             return (Criteria) this;
         }
 
-        public Criteria andExecutorIdNotIn(List<Long> values) {
-            addCriterion("executor_id not in", values, "executorId");
+        public Criteria andNamespaceNameNotLike(String value) {
+            addCriterion("namespace_name not like", value, "namespaceName");
             return (Criteria) this;
         }
 
-        public Criteria andExecutorIdBetween(Long value1, Long value2) {
-            addCriterion("executor_id between", value1, value2, "executorId");
+        public Criteria andNamespaceNameIn(List<String> values) {
+            addCriterion("namespace_name in", values, "namespaceName");
             return (Criteria) this;
         }
 
-        public Criteria andExecutorIdNotBetween(Long value1, Long value2) {
-            addCriterion("executor_id not between", value1, value2, "executorId");
+        public Criteria andNamespaceNameNotIn(List<String> values) {
+            addCriterion("namespace_name not in", values, "namespaceName");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceNameBetween(String value1, String value2) {
+            addCriterion("namespace_name between", value1, value2, "namespaceName");
+            return (Criteria) this;
+        }
+
+        public Criteria andNamespaceNameNotBetween(String value1, String value2) {
+            addCriterion("namespace_name not between", value1, value2, "namespaceName");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdIsNull() {
+            addCriterion("app_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdIsNotNull() {
+            addCriterion("app_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdEqualTo(String value) {
+            addCriterion("app_id =", value, "appId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdNotEqualTo(String value) {
+            addCriterion("app_id <>", value, "appId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdGreaterThan(String value) {
+            addCriterion("app_id >", value, "appId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdGreaterThanOrEqualTo(String value) {
+            addCriterion("app_id >=", value, "appId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdLessThan(String value) {
+            addCriterion("app_id <", value, "appId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdLessThanOrEqualTo(String value) {
+            addCriterion("app_id <=", value, "appId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdLike(String value) {
+            addCriterion("app_id like", value, "appId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdNotLike(String value) {
+            addCriterion("app_id not like", value, "appId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdIn(List<String> values) {
+            addCriterion("app_id in", values, "appId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdNotIn(List<String> values) {
+            addCriterion("app_id not in", values, "appId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdBetween(String value1, String value2) {
+            addCriterion("app_id between", value1, value2, "appId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAppIdNotBetween(String value1, String value2) {
+            addCriterion("app_id not between", value1, value2, "appId");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameIsNull() {
+            addCriterion("executor_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameIsNotNull() {
+            addCriterion("executor_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameEqualTo(String value) {
+            addCriterion("executor_name =", value, "executorName");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameNotEqualTo(String value) {
+            addCriterion("executor_name <>", value, "executorName");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameGreaterThan(String value) {
+            addCriterion("executor_name >", value, "executorName");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameGreaterThanOrEqualTo(String value) {
+            addCriterion("executor_name >=", value, "executorName");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameLessThan(String value) {
+            addCriterion("executor_name <", value, "executorName");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameLessThanOrEqualTo(String value) {
+            addCriterion("executor_name <=", value, "executorName");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameLike(String value) {
+            addCriterion("executor_name like", value, "executorName");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameNotLike(String value) {
+            addCriterion("executor_name not like", value, "executorName");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameIn(List<String> values) {
+            addCriterion("executor_name in", values, "executorName");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameNotIn(List<String> values) {
+            addCriterion("executor_name not in", values, "executorName");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameBetween(String value1, String value2) {
+            addCriterion("executor_name between", value1, value2, "executorName");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecutorNameNotBetween(String value1, String value2) {
+            addCriterion("executor_name not between", value1, value2, "executorName");
             return (Criteria) this;
         }
 

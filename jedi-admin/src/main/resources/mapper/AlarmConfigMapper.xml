@@ -3,7 +3,9 @@
 <mapper namespace="xyz.hellothomas.jedi.admin.infrastructure.mapper.AlarmConfigMapper">
   <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.admin.domain.AlarmConfig">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="executor_id" jdbcType="BIGINT" property="executorId" />
+    <result column="namespace_name" jdbcType="VARCHAR" property="namespaceName" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="executor_name" jdbcType="VARCHAR" property="executorName" />
     <result column="configuration" jdbcType="VARCHAR" property="configuration" />
     <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
     <result column="data_change_created_by" jdbcType="VARCHAR" property="dataChangeCreatedBy" />
@@ -70,8 +72,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, executor_id, configuration, is_deleted, data_change_created_by, data_change_created_time,
-    data_change_last_modified_by, data_change_last_modified_time
+    id, namespace_name, app_id, executor_name, configuration, is_deleted, data_change_created_by,
+    data_change_created_time, data_change_last_modified_by, data_change_last_modified_time
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.admin.domain.AlarmConfigExample" resultMap="BaseResultMap">
     select
@@ -104,12 +106,14 @@
     </if>
   </delete>
   <insert id="insert" parameterType="xyz.hellothomas.jedi.admin.domain.AlarmConfig">
-    insert into alarm_config (id, executor_id, configuration,
-      is_deleted, data_change_created_by, data_change_created_time,
+    insert into alarm_config (id, namespace_name, app_id,
+      executor_name, configuration, is_deleted,
+      data_change_created_by, data_change_created_time,
       data_change_last_modified_by, data_change_last_modified_time
       )
-    values (#{id,jdbcType=BIGINT}, #{executorId,jdbcType=BIGINT}, #{configuration,jdbcType=VARCHAR},
-      #{isDeleted,jdbcType=BIT}, #{dataChangeCreatedBy,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+    values (#{id,jdbcType=BIGINT}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR},
+      #{executorName,jdbcType=VARCHAR}, #{configuration,jdbcType=VARCHAR}, #{isDeleted,jdbcType=BIT},
+      #{dataChangeCreatedBy,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
       #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -119,8 +123,14 @@
       <if test="id != null">
         id,
       </if>
-      <if test="executorId != null">
-        executor_id,
+      <if test="namespaceName != null">
+        namespace_name,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="executorName != null">
+        executor_name,
       </if>
       <if test="configuration != null">
         configuration,
@@ -145,8 +155,14 @@
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="executorId != null">
-        #{executorId,jdbcType=BIGINT},
+      <if test="namespaceName != null">
+        #{namespaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="executorName != null">
+        #{executorName,jdbcType=VARCHAR},
       </if>
       <if test="configuration != null">
         #{configuration,jdbcType=VARCHAR},
@@ -180,8 +196,14 @@
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.executorId != null">
-        executor_id = #{record.executorId,jdbcType=BIGINT},
+      <if test="record.namespaceName != null">
+        namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appId != null">
+        app_id = #{record.appId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.executorName != null">
+        executor_name = #{record.executorName,jdbcType=VARCHAR},
       </if>
       <if test="record.configuration != null">
         configuration = #{record.configuration,jdbcType=VARCHAR},
@@ -209,13 +231,15 @@
   <update id="updateByExample" parameterType="map">
     update alarm_config
     set id = #{record.id,jdbcType=BIGINT},
-      executor_id = #{record.executorId,jdbcType=BIGINT},
-      configuration = #{record.configuration,jdbcType=VARCHAR},
-      is_deleted = #{record.isDeleted,jdbcType=BIT},
-      data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
-      data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
-      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+    namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
+    app_id = #{record.appId,jdbcType=VARCHAR},
+    executor_name = #{record.executorName,jdbcType=VARCHAR},
+    configuration = #{record.configuration,jdbcType=VARCHAR},
+    is_deleted = #{record.isDeleted,jdbcType=BIT},
+    data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
+    data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+    data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
+    data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -223,8 +247,14 @@
   <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.admin.domain.AlarmConfig">
     update alarm_config
     <set>
-      <if test="executorId != null">
-        executor_id = #{executorId,jdbcType=BIGINT},
+      <if test="namespaceName != null">
+        namespace_name = #{namespaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="executorName != null">
+        executor_name = #{executorName,jdbcType=VARCHAR},
       </if>
       <if test="configuration != null">
         configuration = #{configuration,jdbcType=VARCHAR},
@@ -249,7 +279,9 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.admin.domain.AlarmConfig">
     update alarm_config
-    set executor_id = #{executorId,jdbcType=BIGINT},
+    set namespace_name = #{namespaceName,jdbcType=VARCHAR},
+      app_id = #{appId,jdbcType=VARCHAR},
+      executor_name = #{executorName,jdbcType=VARCHAR},
       configuration = #{configuration,jdbcType=VARCHAR},
       is_deleted = #{isDeleted,jdbcType=BIT},
       data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
