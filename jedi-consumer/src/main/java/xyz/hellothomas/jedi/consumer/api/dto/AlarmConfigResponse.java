@@ -1,4 +1,4 @@
-package xyz.hellothomas.jedi.admin.api.dto;
+package xyz.hellothomas.jedi.consumer.api.dto;
 
 import lombok.Getter;
 import lombok.Setter;

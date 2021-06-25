@@ -1,4 +1,4 @@
-package xyz.hellothomas.jedi.admin.api;
+package xyz.hellothomas.jedi.consumer.api;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.hellothomas.jedi.admin.api.dto.AlarmConfigResponse;
-import xyz.hellothomas.jedi.admin.application.AlarmConfigService;
-import xyz.hellothomas.jedi.admin.domain.AlarmConfig;
-import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
-import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
+import xyz.hellothomas.jedi.consumer.api.dto.AlarmConfigResponse;
+import xyz.hellothomas.jedi.consumer.application.AlarmConfigService;
+import xyz.hellothomas.jedi.consumer.common.util.LocalBeanUtils;
+import xyz.hellothomas.jedi.consumer.domain.AlarmConfig;
+import xyz.hellothomas.jedi.consumer.infrastructure.exception.BadRequestException;
 
 /**
  * @author Thomas
