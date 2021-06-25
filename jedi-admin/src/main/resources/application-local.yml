@@ -35,3 +35,4 @@ spring:
 
 admin-service:
   aspect.logging.enable: true
+  consumer-url: http://127.0.0.1:8080

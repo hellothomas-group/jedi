@@ -3,7 +3,7 @@ package xyz.hellothomas.jedi.consumer.common.util;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.util.CollectionUtils;
-import xyz.hellothomas.jedi.biz.infrastructure.exception.BeanUtilsException;
+import xyz.hellothomas.jedi.consumer.infrastructure.exception.BeanUtilsException;
 
 import java.beans.PropertyDescriptor;
 import java.util.*;

@@ -3,15 +3,16 @@ package xyz.hellothomas.jedi.consumer.api;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.consumer.api.dto.AlarmConfigResponse;
 import xyz.hellothomas.jedi.consumer.application.AlarmConfigService;
 import xyz.hellothomas.jedi.consumer.common.util.LocalBeanUtils;
 import xyz.hellothomas.jedi.consumer.domain.AlarmConfig;
 import xyz.hellothomas.jedi.consumer.infrastructure.exception.BadRequestException;
+import xyz.hellothomas.jedi.consumer.infrastructure.exception.NotFoundException;
+import xyz.hellothomas.jedi.core.utils.JsonUtil;
+
+import java.time.LocalDateTime;
 
 /**
  * @author Thomas
@@ -43,5 +44,39 @@ public class AlarmConfigController {
         }
         AlarmConfig entity = alarmConfigService.save(namespaceName, appId, executorName, configuration, operator);
         return LocalBeanUtils.transform(AlarmConfigResponse.class, entity);
+    }
+
+    @ApiOperation("update")
+    @PutMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
+    public AlarmConfigResponse update(@PathVariable("namespaceName") String namespaceName,
+                                      @PathVariable("appId") String appId,
+                                      @PathVariable("executorName") String executorName,
+                                      @RequestParam("configuration") String configuration,
+                                      @RequestParam("operator") String operator) {
+        if (!JsonUtil.isJSONValid(configuration)) {
+            throw new BadRequestException("configuration invalid, must be json");
+        }
+
+        AlarmConfig managedEntity = alarmConfigService.findOne(namespaceName, appId, executorName);
+        if (managedEntity == null || managedEntity.getIsDeleted()) {
+            throw new BadRequestException("alarmConfig not exist");
+        }
+
+        managedEntity.setConfiguration(configuration);
+        managedEntity.setDataChangeLastModifiedBy(operator);
+        managedEntity.setDataChangeLastModifiedTime(LocalDateTime.now());
+        alarmConfigService.update(managedEntity);
+
+        return LocalBeanUtils.transform(AlarmConfigResponse.class, managedEntity);
+    }
+
+    @ApiOperation("delete")
+    @DeleteMapping("/alarm-configs/{alarmConfigId}")
+    public void delete(@PathVariable("alarmConfigId") long alarmConfigId, @RequestParam String operator) {
+        AlarmConfig entity = alarmConfigService.findOne(alarmConfigId);
+        if (entity == null) {
+            throw new NotFoundException("alarmConfig not found for alarmConfigId " + alarmConfigId);
+        }
+        alarmConfigService.delete(entity.getId(), operator);
     }
 }

@@ -2,7 +2,6 @@ package xyz.hellothomas.jedi.consumer.application;
 
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import xyz.hellothomas.jedi.consumer.domain.AlarmConfig;
 import xyz.hellothomas.jedi.consumer.domain.AlarmConfigExample;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.AlarmConfigMapper;
@@ -19,7 +18,6 @@ public class AlarmConfigService {
         this.alarmConfigMapper = alarmConfigMapper;
     }
 
-    @Transactional
     public AlarmConfig delete(long id, String operator) {
         AlarmConfig alarmConfig = alarmConfigMapper.selectByPrimaryKey(id);
         if (alarmConfig == null) {
@@ -34,7 +32,6 @@ public class AlarmConfigService {
         return alarmConfig;
     }
 
-    @Transactional
     public int deleteByExecutor(String namespaceName, String appId, String executorName, String operator) {
         AlarmConfigExample alarmConfigExample = new AlarmConfigExample();
         alarmConfigExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
@@ -68,8 +65,6 @@ public class AlarmConfigService {
         return alarmConfig;
     }
 
-
-    @Transactional
     public AlarmConfig save(String namespaceName, String appId, String executorName, String configuration,
                             String operator) {
         AlarmConfig alarmConfig = new AlarmConfig();
@@ -89,7 +84,6 @@ public class AlarmConfigService {
         return alarmConfig;
     }
 
-    @Transactional
     public int update(AlarmConfig alarmConfig) {
         return alarmConfigMapper.updateByPrimaryKey(alarmConfig);
     }
