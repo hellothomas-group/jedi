@@ -1,31 +1,56 @@
 <template>
   <div>
     <el-container>
+      <el-header>
+        <div style="float: left">
+          报警配置
+        </div>
+        <el-button
+          type="primary" icon="el-icon-setting"
+          @click="alarmConfigEditable = true" style="float:right;margin-right: 10px"></el-button>
+      </el-header>
       <el-main>
         <div style="height: 90%">
-          <el-button
-            size="mini"
-            @click="alarmConfigDialogFormVisible = true" style="margin-right: 50%">修改</el-button>
-          <el-dialog title="报警配置详情" :visible.sync="alarmConfigDialogFormVisible">
-            <el-form>
-              <el-form-item label="configuration" :label-width="formLabelWidth">
-                <el-input v-model="updateAlarmConfigForm.configuration" autocomplete="off" :disabled="true"></el-input>
+            <el-form :model="updateAlarmConfigForm" :rules="alarmConfigFormRules" ref="updateAlarmConfigForm">
+              <el-form-item label="alarmEnabled" :label-width="formLabelWidth">
+                <el-switch
+                  v-model="updateAlarmConfigForm.configuration.alarmEnabled"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  :disabled="!alarmConfigEditable">
+                </el-switch>
+              </el-form-item>
+              <el-form-item label="queueThreshold" :label-width="formLabelWidth">
+                <el-input v-model="updateAlarmConfigForm.configuration.queueThreshold" autocomplete="off"
+                          :disabled="!alarmConfigEditable"></el-input>
+              </el-form-item>
+              <el-form-item label="poolActivationThreshold" :label-width="formLabelWidth">
+                <el-input v-model="updateAlarmConfigForm.configuration.poolActivationThreshold" autocomplete="off"
+                          :disabled="!alarmConfigEditable"></el-input>
               </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="alarmConfigDialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="submitUpdateAlarmConfigForm('updateAlarmConfigForm')">确 定</el-button>
+            <div slot="footer" class="dialog-footer" style="text-align: right">
+              <el-button @click="cancelUpdateAlarmConfigForm('updateAlarmConfigForm')" v-if="alarmConfigEditable">取
+                消</el-button>
+              <el-button type="primary" @click="submitUpdateAlarmConfigForm('updateAlarmConfigForm')" v-if="alarmConfigEditable">确 定</el-button>
             </div>
-          </el-dialog>
+          <!--</el-dialog>-->
         </div>
       </el-main>
     </el-container>
   </div>
 </template>
 <script>
-import Utils from '../assets/js/util.js'
 export default {
   data () {
+    const isNum = (rule, value, callback) => {
+      const validData = /^[0-9]*$/
+      if (!validData.test(value)) {
+        callback(new Error('只能为数字'))
+      } else {
+        callback()
+      }
+    }
     return {
       formLabelWidth: '20%',
       alarmConfig: {
@@ -39,23 +64,30 @@ export default {
         dataChangeCreatedTime: undefined,
         dataChangeLastModifiedTime: undefined
       },
-      alarmConfigDialogFormVisible: false,
+      alarmConfigEditable: false,
       updateAlarmConfigForm: {
-        id: undefined,
         namespaceName: undefined,
         appId: undefined,
         executorName: undefined,
-        configuration: undefined,
-        dataChangeCreatedBy: undefined,
-        dataChangeLastModifiedBy: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: undefined
+        configuration: {
+          alarmEnabled: 'false',
+          queueThreshold: undefined,
+          poolActivationThreshold: undefined
+        }
+      },
+      alarmConfigFormRules: {
+        queueThreshold: [
+          {required: true, validator: isNum, message: '请输入json字符串', trigger: 'blur'}
+        ]
       }
     }
   },
   created () {
     console.log(this.$route.query.executor)
     if (this.$route.query) {
+      this.updateAlarmConfigForm.namespaceName = this.$route.query.namespace
+      this.updateAlarmConfigForm.appId = this.$route.query.appId
+      this.updateAlarmConfigForm.executorName = this.$route.query.executor
       this.asyncQueryAlarmConfig(this.$route.query.namespace, this.$route.query.appId, this.$route.query.executor)
     }
   },
@@ -63,14 +95,22 @@ export default {
     asyncQueryAlarmConfig (namespaceName, appId, executorName) {
       console.log('asyncQueryAlarmConfig')
       console.log(executorName)
-
-      this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
-        '/releases/all').then(res => {
+      let _this = this
+      this.axios.get('/consumer/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
+        '/alarm-configs'
+      ).then(res => {
         console.log(res)
-        this.releases = res.data.content
+        this.alarmConfig = res.data
+        this.updateAlarmConfigForm.configuration = JSON.parse(res.data.configuration)
       }).catch(function (error) {
         console.log(error)
+        _this.asyncCreateAlarmConfig(_this.updateAlarmConfigForm)
       })
+    },
+    cancelUpdateAlarmConfigForm (formName) {
+      console.log(formName)
+      this.updateAlarmConfigForm.configuration = JSON.parse(this.alarmConfig.configuration)
+      this.alarmConfigEditable = false
     },
     submitUpdateAlarmConfigForm (formName) {
       console.log(formName)
@@ -86,22 +126,53 @@ export default {
     asyncUpdateAlarmConfig (form) {
       console.log('asyncUpdateAlarmConfig')
       console.log('update alarmConfig...' + form.executorName)
-      this.createExecutorDialogFormVisible = false
+      this.alarmConfigEditable = false
 
-      this.axios.post('/admin/namespaces/' + form.namespace + '/apps/' +
-        form.appId + '/executors/' + form.newExecutor, null, {
+      for (let attr in form.configuration) {
+        if (attr === 'alarmEnabled') continue
+        if (!form.configuration[attr]) {
+          form.configuration[attr] = undefined
+        }
+      }
+
+      this.axios.put('/admin/namespaces/' + form.namespaceName + '/apps/' +
+        form.appId + '/executors/' + form.executorName + '/alarm-configs', null, {
         params: {
+          configuration: JSON.stringify(form.configuration),
           operator: '80234613'
         }
       }).then(res => {
-        console.log(form.newExecutor + ' created')
-        Utils.$emit('createExecutorSuccess', form.newExecutor)
+        console.log(form.executorName + 'alarmConfig updated')
+        this.asyncQueryAlarmConfig(form.namespaceName, form.appId, form.executorName)
       }).catch(function (error) {
         console.log(error)
-        Utils.$emit('createExecutorFail', error)
+      })
+    },
+    asyncCreateAlarmConfig (form) {
+      console.log('asyncCreateAlarmConfig')
+      console.log('create alarmConfig...' + form.executorName)
+      this.alarmConfigEditable = false
+
+      for (let attr in form.configuration) {
+        if (attr === 'alarmEnabled') continue
+        if (!form.configuration[attr]) {
+          form.configuration[attr] = undefined
+        }
+      }
+
+      this.axios.post('/admin/namespaces/' + form.namespaceName + '/apps/' +
+        form.appId + '/executors/' + form.executorName + '/alarm-configs', null, {
+        params: {
+          configuration: JSON.stringify(form.configuration),
+          operator: '80234613'
+        }
+      }).then(res => {
+        console.log(form.executorName + 'alarmConfig created')
+        this.asyncQueryAlarmConfig(form.namespaceName, form.appId, form.executorName)
+      }).catch(function (error) {
+        console.log(error)
       })
     }
-
   }
 }
 </script>
