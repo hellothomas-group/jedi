@@ -79,4 +79,16 @@ public class AlarmConfigController {
         }
         alarmConfigService.delete(entity.getId(), operator);
     }
+
+    @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
+    public AlarmConfigResponse get(@PathVariable("namespaceName") String namespaceName,
+                                   @PathVariable("appId") String appId,
+                                   @PathVariable("executorName") String executorName) {
+        AlarmConfig alarmConfig = alarmConfigService.findOne(namespaceName, appId, executorName);
+        if (alarmConfig == null) {
+            throw new NotFoundException(
+                    String.format("alarmConfig not found for %s %s %s", namespaceName, appId, executorName));
+        }
+        return LocalBeanUtils.transform(AlarmConfigResponse.class, alarmConfig);
+    }
 }
