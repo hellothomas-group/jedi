@@ -49,4 +49,11 @@ public class AlarmConfigController {
     public void delete(@PathVariable("alarmConfigId") long alarmConfigId, @RequestParam String operator) {
         alarmConfigService.delete(alarmConfigId, operator);
     }
+
+    @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
+    public AlarmConfigResponse get(@PathVariable("namespaceName") String namespaceName,
+                                   @PathVariable("appId") String appId,
+                                   @PathVariable("executorName") String executorName) {
+        return alarmConfigService.findOne(namespaceName, appId, executorName);
+    }
 }

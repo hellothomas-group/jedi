@@ -2,12 +2,12 @@
   <div>
     <el-container>
       <el-header>
-        <div style="float: left">
-          报警配置
-        </div>
-        <el-button
-          type="primary" icon="el-icon-setting"
-          @click="alarmConfigEditable = true" style="float:right;margin-right: 10px"></el-button>
+          <el-tag type="info" style="font-size: 16px;text-align: center;color: #0000FF; width: 100%;">报警配置详情
+            <el-button
+              size="mini"
+              type="primary" icon="el-icon-setting"
+              @click="alarmConfigEditable = true" style="margin-left: 10px"></el-button>
+          </el-tag>
       </el-header>
       <el-main>
         <div style="height: 90%">
@@ -96,7 +96,7 @@ export default {
       console.log('asyncQueryAlarmConfig')
       console.log(executorName)
       let _this = this
-      this.axios.get('/consumer/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
+      this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
         '/alarm-configs'
       ).then(res => {
         console.log(res)

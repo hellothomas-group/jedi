@@ -70,4 +70,9 @@ public class AlarmConfigService {
 
         auditService.audit(AlarmConfig.class.getSimpleName(), alarmConfigId, Audit.OP.DELETE, operator);
     }
+
+    public AlarmConfigResponse findOne(String namespaceName, String appId, String executorName) {
+        return restTemplate.getForObject(consumerUrl + "/namespaces/{namespaceName}/apps/{appId}/executors" +
+                "/{executorName}/alarm-configs", AlarmConfigResponse.class, namespaceName, appId, executorName);
+    }
 }
