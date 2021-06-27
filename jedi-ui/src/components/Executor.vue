@@ -45,15 +45,15 @@
                                   :route="{path:'/instance/all',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">全部实例</el-menu-item>
                   </el-submenu>
                 </el-submenu>
-                <el-menu-item index="/task"
-                              :route="{path:'/task',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">
-                  <i class="el-icon-document"></i>
-                  <span slot="title">线程池任务</span>
-                </el-menu-item>
                 <el-menu-item index="/alarm"
                               :route="{path:'/alarm',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">
                   <i class="el-icon-setting"></i>
                   <span slot="title">线程池报警</span>
+                </el-menu-item>
+                <el-menu-item index="/task"
+                              :route="{path:'/task',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">
+                  <i class="el-icon-document"></i>
+                  <span slot="title">线程池任务</span>
                 </el-menu-item>
                 <el-menu-item index="/custom"
                               :route="{path:'/custom',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">
@@ -85,11 +85,6 @@ export default {
         dataChangeLastModifiedBy: undefined,
         dataChangeCreatedTime: undefined,
         dataChangeLastModifiedTime: undefined
-      },
-      pagination: {
-        total: 0,
-        pageNum: 1,
-        pageSize: 5
       }
     }
   },
@@ -114,18 +109,11 @@ export default {
       ).then(res => {
         console.log(res)
         this.executor = res.data
+
+        this.forwardDefaultActive(namespaceName, appId, executorName)
       }).catch(function (error) {
         console.log(error)
       })
-    },
-    nextPage (pageNum) {
-      this.pagination.pageNum = pageNum
-    },
-    prevPage (pageNum) {
-      this.pagination.pageNum = pageNum
-    },
-    currentPage (pageNum) {
-      this.pagination.pageNum = pageNum
     },
     handleOpen (key, keyPath) {
       console.log(key, keyPath)
@@ -154,22 +142,25 @@ export default {
           namespace: undefined
         }
       })
+    },
+    forwardDefaultActive (namespaceName, appId, executorName) {
+      console.log('forwardDefaultActive')
+      this.$router.push({
+        path: '/item',
+        query: {
+          namespace: namespaceName,
+          appId: appId,
+          executor: executorName
+        }
+      })
     }
   }
 }
 
 </script>
 <style>
-  .el-header {
-    /*background-color: #F5F5F5;*/
-    color: #333;
-    line-height: 20px;
-  }
   .el-aside {
     color: #333;
-  }
-  .el-pagination {
-    text-align: right;
   }
   html,body,#app,.el-container{
     /*设置内部填充为0，几个布局元素之间没有间距*/
