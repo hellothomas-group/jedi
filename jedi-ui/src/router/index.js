@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import Namespace from '@/components/Namespace'
 import SingleApp from '../components/SingleApp'
 import Executor from '../components/Executor'
@@ -13,6 +12,7 @@ import ActiveReleaseInstance from '../components/ActiveReleaseInstance'
 import InactiveReleaseInstance from '../components/InactiveReleaseInstance'
 import Instance from '../components/Instance'
 import ExecutorStatus from '../components/ExecutorStatus'
+import Login from '../components/Login'
 
 Vue.use(Router)
 
@@ -38,8 +38,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'Login',
+      component: Login
     },
     {
       path: '/home',
