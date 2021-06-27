@@ -594,7 +594,7 @@ export default {
     content: '\FF1A';
   }
   .value{
-    padding-left: 20%;
+    padding-left: 35%;
     text-align: center;
   }
   .el-pagination {
