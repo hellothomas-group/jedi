@@ -3,22 +3,23 @@
     <el-container>
       <el-main>
         <div>
-          <table border="1" style="margin: auto;width: 50%;line-height: 60px">
+          <table border="1" style="margin: auto;line-height: 60px;width: 800px;table-layout:fixed;">
             <tr>
               <th>线程池名称</th>
-              <td>{{this.executor.executorName}}</td>
+              <td style="width: 70%">{{this.executor.executorName}}</td>
             </tr>
             <tr>
               <th>线程池负责人</th>
-              <td>{{this.executor.dataChangeCreatedBy}}</td>
+              <td style="width: 70%">{{this.executor.dataChangeCreatedBy}}</td>
             </tr>
             <tr>
               <th>线程池配置</th>
-              <td>{{this.item.configuration}}</td>
+              <td style="width: 70%;word-break:break-all;line-height: 20px;padding: 10px">{{this.item
+                .configuration}}</td>
             </tr>
             <tr>
               <th>配置最近更新时间</th>
-              <td>{{this.item.dataChangeLastModifiedTime}}</td>
+              <td style="width: 70%">{{this.item.dataChangeLastModifiedTime}}</td>
             </tr>
           </table>
         </div>
@@ -96,13 +97,6 @@ export default {
     color: #333;
     text-align: center;
     line-height: 60px;
-  }
-
-  .el-aside {
-    background-color: #D3DCE6;
-    color: #333;
-    text-align: center;
-    line-height: 200px;
   }
 
   .el-main {
