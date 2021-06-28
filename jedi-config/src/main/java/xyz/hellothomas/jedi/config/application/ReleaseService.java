@@ -32,7 +32,7 @@ public class ReleaseService {
                 .andExecutorNameEqualTo(executorName)
                 .andIsAbandonedEqualTo(false);
         releaseExample.setOrderByClause("id desc limit 1");
-        List<Release> result = releaseMapper.selectByExampleWithBLOBs(releaseExample);
+        List<Release> result = releaseMapper.selectByExample(releaseExample);
         return result.isEmpty() ? null : result.get(0);
     }
 }
