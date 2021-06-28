@@ -58,14 +58,14 @@ public class ReleaseService {
         ReleaseExample releaseExample = new ReleaseExample();
         releaseExample.createCriteria().andIdIn(Lists.newArrayList(releaseIds))
                 .andIsAbandonedEqualTo(false);
-        return releaseMapper.selectByExampleWithBLOBs(releaseExample);
+        return releaseMapper.selectByExample(releaseExample);
     }
 
     public List<Release> findByReleaseKeys(Set<String> releaseKeys) {
         ReleaseExample releaseExample = new ReleaseExample();
         releaseExample.createCriteria().andReleaseKeyIn(Lists.newArrayList(releaseKeys))
                 .andIsAbandonedEqualTo(false);
-        return releaseMapper.selectByExampleWithBLOBs(releaseExample);
+        return releaseMapper.selectByExample(releaseExample);
     }
 
     public Release findLatestActiveRelease(Executor executor) {
@@ -81,7 +81,7 @@ public class ReleaseService {
                 .andExecutorNameEqualTo(executorName)
                 .andIsAbandonedEqualTo(false);
         releaseExample.setOrderByClause("id desc limit 1");
-        List<Release> result = releaseMapper.selectByExampleWithBLOBs(releaseExample);
+        List<Release> result = releaseMapper.selectByExample(releaseExample);
         return result.isEmpty() ? null : result.get(0);
     }
 
@@ -98,7 +98,7 @@ public class ReleaseService {
         pageSize = (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
         PageHelper.startPage(pageNum, pageSize);
 
-        List<Release> releases = releaseMapper.selectByExampleWithBLOBs(releaseExample);
+        List<Release> releases = releaseMapper.selectByExample(releaseExample);
         PageInfo<Release> pageInfo = new PageInfo<>(releases);
 
         return PageResult.<Release>builder()
@@ -123,7 +123,7 @@ public class ReleaseService {
         pageSize = (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
         PageHelper.startPage(pageNum, pageSize);
 
-        List<Release> releases = releaseMapper.selectByExampleWithBLOBs(releaseExample);
+        List<Release> releases = releaseMapper.selectByExample(releaseExample);
         PageInfo<Release> pageInfo = new PageInfo<>(releases);
 
         return PageResult.<Release>builder()
@@ -144,7 +144,7 @@ public class ReleaseService {
                 .andIdBetween(fromReleaseId, toReleaseId);
         releaseExample.setOrderByClause("id desc");
 
-        return releaseMapper.selectByExampleWithBLOBs(releaseExample);
+        return releaseMapper.selectByExample(releaseExample);
     }
 
     @Transactional

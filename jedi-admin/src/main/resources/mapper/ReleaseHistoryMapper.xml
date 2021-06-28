@@ -14,9 +14,7 @@
     <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
     <result column="data_change_last_modified_by" jdbcType="VARCHAR" property="dataChangeLastModifiedBy" />
     <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="xyz.hellothomas.jedi.admin.domain.ReleaseHistory">
-    <result column="operation_context" jdbcType="LONGVARCHAR" property="operationContext" />
+    <result column="operation_context" jdbcType="VARCHAR" property="operationContext" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -77,29 +75,13 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, namespace_name, app_id, executor_name, release_id, previous_release_id, operation, 
-    is_deleted, data_change_created_by, data_change_created_time, data_change_last_modified_by, 
+    id, namespace_name, app_id, executor_name, release_id, previous_release_id, operation,
+    is_deleted, data_change_created_by, data_change_created_time, data_change_last_modified_by,
     data_change_last_modified_time
   </sql>
   <sql id="Blob_Column_List">
     operation_context
   </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="xyz.hellothomas.jedi.admin.domain.ReleaseHistoryExample" resultMap="ResultMapWithBLOBs">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from release_history
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.admin.domain.ReleaseHistoryExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -114,11 +96,9 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
-    select 
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from release_history
     where id = #{id,jdbcType=BIGINT}
   </select>
@@ -133,17 +113,17 @@
     </if>
   </delete>
   <insert id="insert" parameterType="xyz.hellothomas.jedi.admin.domain.ReleaseHistory" useGeneratedKeys="true" keyProperty="id">
-    insert into release_history (id, namespace_name, app_id, 
-      executor_name, release_id, previous_release_id, 
-      operation, is_deleted, data_change_created_by, 
-      data_change_created_time, data_change_last_modified_by, 
+    insert into release_history (id, namespace_name, app_id,
+      executor_name, release_id, previous_release_id,
+      operation, is_deleted, data_change_created_by,
+      data_change_created_time, data_change_last_modified_by,
       data_change_last_modified_time, operation_context
       )
-    values (#{id,jdbcType=BIGINT}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, 
-      #{executorName,jdbcType=VARCHAR}, #{releaseId,jdbcType=BIGINT}, #{previousReleaseId,jdbcType=BIGINT}, 
-      #{operation,jdbcType=TINYINT}, #{isDeleted,jdbcType=BIT}, #{dataChangeCreatedBy,jdbcType=VARCHAR}, 
-      #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, 
-      #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}, #{operationContext,jdbcType=LONGVARCHAR}
+    values (#{id,jdbcType=BIGINT}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR},
+      #{executorName,jdbcType=VARCHAR}, #{releaseId,jdbcType=BIGINT}, #{previousReleaseId,jdbcType=BIGINT},
+      #{operation,jdbcType=TINYINT}, #{isDeleted,jdbcType=BIT}, #{dataChangeCreatedBy,jdbcType=VARCHAR},
+      #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}, #{operationContext,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.admin.domain.ReleaseHistory" useGeneratedKeys="true" keyProperty="id">
@@ -227,7 +207,7 @@
         #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="operationContext != null">
-        #{operationContext,jdbcType=LONGVARCHAR},
+        #{operationContext,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -277,28 +257,9 @@
         data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.operationContext != null">
-        operation_context = #{record.operationContext,jdbcType=LONGVARCHAR},
+        operation_context = #{record.operationContext,jdbcType=VARCHAR},
       </if>
     </set>
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExampleWithBLOBs" parameterType="map">
-    update release_history
-    set id = #{record.id,jdbcType=BIGINT},
-      namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
-      app_id = #{record.appId,jdbcType=VARCHAR},
-      executor_name = #{record.executorName,jdbcType=VARCHAR},
-      release_id = #{record.releaseId,jdbcType=BIGINT},
-      previous_release_id = #{record.previousReleaseId,jdbcType=BIGINT},
-      operation = #{record.operation,jdbcType=TINYINT},
-      is_deleted = #{record.isDeleted,jdbcType=BIT},
-      data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
-      data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
-      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
-      operation_context = #{record.operationContext,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -316,7 +277,8 @@
       data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
       data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
       data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
-      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      operation_context = #{record.operationContext,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -358,25 +320,9 @@
         data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="operationContext != null">
-        operation_context = #{operationContext,jdbcType=LONGVARCHAR},
+        operation_context = #{operationContext,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="xyz.hellothomas.jedi.admin.domain.ReleaseHistory">
-    update release_history
-    set namespace_name = #{namespaceName,jdbcType=VARCHAR},
-      app_id = #{appId,jdbcType=VARCHAR},
-      executor_name = #{executorName,jdbcType=VARCHAR},
-      release_id = #{releaseId,jdbcType=BIGINT},
-      previous_release_id = #{previousReleaseId,jdbcType=BIGINT},
-      operation = #{operation,jdbcType=TINYINT},
-      is_deleted = #{isDeleted,jdbcType=BIT},
-      data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
-      data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
-      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
-      operation_context = #{operationContext,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.admin.domain.ReleaseHistory">
@@ -391,7 +337,8 @@
       data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
       data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
       data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
-      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      operation_context = #{operationContext,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

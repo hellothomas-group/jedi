@@ -15,9 +15,7 @@
     <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
     <result column="data_change_last_modified_by" jdbcType="VARCHAR" property="dataChangeLastModifiedBy" />
     <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="xyz.hellothomas.jedi.biz.domain.Release">
-    <result column="configurations" jdbcType="LONGVARCHAR" property="configurations" />
+    <result column="configurations" jdbcType="VARCHAR" property="configurations" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -78,29 +76,10 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, release_key, name, comment, namespace_name, app_id, executor_name, is_abandoned, 
-    is_deleted, data_change_created_by, data_change_created_time, data_change_last_modified_by, 
-    data_change_last_modified_time
+    id, release_key, name, comment, namespace_name, app_id, executor_name, is_abandoned,
+    is_deleted, data_change_created_by, data_change_created_time, data_change_last_modified_by,
+    data_change_last_modified_time, configurations
   </sql>
-  <sql id="Blob_Column_List">
-    configurations
-  </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseExample" resultMap="ResultMapWithBLOBs">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from `release`
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.biz.domain.ReleaseExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -115,11 +94,9 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from `release`
     where id = #{id,jdbcType=BIGINT}
   </select>
@@ -134,18 +111,18 @@
     </if>
   </delete>
   <insert id="insert" parameterType="xyz.hellothomas.jedi.biz.domain.Release" useGeneratedKeys="true" keyProperty="id">
-    insert into `release` (id, release_key, name, 
-      comment, namespace_name, app_id, 
-      executor_name, is_abandoned, is_deleted, 
-      data_change_created_by, data_change_created_time, 
-      data_change_last_modified_by, data_change_last_modified_time, 
+    insert into `release` (id, release_key, name,
+      comment, namespace_name, app_id,
+      executor_name, is_abandoned, is_deleted,
+      data_change_created_by, data_change_created_time,
+      data_change_last_modified_by, data_change_last_modified_time,
       configurations)
-    values (#{id,jdbcType=BIGINT}, #{releaseKey,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{comment,jdbcType=VARCHAR}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, 
-      #{executorName,jdbcType=VARCHAR}, #{isAbandoned,jdbcType=BIT}, #{isDeleted,jdbcType=BIT}, 
-      #{dataChangeCreatedBy,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, 
-      #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}, 
-      #{configurations,jdbcType=LONGVARCHAR})
+    values (#{id,jdbcType=BIGINT}, #{releaseKey,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+      #{comment,jdbcType=VARCHAR}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR},
+      #{executorName,jdbcType=VARCHAR}, #{isAbandoned,jdbcType=BIT}, #{isDeleted,jdbcType=BIT},
+      #{dataChangeCreatedBy,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      #{configurations,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.biz.domain.Release" useGeneratedKeys="true" keyProperty="id">
     insert into `release`
@@ -234,7 +211,7 @@
         #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="configurations != null">
-        #{configurations,jdbcType=LONGVARCHAR},
+        #{configurations,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -287,16 +264,16 @@
         data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.configurations != null">
-        configurations = #{record.configurations,jdbcType=LONGVARCHAR},
+        configurations = #{record.configurations,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByExampleWithBLOBs" parameterType="map">
+  <update id="updateByExample" parameterType="map">
     update `release`
-    set id = #{record.id,jdbcType=BIGINT},
+      set id = #{record.id,jdbcType=BIGINT},
       release_key = #{record.releaseKey,jdbcType=VARCHAR},
       name = #{record.name,jdbcType=VARCHAR},
       comment = #{record.comment,jdbcType=VARCHAR},
@@ -309,26 +286,7 @@
       data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
       data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
       data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
-      configurations = #{record.configurations,jdbcType=LONGVARCHAR}
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map">
-    update `release`
-    set id = #{record.id,jdbcType=BIGINT},
-      release_key = #{record.releaseKey,jdbcType=VARCHAR},
-      name = #{record.name,jdbcType=VARCHAR},
-      comment = #{record.comment,jdbcType=VARCHAR},
-      namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
-      app_id = #{record.appId,jdbcType=VARCHAR},
-      executor_name = #{record.executorName,jdbcType=VARCHAR},
-      is_abandoned = #{record.isAbandoned,jdbcType=BIT},
-      is_deleted = #{record.isDeleted,jdbcType=BIT},
-      data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
-      data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
-      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+      configurations = #{record.configurations,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -373,26 +331,9 @@
         data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
       </if>
       <if test="configurations != null">
-        configurations = #{configurations,jdbcType=LONGVARCHAR},
+        configurations = #{configurations,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="xyz.hellothomas.jedi.biz.domain.Release">
-    update `release`
-    set release_key = #{releaseKey,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      comment = #{comment,jdbcType=VARCHAR},
-      namespace_name = #{namespaceName,jdbcType=VARCHAR},
-      app_id = #{appId,jdbcType=VARCHAR},
-      executor_name = #{executorName,jdbcType=VARCHAR},
-      is_abandoned = #{isAbandoned,jdbcType=BIT},
-      is_deleted = #{isDeleted,jdbcType=BIT},
-      data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
-      data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
-      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
-      configurations = #{configurations,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.biz.domain.Release">
@@ -408,14 +349,13 @@
       data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
       data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
       data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
-      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      configurations = #{configurations,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="findFirstByNamespaceNameAndAppIdAndExecutorNameAndIsAbandonedFalseOrderByIdDesc" resultMap="ResultMapWithBLOBs">
+  <select id="findFirstByNamespaceNameAndAppIdAndExecutorNameAndIsAbandonedFalseOrderByIdDesc" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from `release`
     where namespace_name = #{namespaceName,jdbcType=VARCHAR} and app_id = #{appId,jdbcType=VARCHAR}
     and executor_name = #{executorName,jdbcType=VARCHAR} and is_abandoned = '0'

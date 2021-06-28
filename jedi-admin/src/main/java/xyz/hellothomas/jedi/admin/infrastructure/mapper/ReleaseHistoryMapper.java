@@ -17,8 +17,6 @@ public interface ReleaseHistoryMapper {
 
     int insertSelective(ReleaseHistory record);
 
-    List<ReleaseHistory> selectByExampleWithBLOBs(ReleaseHistoryExample example);
-
     List<ReleaseHistory> selectByExample(ReleaseHistoryExample example);
 
     ReleaseHistory selectByPrimaryKey(Long id);
@@ -26,14 +24,9 @@ public interface ReleaseHistoryMapper {
     int updateByExampleSelective(@Param("record") ReleaseHistory record,
                                  @Param("example") ReleaseHistoryExample example);
 
-    int updateByExampleWithBLOBs(@Param("record") ReleaseHistory record,
-                                 @Param("example") ReleaseHistoryExample example);
-
     int updateByExample(@Param("record") ReleaseHistory record, @Param("example") ReleaseHistoryExample example);
 
     int updateByPrimaryKeySelective(ReleaseHistory record);
-
-    int updateByPrimaryKeyWithBLOBs(ReleaseHistory record);
 
     int updateByPrimaryKey(ReleaseHistory record);
 }
