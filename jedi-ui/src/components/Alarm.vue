@@ -58,7 +58,7 @@ export default {
         namespaceName: undefined,
         appId: undefined,
         executorName: undefined,
-        configuration: undefined,
+        configuration: '{}',
         dataChangeCreatedBy: undefined,
         dataChangeLastModifiedBy: undefined,
         dataChangeCreatedTime: undefined,
@@ -109,7 +109,9 @@ export default {
     },
     cancelUpdateAlarmConfigForm (formName) {
       console.log(formName)
-      this.updateAlarmConfigForm.configuration = JSON.parse(this.alarmConfig.configuration)
+      if (this.alarmConfig.configuration) {
+        this.updateAlarmConfigForm.configuration = JSON.parse(this.alarmConfig.configuration)
+      }
       this.alarmConfigEditable = false
     },
     submitUpdateAlarmConfigForm (formName) {
@@ -134,6 +136,7 @@ export default {
           form.configuration[attr] = undefined
         }
       }
+      let that = this
 
       this.axios.put('/admin/namespaces/' + form.namespaceName + '/apps/' +
         form.appId + '/executors/' + form.executorName + '/alarm-configs', null, {
@@ -146,6 +149,10 @@ export default {
         this.asyncQueryAlarmConfig(form.namespaceName, form.appId, form.executorName)
       }).catch(function (error) {
         console.log(error)
+        console.log(that.alarmConfig.configuration)
+        if (that.alarmConfig.configuration) {
+          that.updateAlarmConfigForm.configuration = JSON.parse(that.alarmConfig.configuration)
+        }
       })
     },
     asyncCreateAlarmConfig (form) {
