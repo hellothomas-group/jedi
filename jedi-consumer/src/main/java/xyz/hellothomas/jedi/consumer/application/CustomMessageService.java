@@ -25,7 +25,7 @@ public class CustomMessageService implements NotificationService<CustomNotificat
     }
 
     @Override
-    public void save(CustomNotification customNotification) {
+    public void process(CustomNotification customNotification) {
         MonitorMessage monitorMessage = new MonitorMessage();
         BeanUtils.copyProperties(customNotification, monitorMessage);
         monitorMessage.setCreateTime(LocalDateTime.now());

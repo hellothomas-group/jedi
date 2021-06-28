@@ -26,7 +26,7 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
     }
 
     @Override
-    public void save(ExecutorTaskNotification executorTaskNotification) {
+    public void process(ExecutorTaskNotification executorTaskNotification) {
         ExecutorTaskMessage executorTaskMessage = new ExecutorTaskMessage();
         BeanUtils.copyProperties(executorTaskNotification, executorTaskMessage);
         executorTaskMessage.setCreateTime(LocalDateTime.now());

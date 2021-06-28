@@ -40,7 +40,7 @@ public class KafkaConsumer {
         log.info("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
         ExecutorTickerNotification executorTickerNotification = JsonUtil.deserialize(record.value().toString(),
                 ExecutorTickerNotification.class);
-        executorTickerService.save(executorTickerNotification);
+        executorTickerService.process(executorTickerNotification);
     }
 
     /**
@@ -53,7 +53,7 @@ public class KafkaConsumer {
         log.info("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
         ExecutorTaskNotification executorTaskNotification = JsonUtil.deserialize(record.value().toString(),
                 ExecutorTaskNotification.class);
-        executorTaskService.save(executorTaskNotification);
+        executorTaskService.process(executorTaskNotification);
     }
 
     /**
@@ -66,7 +66,7 @@ public class KafkaConsumer {
         log.info("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
         ExecutorShutdownNotification executorShutdownNotification = JsonUtil.deserialize(record.value().toString(),
                 ExecutorShutdownNotification.class);
-        executorShutdownService.save(executorShutdownNotification);
+        executorShutdownService.process(executorShutdownNotification);
     }
 
     /**
@@ -79,6 +79,6 @@ public class KafkaConsumer {
         log.info("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
         CustomNotification customNotification = JsonUtil.deserialize(record.value().toString(),
                 CustomNotification.class);
-        customMessageService.save(customNotification);
+        customMessageService.process(customNotification);
     }
 }

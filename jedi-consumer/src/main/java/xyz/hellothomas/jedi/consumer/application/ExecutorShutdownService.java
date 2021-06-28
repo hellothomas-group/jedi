@@ -26,7 +26,7 @@ public class ExecutorShutdownService implements NotificationService<ExecutorShut
     }
 
     @Override
-    public void save(ExecutorShutdownNotification executorShutdownNotification) {
+    public void process(ExecutorShutdownNotification executorShutdownNotification) {
         ExecutorShutdownMessage executorShutdownMessage = new ExecutorShutdownMessage();
         BeanUtils.copyProperties(executorShutdownNotification, executorShutdownMessage);
         executorShutdownMessage.setCreateTime(LocalDateTime.now());

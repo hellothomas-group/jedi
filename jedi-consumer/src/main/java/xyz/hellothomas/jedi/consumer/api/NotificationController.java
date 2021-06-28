@@ -52,7 +52,7 @@ public class NotificationController {
     @ApiOperation("executor-ticker")
     public ReturnT<String> executorTick(@Valid @RequestBody List<ExecutorTickerNotification> executorTickerNotifications) {
         log.info("executorTickerNotifications: {}", executorTickerNotifications);
-        executorTickerNotifications.stream().forEach(i -> executorTickerService.save(i));
+        executorTickerNotifications.stream().forEach(i -> executorTickerService.process(i));
         return ReturnT.SUCCESS;
     }
 
@@ -60,7 +60,7 @@ public class NotificationController {
     @ApiOperation("executor-task")
     public ReturnT<String> executorTask(@Valid @RequestBody List<ExecutorTaskNotification> executorTaskNotifications) {
         log.info("executorTaskNotifications: {}", executorTaskNotifications);
-        executorTaskNotifications.stream().forEach(i -> executorTaskService.save(i));
+        executorTaskNotifications.stream().forEach(i -> executorTaskService.process(i));
         return ReturnT.SUCCESS;
     }
 
@@ -68,7 +68,7 @@ public class NotificationController {
     @ApiOperation("executor-shutdown")
     public ReturnT<String> executorShutdown(@Valid @RequestBody ExecutorShutdownNotification executorShutdownNotification) {
         log.info("executorShutdownNotification: {}", executorShutdownNotification);
-        executorShutdownService.save(executorShutdownNotification);
+        executorShutdownService.process(executorShutdownNotification);
         return ReturnT.SUCCESS;
     }
 
@@ -76,7 +76,7 @@ public class NotificationController {
     @ApiOperation("custom")
     public ReturnT<String> defaultNotification(@Valid @RequestBody List<CustomNotification> customNotifications) {
         log.info("customNotifications: {}", customNotifications);
-        customNotifications.stream().forEach(i -> customMessageService.save(i));
+        customNotifications.stream().forEach(i -> customMessageService.process(i));
         return ReturnT.SUCCESS;
     }
 }

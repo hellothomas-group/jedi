@@ -15,7 +15,7 @@ public interface NotificationService<T extends AbstractNotification> {
      *
      * @param notification
      */
-    void save(T notification);
+    void process(T notification);
 
     /**
      * 通知匹配处理类
