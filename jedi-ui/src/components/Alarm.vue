@@ -28,6 +28,10 @@
                 <el-input v-model="updateAlarmConfigForm.configuration.poolActivationThreshold" autocomplete="off"
                           :disabled="!alarmConfigEditable"></el-input>
               </el-form-item>
+              <el-form-item label="rejectCountThreshold" :label-width="formLabelWidth">
+                <el-input v-model="updateAlarmConfigForm.configuration.rejectCountThreshold" autocomplete="off"
+                          :disabled="!alarmConfigEditable"></el-input>
+              </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer" style="text-align: right">
               <el-button @click="cancelUpdateAlarmConfigForm('updateAlarmConfigForm')" v-if="alarmConfigEditable">取
@@ -72,7 +76,8 @@ export default {
         configuration: {
           alarmEnabled: 'false',
           queueThreshold: undefined,
-          poolActivationThreshold: undefined
+          poolActivationThreshold: undefined,
+          rejectCountThreshold: undefined
         }
       },
       alarmConfigFormRules: {
