@@ -80,9 +80,6 @@ CREATE TABLE `executor_shutdown_message` (
 
 CREATE TABLE `alarm_config` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
---   `queue_threshold` int(9) unsigned DEFAULT NULL COMMENT 'queue_threshold',
---   `pool_activation_threshold` decimal(3, 2) unsigned DEFAULT NULL COMMENT 'pool_activation_threshold',
---   `is_enabled` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: enabled, 0: not enabled',
   `namespace_name` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
   `app_id` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'appId',
   `executor_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'executorName',

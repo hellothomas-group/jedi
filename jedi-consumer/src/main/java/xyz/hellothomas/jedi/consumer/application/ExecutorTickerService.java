@@ -70,16 +70,17 @@ public class ExecutorTickerService implements NotificationService<ExecutorTicker
         }
 
         String msg = EMPTY;
-        if (notification.getQueueSize() > configurationProperty.getQueueThreshold()) {
+        if (configurationProperty.getQueueThreshold() > 0 && notification.getQueueSize() > configurationProperty.getQueueThreshold()) {
             msg += String.format("queueSize:%d;", notification.getQueueSize());
         }
         BigDecimal poolActivation =
                 new BigDecimal(notification.getActiveCount()).divide(new BigDecimal(notification.getMaximumPoolSize()));
-        if (poolActivation.compareTo(configurationProperty.getPoolActivationThreshold()) > 0) {
+        if (configurationProperty.getPoolActivationThreshold().compareTo(new BigDecimal(0)) > 0
+                && poolActivation.compareTo(configurationProperty.getPoolActivationThreshold()) > 0) {
             msg += String.format("poolActivation:%s;", poolActivation);
         }
 
-        if (notification.getRejectCount() > configurationProperty.getRejectCountThreshold()) {
+        if (configurationProperty.getRejectCountThreshold() > 0 && notification.getRejectCount() > configurationProperty.getRejectCountThreshold()) {
             msg += String.format("rejectCountThreshold:%d;", notification.getActiveCount());
         }
 
