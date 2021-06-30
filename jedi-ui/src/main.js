@@ -7,11 +7,14 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import echarts from 'echarts'
 
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
 Vue.use(VueAxios, axios)
+// Vue.use(echarts)
+Vue.prototype.$echarts = echarts
 // Vue.prototype.$http = axios
 
 // axios.defaults.baseURL = 'http://localhost:8082/'// 后端环境地址
