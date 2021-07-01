@@ -1,11 +1,16 @@
 package xyz.hellothomas.jedi.consumer.application;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
+import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
 import xyz.hellothomas.jedi.consumer.domain.AlarmConfig;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessage;
+import xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessageExample;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTickerMessageMapper;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTickerNotification;
 import xyz.hellothomas.jedi.core.enums.MessageType;
@@ -13,8 +18,10 @@ import xyz.hellothomas.jedi.core.utils.JsonUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 
 /**
  * @author Thomas
@@ -51,6 +58,34 @@ public class ExecutorTickerService implements NotificationService<ExecutorTicker
     @Override
     public boolean match(ExecutorTickerNotification notification) {
         return MessageType.EXECUTOR_TICKER.getTypeValue().equals(notification.getMessageType());
+    }
+
+    public PageResult<ExecutorTickerMessage> findByExecutorAndRecordTime(String namespaceName, String appId,
+                                                                         String executorName, LocalDateTime startTime,
+                                                                         LocalDateTime endTime,
+                                                                         PageHelperRequest pageHelperRequest) {
+        ExecutorTickerMessageExample executorTickerMessageExample = new ExecutorTickerMessageExample();
+        executorTickerMessageExample.createCriteria().andNamespaceEqualTo(namespaceName)
+                .andAppIdEqualTo(appId)
+                .andPoolNameEqualTo(executorName)
+                .andRecordTimeBetween(startTime, endTime);
+        executorTickerMessageExample.setOrderByClause("record_time");
+
+        int pageSize = pageHelperRequest.getPageSize();
+        int pageNum = pageHelperRequest.getPageNum();
+        pageSize = (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
+        PageHelper.startPage(pageNum, pageSize);
+
+        List<ExecutorTickerMessage> executorTickerMessages =
+                executorTickerMessageMapper.selectByExample(executorTickerMessageExample);
+        PageInfo<ExecutorTickerMessage> pageInfo = new PageInfo<>(executorTickerMessages);
+
+        return PageResult.<ExecutorTickerMessage>builder()
+                .content(pageInfo.getList())
+                .total(pageInfo.getTotal())
+                .pageNum(pageInfo.getPageNum())
+                .pageSize(pageInfo.getPageSize())
+                .build();
     }
 
     private void alarm(ExecutorTickerNotification notification) {

@@ -31,7 +31,31 @@ export default {
     return {
       pickerOptions: {
         shortcuts: [{
-          text: '最近一周',
+          text: '最近1小时',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000)
+            picker.$emit('pick', [start, end])
+          }
+        },{
+          text: '最近6小时',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 6)
+            picker.$emit('pick', [start, end])
+          }
+        },{
+          text: '最近1天',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近1周',
           onClick (picker) {
             const end = new Date()
             const start = new Date()
@@ -39,24 +63,16 @@ export default {
             picker.$emit('pick', [start, end])
           }
         }, {
-          text: '最近一个月',
+          text: '最近1个月',
           onClick (picker) {
             const end = new Date()
             const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
             picker.$emit('pick', [start, end])
           }
-        }, {
-          text: '最近三个月',
-          onClick (picker) {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-            picker.$emit('pick', [start, end])
-          }
         }]
       },
-      queryTime: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+      queryTime: [new Date(new Date().getTime() - 3600 * 1000), new Date()],
       isAutoRefresh: false,
       // 实时数据数组
       date: [],
@@ -84,26 +100,25 @@ export default {
         ],
         xAxis: [
           {
-            // name: '时间',
             nameTextStyle: {
               fontWeight: 600,
               fontSize: 18
             },
-            type: 'category',
-            boundaryGap: false,
-            data: this.date // 绑定实时数据数组
+            type: 'time',
+            splitLine: {
+              show: false
+            }
           },
           {
-            // name: '时间',
             gridIndex: 1,
             nameTextStyle: {
               fontWeight: 600,
               fontSize: 18
             },
-            type: 'category',
-            boundaryGap: false,
-            // position: 'top',
-            data: this.date // 绑定实时数据数组
+            type: 'time',
+            splitLine: {
+              show: false
+            }
           }
         ],
         yAxis: [
@@ -261,23 +276,27 @@ export default {
 
       // 从接口获取数据并添加到数组
       this.axios.get('/admin/test').then((res) => {
-        this.queueSize.shift()
-        this.poolActivation.shift()
-        this.rejectCount.shift()
-        this.date.shift()
-
-        this.queueSize.push(res.data.queueSize)
-        this.poolActivation.push(res.data.poolActivation)
-        this.rejectCount.push(res.data.rejectCount)
-        this.date.push(this.getTime(Math.round(new Date().getTime() / 1000)))
+        let date = new Date()
+        this.queueSize.push(this.buildDateAndValue(date, res.data.queueSize))
+        this.poolActivation.push(this.buildDateAndValue(date, res.data.poolActivation))
+        this.rejectCount.push(this.buildDateAndValue(date, res.data.rejectCount))
+        // this.date.push(this.buildDateAndValue())
         // 重新将数组赋值给echarts选项
-        this.echartsOption.xAxis[0].data = this.date
-        this.echartsOption.xAxis[1].data = this.date
         this.echartsOption.series[0].data = this.queueSize
         this.echartsOption.series[1].data = this.poolActivation
         this.echartsOption.series[2].data = this.rejectCount
         this.myChart.setOption(this.echartsOption)
       })
+    },
+    buildDateAndValue: function (date, actualValue) {
+      console.log(date.toString())
+      return {
+        name: date.toString(),
+        value: [
+          date.getTime(),
+          actualValue
+        ]
+      }
     }
   }
 }
