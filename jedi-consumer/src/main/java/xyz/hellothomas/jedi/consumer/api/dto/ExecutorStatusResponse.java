@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * @author Thomas
@@ -18,4 +19,6 @@ public class ExecutorStatusResponse {
     private BigDecimal poolActivation;
 
     private long rejectCount;
+
+    private LocalDateTime recordTime;
 }

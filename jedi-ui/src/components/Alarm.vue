@@ -101,7 +101,7 @@ export default {
       console.log('asyncQueryAlarmConfig')
       console.log(executorName)
       let _this = this
-      this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
+      this.axios.get('/consumer/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
         '/alarm-configs'
       ).then(res => {
         console.log(res)

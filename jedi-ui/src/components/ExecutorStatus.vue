@@ -38,7 +38,7 @@ export default {
             start.setTime(start.getTime() - 3600 * 1000)
             picker.$emit('pick', [start, end])
           }
-        },{
+        }, {
           text: '最近6小时',
           onClick (picker) {
             const end = new Date()
@@ -46,7 +46,7 @@ export default {
             start.setTime(start.getTime() - 3600 * 1000 * 6)
             picker.$emit('pick', [start, end])
           }
-        },{
+        }, {
           text: '最近1天',
           onClick (picker) {
             const end = new Date()
@@ -235,9 +235,25 @@ export default {
             xAxisIndex: 1,
             yAxisIndex: 2
           }
-        ],
-        countdownTimer: undefined
+        ]
+      },
+      countdownTimer: undefined,
+      namespaceName: undefined,
+      appId: undefined,
+      executorName: undefined,
+      pagination: {
+        total: 0,
+        pageNum: 1,
+        pageSize: 200
       }
+    }
+  },
+  created () {
+    console.log(this.$route.query.executor)
+    if (this.$route.query) {
+      this.namespaceName = this.$route.query.namespace
+      this.appId = this.$route.query.appId
+      this.executorName = this.$route.query.executor
     }
   },
   mounted () {
@@ -258,7 +274,34 @@ export default {
     },
     // 提交查询
     submitQueryExecutorStatus: function () {
+      this.asyncQueryExecutorStatus(this.namespaceName, this.appId, this.executorName, this.queryTime[0], this.queryTime[1])
+    },
+    asyncQueryExecutorStatus (namespaceName, appId, executorName, startTime, endTime) {
+      console.log('asyncQueryExecutorStatus')
+      console.log(executorName)
+      this.axios.get('/consumer/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
+        '/status', {
+        params: {
+          startTime: startTime,
+          endTime: endTime,
+          pageNum: this.pagination.pageNum,
+          pageSize: this.pagination.pageSize
+        }
+      }).then(res => {
+        console.log(res)
+        this.test(res.data)
 
+        this.pagination.total = res.data.total
+        this.pagination.pageNum = res.data.pageNum
+        this.pagination.pageSize = res.data.pageSize
+
+        if (this.pagination.pageNum < this.pagination.total) {
+          this.pagination.pageNum = this.pagination.pageNum + 1
+          this.asyncQueryExecutorStatus(namespaceName, appId, executorName, startTime, endTime)
+        }
+      }).catch(function (error) {
+        console.log(error)
+      })
     },
     // 自动刷新
     changeAutoRefresh: function () {
@@ -297,6 +340,20 @@ export default {
           actualValue
         ]
       }
+    },
+    test: function (executorStatusResponseList) {
+      let list = Array.from(executorStatusResponseList)
+      list.forEach(function (item, index) {
+        this.queueSize.push(this.buildDateAndValue(item.recordTime, item.queueSize))
+        this.poolActivation.push(this.buildDateAndValue(item.recordTime, item.poolActivation))
+        this.rejectCount.push(this.buildDateAndValue(item.recordTime, item.rejectCount))
+      })
+
+      // 重新将数组赋值给echarts选项
+      this.echartsOption.series[0].data = this.queueSize
+      this.echartsOption.series[1].data = this.poolActivation
+      this.echartsOption.series[2].data = this.rejectCount
+      this.myChart.setOption(this.echartsOption)
     }
   }
 }

@@ -1,5 +1,6 @@
 package xyz.hellothomas.jedi.consumer.api;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,17 +25,20 @@ public class ExecutorStatusController {
         this.executorTickerService = executorTickerService;
     }
 
-
-    @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}")
+    @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/status")
     public PageResult<ExecutorStatusResponse> find(@PathVariable("namespaceName") String namespaceName,
                                                    @PathVariable("appId") String appId,
                                                    @PathVariable("executorName") String executorName,
-                                                   @RequestParam("startTime") LocalDateTime startTime,
-                                                   @RequestParam("endTime") LocalDateTime endTime,
+                                                   @RequestParam("startTime") @DateTimeFormat(iso =
+                                                           DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+                                                   @RequestParam("endTime") @DateTimeFormat(iso =
+                                                           DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
                                                    PageHelperRequest pageHelperRequest) {
+        startTime = startTime.plusHours(8);
+        endTime = endTime.plusHours(8);
         PageResult<ExecutorTickerMessage> tickerMessagePageResult =
                 executorTickerService.findByExecutorAndRecordTime(namespaceName
-                , appId, executorName, startTime, endTime, pageHelperRequest);
+                        , appId, executorName, startTime, endTime, pageHelperRequest);
         PageResult<ExecutorStatusResponse> executorStatusResponsePageResult =
                 transform2PageResult(tickerMessagePageResult);
 
@@ -49,6 +53,7 @@ public class ExecutorStatusController {
             executorStatusResponse.setQueueSize(tickerMessage.getQueueSize());
             executorStatusResponse.setRejectCount(tickerMessage.getRejectCount());
             executorStatusResponse.setPoolActivation(new BigDecimal(tickerMessage.getActiveCount()).divide(new BigDecimal(tickerMessage.getMaximumPoolSize())));
+            executorStatusResponse.setRecordTime(tickerMessage.getRecordTime());
 
             executorStatusResponses.add(executorStatusResponse);
         }
