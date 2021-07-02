@@ -1,5 +1,6 @@
 package xyz.hellothomas.jedi.consumer.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -20,5 +21,6 @@ public class ExecutorStatusResponse {
 
     private long rejectCount;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime recordTime;
 }

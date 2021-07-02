@@ -1,12 +1,13 @@
-function format (format) {
-  let d = new Date()
-
+function format (date, format) {
   // 年
   if (/YYYY/.test(format)) {
-    format = format.replace(/YYYY/, d.getFullYear())
+    format = format.replace(/YYYY/, date.getFullYear())
+  }
+  if (/yyyy/.test(format)) {
+    format = format.replace(/yyyy/, date.getFullYear())
   }
   // 月份
-  let month = d.getMonth() + 1
+  let month = date.getMonth() + 1
   if (/MM/.test(format)) {
     let monthStr = month < 10 ? '0' + month : month
     format = format.replace(/MM/, monthStr)
@@ -14,15 +15,21 @@ function format (format) {
     format = format.replace(/M/, month)
   }
   // 日期
-  let dates = d.getDate()
+  let dates = date.getDate()
   if (/DD/.test(format)) {
     let dateStr = dates < 10 ? '0' + dates : dates
     format = format.replace(/DD/, dateStr)
   } else if (/D/.test(format)) {
     format = format.replace(/D/, dates)
   }
+  if (/dd/.test(format)) {
+    let dateStr = dates < 10 ? '0' + dates : dates
+    format = format.replace(/dd/, dateStr)
+  } else if (/D/.test(format)) {
+    format = format.replace(/d/, dates)
+  }
   // 小时
-  let hours = d.getHours()
+  let hours = date.getHours()
   if (/HH/.test(format)) {
     let hoursStr = hours < 10 ? '0' + hours : hours
     format = format.replace(/HH/, hoursStr)
@@ -37,7 +44,7 @@ function format (format) {
     format = format.replace(/h/, hoursMin)
   }
   // 分
-  let minutes = d.getMinutes()
+  let minutes = date.getMinutes()
   if (/mm/.test(format)) {
     let minutesStr = minutes < 10 ? '0' + minutes : minutes
     format = format.replace(/mm/, minutesStr)
@@ -45,7 +52,7 @@ function format (format) {
     format = format.replace(/m/, minutes)
   }
   // 秒
-  let seconds = d.getSeconds()
+  let seconds = date.getSeconds()
   if (/ss/.test(format)) {
     let secondsStr = seconds < 10 ? '0' + seconds : seconds
     format = format.replace(/ss/, secondsStr)

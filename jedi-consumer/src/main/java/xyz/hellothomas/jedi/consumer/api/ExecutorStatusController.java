@@ -29,13 +29,11 @@ public class ExecutorStatusController {
     public PageResult<ExecutorStatusResponse> find(@PathVariable("namespaceName") String namespaceName,
                                                    @PathVariable("appId") String appId,
                                                    @PathVariable("executorName") String executorName,
-                                                   @RequestParam("startTime") @DateTimeFormat(iso =
-                                                           DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
-                                                   @RequestParam("endTime") @DateTimeFormat(iso =
-                                                           DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
+                                                   @RequestParam("startTime") @DateTimeFormat(pattern = "yyyy-MM-dd " +
+                                                           "HH:mm:ss") LocalDateTime startTime,
+                                                   @RequestParam("endTime") @DateTimeFormat(pattern = "yyyy-MM-dd " +
+                                                           "HH:mm:ss") LocalDateTime endTime,
                                                    PageHelperRequest pageHelperRequest) {
-        startTime = startTime.plusHours(8);
-        endTime = endTime.plusHours(8);
         PageResult<ExecutorTickerMessage> tickerMessagePageResult =
                 executorTickerService.findByExecutorAndRecordTime(namespaceName
                         , appId, executorName, startTime, endTime, pageHelperRequest);

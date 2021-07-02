@@ -334,7 +334,7 @@ export default {
       this.releaseExecutorForm.namespace = this.selectedExecutor.namespaceName
       this.releaseExecutorForm.appId = this.selectedExecutor.appId
       this.releaseExecutorForm.executorName = this.selectedExecutor.executorName
-      this.releaseExecutorForm.name = format('YYYYMMDDHHmmss') + '-release'
+      this.releaseExecutorForm.name = format(new Date(), 'YYYYMMDDHHmmss') + '-release'
       this.releaseExecutorForm.comment = ''
 
       this.releaseExecutorDialogFormVisible = true

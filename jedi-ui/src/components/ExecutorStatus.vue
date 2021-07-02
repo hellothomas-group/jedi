@@ -6,6 +6,7 @@
           v-model="queryTime"
           type="datetimerange"
           :picker-options="pickerOptions"
+          @change="changeQueryTime()"
           start-placeholder="开始日期"
           end-placeholder="结束日期">
         </el-date-picker>
@@ -25,6 +26,7 @@
 </template>
 
 <script>
+import format from '../assets/js/dateFormat.js'
 export default {
   name: 'DynamicLineChart',
   data () {
@@ -72,7 +74,7 @@ export default {
           }
         }]
       },
-      queryTime: [new Date(new Date().getTime() - 3600 * 1000), new Date()],
+      queryTime: [new Date(new Date().getTime() - 600 * 1000), new Date()],
       isAutoRefresh: false,
       // 实时数据数组
       date: [],
@@ -200,15 +202,15 @@ export default {
           {
             show: true,
             realtime: true,
-            start: 30,
-            end: 70,
+            start: 60,
+            end: 100,
             xAxisIndex: [0, 1]
           },
           {
             type: 'inside',
             realtime: true,
-            start: 30,
-            end: 70,
+            start: 60,
+            end: 100,
             xAxisIndex: [0, 1]
           }
         ],
@@ -272,8 +274,21 @@ export default {
       // 定义时间格式
       return (h < 10 ? '0' + h : h) + ':' + (i < 10 ? '0' + i : i) + ':' + (s < 10 ? '0' + s : s)
     },
+    // 自动刷新
+    changeQueryTime: function () {
+      if (this.queryTime[1].getTime() - this.queryTime[0].getTime() > 3600 * 1000 * 24 * 30) {
+        alert('时间跨度最大一个月!')
+        this.queryTime[1] = new Date()
+        this.queryTime[0] = new Date(this.queryTime[1].getTime() - 600 * 1000)
+      }
+    },
     // 提交查询
     submitQueryExecutorStatus: function () {
+      this.queueSize = []
+      this.poolActivation = []
+      this.rejectCount = []
+      this.pagination.total = 0
+      this.pagination.pageNum = 1
       this.asyncQueryExecutorStatus(this.namespaceName, this.appId, this.executorName, this.queryTime[0], this.queryTime[1])
     },
     asyncQueryExecutorStatus (namespaceName, appId, executorName, startTime, endTime) {
@@ -282,20 +297,22 @@ export default {
       this.axios.get('/consumer/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
         '/status', {
         params: {
-          startTime: startTime,
-          endTime: endTime,
+          startTime: format(startTime, 'yyyy-MM-dd HH:mm:ss'),
+          endTime: format(endTime, 'yyyy-MM-dd HH:mm:ss'),
           pageNum: this.pagination.pageNum,
           pageSize: this.pagination.pageSize
         }
       }).then(res => {
         console.log(res)
-        this.test(res.data)
+        this.addData(res.data.content)
 
         this.pagination.total = res.data.total
         this.pagination.pageNum = res.data.pageNum
         this.pagination.pageSize = res.data.pageSize
 
-        if (this.pagination.pageNum < this.pagination.total) {
+        let totalPageCount = Math.ceil(this.pagination.total / this.pagination.pageSize)
+
+        if (this.pagination.pageNum < totalPageCount) {
           this.pagination.pageNum = this.pagination.pageNum + 1
           this.asyncQueryExecutorStatus(namespaceName, appId, executorName, startTime, endTime)
         }
@@ -306,44 +323,35 @@ export default {
     // 自动刷新
     changeAutoRefresh: function () {
       if (this.isAutoRefresh) {
-        this.countdownTimer = setInterval(this.addData, 3000) // 每三秒更新实时数据到折线图
+        this.countdownTimer = setInterval(this.autoRefreshAddData, 3000) // 每三秒更新实时数据到折线图
       } else {
         clearInterval(this.countdownTimer)
       }
     },
     // 添加实时数据
-    addData: function () {
+    autoRefreshAddData: function () {
       this.$once('hook:beforeDestroy', () => {
         clearInterval(this.countdownTimer)
       })
-
-      // 从接口获取数据并添加到数组
-      this.axios.get('/admin/test').then((res) => {
-        let date = new Date()
-        this.queueSize.push(this.buildDateAndValue(date, res.data.queueSize))
-        this.poolActivation.push(this.buildDateAndValue(date, res.data.poolActivation))
-        this.rejectCount.push(this.buildDateAndValue(date, res.data.rejectCount))
-        // this.date.push(this.buildDateAndValue())
-        // 重新将数组赋值给echarts选项
-        this.echartsOption.series[0].data = this.queueSize
-        this.echartsOption.series[1].data = this.poolActivation
-        this.echartsOption.series[2].data = this.rejectCount
-        this.myChart.setOption(this.echartsOption)
-      })
+      this.pagination.total = 0
+      this.pagination.pageNum = 1
+      const end = new Date()
+      const start = new Date(end.getTime() - 2 * 1000)
+      this.asyncQueryExecutorStatus(this.namespaceName, this.appId, this.executorName, start, end)
     },
     buildDateAndValue: function (date, actualValue) {
-      console.log(date.toString())
       return {
-        name: date.toString(),
+        name: date,
         value: [
-          date.getTime(),
+          date,
           actualValue
         ]
       }
     },
-    test: function (executorStatusResponseList) {
+    addData: function (executorStatusResponseList) {
       let list = Array.from(executorStatusResponseList)
-      list.forEach(function (item, index) {
+      console.log(list)
+      list.forEach((item, index) => {
         this.queueSize.push(this.buildDateAndValue(item.recordTime, item.queueSize))
         this.poolActivation.push(this.buildDateAndValue(item.recordTime, item.poolActivation))
         this.rejectCount.push(this.buildDateAndValue(item.recordTime, item.rejectCount))
