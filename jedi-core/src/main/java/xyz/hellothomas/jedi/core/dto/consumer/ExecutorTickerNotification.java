@@ -46,6 +46,11 @@ public class ExecutorTickerNotification extends AbstractNotification {
     private String queueType;
 
     /**
+     * 队列容量 todo
+     */
+    private int queueCapacity;
+
+    /**
      * 队列已使用容量
      */
     private int queueSize;
@@ -69,6 +74,11 @@ public class ExecutorTickerNotification extends AbstractNotification {
      * 拒绝任务数
      */
     private long rejectCount;
+
+    /**
+     * 上一次拒绝任务数
+     */
+    private long lastRejectCount;
 
     /**
      * 线程池是否关闭
@@ -176,9 +186,9 @@ public class ExecutorTickerNotification extends AbstractNotification {
                 "corePoolSize=" + this.getCorePoolSize() +
                 ", maximumPoolSize=" + this.getMaximumPoolSize() + ", poolSize=" + this.getPoolSize() + ", " +
                 "activeCount=" + this.getActiveCount() + ", largestPoolSize=" + this.getLargestPoolSize() + ", " +
-                "queueType=" + this.getQueueType() + ", queueSize=" + this.getQueueSize() + ", queueRemainingCapacity" +
+                "queueType=" + this.getQueueType() + ", queueCapacity=" + this.getQueueCapacity() + ", queueSize=" + this.getQueueSize() + ", queueRemainingCapacity" +
                 "=" + this.getQueueRemainingCapacity() + ", taskCount=" + this.getTaskCount() + ", completedTaskCount" +
-                "=" + this.getCompletedTaskCount() + ", rejectCount=" + this.getRejectCount() + ", isShutdown=" +
+                "=" + this.getCompletedTaskCount() + ", rejectCount=" + this.getRejectCount() + ", lastRejectCount=" + this.getLastRejectCount() + ", isShutdown=" +
                 this.getIsShutdown() + ", isTerminated" + "=" + this.getIsTerminated() + ")";
     }
 
@@ -204,5 +214,21 @@ public class ExecutorTickerNotification extends AbstractNotification {
 
     public void setPoolSize(int poolSize) {
         this.poolSize = poolSize;
+    }
+
+    public int getQueueCapacity() {
+        return queueCapacity;
+    }
+
+    public void setQueueCapacity(int queueCapacity) {
+        this.queueCapacity = queueCapacity;
+    }
+
+    public long getLastRejectCount() {
+        return lastRejectCount;
+    }
+
+    public void setLastRejectCount(long lastRejectCount) {
+        this.lastRejectCount = lastRejectCount;
     }
 }

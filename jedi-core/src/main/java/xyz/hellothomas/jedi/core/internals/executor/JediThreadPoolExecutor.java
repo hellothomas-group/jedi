@@ -47,6 +47,8 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
      */
     private volatile int tickerCycle = 5000;
 
+    private long lastRejectCount = rejectCount.longValue();
+
     /**
      * 消息服务
      */
@@ -239,5 +241,13 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
 
     public void setNotificationService(AbstractNotificationService notificationService) {
         this.notificationService = notificationService;
+    }
+
+    public long getLastRejectCount() {
+        return lastRejectCount;
+    }
+
+    public void setLastRejectCount(long lastRejectCount) {
+        this.lastRejectCount = lastRejectCount;
     }
 }

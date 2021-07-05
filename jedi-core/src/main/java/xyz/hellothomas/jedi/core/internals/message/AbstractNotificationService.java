@@ -56,6 +56,9 @@ public abstract class AbstractNotificationService {
         executorTickerNotification.setTaskCount(executor.getTaskCount());
         executorTickerNotification.setCompletedTaskCount(executor.getCompletedTaskCount());
         executorTickerNotification.setRejectCount(executor.getRejectCount());
+        executorTickerNotification.setLastRejectCount(executor.getLastRejectCount());
+
+        executor.setLastRejectCount(executorTickerNotification.getRejectCount());
 
         executorTickerNotification.setIsShutdown(executor.isShutdown());
         executorTickerNotification.setIsTerminated(executor.isTerminated());

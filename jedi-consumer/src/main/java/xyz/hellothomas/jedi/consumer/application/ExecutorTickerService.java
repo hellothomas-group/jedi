@@ -117,7 +117,7 @@ public class ExecutorTickerService implements NotificationService<ExecutorTicker
             msg += String.format("poolActivation:%s;", poolActivation);
         }
 
-        if (configurationProperty.getRejectCountThreshold() > 0 && notification.getRejectCount() > configurationProperty.getRejectCountThreshold()) {
+        if (configurationProperty.getRejectCountThreshold() > 0 && notification.getRejectCount() > configurationProperty.getRejectCountThreshold() && notification.getRejectCount() != notification.getLastRejectCount()) {
             msg += String.format("rejectCountThreshold:%d;", notification.getActiveCount());
         }
 
