@@ -2,6 +2,18 @@
   <div>
     <el-header>
       <div class="block" style="margin-left: 60px">
+        <el-form ref="elForm" :model="selectInstanceForm" :rules="rules" size="medium" label-width="100px"
+                 style="display: inline-block;">
+          <el-form-item label="实例" prop="instance" style="width: 250px">
+            <el-select v-model="selectInstanceForm.ip" placeholder="请选择下拉选择" clearable style="width:100%"
+                       @change="resetMyChart()">
+              <el-option v-for="(item, index) in latestReleaseInstances" :key="index" :label="item.ip"
+                         :value="item.ip"
+                         :disabled="false" ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <span style="margin-left: 20px">时间</span>
         <el-date-picker
           v-model="queryTime"
           type="datetimerange"
@@ -132,6 +144,7 @@ export default {
             },
             type: 'value',
             scale: true,
+            min: 0,
             boundaryGap: ['0', '15%'],
             axisLabel: {
               interval: 'auto',
@@ -172,6 +185,7 @@ export default {
             },
             type: 'value',
             scale: true,
+            min: 0,
             boundaryGap: ['0', '15%'],
             axisLabel: {
               interval: 'auto',
@@ -202,14 +216,14 @@ export default {
           {
             show: true,
             realtime: true,
-            start: 60,
+            start: 0,
             end: 100,
             xAxisIndex: [0, 1]
           },
           {
             type: 'inside',
             realtime: true,
-            start: 60,
+            start: 0,
             end: 100,
             xAxisIndex: [0, 1]
           }
@@ -239,10 +253,22 @@ export default {
           }
         ]
       },
+      selectInstanceForm: {
+        ip: undefined
+      },
+      latestReleaseInstances: [],
+      rules: {
+        ip: [{
+          required: true,
+          message: '请选择下拉选择',
+          trigger: 'change'
+        }]
+      },
       countdownTimer: undefined,
       namespaceName: undefined,
       appId: undefined,
       executorName: undefined,
+      refreshIntervalSeconds: 3,
       pagination: {
         total: 0,
         pageNum: 1,
@@ -257,22 +283,15 @@ export default {
       this.appId = this.$route.query.appId
       this.executorName = this.$route.query.executor
     }
+    this.queryLatestReleaseInstances()
   },
   mounted () {
     this.myChart = this.$echarts.init(document.getElementById('myChart'), 'light') // 初始化echarts, theme为light
     this.myChart.setOption(this.echartsOption) // echarts设置初始化选项
   },
   methods: {
-    // 获取当前时间
-    getTime: function () {
-      var ts = arguments[0] || 0
-      var t, h, i, s
-      t = ts ? new Date(ts * 1000) : new Date()
-      h = t.getHours()
-      i = t.getMinutes()
-      s = t.getSeconds()
-      // 定义时间格式
-      return (h < 10 ? '0' + h : h) + ':' + (i < 10 ? '0' + i : i) + ':' + (s < 10 ? '0' + s : s)
+    queryLatestReleaseInstances () {
+      this.asyncLatestRelease(this.namespaceName, this.appId, this.executorName)
     },
     // 自动刷新
     changeQueryTime: function () {
@@ -289,14 +308,18 @@ export default {
       this.rejectCount = []
       this.pagination.total = 0
       this.pagination.pageNum = 1
-      this.asyncQueryExecutorStatus(this.namespaceName, this.appId, this.executorName, this.queryTime[0], this.queryTime[1])
+
+      this.asyncQueryExecutorStatus(this.namespaceName, this.appId, this.executorName,
+        this.selectInstanceForm.ip, this.queryTime[0],
+        this.queryTime[1])
     },
-    asyncQueryExecutorStatus (namespaceName, appId, executorName, startTime, endTime) {
+    asyncQueryExecutorStatus (namespaceName, appId, executorName, instanceIp, startTime, endTime) {
       console.log('asyncQueryExecutorStatus')
       console.log(executorName)
       this.axios.get('/consumer/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
         '/status', {
         params: {
+          instanceIp: instanceIp,
           startTime: format(startTime, 'yyyy-MM-dd HH:mm:ss'),
           endTime: format(endTime, 'yyyy-MM-dd HH:mm:ss'),
           pageNum: this.pagination.pageNum,
@@ -314,7 +337,8 @@ export default {
 
         if (this.pagination.pageNum < totalPageCount) {
           this.pagination.pageNum = this.pagination.pageNum + 1
-          this.asyncQueryExecutorStatus(namespaceName, appId, executorName, startTime, endTime)
+          this.asyncQueryExecutorStatus(namespaceName, appId, executorName, instanceIp, startTime,
+            endTime)
         }
       }).catch(function (error) {
         console.log(error)
@@ -323,7 +347,7 @@ export default {
     // 自动刷新
     changeAutoRefresh: function () {
       if (this.isAutoRefresh) {
-        this.countdownTimer = setInterval(this.autoRefreshAddData, 3000) // 每三秒更新实时数据到折线图
+        this.countdownTimer = setInterval(this.autoRefreshAddData, this.refreshIntervalSeconds * 1000) // 每N秒更新实时数据到折线图
       } else {
         clearInterval(this.countdownTimer)
       }
@@ -336,8 +360,9 @@ export default {
       this.pagination.total = 0
       this.pagination.pageNum = 1
       const end = new Date()
-      const start = new Date(end.getTime() - 2 * 1000)
-      this.asyncQueryExecutorStatus(this.namespaceName, this.appId, this.executorName, start, end)
+      const start = new Date(end.getTime() - (this.refreshIntervalSeconds - 1) * 1000)
+      this.asyncQueryExecutorStatus(this.namespaceName, this.appId, this.executorName, this.selectInstanceForm.ip,
+        start, end)
     },
     buildDateAndValue: function (date, actualValue) {
       return {
@@ -361,6 +386,52 @@ export default {
       this.echartsOption.series[0].data = this.queueSize
       this.echartsOption.series[1].data = this.poolActivation
       this.echartsOption.series[2].data = this.rejectCount
+      this.myChart.setOption(this.echartsOption)
+    },
+    asyncLatestRelease (namespaceName, appId, executorName) {
+      console.log('asyncLatestRelease')
+      console.log(executorName)
+
+      this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
+        '/releases/active', {
+        params: {
+          pageNum: 1,
+          pageSize: 1
+        }
+      }).then(res => {
+        console.log(res)
+        let latestRelease = res.data.content[0]
+        this.asyncQueryInstance(latestRelease.id)
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
+    asyncQueryInstance (releaseId) {
+      console.log('asyncQueryInstance')
+      console.log(releaseId)
+
+      this.axios.get('/admin/instances/by-release', {
+        params: {
+          releaseId: releaseId,
+          pageNum: 1,
+          pageSize: 200
+        }
+      }).then(res => {
+        console.log(res)
+        this.latestReleaseInstances = res.data.content
+        if (this.latestReleaseInstances.length > 0) {
+          this.selectInstanceForm.ip = this.latestReleaseInstances[0].ip
+        }
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
+    resetMyChart () {
+      console.log('resetMyChart')
+      this.myChart.clear()
+      this.echartsOption.series[0].data = []
+      this.echartsOption.series[1].data = []
+      this.echartsOption.series[2].data = []
       this.myChart.setOption(this.echartsOption)
     }
   }

@@ -29,14 +29,15 @@ public class ExecutorStatusController {
     public PageResult<ExecutorStatusResponse> find(@PathVariable("namespaceName") String namespaceName,
                                                    @PathVariable("appId") String appId,
                                                    @PathVariable("executorName") String executorName,
+                                                   @RequestParam("instanceIp") String instanceIp,
                                                    @RequestParam("startTime") @DateTimeFormat(pattern = "yyyy-MM-dd " +
                                                            "HH:mm:ss") LocalDateTime startTime,
                                                    @RequestParam("endTime") @DateTimeFormat(pattern = "yyyy-MM-dd " +
                                                            "HH:mm:ss") LocalDateTime endTime,
                                                    PageHelperRequest pageHelperRequest) {
         PageResult<ExecutorTickerMessage> tickerMessagePageResult =
-                executorTickerService.findByExecutorAndRecordTime(namespaceName
-                        , appId, executorName, startTime, endTime, pageHelperRequest);
+                executorTickerService.findByExecutorHostAndRecordTime(namespaceName
+                        , appId, executorName, instanceIp, startTime, endTime, pageHelperRequest);
         PageResult<ExecutorStatusResponse> executorStatusResponsePageResult =
                 transform2PageResult(tickerMessagePageResult);
 

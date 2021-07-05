@@ -60,14 +60,16 @@ public class ExecutorTickerService implements NotificationService<ExecutorTicker
         return MessageType.EXECUTOR_TICKER.getTypeValue().equals(notification.getMessageType());
     }
 
-    public PageResult<ExecutorTickerMessage> findByExecutorAndRecordTime(String namespaceName, String appId,
-                                                                         String executorName, LocalDateTime startTime,
-                                                                         LocalDateTime endTime,
-                                                                         PageHelperRequest pageHelperRequest) {
+    public PageResult<ExecutorTickerMessage> findByExecutorHostAndRecordTime(String namespaceName, String appId,
+                                                                             String executorName,
+                                                                             String instanceIp, LocalDateTime startTime,
+                                                                             LocalDateTime endTime,
+                                                                             PageHelperRequest pageHelperRequest) {
         ExecutorTickerMessageExample executorTickerMessageExample = new ExecutorTickerMessageExample();
         executorTickerMessageExample.createCriteria().andNamespaceEqualTo(namespaceName)
                 .andAppIdEqualTo(appId)
                 .andPoolNameEqualTo(executorName)
+                .andHostEqualTo(instanceIp)
                 .andRecordTimeBetween(startTime, endTime);
         executorTickerMessageExample.setOrderByClause("record_time");
 

@@ -2,7 +2,7 @@
   <div>
     <div>
       <el-form ref="elForm" :model="selectNamespaceForm" :rules="rules" size="medium" label-width="100px">
-        <el-form-item label="环境选择" prop="namespace" style="width: 200px;margin-top: 22px">
+        <el-form-item label="环境选择" prop="namespace" style="width: 250px;margin-top: 22px">
           <el-select v-model="selectNamespaceForm.namespaceId" placeholder="请选择下拉选择" clearable style="width:100%"
                      @change="asyncApps(selectNamespaceForm.namespaceId)">
             <el-option v-for="(item, index) in namespaces" :key="index" :label="item.name" :value="item.id"
