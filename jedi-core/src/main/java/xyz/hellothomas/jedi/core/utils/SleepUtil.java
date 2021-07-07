@@ -19,7 +19,7 @@ public class SleepUtil {
     public static void sleep(long millis) {
         try {
             Thread.sleep(millis);
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             LOGGER.error("休眠异常为: {}", e);
         }
     }
