@@ -118,7 +118,7 @@ public class ExecutorTickerService implements NotificationService<ExecutorTicker
         }
 
         if (configurationProperty.getRejectCountThreshold() > 0 && notification.getRejectCount() > configurationProperty.getRejectCountThreshold() && notification.getRejectCount() != notification.getLastRejectCount()) {
-            msg += String.format("rejectCountThreshold:%d;", notification.getActiveCount());
+            msg += String.format("rejectCount:%d;", notification.getRejectCount());
         }
 
         if (StringUtils.isNotBlank(msg)) {

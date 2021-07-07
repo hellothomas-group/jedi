@@ -2,6 +2,7 @@ package xyz.hellothomas.jedi.consumer.application;
 
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,19 +15,21 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class AlarmService implements MessageSender {
+public class AlarmService {
+    @Value("${spring.profiles.active}")
+    private String env;
+    private final MessageSender messageSender;
+
+    public AlarmService(MessageSender messageSender) {
+        this.messageSender = messageSender;
+    }
 
     public List<String> getUser(String namespaceName, String appId, String executorName) {
-        return Lists.newArrayList();
+        return Lists.newArrayList("234613");
     }
 
     public void notify(String namespaceName, String appId, String executorName, String msg) {
         List<String> notifyUsers = getUser(namespaceName, appId, executorName);
-        notify(notifyUsers, msg);
-    }
-
-    @Override
-    public void notify(List<String> users, String msg) {
-        log.warn("notify {} : {}", String.join(",", users), msg);
+        messageSender.notify(notifyUsers, String.format("[%s环境] %s", env, msg));
     }
 }

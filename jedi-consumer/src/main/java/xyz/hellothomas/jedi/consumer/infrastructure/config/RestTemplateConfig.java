@@ -1,4 +1,4 @@
-package xyz.hellothomas.jedi.biz.infrastructure.config;
+package xyz.hellothomas.jedi.consumer.infrastructure.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
