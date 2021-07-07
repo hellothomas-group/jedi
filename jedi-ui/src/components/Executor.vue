@@ -41,8 +41,6 @@
                                   :route="{path:'/instance/active-release',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">最新配置实例</el-menu-item>
                     <el-menu-item index="/instance/inactive-release"
                                   :route="{path:'/instance/inactive-release',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">非最新配置实例</el-menu-item>
-                    <el-menu-item index="/instance/all"
-                                  :route="{path:'/instance/all',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">全部实例</el-menu-item>
                   </el-submenu>
                 </el-submenu>
                 <el-menu-item index="/alarm"

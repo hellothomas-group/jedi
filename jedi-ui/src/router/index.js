@@ -92,11 +92,6 @@ export default new Router({
           component: InactiveReleaseInstance
         },
         {
-          path: '/instance/all',
-          name: 'Instance',
-          component: Instance
-        },
-        {
           path: '/task',
           name: 'Task',
           component: Task
