@@ -2,7 +2,6 @@ package xyz.hellothomas.jedi.consumer.application;
 
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +15,6 @@ import java.util.List;
 @Service
 @Slf4j
 public class AlarmService {
-    @Value("${spring.profiles.active}")
-    private String env;
     private final MessageSender messageSender;
 
     public AlarmService(MessageSender messageSender) {
@@ -30,6 +27,7 @@ public class AlarmService {
 
     public void notify(String namespaceName, String appId, String executorName, String msg) {
         List<String> notifyUsers = getUser(namespaceName, appId, executorName);
-        messageSender.notify(notifyUsers, String.format("[%s环境] %s", env, msg));
+        messageSender.notify(notifyUsers, String.format("[%s环境] 应用名:%s 线程池名称:%s, 告警:%s", namespaceName, appId,
+                executorName, msg));
     }
 }
