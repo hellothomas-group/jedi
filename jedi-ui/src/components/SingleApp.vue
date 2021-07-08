@@ -415,11 +415,7 @@ export default {
       console.log('deleting...' + this.selectedExecutor.executorName)
       this.centerDialogVisible = false
 
-      this.axios.delete('/admin/namespaces/' + this.selectedExecutor.namespaceName + '/apps/' + this.selectedExecutor.appId + '/executors/' + this.selectedExecutor.executorName, {
-        params: {
-          operator: '80234613'
-        }
-      }).then(res => {
+      this.axios.delete('/admin/namespaces/' + this.selectedExecutor.namespaceName + '/apps/' + this.selectedExecutor.appId + '/executors/' + this.selectedExecutor.executorName).then(res => {
         console.log(this.selectedExecutor.executorName + ' deleted')
         Utils.$emit('deleteExecutorSuccess', this.selectedExecutor.executorName)
       }).catch(function (error) {
@@ -444,11 +440,7 @@ export default {
       this.createExecutorDialogFormVisible = false
 
       this.axios.post('/admin/namespaces/' + form.namespace + '/apps/' +
-        form.appId + '/executors/' + form.newExecutor, null, {
-        params: {
-          operator: '80234613'
-        }
-      }).then(res => {
+        form.appId + '/executors/' + form.newExecutor).then(res => {
         console.log(form.newExecutor + ' created')
         Utils.$emit('createExecutorSuccess', form.newExecutor)
       }).catch(function (error) {
@@ -491,8 +483,7 @@ export default {
         form.appId + '/executors/' + form.executorName + '/items', null, {
         params: {
           configuration: JSON.stringify(form.configuration),
-          comment: form.comment,
-          operator: '80234613'
+          comment: form.comment
         }
       }).then(res => {
         console.log(form.executorName + ' updated')
@@ -536,8 +527,7 @@ export default {
         form.appId + '/executors/' + form.executorName + '/releases', null, {
         params: {
           name: form.name,
-          comment: form.comment,
-          operator: '80234613'
+          comment: form.comment
         }
       }).then(res => {
         console.log(form.executorName + ' created')

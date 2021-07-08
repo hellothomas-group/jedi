@@ -210,10 +210,6 @@ export default {
         'appDescription': form.description,
         'appId': form.appId,
         'namespaceName': form.namespaceName
-      }, {
-        params: {
-          operator: '80234613'
-        }
       }).then(res => {
         console.log(form.appId + ' created')
         Utils.$emit('createAppSuccess', form.appId)
