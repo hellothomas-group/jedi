@@ -29,6 +29,16 @@ public class ExecutorTaskNotification extends AbstractNotification {
     private long executionTime;
 
     /**
+     * 执行结果
+     */
+    private boolean success;
+
+    /**
+     * 执行失败原因
+     */
+    private String failureReason;
+
+    /**
      * 任务附加信息
      */
     private String taskExtraData;
@@ -46,7 +56,7 @@ public class ExecutorTaskNotification extends AbstractNotification {
         return "ExecutorTaskMessage(id=" + this.getId() + ", appId=" + this.getAppId() + ", namespace" +
                 "=" + this.getNamespace() + ", messageType=" + this.getMessageType() + ", recordTime=" + this.getRecordTime() + ", host=" + this.getHost() +
                 ", taskName=" + this.taskName + ", poolName=" + this.poolName + ", executionTime=" +
-                this.executionTime + ", taskExtraData=" + this.taskExtraData + ")";
+                this.executionTime + ", success=" + this.success + ", failureReason=" + this.failureReason + ", taskExtraData=" + this.taskExtraData + ")";
     }
 
     public String getTaskName() {
@@ -71,5 +81,21 @@ public class ExecutorTaskNotification extends AbstractNotification {
 
     public void setTaskExtraData(String taskExtraData) {
         this.taskExtraData = taskExtraData;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public String getFailureReason() {
+        return failureReason;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
     }
 }

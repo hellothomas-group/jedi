@@ -72,13 +72,19 @@ public abstract class AbstractNotificationService {
     }
 
     public ExecutorTaskNotification buildExecutorTaskNotification(String taskName, String poolName,
-                                                                  long executionTime) {
+                                                                  long executionTime, Throwable t) {
         ExecutorTaskNotification executorTaskNotification = new ExecutorTaskNotification();
         if (StringUtils.isNotBlank(taskName)) {
             executorTaskNotification.setTaskName(taskName);
         }
         executorTaskNotification.setExecutionTime(executionTime);
         executorTaskNotification.setPoolName(poolName);
+        if (t == null) {
+            executorTaskNotification.setSuccess(true);
+        } else {
+            executorTaskNotification.setSuccess(false);
+            executorTaskNotification.setFailureReason(t.toString());
+        }
 
         executorTaskNotification.setMessageType(MessageType.EXECUTOR_TASK.getTypeValue());
         fillMessageCommonField(executorTaskNotification);

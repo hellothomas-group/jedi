@@ -35,13 +35,17 @@ public class JediCallable implements Callable {
     @Override
     public Object call() throws Exception {
         Long startTime = System.nanoTime();
+        Throwable exception = null;
         try {
             return callable.call();
+        } catch (Throwable t) {
+            exception = t;
+            throw t;
         } finally {
             long diff = System.nanoTime() - startTime;
             ExecutorTaskNotification executorTaskNotification =
                     notificationService.buildExecutorTaskNotification(taskName
-                            , poolName, diff);
+                            , poolName, diff, exception);
             notificationService.pushNotification(executorTaskNotification);
         }
     }

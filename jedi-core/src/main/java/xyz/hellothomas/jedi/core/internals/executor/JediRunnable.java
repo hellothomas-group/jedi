@@ -33,12 +33,16 @@ public class JediRunnable implements Runnable {
     @Override
     public void run() {
         long startTime = System.nanoTime();
+        Throwable exception = null;
         try {
             runnable.run();
+        } catch (Throwable t) {
+            exception = t;
+            throw t;
         } finally {
             long diff = System.nanoTime() - startTime;
             ExecutorTaskNotification executorTaskNotification =
-                    notificationService.buildExecutorTaskNotification(taskName, poolName, diff);
+                    notificationService.buildExecutorTaskNotification(taskName, poolName, diff, exception);
             notificationService.pushNotification(executorTaskNotification);
         }
     }

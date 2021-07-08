@@ -143,7 +143,7 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
 
         ExecutorTaskNotification executorTaskNotification =
                 this.notificationService.buildExecutorTaskNotification(null, this.poolName,
-                        diff);
+                        diff, t);
         this.notificationService.pushNotification(executorTaskNotification);
     }
 

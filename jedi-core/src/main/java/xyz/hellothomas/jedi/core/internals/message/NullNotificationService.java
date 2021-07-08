@@ -32,7 +32,7 @@ public class NullNotificationService extends AbstractNotificationService {
 
     @Override
     public ExecutorTaskNotification buildExecutorTaskNotification(String taskName, String poolName,
-                                                                  long executionTime) {
+                                                                  long executionTime, Throwable t) {
         return null;
     }
 
