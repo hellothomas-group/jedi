@@ -10,7 +10,6 @@ import Alarm from '../components/Alarm'
 import Custom from '../components/Custom'
 import ActiveReleaseInstance from '../components/ActiveReleaseInstance'
 import InactiveReleaseInstance from '../components/InactiveReleaseInstance'
-import Instance from '../components/Instance'
 import ExecutorStatus from '../components/ExecutorStatus'
 import Login from '../components/Login'
 
