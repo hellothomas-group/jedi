@@ -15,12 +15,12 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @ToString
-public class LoginRequest {
+public class UserRequest {
     /**
      * 用户名
      */
     @NotBlank
-    private String username;
+    private String userName;
 
     /**
      * 用户密码
@@ -29,7 +29,12 @@ public class LoginRequest {
     private String password;
 
     /**
-     * 验证码
+     * 真实名称
      */
-    private String code;
+    private String realName;
+
+    /**
+     * 邮箱
+     */
+    private String email;
 }

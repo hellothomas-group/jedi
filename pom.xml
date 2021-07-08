@@ -56,6 +56,7 @@
         <pagehelper.version>1.2.13</pagehelper.version>
         <jackson-datatype-jsr310.version>2.11.3</jackson-datatype-jsr310.version>
         <google.guava.version>30.1-jre</google.guava.version>
+        <java-jwt.version>3.17.0</java-jwt.version>
         <!-- Plugins Version -->
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
@@ -148,6 +149,14 @@
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson-datatype-jsr310.version}</version>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+            <dependency>
+                <groupId>com.auth0</groupId>
+                <artifactId>java-jwt</artifactId>
+                <version>${java-jwt.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

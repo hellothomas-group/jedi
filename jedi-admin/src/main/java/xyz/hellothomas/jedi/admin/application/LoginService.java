@@ -1,6 +1,13 @@
 package xyz.hellothomas.jedi.admin.application;
 
 import org.springframework.stereotype.Service;
+import xyz.hellothomas.jedi.admin.api.dto.LoginRequest;
+import xyz.hellothomas.jedi.admin.common.utils.JwtUtil;
+import xyz.hellothomas.jedi.admin.domain.User;
+import xyz.hellothomas.jedi.admin.infrastructure.exception.BusinessException;
+
+import static xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum.PASSWORD_INVALID;
+import static xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum.USER_NOT_EXIST;
 
 /**
  * @author Thomas
@@ -10,16 +17,48 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class LoginService {
+    private final UserService userService;
+
+    public LoginService(UserService userService) {
+        this.userService = userService;
+    }
+
     /**
      * 登录验证
      *
-     * @param username 用户名
-     * @param password 密码
-     * @param code 验证码
-     * @param uuid 唯一标识
-     * @return 结果
+     * @param loginRequest
+     * @return token
      */
-    public String login(String username, String password, String code, String uuid) {
-        return null;
+    public String login(LoginRequest loginRequest) {
+        User user = userService.getUserByUserName(loginRequest.getUsername());
+        if (user == null) {
+            throw new BusinessException(USER_NOT_EXIST);
+        }
+
+        if (!loginRequest.getPassword().equals(user.getPassword())) {
+            throw new BusinessException(PASSWORD_INVALID);
+        }
+
+        return JwtUtil.createToken(user);
+    }
+
+    /**
+     * 登录验证
+     *
+     * @param code
+     * @return token
+     */
+    public String loginForExternalAuth(String code) {
+        // 根据code获取用户信息
+
+        // 自动生成对应的用户信息
+        User user = userService.getUserByUserName("");
+        if (user == null) {
+            user = new User();
+            userService.saveUser(user);
+        }
+
+        // 生成token
+        return JwtUtil.createToken(user);
     }
 }

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.hellothomas.jedi.admin.api.dto.ApiResponse;
 import xyz.hellothomas.jedi.admin.api.dto.LoginRequest;
@@ -28,8 +29,15 @@ public class LoginController {
 
     @PostMapping(value = "/login")
     @ApiOperation("login")
-    public ApiResponse<String> create(@RequestBody LoginRequest loginRequest) {
+    public ApiResponse<String> login(@RequestBody LoginRequest loginRequest) {
+        String token = loginService.login(loginRequest);
+        return ApiResponse.success(token);
+    }
 
-        return null;
+    @PostMapping(value = "/loginForExternalAuth")
+    @ApiOperation("loginForExternalAuth")
+    public ApiResponse<String> loginForExternalAuth(@RequestParam("code") String code) {
+        String token = loginService.loginForExternalAuth(code);
+        return ApiResponse.success(token);
     }
 }

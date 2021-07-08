@@ -176,13 +176,16 @@ CREATE TABLE `app` (
   KEY `data_change_last_modified_time` (`data_change_last_modified_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='应用定义';
 
-CREATE TABLE `users` (
+CREATE TABLE `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
-  `username` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
+  `user_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
+  `real_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户真实名',
   `password` varchar(64) NOT NULL DEFAULT 'default' COMMENT '密码',
   `email` varchar(64) NOT NULL DEFAULT 'default' COMMENT '邮箱地址',
-  `enabled` tinyint(4) DEFAULT NULL COMMENT '是否有效',
-  PRIMARY KEY (`id`)
+  `is_manual` bit(1) NOT NULL DEFAULT b'0' COMMENT '0: 系统生成, 1: 手工生成 ',
+  `enabled` bit(1) NOT NULL DEFAULT b'1' COMMENT '1: 有效, 0: 无效',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IX_user_name` (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
 CREATE TABLE `role` (

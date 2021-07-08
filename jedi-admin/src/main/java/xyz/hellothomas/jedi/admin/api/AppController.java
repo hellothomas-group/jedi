@@ -7,6 +7,7 @@ import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.application.AppService;
 import xyz.hellothomas.jedi.admin.domain.App;
+import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 
@@ -14,6 +15,8 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
 
 /**
  * @author 80234613
@@ -27,9 +30,11 @@ public class AppController {
         this.appService = appService;
     }
 
+    @UserLoginToken
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}")
     public AppResponse create(@PathVariable("namespaceName") String namespaceName,
-                              @Valid @RequestBody AppRequest appRequest, @RequestParam String operator) {
+                              @Valid @RequestBody AppRequest appRequest,
+                              @RequestAttribute(CLAIM_USER_NAME) String operator) {
 
         App entity = LocalBeanUtils.transform(App.class, appRequest);
         App managedEntity = appService.findOne(entity.getNamespaceName(), entity.getAppId());
@@ -43,9 +48,11 @@ public class AppController {
         return LocalBeanUtils.transform(AppResponse.class, entity);
     }
 
+    @UserLoginToken
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}")
-    public void update(@PathVariable String namespaceName, @RequestBody AppRequest request,
-                       @RequestParam String operator) {
+    public void update(@PathVariable String namespaceName, @PathVariable String appId,
+                       @RequestBody AppRequest request,
+                       @RequestAttribute(CLAIM_USER_NAME) String operator) {
         if (!Objects.equals(namespaceName, request.getNamespaceName())) {
             throw new BadRequestException("The namespace name of path variable and request body is different");
         }
@@ -55,9 +62,10 @@ public class AppController {
         appService.update(entity, operator);
     }
 
+    @UserLoginToken
     @DeleteMapping("/namespaces/{namespaceName}/apps/{appId}")
     public void delete(@PathVariable("namespaceName") String namespaceName, @PathVariable("appId") String appId,
-                       @RequestParam String operator) {
+                       @RequestAttribute(CLAIM_USER_NAME) String operator) {
         App entity = appService.findOne(namespaceName, appId);
         if (entity == null) {
             throw new BadRequestException("namespace app not found for namespace: " + namespaceName + " " +
