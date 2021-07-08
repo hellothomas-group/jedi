@@ -1,5 +1,6 @@
 package xyz.hellothomas.jedi.admin.api;
 
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.admin.api.dto.AppRequest;
 import xyz.hellothomas.jedi.admin.api.dto.AppResponse;
@@ -21,6 +22,7 @@ import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
 /**
  * @author 80234613
  */
+@Api(value = "app", tags = "app")
 @RestController
 public class AppController {
 

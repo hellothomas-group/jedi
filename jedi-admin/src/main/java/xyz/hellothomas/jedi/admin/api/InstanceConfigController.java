@@ -5,6 +5,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import io.swagger.annotations.Api;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Api(value = "instance", tags = "instance")
 @RestController
 @RequestMapping("/instances")
 public class InstanceConfigController {

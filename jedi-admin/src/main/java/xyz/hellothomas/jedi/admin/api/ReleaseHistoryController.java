@@ -2,6 +2,7 @@ package xyz.hellothomas.jedi.admin.api;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import io.swagger.annotations.Api;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import java.util.Map;
 /**
  * @author Thomas
  */
+@Api(value = "releaseHistory", tags = "releaseHistory")
 @RestController
 public class ReleaseHistoryController {
 

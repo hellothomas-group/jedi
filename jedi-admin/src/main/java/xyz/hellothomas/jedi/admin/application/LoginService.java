@@ -2,9 +2,11 @@ package xyz.hellothomas.jedi.admin.application;
 
 import org.springframework.stereotype.Service;
 import xyz.hellothomas.jedi.admin.api.dto.LoginRequest;
+import xyz.hellothomas.jedi.admin.api.dto.LoginResponse;
 import xyz.hellothomas.jedi.admin.common.utils.JwtUtil;
 import xyz.hellothomas.jedi.admin.domain.User;
 import xyz.hellothomas.jedi.admin.infrastructure.exception.BusinessException;
+import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 
 import static xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum.PASSWORD_INVALID;
 import static xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum.USER_NOT_EXIST;
@@ -27,9 +29,9 @@ public class LoginService {
      * 登录验证
      *
      * @param loginRequest
-     * @return token
+     * @return LoginResponse
      */
-    public String login(LoginRequest loginRequest) {
+    public LoginResponse login(LoginRequest loginRequest) {
         User user = userService.getUserByUserName(loginRequest.getUsername());
         if (user == null) {
             throw new BusinessException(USER_NOT_EXIST);
@@ -39,7 +41,10 @@ public class LoginService {
             throw new BusinessException(PASSWORD_INVALID);
         }
 
-        return JwtUtil.createToken(user);
+        LoginResponse loginResponse = LocalBeanUtils.transform(LoginResponse.class, user);
+        loginResponse.setToken(JwtUtil.createToken(user));
+
+        return loginResponse;
     }
 
     /**
@@ -48,7 +53,7 @@ public class LoginService {
      * @param code
      * @return token
      */
-    public String loginForExternalAuth(String code) {
+    public LoginResponse loginForExternalAuth(String code) {
         // 根据code获取用户信息
 
         // 自动生成对应的用户信息
@@ -59,6 +64,9 @@ public class LoginService {
         }
 
         // 生成token
-        return JwtUtil.createToken(user);
+        LoginResponse loginResponse = LocalBeanUtils.transform(LoginResponse.class, user);
+        loginResponse.setToken(JwtUtil.createToken(user));
+
+        return loginResponse;
     }
 }

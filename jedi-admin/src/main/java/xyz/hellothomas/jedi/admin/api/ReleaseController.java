@@ -2,7 +2,6 @@ package xyz.hellothomas.jedi.admin.api;
 
 import com.google.common.base.Splitter;
 import io.swagger.annotations.Api;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
@@ -32,9 +31,8 @@ import static xyz.hellothomas.jedi.biz.common.constants.Constants.JEDI_RELEASE_T
  * @description
  * @version 1.0
  */
-@Api(value = "releases", tags = "releases")
+@Api(value = "release", tags = "release")
 @RestController
-@Slf4j
 public class ReleaseController {
     private static final Splitter RELEASES_SPLITTER = Splitter.on(",").omitEmptyStrings()
             .trimResults();
@@ -49,7 +47,6 @@ public class ReleaseController {
         this.executorService = executorService;
         this.messageSender = messageSender;
     }
-
 
     @GetMapping("/releases/{releaseId}")
     public ReleaseResponse get(@PathVariable("releaseId") long releaseId) {

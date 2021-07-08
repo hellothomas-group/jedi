@@ -46,8 +46,13 @@ export default {
       }).then(res => {
         console.log(res.data)
         if (res.data.code === 'CODE000') {
-          _this.userToken = res.data.data
-          _this.changeLogin({ Authorization: _this.userToken })
+          _this.userToken = res.data.data.token
+          _this.userName = res.data.data.userName
+          _this.realName = res.data.data.realName
+          _this.changeLogin({ Authorization: _this.userToken,
+            UserName: _this.userName,
+            RealName: _this.realName
+          })
           _this.$router.push('/home')
         } else {
           alert('登录失败,原因:' + res.data.message)

@@ -2,13 +2,13 @@ package xyz.hellothomas.jedi.admin.api;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.hellothomas.jedi.admin.api.dto.ApiResponse;
 import xyz.hellothomas.jedi.admin.api.dto.LoginRequest;
+import xyz.hellothomas.jedi.admin.api.dto.LoginResponse;
 import xyz.hellothomas.jedi.admin.application.LoginService;
 
 import javax.validation.Valid;
@@ -21,7 +21,6 @@ import javax.validation.Valid;
  */
 @Api(value = "login", tags = "login")
 @RestController
-@Slf4j
 public class LoginController {
     private final LoginService loginService;
 
@@ -31,15 +30,15 @@ public class LoginController {
 
     @PostMapping(value = "/login")
     @ApiOperation("login")
-    public ApiResponse<String> login(@Valid @RequestBody LoginRequest loginRequest) {
-        String token = loginService.login(loginRequest);
-        return ApiResponse.success(token);
+    public ApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        LoginResponse loginResponse = loginService.login(loginRequest);
+        return ApiResponse.success(loginResponse);
     }
 
     @PostMapping(value = "/loginForExternalAuth")
     @ApiOperation("loginForExternalAuth")
-    public ApiResponse<String> loginForExternalAuth(@RequestParam("code") String code) {
-        String token = loginService.loginForExternalAuth(code);
-        return ApiResponse.success(token);
+    public ApiResponse<LoginResponse> loginForExternalAuth(@RequestParam("code") String code) {
+        LoginResponse loginResponse = loginService.loginForExternalAuth(code);
+        return ApiResponse.success(loginResponse);
     }
 }

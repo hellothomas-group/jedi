@@ -2,7 +2,6 @@ package xyz.hellothomas.jedi.admin.api;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +20,6 @@ import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
  */
 @Api(value = "user", tags = "user")
 @RestController
-@Slf4j
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;

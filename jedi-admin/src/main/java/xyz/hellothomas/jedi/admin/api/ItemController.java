@@ -1,9 +1,11 @@
 package xyz.hellothomas.jedi.admin.api;
 
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.admin.api.dto.ItemResponse;
 import xyz.hellothomas.jedi.admin.application.ItemService;
 import xyz.hellothomas.jedi.admin.domain.Item;
+import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
@@ -11,6 +13,9 @@ import xyz.hellothomas.jedi.core.utils.JsonUtil;
 
 import java.time.LocalDateTime;
 
+import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
+
+@Api(value = "item", tags = "item")
 @RestController
 public class ItemController {
 
@@ -21,13 +26,14 @@ public class ItemController {
     }
 
     //    @PreAcquireNamespaceLock
+    @UserLoginToken
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/items")
     public ItemResponse create(@PathVariable("namespaceName") String namespaceName,
                                @PathVariable("appId") String appId,
                                @PathVariable("executorName") String executorName,
                                @RequestParam("configuration") String configuration,
                                @RequestParam(name = "comment", required = false) String comment,
-                               @RequestParam("operator") String operator) {
+                               @RequestAttribute(CLAIM_USER_NAME) String operator) {
         Item managedEntity = itemService.findOne(namespaceName, appId, executorName);
         if (managedEntity != null) {
             throw new BadRequestException("item already exists");
@@ -37,6 +43,7 @@ public class ItemController {
     }
 
     //    @PreAcquireNamespaceLock
+    @UserLoginToken
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/items/{itemId}")
     public ItemResponse update(@PathVariable("namespaceName") String namespaceName,
                                @PathVariable("appId") String appId,
@@ -44,7 +51,7 @@ public class ItemController {
                                @PathVariable("itemId") long itemId,
                                @RequestParam("configuration") String configuration,
                                @RequestParam(name = "comment", required = false) String comment,
-                               @RequestParam("operator") String operator) {
+                               @RequestAttribute(CLAIM_USER_NAME) String operator) {
         Item managedEntity = itemService.findOne(itemId);
         if (managedEntity == null || managedEntity.getIsDeleted()) {
             throw new BadRequestException("item not exist");
@@ -59,13 +66,14 @@ public class ItemController {
         return LocalBeanUtils.transform(ItemResponse.class, managedEntity);
     }
 
+    @UserLoginToken
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/items")
     public ItemResponse update(@PathVariable("namespaceName") String namespaceName,
                                @PathVariable("appId") String appId,
                                @PathVariable("executorName") String executorName,
                                @RequestParam("configuration") String configuration,
                                @RequestParam(name = "comment", required = false) String comment,
-                               @RequestParam("operator") String operator) {
+                               @RequestAttribute(CLAIM_USER_NAME) String operator) {
         if (!JsonUtil.isJSONValid(configuration)) {
             throw new BadRequestException("configuration invalid, must be json");
         }
@@ -85,8 +93,9 @@ public class ItemController {
     }
 
     //    @PreAcquireNamespaceLock
+    @UserLoginToken
     @DeleteMapping("/items/{itemId}")
-    public void delete(@PathVariable("itemId") long itemId, @RequestParam String operator) {
+    public void delete(@PathVariable("itemId") long itemId, @RequestAttribute(CLAIM_USER_NAME) String operator) {
         Item entity = itemService.findOne(itemId);
         if (entity == null) {
             throw new NotFoundException("item not found for itemId " + itemId);

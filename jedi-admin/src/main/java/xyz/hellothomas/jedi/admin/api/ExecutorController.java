@@ -1,5 +1,6 @@
 package xyz.hellothomas.jedi.admin.api;
 
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.admin.api.dto.ExecutorResponse;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
@@ -9,6 +10,7 @@ import xyz.hellothomas.jedi.admin.application.ItemService;
 import xyz.hellothomas.jedi.admin.application.ReleaseService;
 import xyz.hellothomas.jedi.admin.domain.Executor;
 import xyz.hellothomas.jedi.admin.domain.Item;
+import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.domain.Release;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
@@ -17,6 +19,9 @@ import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
+
+@Api(value = "app", tags = "app")
 @RestController
 public class ExecutorController {
 
@@ -30,11 +35,12 @@ public class ExecutorController {
         this.itemService = itemService;
     }
 
+    @UserLoginToken
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}")
     public ExecutorResponse create(@PathVariable("namespaceName") String namespaceName,
                                    @PathVariable("appId") String appId,
                                    @PathVariable("executorName") String executorName,
-                                   @RequestParam("operator") String operator) {
+                                   @RequestAttribute(CLAIM_USER_NAME) String operator) {
         Executor managedEntity = executorService.findOne(namespaceName, appId, executorName);
         if (managedEntity != null) {
             throw new BadRequestException("executor already exist.");
@@ -49,10 +55,12 @@ public class ExecutorController {
         return executorResponse;
     }
 
+    @UserLoginToken
     @DeleteMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}")
     public void delete(@PathVariable("namespaceName") String namespaceName,
                        @PathVariable("appId") String appId,
-                       @PathVariable("executorName") String executorName, @RequestParam("operator") String operator) {
+                       @PathVariable("executorName") String executorName,
+                       @RequestAttribute(CLAIM_USER_NAME) String operator) {
         Executor entity = executorService.findOne(namespaceName, appId, executorName);
         if (entity == null) {
             throw new NotFoundException(

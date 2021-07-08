@@ -1,5 +1,6 @@
 package xyz.hellothomas.jedi.admin.api;
 
+import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.admin.api.dto.NamespaceRequest;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Api(value = "namespace", tags = "namespace")
 @RestController
 public class NamespaceController {
 
