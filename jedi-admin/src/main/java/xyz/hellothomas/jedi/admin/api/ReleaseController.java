@@ -12,6 +12,7 @@ import xyz.hellothomas.jedi.admin.application.ExecutorService;
 import xyz.hellothomas.jedi.admin.application.ReleaseService;
 import xyz.hellothomas.jedi.admin.application.message.MessageSender;
 import xyz.hellothomas.jedi.admin.domain.Executor;
+import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.common.utils.ReleaseMessageKeyGenerator;
 import xyz.hellothomas.jedi.biz.domain.Release;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
 import static xyz.hellothomas.jedi.biz.common.constants.Constants.JEDI_RELEASE_TOPIC;
 
 /**
@@ -97,6 +99,7 @@ public class ReleaseController {
         return LocalBeanUtils.transform(ReleaseResponse.class, release);
     }
 
+    @UserLoginToken
     @Transactional
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/releases")
     public ReleaseResponse publish(@PathVariable("namespaceName") String namespaceName,
@@ -104,7 +107,7 @@ public class ReleaseController {
                                    @PathVariable("executorName") String executorName,
                                    @RequestParam("name") String releaseName,
                                    @RequestParam(name = "comment", required = false) String releaseComment,
-                                   @RequestParam("operator") String operator,
+                                   @RequestAttribute(CLAIM_USER_NAME) String operator,
                                    @RequestParam(name = "isEmergencyPublish", defaultValue = "false") boolean isEmergencyPublish) {
         Executor executor = executorService.findOne(namespaceName, appId, executorName);
         if (executor == null) {
@@ -119,11 +122,12 @@ public class ReleaseController {
         return LocalBeanUtils.transform(ReleaseResponse.class, release);
     }
 
+    @UserLoginToken
     @Transactional
     @PutMapping("/releases/{releaseId}/rollback")
     public void rollback(@PathVariable("releaseId") long releaseId,
                          @RequestParam(name = "toReleaseId", defaultValue = "-1") long toReleaseId,
-                         @RequestParam("operator") String operator) {
+                         @RequestAttribute(CLAIM_USER_NAME) String operator) {
 
         Release release;
         if (toReleaseId > -1) {

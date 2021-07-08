@@ -15,30 +15,13 @@ import Login from '../components/Login'
 
 Vue.use(Router)
 
-// 公共路由
-// export const constantRoutes = [
-//   {
-//     path: '',
-//     component: Layout,
-//     redirect: 'index',
-//     children: [
-//       {
-//         path: 'index',
-//         component: (resolve) => require(['@/views/index'], resolve),
-//         name: '首页',
-//         meta: { title: '首页', icon: 'dashboard', noCache: true, affix: true }
-//       }
-//     ]
-//   }
-// ]
-
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
 const originalPush = Router.prototype.push
 Router.prototype.push = function push (location) {
   return originalPush.call(this, location).catch(err => err)
 }
 
-export default new Router({
+const router = new Router({
   mode: 'history', // 去掉url中的#
   routes: [
     {
@@ -109,3 +92,21 @@ export default new Router({
     }
   ]
 })
+
+// 导航守卫
+// 使用 router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login') {
+    next()
+  } else {
+    let token = localStorage.getItem('Authorization')
+
+    if (token === null || token === '') {
+      next('/login')
+    } else {
+      next()
+    }
+  }
+})
+
+export default router

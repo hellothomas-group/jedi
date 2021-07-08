@@ -16,6 +16,7 @@
   </div>
 </template>
 <script>
+import { mapMutations } from 'vuex'
 export default {
   data () {
     return {
@@ -26,6 +27,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['changeLogin']),
     onSubmit (formName) {
       console.log('submit!')
       this.asyncLogin(this.loginForm)
@@ -36,16 +38,23 @@ export default {
     asyncLogin (form) {
       console.log('asyncLogin')
       console.log('user login...' + form.username)
+      let _this = this
 
-      this.axios.post('/admin/login/', null, {
-        params: {
-          username: form.username,
-          password: form.password
-        }
+      this.axios.post('/admin/login/', {
+        username: form.username,
+        password: form.password
       }).then(res => {
-        console.log(form.username + 'login success')
+        console.log(res.data)
+        if (res.data.code === 'CODE000') {
+          _this.userToken = res.data.data
+          _this.changeLogin({ Authorization: _this.userToken })
+          _this.$router.push('/home')
+        } else {
+          alert('登录失败,原因:' + res.data.message)
+        }
       }).catch(function (error) {
         console.log(error)
+        alert('登录失败')
       })
     }
   }

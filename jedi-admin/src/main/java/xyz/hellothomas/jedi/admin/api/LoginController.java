@@ -11,6 +11,8 @@ import xyz.hellothomas.jedi.admin.api.dto.ApiResponse;
 import xyz.hellothomas.jedi.admin.api.dto.LoginRequest;
 import xyz.hellothomas.jedi.admin.application.LoginService;
 
+import javax.validation.Valid;
+
 /**
  * @author Thomas
  * @date 2021/6/27 22:18
@@ -29,7 +31,7 @@ public class LoginController {
 
     @PostMapping(value = "/login")
     @ApiOperation("login")
-    public ApiResponse<String> login(@RequestBody LoginRequest loginRequest) {
+    public ApiResponse<String> login(@Valid @RequestBody LoginRequest loginRequest) {
         String token = loginService.login(loginRequest);
         return ApiResponse.success(token);
     }
