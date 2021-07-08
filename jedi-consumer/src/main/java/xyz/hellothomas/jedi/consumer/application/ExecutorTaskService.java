@@ -3,6 +3,8 @@ package xyz.hellothomas.jedi.consumer.application;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
+import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMessageMapper;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
@@ -38,5 +40,13 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
     @Override
     public boolean match(ExecutorTaskNotification notification) {
         return MessageType.EXECUTOR_TASK.getTypeValue().equals(notification.getMessageType());
+    }
+
+    public PageResult<ExecutorTaskMessage> findByTaskNameAndRecordTime(String namespaceName, String appId,
+                                                                       String executorName,
+                                                                       String taskName, String instanceIp,
+                                                                       LocalDateTime startTime, LocalDateTime endTime,
+                                                                       PageHelperRequest pageHelperRequest) {
+        return null;
     }
 }
