@@ -13,6 +13,7 @@ import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.api.dto.ReleaseHistoryResponse;
 import xyz.hellothomas.jedi.admin.application.ReleaseHistoryService;
 import xyz.hellothomas.jedi.admin.domain.ReleaseHistory;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class ReleaseHistoryController {
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/releases/histories")
-    public PageResult<ReleaseHistoryResponse> findReleaseHistoriesByExecutor(
+    public ApiResponse<PageResult<ReleaseHistoryResponse>> findReleaseHistoriesByExecutor(
             @PathVariable("namespaceName") String namespaceName,
             @PathVariable("appId") String appId,
             @PathVariable("executorName") String executorName,
@@ -46,12 +47,12 @@ public class ReleaseHistoryController {
 
         PageResult<ReleaseHistory> result = releaseHistoryService.findReleaseHistoriesByNamespace(namespaceName, appId,
                 executorName, pageHelperRequest);
-        return transform2PageResult(result);
+        return ApiResponse.success(transform2PageResult(result));
     }
 
 
     @GetMapping("/releases/histories/by_release_id_and_operation")
-    public PageResult<ReleaseHistoryResponse> findReleaseHistoryByReleaseIdAndOperation(
+    public ApiResponse<PageResult<ReleaseHistoryResponse>> findReleaseHistoryByReleaseIdAndOperation(
             @RequestParam("releaseId") long releaseId,
             @RequestParam("operation") int operation,
             PageHelperRequest pageHelperRequest) {
@@ -59,11 +60,11 @@ public class ReleaseHistoryController {
         PageResult<ReleaseHistory> result = releaseHistoryService.findByReleaseIdAndOperation(releaseId, operation,
                 pageHelperRequest);
 
-        return transform2PageResult(result);
+        return ApiResponse.success(transform2PageResult(result));
     }
 
     @GetMapping("/releases/histories/by_previous_release_id_and_operation")
-    public PageResult<ReleaseHistoryResponse> findReleaseHistoryByPreviousReleaseIdAndOperation(
+    public ApiResponse<PageResult<ReleaseHistoryResponse>> findReleaseHistoryByPreviousReleaseIdAndOperation(
             @RequestParam("previousReleaseId") long previousReleaseId,
             @RequestParam("operation") int operation,
             PageHelperRequest pageHelperRequest) {
@@ -71,7 +72,7 @@ public class ReleaseHistoryController {
         PageResult<ReleaseHistory> result = releaseHistoryService.findByPreviousReleaseIdAndOperation(previousReleaseId,
                 operation, pageHelperRequest);
 
-        return transform2PageResult(result);
+        return ApiResponse.success(transform2PageResult(result));
 
     }
 

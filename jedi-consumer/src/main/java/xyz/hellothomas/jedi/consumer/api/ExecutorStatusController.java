@@ -1,5 +1,6 @@
 package xyz.hellothomas.jedi.consumer.api;
 
+import io.swagger.annotations.Api;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,12 +11,14 @@ import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
 import xyz.hellothomas.jedi.consumer.application.ExecutorTickerService;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessage;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Api(value = "executor-status", tags = "executor-status")
 @RestController
 public class ExecutorStatusController {
 
@@ -26,22 +29,22 @@ public class ExecutorStatusController {
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/status")
-    public PageResult<ExecutorStatusResponse> find(@PathVariable("namespaceName") String namespaceName,
-                                                   @PathVariable("appId") String appId,
-                                                   @PathVariable("executorName") String executorName,
-                                                   @RequestParam("instanceIp") String instanceIp,
-                                                   @RequestParam("startTime") @DateTimeFormat(pattern = "yyyy-MM-dd " +
+    public ApiResponse<PageResult<ExecutorStatusResponse>> find(@PathVariable("namespaceName") String namespaceName,
+                                                               @PathVariable("appId") String appId,
+                                                               @PathVariable("executorName") String executorName,
+                                                               @RequestParam("instanceIp") String instanceIp,
+                                                               @RequestParam("startTime") @DateTimeFormat(pattern = "yyyy-MM-dd " +
                                                            "HH:mm:ss") LocalDateTime startTime,
-                                                   @RequestParam("endTime") @DateTimeFormat(pattern = "yyyy-MM-dd " +
+                                                               @RequestParam("endTime") @DateTimeFormat(pattern = "yyyy-MM-dd " +
                                                            "HH:mm:ss") LocalDateTime endTime,
-                                                   PageHelperRequest pageHelperRequest) {
+                                                               PageHelperRequest pageHelperRequest) {
         PageResult<ExecutorTickerMessage> tickerMessagePageResult =
                 executorTickerService.findByExecutorHostAndRecordTime(namespaceName
                         , appId, executorName, instanceIp, startTime, endTime, pageHelperRequest);
         PageResult<ExecutorStatusResponse> executorStatusResponsePageResult =
                 transform2PageResult(tickerMessagePageResult);
 
-        return executorStatusResponsePageResult;
+        return ApiResponse.success(executorStatusResponsePageResult);
     }
 
     private PageResult<ExecutorStatusResponse> transform2PageResult(PageResult<ExecutorTickerMessage> tickerMessagePageResult) {

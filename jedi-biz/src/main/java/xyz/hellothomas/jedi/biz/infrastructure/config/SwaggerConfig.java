@@ -1,5 +1,6 @@
 package xyz.hellothomas.jedi.biz.infrastructure.config;
 
+import com.google.common.collect.Lists;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -8,13 +9,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.List;
 
 @Configuration
 @EnableConfigurationProperties(SwaggerProperties.class)
@@ -32,9 +38,19 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
 
     public Docket createRestApi(ApiInfo apiInfo, String swaggerHost, String prefixPath, String basePackage) {
+        ParameterBuilder pb = new ParameterBuilder();
+        Parameter factorParam = pb
+                .parameterType("header")
+                .name("Authorization")
+                .defaultValue("")
+                .description("请输入token")
+                .modelRef(new ModelRef("string"))
+                .required(false).build();
+        List<Parameter> parameterList = Lists.newArrayList(factorParam);
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo)
+                .globalOperationParameters(parameterList)
                 .host(swaggerHost)
                 .pathMapping(prefixPath)
                 .select()

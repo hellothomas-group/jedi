@@ -9,12 +9,14 @@ import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
 import xyz.hellothomas.jedi.core.utils.JsonUtil;
 
 import java.time.LocalDateTime;
 
 import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
 
+@UserLoginToken
 @Api(value = "item", tags = "item")
 @RestController
 public class ItemController {
@@ -26,32 +28,30 @@ public class ItemController {
     }
 
     //    @PreAcquireNamespaceLock
-    @UserLoginToken
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/items")
-    public ItemResponse create(@PathVariable("namespaceName") String namespaceName,
-                               @PathVariable("appId") String appId,
-                               @PathVariable("executorName") String executorName,
-                               @RequestParam("configuration") String configuration,
-                               @RequestParam(name = "comment", required = false) String comment,
-                               @RequestAttribute(CLAIM_USER_NAME) String operator) {
+    public ApiResponse<ItemResponse> create(@PathVariable("namespaceName") String namespaceName,
+                                            @PathVariable("appId") String appId,
+                                            @PathVariable("executorName") String executorName,
+                                            @RequestParam("configuration") String configuration,
+                                            @RequestParam(name = "comment", required = false) String comment,
+                                            @RequestAttribute(CLAIM_USER_NAME) String operator) {
         Item managedEntity = itemService.findOne(namespaceName, appId, executorName);
         if (managedEntity != null) {
             throw new BadRequestException("item already exists");
         }
         Item entity = itemService.save(namespaceName, appId, executorName, configuration, comment, operator);
-        return LocalBeanUtils.transform(ItemResponse.class, entity);
+        return ApiResponse.success(LocalBeanUtils.transform(ItemResponse.class, entity));
     }
 
     //    @PreAcquireNamespaceLock
-    @UserLoginToken
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/items/{itemId}")
-    public ItemResponse update(@PathVariable("namespaceName") String namespaceName,
-                               @PathVariable("appId") String appId,
-                               @PathVariable("executorName") String executorName,
-                               @PathVariable("itemId") long itemId,
-                               @RequestParam("configuration") String configuration,
-                               @RequestParam(name = "comment", required = false) String comment,
-                               @RequestAttribute(CLAIM_USER_NAME) String operator) {
+    public ApiResponse<ItemResponse> update(@PathVariable("namespaceName") String namespaceName,
+                                            @PathVariable("appId") String appId,
+                                            @PathVariable("executorName") String executorName,
+                                            @PathVariable("itemId") long itemId,
+                                            @RequestParam("configuration") String configuration,
+                                            @RequestParam(name = "comment", required = false) String comment,
+                                            @RequestAttribute(CLAIM_USER_NAME) String operator) {
         Item managedEntity = itemService.findOne(itemId);
         if (managedEntity == null || managedEntity.getIsDeleted()) {
             throw new BadRequestException("item not exist");
@@ -63,17 +63,16 @@ public class ItemController {
         managedEntity.setDataChangeLastModifiedTime(LocalDateTime.now());
         itemService.update(managedEntity);
 
-        return LocalBeanUtils.transform(ItemResponse.class, managedEntity);
+        return ApiResponse.success(LocalBeanUtils.transform(ItemResponse.class, managedEntity));
     }
 
-    @UserLoginToken
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/items")
-    public ItemResponse update(@PathVariable("namespaceName") String namespaceName,
-                               @PathVariable("appId") String appId,
-                               @PathVariable("executorName") String executorName,
-                               @RequestParam("configuration") String configuration,
-                               @RequestParam(name = "comment", required = false) String comment,
-                               @RequestAttribute(CLAIM_USER_NAME) String operator) {
+    public ApiResponse<ItemResponse> update(@PathVariable("namespaceName") String namespaceName,
+                                            @PathVariable("appId") String appId,
+                                            @PathVariable("executorName") String executorName,
+                                            @RequestParam("configuration") String configuration,
+                                            @RequestParam(name = "comment", required = false) String comment,
+                                            @RequestAttribute(CLAIM_USER_NAME) String operator) {
         if (!JsonUtil.isJSONValid(configuration)) {
             throw new BadRequestException("configuration invalid, must be json");
         }
@@ -89,38 +88,40 @@ public class ItemController {
         managedEntity.setDataChangeLastModifiedTime(LocalDateTime.now());
         itemService.update(managedEntity);
 
-        return LocalBeanUtils.transform(ItemResponse.class, managedEntity);
+        return ApiResponse.success(LocalBeanUtils.transform(ItemResponse.class, managedEntity));
     }
 
     //    @PreAcquireNamespaceLock
-    @UserLoginToken
     @DeleteMapping("/items/{itemId}")
-    public void delete(@PathVariable("itemId") long itemId, @RequestAttribute(CLAIM_USER_NAME) String operator) {
+    public ApiResponse<String> delete(@PathVariable("itemId") long itemId,
+                                      @RequestAttribute(CLAIM_USER_NAME) String operator) {
         Item entity = itemService.findOne(itemId);
         if (entity == null) {
             throw new NotFoundException("item not found for itemId " + itemId);
         }
         itemService.delete(entity.getId(), operator);
+
+        return ApiResponse.success("删除成功");
     }
 
     @GetMapping("/items/{itemId}")
-    public ItemResponse get(@PathVariable("itemId") long itemId) {
+    public ApiResponse<ItemResponse> get(@PathVariable("itemId") long itemId) {
         Item item = itemService.findOne(itemId);
         if (item == null) {
             throw new NotFoundException("item not found for itemId " + itemId);
         }
-        return LocalBeanUtils.transform(ItemResponse.class, item);
+        return ApiResponse.success(LocalBeanUtils.transform(ItemResponse.class, item));
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/items")
-    public ItemResponse get(@PathVariable("namespaceName") String namespaceName,
-                            @PathVariable("appId") String appId,
-                            @PathVariable("executorName") String executorName) {
+    public ApiResponse<ItemResponse> get(@PathVariable("namespaceName") String namespaceName,
+                                         @PathVariable("appId") String appId,
+                                         @PathVariable("executorName") String executorName) {
         Item item = itemService.findOne(namespaceName, appId, executorName);
         if (item == null) {
             throw new NotFoundException(
                     String.format("item not found for %s %s %s", namespaceName, appId, executorName));
         }
-        return LocalBeanUtils.transform(ItemResponse.class, item);
+        return ApiResponse.success(LocalBeanUtils.transform(ItemResponse.class, item));
     }
 }

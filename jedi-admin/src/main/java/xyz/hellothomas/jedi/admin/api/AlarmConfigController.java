@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.admin.api.dto.AlarmConfigResponse;
 import xyz.hellothomas.jedi.admin.application.AlarmConfigService;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
 import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
 
@@ -15,6 +16,8 @@ import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
  * @description
  * @version 1.0
  */
+@Deprecated
+@UserLoginToken
 @Api(value = "alarm-config", tags = "alarm-config")
 @RestController
 public class AlarmConfigController {
@@ -24,35 +27,35 @@ public class AlarmConfigController {
         this.alarmConfigService = alarmConfigService;
     }
 
-    @UserLoginToken
     @PostMapping(value = "/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
     @ApiOperation("create")
-    public AlarmConfigResponse create(@PathVariable("namespaceName") String namespaceName,
-                                      @PathVariable("appId") String appId,
-                                      @PathVariable("executorName") String executorName,
-                                      @RequestParam("configuration") String configuration,
-                                      @RequestAttribute(CLAIM_USER_NAME) String operator) {
+    public ApiResponse<AlarmConfigResponse> create(@PathVariable("namespaceName") String namespaceName,
+                                                  @PathVariable("appId") String appId,
+                                                  @PathVariable("executorName") String executorName,
+                                                  @RequestParam("configuration") String configuration,
+                                                  @RequestAttribute(CLAIM_USER_NAME) String operator) {
 
-        return alarmConfigService.save(namespaceName, appId, executorName, configuration, operator);
+        return ApiResponse.success(alarmConfigService.save(namespaceName, appId, executorName, configuration,
+                operator));
     }
 
-    @UserLoginToken
     @ApiOperation("update")
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
-    public AlarmConfigResponse update(@PathVariable("namespaceName") String namespaceName,
+    public ApiResponse<AlarmConfigResponse> update(@PathVariable("namespaceName") String namespaceName,
                                       @PathVariable("appId") String appId,
                                       @PathVariable("executorName") String executorName,
                                       @RequestParam("configuration") String configuration,
                                       @RequestAttribute(CLAIM_USER_NAME) String operator) {
-        return alarmConfigService.update(namespaceName, appId, executorName, configuration, operator);
+        return ApiResponse.success(alarmConfigService.update(namespaceName, appId, executorName, configuration,
+                operator));
     }
 
-    @UserLoginToken
     @ApiOperation("delete")
     @DeleteMapping("/alarm-configs/{alarmConfigId}")
-    public void delete(@PathVariable("alarmConfigId") long alarmConfigId,
+    public ApiResponse<String> delete(@PathVariable("alarmConfigId") long alarmConfigId,
                        @RequestAttribute(CLAIM_USER_NAME) String operator) {
         alarmConfigService.delete(alarmConfigId, operator);
+        return ApiResponse.success("删除成功");
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")

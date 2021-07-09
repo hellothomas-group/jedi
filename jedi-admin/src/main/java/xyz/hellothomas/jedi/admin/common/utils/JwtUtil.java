@@ -7,10 +7,12 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import xyz.hellothomas.jedi.admin.domain.User;
-import xyz.hellothomas.jedi.admin.infrastructure.exception.TokenUnavailable;
+import xyz.hellothomas.jedi.admin.infrastructure.exception.BusinessException;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import static xyz.hellothomas.jedi.core.enums.ErrorCodeEnum.TOKEN_UNAVAILABLE;
 
 /**
  * @author 80234613 唐圆
@@ -50,9 +52,9 @@ public class JwtUtil {
     /**
      * 检验合法性，其中secret参数就应该传入的是用户的id
      * @param token
-     * @throws TokenUnavailable
+     * @throws
      */
-    public static void verifyToken(String token, String secret) throws TokenUnavailable {
+    public static void verifyToken(String token, String secret) {
         DecodedJWT jwt = null;
         try {
             JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret)).build();
@@ -60,20 +62,20 @@ public class JwtUtil {
         } catch (Exception e) {
             //效验失败
             //这里抛出的异常是我自定义的一个异常，你也可以写成别的
-            throw new TokenUnavailable();
+            throw new BusinessException(TOKEN_UNAVAILABLE);
         }
     }
 
     /**
      * 获取签发对象
      */
-    public static String getAudience(String token) throws TokenUnavailable {
+    public static String getAudience(String token) {
         String audience;
         try {
             audience = JWT.decode(token).getAudience().get(0);
         } catch (JWTDecodeException j) {
             //这里是token解析失败
-            throw new TokenUnavailable();
+            throw new BusinessException(TOKEN_UNAVAILABLE);
         }
         return audience;
     }

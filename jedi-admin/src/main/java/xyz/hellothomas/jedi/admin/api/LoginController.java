@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.hellothomas.jedi.admin.api.dto.ApiResponse;
 import xyz.hellothomas.jedi.admin.api.dto.LoginRequest;
 import xyz.hellothomas.jedi.admin.api.dto.LoginResponse;
 import xyz.hellothomas.jedi.admin.application.LoginService;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
 import javax.validation.Valid;
 

@@ -15,13 +15,15 @@ import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.domain.Release;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
 
-@Api(value = "app", tags = "app")
+@UserLoginToken
+@Api(value = "executor", tags = "executor")
 @RestController
 public class ExecutorController {
 
@@ -35,12 +37,11 @@ public class ExecutorController {
         this.itemService = itemService;
     }
 
-    @UserLoginToken
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}")
-    public ExecutorResponse create(@PathVariable("namespaceName") String namespaceName,
-                                   @PathVariable("appId") String appId,
-                                   @PathVariable("executorName") String executorName,
-                                   @RequestAttribute(CLAIM_USER_NAME) String operator) {
+    public ApiResponse<ExecutorResponse> create(@PathVariable("namespaceName") String namespaceName,
+                                                @PathVariable("appId") String appId,
+                                                @PathVariable("executorName") String executorName,
+                                                @RequestAttribute(CLAIM_USER_NAME) String operator) {
         Executor managedEntity = executorService.findOne(namespaceName, appId, executorName);
         if (managedEntity != null) {
             throw new BadRequestException("executor already exist.");
@@ -52,15 +53,14 @@ public class ExecutorController {
         // 创建后 Item为默认修改状态，待发布
         executorResponse.setItemModified(true);
 
-        return executorResponse;
+        return ApiResponse.success(executorResponse);
     }
 
-    @UserLoginToken
     @DeleteMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}")
-    public void delete(@PathVariable("namespaceName") String namespaceName,
-                       @PathVariable("appId") String appId,
-                       @PathVariable("executorName") String executorName,
-                       @RequestAttribute(CLAIM_USER_NAME) String operator) {
+    public ApiResponse<String> delete(@PathVariable("namespaceName") String namespaceName,
+                                      @PathVariable("appId") String appId,
+                                      @PathVariable("executorName") String executorName,
+                                      @RequestAttribute(CLAIM_USER_NAME) String operator) {
         Executor entity = executorService.findOne(namespaceName, appId, executorName);
         if (entity == null) {
             throw new NotFoundException(
@@ -68,11 +68,14 @@ public class ExecutorController {
         }
 
         executorService.deleteExecutor(entity, operator);
+
+        return ApiResponse.success("删除成功");
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors")
-    public PageResult<ExecutorResponse> find(@PathVariable("namespaceName") String namespaceName,
-                                             @PathVariable("appId") String appId, PageHelperRequest pageHelperRequest) {
+    public ApiResponse<PageResult<ExecutorResponse>> find(@PathVariable("namespaceName") String namespaceName,
+                                                          @PathVariable("appId") String appId,
+                                                          PageHelperRequest pageHelperRequest) {
         PageResult<Executor> executorsPage = executorService.findExecutors(namespaceName, appId, pageHelperRequest);
         PageResult<ExecutorResponse> executorResponsePage = transform2PageResult(executorsPage);
 
@@ -88,11 +91,11 @@ public class ExecutorController {
             }
         });
 
-        return executorResponsePage;
+        return ApiResponse.success(executorResponsePage);
     }
 
     @GetMapping("/executors/{executorId}")
-    public ExecutorResponse get(@PathVariable("executorId") Long executorId) {
+    public ApiResponse<ExecutorResponse> get(@PathVariable("executorId") Long executorId) {
         Executor executor = executorService.findOne(executorId);
         if (executor == null) {
             throw new NotFoundException(String.format("executor not found for %s", executorId));
@@ -101,7 +104,7 @@ public class ExecutorController {
 
         Item item = itemService.findOneByExecutorId(executor.getId());
         if (item == null) {
-            return executorResponse;
+            return ApiResponse.success(executorResponse);
         }
         Release release = releaseService.findLatestActiveRelease(executor.getNamespaceName(), executor.getAppId(),
                 executor.getExecutorName());
@@ -109,11 +112,11 @@ public class ExecutorController {
             executorResponse.setItemModified(true);
         }
 
-        return executorResponse;
+        return ApiResponse.success(executorResponse);
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}")
-    public ExecutorResponse get(@PathVariable("namespaceName") String namespaceName,
+    public ApiResponse<ExecutorResponse> get(@PathVariable("namespaceName") String namespaceName,
                                 @PathVariable("appId") String appId,
                                 @PathVariable("executorName") String executorName) {
         Executor executor = executorService.findOne(namespaceName, appId, executorName);
@@ -125,7 +128,7 @@ public class ExecutorController {
 
         Item item = itemService.findOneByExecutorId(executor.getId());
         if (item == null) {
-            return executorResponse;
+            return ApiResponse.success(executorResponse);
         }
         Release release = releaseService.findLatestActiveRelease(executor.getNamespaceName(), executor.getAppId(),
                 executor.getExecutorName());
@@ -133,7 +136,7 @@ public class ExecutorController {
             executorResponse.setItemModified(true);
         }
 
-        return executorResponse;
+        return ApiResponse.success(executorResponse);
     }
 
     private PageResult<ExecutorResponse> transform2PageResult(PageResult<Executor> executorPageResult) {

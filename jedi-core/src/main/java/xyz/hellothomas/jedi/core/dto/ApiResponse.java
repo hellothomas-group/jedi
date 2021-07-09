@@ -1,20 +1,12 @@
-package xyz.hellothomas.jedi.admin.api.dto;
+package xyz.hellothomas.jedi.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import xyz.hellothomas.jedi.core.enums.ErrorCodeEnum;
 import xyz.hellothomas.jedi.core.enums.ICodeEnum;
 
 /**
  * @author Thomas
  */
-@Builder
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ApiResponse<T> {
     @JsonProperty("code")
     private String code;
@@ -24,6 +16,15 @@ public class ApiResponse<T> {
 
     @JsonProperty("message")
     private String message;
+
+    public ApiResponse() {
+    }
+
+    public ApiResponse(String code, T data, String message) {
+        this.code = code;
+        this.data = data;
+        this.message = message;
+    }
 
     public static <T> ApiResponse<T> success(T data) {
         ApiResponse<T> response = new ApiResponse<>();
@@ -52,5 +53,38 @@ public class ApiResponse<T> {
         response.setCode(errorCodeEnum.getCode());
         response.setMessage(errorCodeEnum.getMessage());
         return response;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return "ApiResponse{" +
+                "code='" + code + '\'' +
+                ", data=" + data +
+                ", message='" + message + '\'' +
+                '}';
     }
 }

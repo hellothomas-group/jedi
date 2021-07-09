@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.hellothomas.jedi.admin.api.dto.ApiResponse;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
 import xyz.hellothomas.jedi.admin.api.dto.UserRequest;
 import xyz.hellothomas.jedi.admin.application.UserService;
 import xyz.hellothomas.jedi.admin.domain.User;
@@ -27,7 +27,6 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
 
     @PostMapping(value = "/create")
     @ApiOperation("create")

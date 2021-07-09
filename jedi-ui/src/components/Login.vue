@@ -17,6 +17,7 @@
 </template>
 <script>
 import { mapMutations } from 'vuex'
+let Base64 = require('js-base64').Base64
 export default {
   data () {
     return {
@@ -42,24 +43,24 @@ export default {
 
       this.axios.post('/admin/login/', {
         username: form.username,
-        password: form.password
+        password: Base64.encode(form.password)
       }).then(res => {
         console.log(res.data)
-        if (res.data.code === 'CODE000') {
-          _this.userToken = res.data.data.token
-          _this.userName = res.data.data.userName
-          _this.realName = res.data.data.realName
-          _this.changeLogin({ Authorization: _this.userToken,
-            UserName: _this.userName,
-            RealName: _this.realName
-          })
-          _this.$router.push('/home')
+        _this.userToken = res.data.token
+        _this.userName = res.data.userName
+        _this.realName = res.data.realName
+        _this.changeLogin({ Authorization: _this.userToken,
+          UserName: _this.userName,
+          RealName: _this.realName
+        })
+        if (_this.$route.query.redirect) { // 如果存在参数
+          _this.$router.push(_this.$route.query.redirect)// 则跳转至进入登录页前的路由
         } else {
-          alert('登录失败,原因:' + res.data.message)
+          _this.$router.push('/home')// 否则跳转至首页
         }
       }).catch(function (error) {
         console.log(error)
-        alert('登录失败')
+        alert(error.data.message)
       })
     }
   }

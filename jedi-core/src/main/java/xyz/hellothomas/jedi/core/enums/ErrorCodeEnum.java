@@ -20,9 +20,11 @@ public enum ErrorCodeEnum implements ICodeEnum {
      * 参数异常
      */
     PARAM_ERROR("CODE003", "参数异常"),
+    TOKEN_UNAVAILABLE("CODE004", "token过期"),
+    TOKEN_IS_NULL("CODE005", "token为空"),
 
-    JSON_SERIALIZE_ERROR("CODE004", "JSON序列化错误,异常为:{0}"),
-    JSON_DESERIALIZE_ERROR("CODE005", "JSON反序列化错误,内容为{0},异常为:{1}"),
+    JSON_SERIALIZE_ERROR("CODE006", "JSON序列化错误,异常为:{0}"),
+    JSON_DESERIALIZE_ERROR("CODE007", "JSON反序列化错误,内容为{0},异常为:{1}"),
     ;
 
     private String code;

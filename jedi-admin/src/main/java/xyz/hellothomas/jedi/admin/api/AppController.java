@@ -11,6 +11,7 @@ import xyz.hellothomas.jedi.admin.domain.App;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
 /**
  * @author 80234613
  */
+@UserLoginToken
 @Api(value = "app", tags = "app")
 @RestController
 public class AppController {
@@ -32,11 +34,10 @@ public class AppController {
         this.appService = appService;
     }
 
-    @UserLoginToken
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}")
-    public AppResponse create(@PathVariable("namespaceName") String namespaceName,
-                              @Valid @RequestBody AppRequest appRequest,
-                              @RequestAttribute(CLAIM_USER_NAME) String operator) {
+    public ApiResponse<AppResponse> create(@PathVariable("namespaceName") String namespaceName,
+                                          @Valid @RequestBody AppRequest appRequest,
+                                          @RequestAttribute(CLAIM_USER_NAME) String operator) {
 
         App entity = LocalBeanUtils.transform(App.class, appRequest);
         App managedEntity = appService.findOne(entity.getNamespaceName(), entity.getAppId());
@@ -47,12 +48,11 @@ public class AppController {
 
         entity = appService.save(entity, operator);
 
-        return LocalBeanUtils.transform(AppResponse.class, entity);
+        return ApiResponse.success(LocalBeanUtils.transform(AppResponse.class, entity));
     }
 
-    @UserLoginToken
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}")
-    public void update(@PathVariable String namespaceName, @PathVariable String appId,
+    public ApiResponse<String> update(@PathVariable String namespaceName, @PathVariable String appId,
                        @RequestBody AppRequest request,
                        @RequestAttribute(CLAIM_USER_NAME) String operator) {
         if (!Objects.equals(namespaceName, request.getNamespaceName())) {
@@ -62,11 +62,13 @@ public class AppController {
         App entity = LocalBeanUtils.transform(App.class, request);
 
         appService.update(entity, operator);
+
+        return ApiResponse.success("更新成功");
     }
 
-    @UserLoginToken
     @DeleteMapping("/namespaces/{namespaceName}/apps/{appId}")
-    public void delete(@PathVariable("namespaceName") String namespaceName, @PathVariable("appId") String appId,
+    public ApiResponse<String> delete(@PathVariable("namespaceName") String namespaceName,
+                                @PathVariable("appId") String appId,
                        @RequestAttribute(CLAIM_USER_NAME) String operator) {
         App entity = appService.findOne(namespaceName, appId);
         if (entity == null) {
@@ -74,22 +76,24 @@ public class AppController {
                     "appId: " + appId);
         }
         appService.deleteApp(entity, operator);
+
+        return ApiResponse.success("删除成功");
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps")
-    public PageResult<AppResponse> getAppNamespaces(@PathVariable("namespaceName") String namespaceName,
+    public ApiResponse<PageResult<AppResponse>> getAppNamespaces(@PathVariable("namespaceName") String namespaceName,
                                                     PageHelperRequest pageHelperRequest) {
         PageResult<App> appsPage = appService.findByNamespaceName(namespaceName, pageHelperRequest);
 
-        return transform2PageResult(appsPage);
+        return ApiResponse.success(transform2PageResult(appsPage));
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}")
-    public AppResponse getAppNamespaces(@PathVariable("namespaceName") String namespaceName,
+    public ApiResponse<AppResponse> getAppNamespaces(@PathVariable("namespaceName") String namespaceName,
                                         @PathVariable("appId") String appId) {
         App app = appService.findOne(namespaceName, appId);
 
-        return LocalBeanUtils.transform(AppResponse.class, app);
+        return ApiResponse.success(LocalBeanUtils.transform(AppResponse.class, app));
     }
 
     private PageResult<AppResponse> transform2PageResult(PageResult<App> appPageResult) {

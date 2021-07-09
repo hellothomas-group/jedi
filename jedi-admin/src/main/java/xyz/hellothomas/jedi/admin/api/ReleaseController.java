@@ -16,6 +16,7 @@ import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.common.utils.ReleaseMessageKeyGenerator;
 import xyz.hellothomas.jedi.biz.domain.Release;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ import static xyz.hellothomas.jedi.biz.common.constants.Constants.JEDI_RELEASE_T
  * @description
  * @version 1.0
  */
+@UserLoginToken
 @Api(value = "release", tags = "release")
 @RestController
 public class ReleaseController {
@@ -49,63 +51,62 @@ public class ReleaseController {
     }
 
     @GetMapping("/releases/{releaseId}")
-    public ReleaseResponse get(@PathVariable("releaseId") long releaseId) {
+    public ApiResponse<ReleaseResponse> get(@PathVariable("releaseId") long releaseId) {
         Release release = releaseService.findOne(releaseId);
         if (release == null) {
             throw new NotFoundException(String.format("release not found for %s", releaseId));
         }
-        return LocalBeanUtils.transform(ReleaseResponse.class, release);
+        return ApiResponse.success(LocalBeanUtils.transform(ReleaseResponse.class, release));
     }
 
     @GetMapping("/releases")
-    public List<ReleaseResponse> findReleaseByIds(@RequestParam("releaseIds") String releaseIds) {
+    public ApiResponse<List<ReleaseResponse>> findReleaseByIds(@RequestParam("releaseIds") String releaseIds) {
         Set<Long> releaseIdSet = RELEASES_SPLITTER.splitToList(releaseIds).stream().map(Long::parseLong)
                 .collect(Collectors.toSet());
 
         List<Release> releases = releaseService.findByReleaseIds(releaseIdSet);
 
-        return LocalBeanUtils.batchTransform(ReleaseResponse.class, releases);
+        return ApiResponse.success(LocalBeanUtils.batchTransform(ReleaseResponse.class, releases));
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/releases/all")
-    public PageResult<ReleaseResponse> findAllReleases(@PathVariable("namespaceName") String namespaceName,
-                                                       @PathVariable("appId") String appId,
-                                                       @PathVariable("executorName") String executorName,
-                                                       PageHelperRequest pageHelperRequest) {
+    public ApiResponse<PageResult<ReleaseResponse>> findAllReleases(@PathVariable("namespaceName") String namespaceName,
+                                                                    @PathVariable("appId") String appId,
+                                                                    @PathVariable("executorName") String executorName,
+                                                                    PageHelperRequest pageHelperRequest) {
         PageResult<Release> releasesPage = releaseService.findAllReleases(namespaceName, appId, executorName,
                 pageHelperRequest);
-        return transform2PageResult(releasesPage);
+        return ApiResponse.success(transform2PageResult(releasesPage));
     }
 
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/releases/active")
-    public PageResult<ReleaseResponse> findActiveReleases(@PathVariable("namespaceName") String namespaceName,
-                                                          @PathVariable("appId") String appId,
-                                                          @PathVariable("executorName") String executorName,
-                                                          PageHelperRequest pageHelperRequest) {
+    public ApiResponse<PageResult<ReleaseResponse>> findActiveReleases(@PathVariable("namespaceName") String namespaceName,
+                                                                       @PathVariable("appId") String appId,
+                                                                       @PathVariable("executorName") String executorName,
+                                                                       PageHelperRequest pageHelperRequest) {
         PageResult<Release> releasesPage = releaseService.findActiveReleases(namespaceName, appId, executorName,
                 pageHelperRequest);
-        return transform2PageResult(releasesPage);
+        return ApiResponse.success(transform2PageResult(releasesPage));
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/releases/latest")
-    public ReleaseResponse getLatest(@PathVariable("namespaceName") String namespaceName,
-                                     @PathVariable("appId") String appId,
-                                     @PathVariable("executorName") String executorName) {
+    public ApiResponse<ReleaseResponse> getLatest(@PathVariable("namespaceName") String namespaceName,
+                                                  @PathVariable("appId") String appId,
+                                                  @PathVariable("executorName") String executorName) {
         Release release = releaseService.findLatestActiveRelease(namespaceName, appId, executorName);
-        return LocalBeanUtils.transform(ReleaseResponse.class, release);
+        return ApiResponse.success(LocalBeanUtils.transform(ReleaseResponse.class, release));
     }
 
-    @UserLoginToken
     @Transactional
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/releases")
-    public ReleaseResponse publish(@PathVariable("namespaceName") String namespaceName,
-                                   @PathVariable("appId") String appId,
-                                   @PathVariable("executorName") String executorName,
-                                   @RequestParam("name") String releaseName,
-                                   @RequestParam(name = "comment", required = false) String releaseComment,
-                                   @RequestAttribute(CLAIM_USER_NAME) String operator,
-                                   @RequestParam(name = "isEmergencyPublish", defaultValue = "false") boolean isEmergencyPublish) {
+    public ApiResponse<ReleaseResponse> publish(@PathVariable("namespaceName") String namespaceName,
+                                                @PathVariable("appId") String appId,
+                                                @PathVariable("executorName") String executorName,
+                                                @RequestParam("name") String releaseName,
+                                                @RequestParam(name = "comment", required = false) String releaseComment,
+                                                @RequestAttribute(CLAIM_USER_NAME) String operator,
+                                                @RequestParam(name = "isEmergencyPublish", defaultValue = "false") boolean isEmergencyPublish) {
         Executor executor = executorService.findOne(namespaceName, appId, executorName);
         if (executor == null) {
             throw new NotFoundException(String.format("Could not find executor for %s %s %s", namespaceName,
@@ -116,15 +117,14 @@ public class ReleaseController {
         //send release message
         messageSender.sendMessage(ReleaseMessageKeyGenerator.generate(namespaceName, appId, executorName),
                 JEDI_RELEASE_TOPIC);
-        return LocalBeanUtils.transform(ReleaseResponse.class, release);
+        return ApiResponse.success(LocalBeanUtils.transform(ReleaseResponse.class, release));
     }
 
-    @UserLoginToken
     @Transactional
     @PutMapping("/releases/{releaseId}/rollback")
-    public void rollback(@PathVariable("releaseId") long releaseId,
-                         @RequestParam(name = "toReleaseId", defaultValue = "-1") long toReleaseId,
-                         @RequestAttribute(CLAIM_USER_NAME) String operator) {
+    public ApiResponse<String> rollback(@PathVariable("releaseId") long releaseId,
+                                        @RequestParam(name = "toReleaseId", defaultValue = "-1") long toReleaseId,
+                                        @RequestAttribute(CLAIM_USER_NAME) String operator) {
 
         Release release;
         if (toReleaseId > -1) {
@@ -139,6 +139,8 @@ public class ReleaseController {
         //send release message
         messageSender.sendMessage(ReleaseMessageKeyGenerator.generate(namespaceName, appId, executorName),
                 JEDI_RELEASE_TOPIC);
+
+        return ApiResponse.success("回滚成功");
     }
 
     private PageResult<ReleaseResponse> transform2PageResult(PageResult<Release> releasePageResult) {

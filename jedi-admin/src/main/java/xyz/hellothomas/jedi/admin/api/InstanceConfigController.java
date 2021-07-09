@@ -19,6 +19,7 @@ import xyz.hellothomas.jedi.biz.domain.Instance;
 import xyz.hellothomas.jedi.biz.domain.InstanceConfig;
 import xyz.hellothomas.jedi.biz.domain.Release;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,8 +39,8 @@ public class InstanceConfigController {
     }
 
     @GetMapping("/by-release")
-    public PageResult<InstanceResponse> getByRelease(@RequestParam("releaseId") long releaseId,
-                                                     PageHelperRequest pageHelperRequest) {
+    public ApiResponse<PageResult<InstanceResponse>> getByRelease(@RequestParam("releaseId") long releaseId,
+                                                                  PageHelperRequest pageHelperRequest) {
         Release release = releaseService.findOne(releaseId);
         if (release == null) {
             throw new NotFoundException(String.format("release not found for %s", releaseId));
@@ -80,19 +81,19 @@ public class InstanceConfigController {
                 instanceResponse.setConfigs(configDTOs);
             }
         }
-        return PageResult.<InstanceResponse>builder()
+        return ApiResponse.success(PageResult.<InstanceResponse>builder()
                 .content(instanceResponses)
                 .total(instanceConfigsPage.getTotal())
                 .pageNum(instanceConfigsPage.getPageNum())
                 .pageSize(instanceConfigsPage.getPageSize())
-                .build();
+                .build());
     }
 
     @GetMapping("/by-executor-and-releases-not-in")
-    public List<InstanceResponse> getByReleasesNotIn(@RequestParam("namespaceName") String namespaceName,
-                                                     @RequestParam("appId") String appId,
-                                                     @RequestParam("executorName") String executorName,
-                                                     @RequestParam("releaseIds") String releaseIds) {
+    public ApiResponse<List<InstanceResponse>> getByReleasesNotIn(@RequestParam("namespaceName") String namespaceName,
+                                                                  @RequestParam("appId") String appId,
+                                                                  @RequestParam("executorName") String executorName,
+                                                                  @RequestParam("releaseIds") String releaseIds) {
         Set<Long> releaseIdSet = RELEASES_SPLITTER.splitToList(releaseIds).stream().map(Long::parseLong)
                 .collect(Collectors.toSet());
 
@@ -110,7 +111,7 @@ public class InstanceConfigController {
                         releaseKeys);
 
         if (CollectionUtils.isEmpty(instanceConfigs)) {
-            return Collections.emptyList();
+            return ApiResponse.success(Collections.emptyList());
         }
 
         Multimap<Long, InstanceConfig> instanceConfigMap = HashMultimap.create();
@@ -148,11 +149,11 @@ public class InstanceConfigController {
             instanceResponse.setConfigs(configResponses);
         }
 
-        return instanceResponses;
+        return ApiResponse.success(instanceResponses);
     }
 
     @GetMapping("/by-namespace")
-    public PageResult<InstanceResponse> getInstancesByExecutor(
+    public ApiResponse<PageResult<InstanceResponse>> getInstancesByExecutor(
             @RequestParam("namespaceName") String namespaceName, @RequestParam("appId") String appId,
             @RequestParam("executorName") String executorName,
             @RequestParam(value = "instanceId", required = false) String instanceId,
@@ -160,17 +161,17 @@ public class InstanceConfigController {
         PageResult<Instance> instancesPage = instanceService.findInstancesByExecutor(namespaceName, appId, executorName,
                 pageHelperRequest);
 
-        return transform2PageResult(instancesPage);
+        return ApiResponse.success(transform2PageResult(instancesPage));
     }
 
     @GetMapping("/by-namespace/count")
-    public long getInstancesCountByNamespace(@RequestParam("namespaceName") String namespaceName,
-                                             @RequestParam("appId") String appId,
-                                             @RequestParam("executorName") String executorName,
-                                             PageHelperRequest pageHelperRequest) {
+    public ApiResponse<Long> getInstancesCountByNamespace(@RequestParam("namespaceName") String namespaceName,
+                                                          @RequestParam("appId") String appId,
+                                                          @RequestParam("executorName") String executorName,
+                                                          PageHelperRequest pageHelperRequest) {
         PageResult<Instance> instances = instanceService.findInstancesByExecutor(namespaceName, appId,
                 executorName, pageHelperRequest);
-        return instances.getTotal();
+        return ApiResponse.success(instances.getTotal());
     }
 
     private PageResult<InstanceResponse> transform2PageResult(PageResult<Instance> instancePageResult) {
