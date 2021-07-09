@@ -8,7 +8,7 @@ import xyz.hellothomas.jedi.admin.common.utils.JwtUtil;
 import xyz.hellothomas.jedi.admin.domain.User;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.PassToken;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
-import xyz.hellothomas.jedi.admin.infrastructure.exception.BusinessException;
+import xyz.hellothomas.jedi.core.exception.BusinessException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

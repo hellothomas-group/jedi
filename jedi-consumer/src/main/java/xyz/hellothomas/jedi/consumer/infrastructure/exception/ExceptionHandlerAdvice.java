@@ -1,4 +1,4 @@
-package xyz.hellothomas.jedi.admin.infrastructure.exception;
+package xyz.hellothomas.jedi.consumer.infrastructure.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;

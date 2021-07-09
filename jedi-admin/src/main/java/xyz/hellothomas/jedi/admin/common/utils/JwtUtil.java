@@ -7,7 +7,7 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import xyz.hellothomas.jedi.admin.domain.User;
-import xyz.hellothomas.jedi.admin.infrastructure.exception.BusinessException;
+import xyz.hellothomas.jedi.core.exception.BusinessException;
 
 import java.util.Calendar;
 import java.util.Date;

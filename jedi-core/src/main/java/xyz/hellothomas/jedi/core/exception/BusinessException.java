@@ -1,4 +1,4 @@
-package xyz.hellothomas.jedi.admin.infrastructure.exception;
+package xyz.hellothomas.jedi.core.exception;
 
 import xyz.hellothomas.jedi.core.enums.ICodeEnum;
 
