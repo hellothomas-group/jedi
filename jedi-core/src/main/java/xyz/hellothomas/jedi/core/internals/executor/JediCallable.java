@@ -38,9 +38,9 @@ public class JediCallable implements Callable {
         Throwable exception = null;
         try {
             return callable.call();
-        } catch (Throwable t) {
-            exception = t;
-            throw t;
+        } catch (Exception e) {
+            exception = e;
+            throw e;
         } finally {
             long diff = System.nanoTime() - startTime;
             ExecutorTaskNotification executorTaskNotification =
