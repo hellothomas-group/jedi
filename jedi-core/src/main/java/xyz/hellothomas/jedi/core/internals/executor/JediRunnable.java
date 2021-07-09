@@ -36,9 +36,9 @@ public class JediRunnable implements Runnable {
         Throwable exception = null;
         try {
             runnable.run();
-        } catch (Throwable t) {
-            exception = t;
-            throw t;
+        } catch (Exception e) {
+            exception = e;
+            throw e;
         } finally {
             long diff = System.nanoTime() - startTime;
             ExecutorTaskNotification executorTaskNotification =
