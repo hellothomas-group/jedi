@@ -31,27 +31,27 @@ public class AlarmConfigController {
 
     @PostMapping(value = "/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
     @ApiOperation("create")
-    public ApiResponse<AlarmConfigResponse> create(@PathVariable("namespaceName") String namespaceName,
-                                                   @PathVariable("appId") String appId,
-                                                   @PathVariable("executorName") String executorName,
-                                                   @RequestParam("configuration") String configuration,
-                                                   @RequestParam("operator") String operator) {
+    public AlarmConfigResponse create(@PathVariable("namespaceName") String namespaceName,
+                                      @PathVariable("appId") String appId,
+                                      @PathVariable("executorName") String executorName,
+                                      @RequestParam("configuration") String configuration,
+                                      @RequestParam("operator") String operator) {
 
         AlarmConfig managedEntity = alarmConfigService.findOne(namespaceName, appId, executorName);
         if (managedEntity != null) {
             throw new BadRequestException("alarmConfig already exists");
         }
         AlarmConfig entity = alarmConfigService.save(namespaceName, appId, executorName, configuration, operator);
-        return ApiResponse.success(LocalBeanUtils.transform(AlarmConfigResponse.class, entity));
+        return LocalBeanUtils.transform(AlarmConfigResponse.class, entity);
     }
 
     @ApiOperation("update")
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
-    public ApiResponse<AlarmConfigResponse> update(@PathVariable("namespaceName") String namespaceName,
-                                                   @PathVariable("appId") String appId,
-                                                   @PathVariable("executorName") String executorName,
-                                                   @RequestParam("configuration") String configuration,
-                                                   @RequestParam("operator") String operator) {
+    public AlarmConfigResponse update(@PathVariable("namespaceName") String namespaceName,
+                                      @PathVariable("appId") String appId,
+                                      @PathVariable("executorName") String executorName,
+                                      @RequestParam("configuration") String configuration,
+                                      @RequestParam("operator") String operator) {
         if (!JsonUtil.isJSONValid(configuration)) {
             throw new BadRequestException("configuration invalid, must be json");
         }
@@ -66,20 +66,18 @@ public class AlarmConfigController {
         managedEntity.setDataChangeLastModifiedTime(LocalDateTime.now());
         alarmConfigService.update(managedEntity);
 
-        return ApiResponse.success(LocalBeanUtils.transform(AlarmConfigResponse.class, managedEntity));
+        return LocalBeanUtils.transform(AlarmConfigResponse.class, managedEntity);
     }
 
     @ApiOperation("delete")
     @DeleteMapping("/alarm-configs/{alarmConfigId}")
-    public ApiResponse<String> delete(@PathVariable("alarmConfigId") long alarmConfigId,
-                                      @RequestParam String operator) {
+    public void delete(@PathVariable("alarmConfigId") long alarmConfigId,
+                       @RequestParam String operator) {
         AlarmConfig entity = alarmConfigService.findOne(alarmConfigId);
         if (entity == null) {
             throw new NotFoundException("alarmConfig not found for alarmConfigId " + alarmConfigId);
         }
         alarmConfigService.delete(entity.getId(), operator);
-
-        return ApiResponse.success("删除成功");
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")

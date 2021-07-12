@@ -16,7 +16,6 @@ import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
  * @description
  * @version 1.0
  */
-@Deprecated
 @UserLoginToken
 @Api(value = "alarm-config", tags = "alarm-config")
 @RestController
@@ -30,10 +29,10 @@ public class AlarmConfigController {
     @PostMapping(value = "/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
     @ApiOperation("create")
     public ApiResponse<AlarmConfigResponse> create(@PathVariable("namespaceName") String namespaceName,
-                                                  @PathVariable("appId") String appId,
-                                                  @PathVariable("executorName") String executorName,
-                                                  @RequestParam("configuration") String configuration,
-                                                  @RequestAttribute(CLAIM_USER_NAME) String operator) {
+                                                   @PathVariable("appId") String appId,
+                                                   @PathVariable("executorName") String executorName,
+                                                   @RequestParam("configuration") String configuration,
+                                                   @RequestAttribute(CLAIM_USER_NAME) String operator) {
 
         return ApiResponse.success(alarmConfigService.save(namespaceName, appId, executorName, configuration,
                 operator));
@@ -42,10 +41,10 @@ public class AlarmConfigController {
     @ApiOperation("update")
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
     public ApiResponse<AlarmConfigResponse> update(@PathVariable("namespaceName") String namespaceName,
-                                      @PathVariable("appId") String appId,
-                                      @PathVariable("executorName") String executorName,
-                                      @RequestParam("configuration") String configuration,
-                                      @RequestAttribute(CLAIM_USER_NAME) String operator) {
+                                                   @PathVariable("appId") String appId,
+                                                   @PathVariable("executorName") String executorName,
+                                                   @RequestParam("configuration") String configuration,
+                                                   @RequestAttribute(CLAIM_USER_NAME) String operator) {
         return ApiResponse.success(alarmConfigService.update(namespaceName, appId, executorName, configuration,
                 operator));
     }
@@ -53,11 +52,12 @@ public class AlarmConfigController {
     @ApiOperation("delete")
     @DeleteMapping("/alarm-configs/{alarmConfigId}")
     public ApiResponse<String> delete(@PathVariable("alarmConfigId") long alarmConfigId,
-                       @RequestAttribute(CLAIM_USER_NAME) String operator) {
+                                      @RequestAttribute(CLAIM_USER_NAME) String operator) {
         alarmConfigService.delete(alarmConfigId, operator);
         return ApiResponse.success("删除成功");
     }
 
+    @Deprecated
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
     public AlarmConfigResponse get(@PathVariable("namespaceName") String namespaceName,
                                    @PathVariable("appId") String appId,
