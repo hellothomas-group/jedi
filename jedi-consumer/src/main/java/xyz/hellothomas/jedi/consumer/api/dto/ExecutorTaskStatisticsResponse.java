@@ -4,13 +4,16 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
  * @author Thomas
  */
 @Getter
 @Setter
 @ToString
-public class ExecutorTaskSumResponse {
+public class ExecutorTaskStatisticsResponse {
     /**
      * 任务名称
      */
@@ -20,7 +23,7 @@ public class ExecutorTaskSumResponse {
 
     private Long failure;
 
-    private Long failureRatio;
+    private BigDecimal failureRatio;
 
     private Long executionTimeMax;
 
@@ -35,4 +38,9 @@ public class ExecutorTaskSumResponse {
      * 执行时间99线
      */
     private Long executionTimeLine99;
+
+    /**
+     * 最后修改时间
+     */
+    private Date dataChangeLastModifiedTime;
 }

@@ -90,5 +90,43 @@ CREATE TABLE `alarm_config` (
   `data_change_last_modified_by` varchar(32) DEFAULT '' COMMENT '最后修改人邮箱前缀',
   `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `IX_UNIQUE_KEY` (`namespace_name`,`app_id`,`executor_name`),
+  UNIQUE KEY `IX_UNIQUE_KEY` (`namespace_name`,`app_id`,`executor_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='报警配置';
+
+CREATE TABLE `executor_task_statistics` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `namespace_name` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
+  `app_id` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'appId',
+  `executor_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'executorName',
+  `total` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行总数',
+  `failure` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行失败总数',
+  `failureRatio` decimal(4,4) unsigned NOT NULL DEFAULT 0 COMMENT '执行失败比例',
+  `execution_time_max` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行最长时间',
+  `execution_time_min` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行最短时间',
+  `execution_time_line_95` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行时间95线',
+  `execution_time_line_99` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行时间99线',
+  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `version` int(11) unsigned NOT NULL DEFAULT 1 COMMENT '版本号',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IX_UNIQUE_KEY` (`namespace_name`,`app_id`,`executor_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务统计表';
+
+CREATE TABLE `executor_task_statistics_history` (
+  `id` int(11) unsigned NOT NULL COMMENT 'Id',
+  `namespace_name` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
+  `app_id` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'appId',
+  `executor_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'executorName',
+  `total` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行总数',
+  `failure` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行失败总数',
+  `failureRatio` decimal(4,4) unsigned NOT NULL DEFAULT 0 COMMENT '执行失败比例',
+  `execution_time_max` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行最长时间',
+  `execution_time_min` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行最短时间',
+  `execution_time_line_95` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行时间95线',
+  `execution_time_line_99` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行时间99线',
+  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `version` int(11) unsigned NOT NULL DEFAULT 1 COMMENT '版本号',
+  PRIMARY KEY (`id`),
+  KEY `IX_KEY` (`namespace_name`,`app_id`,`executor_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务历史统计表';
