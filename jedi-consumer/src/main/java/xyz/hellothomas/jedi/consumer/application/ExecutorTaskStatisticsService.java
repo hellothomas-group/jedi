@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics;
@@ -88,7 +87,6 @@ public class ExecutorTaskStatisticsService {
     }
 
     @Scheduled(fixedDelay = 1000 * 60 * 2)
-    @Transactional
     public void refreshTaskStatistics() {
         // 乐观锁锁当天刷新任务
         if (taskLockService.lock(LocalDate.now(), REFRESH_TASK_STATISTICS_NAME) == 0) {
@@ -99,15 +97,17 @@ public class ExecutorTaskStatisticsService {
         LocalDate currentDate = LocalDate.now();
         List<ExecutorTask> executorTasks = executorTaskService.findTasksDistinct(currentDate.atStartOfDay(),
                 currentDate.plusDays(1).atStartOfDay());
-        log.info("executorTasks:{}", executorTasks);
+
         // 计算各taskName统计数并更新
+        executorTasks.stream().forEach(i -> {
+            log.info("executorTask:{}", i);
+        });
 
         // 释放乐观锁
         taskLockService.unlock(currentDate, REFRESH_TASK_STATISTICS_NAME);
     }
 
-    @Scheduled(cron = "0 56 18 * * ?")
-    @Transactional
+    @Scheduled(cron = "0 0 23 * * ?")
     public void moveStatistics2History() {
         LocalDate currentDate = LocalDate.now();
         // 创建D日刷新任务并乐观锁锁住
