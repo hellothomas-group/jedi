@@ -3,7 +3,9 @@ package xyz.hellothomas.jedi.consumer.infrastructure.mapper;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessageExample;
 import org.apache.ibatis.annotations.Param;
+import xyz.hellothomas.jedi.consumer.domain.pojo.ExecutorTask;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ExecutorTaskMessageMapper {
@@ -30,4 +32,7 @@ public interface ExecutorTaskMessageMapper {
     int updateByPrimaryKeySelective(ExecutorTaskMessage record);
 
     int updateByPrimaryKey(ExecutorTaskMessage record);
+
+    List<ExecutorTask> selectByRecordTimeAndGroupByTask(@Param("startTime") LocalDateTime startTime,
+                                                        @Param("endTime") LocalDateTime endTime);
 }

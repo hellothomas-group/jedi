@@ -111,7 +111,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics">
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics" useGeneratedKeys="true" keyProperty="id">
     insert into executor_task_statistics (id, namespace_name, app_id,
       executor_name, task_name, total,
       failure, failureRatio, execution_time_max,
@@ -125,7 +125,7 @@
       #{executionTimeLine99,jdbcType=INTEGER}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
       #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics">
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics" useGeneratedKeys="true" keyProperty="id">
     insert into executor_task_statistics
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

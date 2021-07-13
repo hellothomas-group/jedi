@@ -74,7 +74,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, app_id, namespace, message_type, pool_name, task_name, execution_time, task_extra_data, 
+    id, app_id, namespace, message_type, pool_name, task_name, execution_time, task_extra_data,
     host, record_time, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessageExample" resultMap="BaseResultMap">
@@ -92,7 +92,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from executor_task_message
     where id = #{id,jdbcType=VARCHAR}
@@ -108,14 +108,14 @@
     </if>
   </delete>
   <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage">
-    insert into executor_task_message (id, app_id, namespace, 
-      message_type, pool_name, task_name, 
-      execution_time, task_extra_data, host, 
+    insert into executor_task_message (id, app_id, namespace,
+      message_type, pool_name, task_name,
+      execution_time, task_extra_data, host,
       record_time, create_time, update_time
       )
-    values (#{id,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, 
-      #{messageType,jdbcType=VARCHAR}, #{poolName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, 
-      #{executionTime,jdbcType=BIGINT}, #{taskExtraData,jdbcType=VARCHAR}, #{host,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR},
+      #{messageType,jdbcType=VARCHAR}, #{poolName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR},
+      #{executionTime,jdbcType=BIGINT}, #{taskExtraData,jdbcType=VARCHAR}, #{host,jdbcType=VARCHAR},
       #{recordTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -320,4 +320,19 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+  <resultMap id="ExecutorTaskResultMap" type="xyz.hellothomas.jedi.consumer.domain.pojo.ExecutorTask">
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="namespace" jdbcType="VARCHAR" property="namespaceName" />
+    <result column="pool_name" jdbcType="VARCHAR" property="executorName" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+  </resultMap>
+
+  <select id="selectByRecordTimeAndGroupByTask" resultMap="ExecutorTaskResultMap">
+    select
+    app_id, namespace, pool_name, task_name
+    from executor_task_message
+    where record_time >= #{startTime,jdbcType=TIMESTAMP} and record_time <![CDATA[<]]> #{endTime,jdbcType=TIMESTAMP}
+    group by namespace, app_id, pool_name, task_name
+  </select>
 </mapper>

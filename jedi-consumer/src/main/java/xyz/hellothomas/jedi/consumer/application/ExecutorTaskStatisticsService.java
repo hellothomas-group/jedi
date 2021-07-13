@@ -3,16 +3,21 @@ package xyz.hellothomas.jedi.consumer.application;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsExample;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistory;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistoryExample;
+import xyz.hellothomas.jedi.consumer.domain.pojo.ExecutorTask;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskStatisticsHistoryMapper;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskStatisticsMapper;
+import xyz.hellothomas.jedi.core.utils.SleepUtil;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static xyz.hellothomas.jedi.consumer.common.constants.Constants.DEFAULT_PAGE_SIZE;
@@ -26,13 +31,19 @@ import static xyz.hellothomas.jedi.consumer.common.constants.Constants.DEFAULT_P
 @Slf4j
 @Service
 public class ExecutorTaskStatisticsService {
+    private static final String REFRESH_TASK_STATISTICS_NAME = "REFRESH_TASK_STATISTICS";
     private final ExecutorTaskStatisticsMapper executorTaskStatisticsMapper;
     private final ExecutorTaskStatisticsHistoryMapper executorTaskStatisticsHistoryMapper;
+    private final ExecutorTaskService executorTaskService;
+    private final TaskLockService taskLockService;
 
     public ExecutorTaskStatisticsService(ExecutorTaskStatisticsMapper executorTaskStatisticsMapper,
-                                         ExecutorTaskStatisticsHistoryMapper executorTaskStatisticsHistoryMapper) {
+                                         ExecutorTaskStatisticsHistoryMapper executorTaskStatisticsHistoryMapper,
+                                         ExecutorTaskService executorTaskService, TaskLockService taskLockService) {
         this.executorTaskStatisticsMapper = executorTaskStatisticsMapper;
         this.executorTaskStatisticsHistoryMapper = executorTaskStatisticsHistoryMapper;
+        this.executorTaskService = executorTaskService;
+        this.taskLockService = taskLockService;
     }
 
     public ExecutorTaskStatistics findCurrentOne(String namespaceName, String appId, String executorName,
@@ -76,8 +87,44 @@ public class ExecutorTaskStatisticsService {
                 .build();
     }
 
-    public void moveStatistics2History() {
+    @Scheduled(fixedDelay = 1000 * 60 * 2)
+    @Transactional
+    public void refreshTaskStatistics() {
+        // 乐观锁锁当天刷新任务
+        if (taskLockService.lock(LocalDate.now(), REFRESH_TASK_STATISTICS_NAME) == 0) {
+            return;
+        }
 
+        // 获取taskNames
+        LocalDate currentDate = LocalDate.now();
+        List<ExecutorTask> executorTasks = executorTaskService.findTasksDistinct(currentDate.atStartOfDay(),
+                currentDate.plusDays(1).atStartOfDay());
+        log.info("executorTasks:{}", executorTasks);
+        // 计算各taskName统计数并更新
+
+        // 释放乐观锁
+        taskLockService.unlock(currentDate, REFRESH_TASK_STATISTICS_NAME);
+    }
+
+    @Scheduled(cron = "0 56 18 * * ?")
+    @Transactional
+    public void moveStatistics2History() {
+        LocalDate currentDate = LocalDate.now();
+        // 创建D日刷新任务并乐观锁锁住
+        if (taskLockService.insertLockedOne(currentDate, REFRESH_TASK_STATISTICS_NAME) == 0) {
+            return;
+        }
+
+        // D-1统计数据复制到历史表
+
+        // 删除D-1数据
+
+        // 删除D-1刷新任务锁
+
+        // 释放乐观锁
+        SleepUtil.sleep(10000);
+
+        taskLockService.unlock(currentDate, REFRESH_TASK_STATISTICS_NAME);
     }
 
 }

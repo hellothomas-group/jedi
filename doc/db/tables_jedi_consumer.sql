@@ -132,3 +132,15 @@ CREATE TABLE `executor_task_statistics_history` (
   PRIMARY KEY (`id`),
   KEY `IX_KEY` (`namespace_name`,`app_id`,`executor_name`, `task_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务历史统计表';
+
+CREATE TABLE `task_lock` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `task_date` date NOT NULL COMMENT '任务日期',
+  `task_name` varchar(32) NOT NULL COMMENT '任务名称',
+  `is_locked` bit(1) NOT NULL COMMENT '1: locked, 0: unlocked',
+  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `version` int(11) unsigned NOT NULL DEFAULT 1 COMMENT '版本号',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IX_UNIQUE_KEY` (`task_date`,`task_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务锁表';

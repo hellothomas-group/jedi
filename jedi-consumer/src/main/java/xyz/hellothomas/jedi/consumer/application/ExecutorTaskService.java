@@ -1,16 +1,23 @@
 package xyz.hellothomas.jedi.consumer.application;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage;
+import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessageExample;
+import xyz.hellothomas.jedi.consumer.domain.pojo.ExecutorTask;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMessageMapper;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.enums.MessageType;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import static xyz.hellothomas.jedi.consumer.common.constants.Constants.DEFAULT_PAGE_SIZE;
 
 /**
  * @author Thomas
@@ -47,6 +54,37 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
                                                                        String taskName, String instanceIp,
                                                                        LocalDateTime startTime, LocalDateTime endTime,
                                                                        PageHelperRequest pageHelperRequest) {
-        return null;
+        ExecutorTaskMessageExample executorTaskMessageExample = new ExecutorTaskMessageExample();
+        ExecutorTaskMessageExample.Criteria criteria =
+                executorTaskMessageExample.createCriteria().andNamespaceEqualTo(namespaceName)
+                        .andAppIdEqualTo(appId)
+                        .andPoolNameEqualTo(executorName)
+                        .andTaskNameEqualTo(taskName)
+                        .andRecordTimeBetween(startTime, endTime);
+        if (instanceIp != null) {
+            criteria.andHostEqualTo(instanceIp);
+        }
+
+        executorTaskMessageExample.setOrderByClause("record_time");
+
+        int pageSize = pageHelperRequest.getPageSize();
+        int pageNum = pageHelperRequest.getPageNum();
+        pageSize = (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
+        PageHelper.startPage(pageNum, pageSize);
+
+        List<ExecutorTaskMessage> executorTaskMessages =
+                executorTaskMessageMapper.selectByExample(executorTaskMessageExample);
+        PageInfo<ExecutorTaskMessage> pageInfo = new PageInfo<>(executorTaskMessages);
+
+        return PageResult.<ExecutorTaskMessage>builder()
+                .content(pageInfo.getList())
+                .total(pageInfo.getTotal())
+                .pageNum(pageInfo.getPageNum())
+                .pageSize(pageInfo.getPageSize())
+                .build();
+    }
+
+    public List<ExecutorTask> findTasksDistinct(LocalDateTime startTime, LocalDateTime endTime) {
+        return executorTaskMessageMapper.selectByRecordTimeAndGroupByTask(startTime, endTime);
     }
 }

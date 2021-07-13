@@ -59,8 +59,7 @@ public class ExecutorTaskController {
                                                                       @PathVariable("appId") String appId,
                                                                       @PathVariable("executorName") String executorName,
                                                                       @RequestParam(value = "taskName", defaultValue =
-                                                                              "DEFAULT") String taskName,
-                                                                      PageHelperRequest pageHelperRequest) {
+                                                                              "DEFAULT") String taskName) {
         ExecutorTaskStatistics executorTaskStatistics =
                 executorTaskStatisticsService.findCurrentOne(namespaceName, appId, executorName, taskName);
 

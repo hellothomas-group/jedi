@@ -3,6 +3,7 @@ package xyz.hellothomas.jedi.consumer;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @author Thomas
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @description
  * @version 1.0
  */
+@EnableScheduling
 @SpringBootApplication
 @MapperScan(basePackages = {"xyz.hellothomas.jedi.consumer.infrastructure.mapper"})
 public class ConsumerApplication {
