@@ -13,7 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class ExecutorTaskStatisticsResponse {
+public class ExecutorTaskStatisticsHistoryResponse {
     /**
      * namespaceName
      */

@@ -6,6 +6,7 @@
     <result column="namespace_name" jdbcType="VARCHAR" property="namespaceName" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
     <result column="executor_name" jdbcType="VARCHAR" property="executorName" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
     <result column="total" jdbcType="INTEGER" property="total" />
     <result column="failure" jdbcType="INTEGER" property="failure" />
     <result column="failureRatio" jdbcType="DECIMAL" property="failureratio" />
@@ -76,9 +77,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, namespace_name, app_id, executor_name, total, failure, failureRatio, execution_time_max, 
-    execution_time_min, execution_time_line_95, execution_time_line_99, data_change_created_time, 
-    data_change_last_modified_time, version
+    id, namespace_name, app_id, executor_name, task_name, total, failure, failureRatio,
+    execution_time_max, execution_time_min, execution_time_line_95, execution_time_line_99,
+    data_change_created_time, data_change_last_modified_time, version
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistoryExample" resultMap="BaseResultMap">
     select
@@ -95,7 +96,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from executor_task_statistics_history
     where id = #{id,jdbcType=INTEGER}
@@ -111,18 +112,18 @@
     </if>
   </delete>
   <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistory">
-    insert into executor_task_statistics_history (id, namespace_name, app_id, 
-      executor_name, total, failure, 
-      failureRatio, execution_time_max, execution_time_min, 
-      execution_time_line_95, execution_time_line_99, 
-      data_change_created_time, data_change_last_modified_time, 
-      version)
-    values (#{id,jdbcType=INTEGER}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, 
-      #{executorName,jdbcType=VARCHAR}, #{total,jdbcType=INTEGER}, #{failure,jdbcType=INTEGER}, 
-      #{failureratio,jdbcType=DECIMAL}, #{executionTimeMax,jdbcType=INTEGER}, #{executionTimeMin,jdbcType=INTEGER}, 
-      #{executionTimeLine95,jdbcType=INTEGER}, #{executionTimeLine99,jdbcType=INTEGER}, 
-      #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}, 
-      #{version,jdbcType=INTEGER})
+    insert into executor_task_statistics_history (id, namespace_name, app_id,
+      executor_name, task_name, total,
+      failure, failureRatio, execution_time_max,
+      execution_time_min, execution_time_line_95,
+      execution_time_line_99, data_change_created_time,
+      data_change_last_modified_time, version)
+    values (#{id,jdbcType=INTEGER}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR},
+      #{executorName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, #{total,jdbcType=INTEGER},
+      #{failure,jdbcType=INTEGER}, #{failureratio,jdbcType=DECIMAL}, #{executionTimeMax,jdbcType=INTEGER},
+      #{executionTimeMin,jdbcType=INTEGER}, #{executionTimeLine95,jdbcType=INTEGER},
+      #{executionTimeLine99,jdbcType=INTEGER}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistory">
     insert into executor_task_statistics_history
@@ -138,6 +139,9 @@
       </if>
       <if test="executorName != null">
         executor_name,
+      </if>
+      <if test="taskName != null">
+        task_name,
       </if>
       <if test="total != null">
         total,
@@ -182,6 +186,9 @@
       </if>
       <if test="executorName != null">
         #{executorName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null">
+        #{taskName,jdbcType=VARCHAR},
       </if>
       <if test="total != null">
         #{total,jdbcType=INTEGER},
@@ -236,6 +243,9 @@
       <if test="record.executorName != null">
         executor_name = #{record.executorName,jdbcType=VARCHAR},
       </if>
+      <if test="record.taskName != null">
+        task_name = #{record.taskName,jdbcType=VARCHAR},
+      </if>
       <if test="record.total != null">
         total = #{record.total,jdbcType=INTEGER},
       </if>
@@ -277,6 +287,7 @@
       namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
       app_id = #{record.appId,jdbcType=VARCHAR},
       executor_name = #{record.executorName,jdbcType=VARCHAR},
+      task_name = #{record.taskName,jdbcType=VARCHAR},
       total = #{record.total,jdbcType=INTEGER},
       failure = #{record.failure,jdbcType=INTEGER},
       failureRatio = #{record.failureratio,jdbcType=DECIMAL},
@@ -302,6 +313,9 @@
       </if>
       <if test="executorName != null">
         executor_name = #{executorName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null">
+        task_name = #{taskName,jdbcType=VARCHAR},
       </if>
       <if test="total != null">
         total = #{total,jdbcType=INTEGER},
@@ -341,6 +355,7 @@
     set namespace_name = #{namespaceName,jdbcType=VARCHAR},
       app_id = #{appId,jdbcType=VARCHAR},
       executor_name = #{executorName,jdbcType=VARCHAR},
+      task_name = #{taskName,jdbcType=VARCHAR},
       total = #{total,jdbcType=INTEGER},
       failure = #{failure,jdbcType=INTEGER},
       failureRatio = #{failureratio,jdbcType=DECIMAL},

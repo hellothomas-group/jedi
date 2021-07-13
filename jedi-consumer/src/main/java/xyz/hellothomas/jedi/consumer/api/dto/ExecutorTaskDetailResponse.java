@@ -32,6 +32,7 @@ public class ExecutorTaskDetailResponse {
      * 主机
      */
     private String host;
+
     /**
      * 记录时间
      */
