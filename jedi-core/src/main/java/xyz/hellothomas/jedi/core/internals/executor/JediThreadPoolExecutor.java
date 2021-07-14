@@ -133,13 +133,13 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
 
     @Override
     protected void beforeExecute(Thread t, Runnable r) {
-        this.startTime.set(System.nanoTime());
+        this.startTime.set(System.currentTimeMillis());
         super.beforeExecute(t, r);
     }
 
     @Override
     protected void afterExecute(Runnable r, Throwable t) {
-        long diff = System.nanoTime() - this.startTime.get();
+        long diff = System.currentTimeMillis() - this.startTime.get();
 
         ExecutorTaskNotification executorTaskNotification =
                 this.notificationService.buildExecutorTaskNotification(null, this.poolName,

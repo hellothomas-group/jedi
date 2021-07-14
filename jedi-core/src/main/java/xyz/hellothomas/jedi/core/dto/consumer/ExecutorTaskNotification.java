@@ -56,7 +56,8 @@ public class ExecutorTaskNotification extends AbstractNotification {
         return "ExecutorTaskMessage(id=" + this.getId() + ", appId=" + this.getAppId() + ", namespace" +
                 "=" + this.getNamespace() + ", messageType=" + this.getMessageType() + ", recordTime=" + this.getRecordTime() + ", host=" + this.getHost() +
                 ", taskName=" + this.taskName + ", poolName=" + this.poolName + ", executionTime=" +
-                this.executionTime + ", success=" + this.isSuccess + ", failureReason=" + this.failureReason + ", taskExtraData=" + this.taskExtraData + ")";
+                this.executionTime + ", isSuccess=" + this.isSuccess + ", failureReason=" + this.failureReason + ", " +
+                "taskExtraData=" + this.taskExtraData + ")";
     }
 
     public String getTaskName() {
@@ -83,11 +84,11 @@ public class ExecutorTaskNotification extends AbstractNotification {
         this.taskExtraData = taskExtraData;
     }
 
-    public boolean isSuccess() {
+    public boolean getIsSuccess() {
         return isSuccess;
     }
 
-    public void setSuccess(boolean success) {
+    public void setIsSuccess(boolean success) {
         this.isSuccess = success;
     }
 

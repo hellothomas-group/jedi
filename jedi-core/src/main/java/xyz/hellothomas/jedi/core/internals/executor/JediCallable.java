@@ -34,7 +34,7 @@ public class JediCallable implements Callable {
 
     @Override
     public Object call() throws Exception {
-        Long startTime = System.nanoTime();
+        Long startTime = System.currentTimeMillis();
         Throwable exception = null;
         try {
             return callable.call();
@@ -42,7 +42,7 @@ public class JediCallable implements Callable {
             exception = e;
             throw e;
         } finally {
-            long diff = System.nanoTime() - startTime;
+            long diff = System.currentTimeMillis() - startTime;
             ExecutorTaskNotification executorTaskNotification =
                     notificationService.buildExecutorTaskNotification(taskName
                             , poolName, diff, exception);

@@ -32,7 +32,7 @@ public class JediRunnable implements Runnable {
 
     @Override
     public void run() {
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
         Throwable exception = null;
         try {
             runnable.run();
@@ -40,7 +40,7 @@ public class JediRunnable implements Runnable {
             exception = e;
             throw e;
         } finally {
-            long diff = System.nanoTime() - startTime;
+            long diff = System.currentTimeMillis() - startTime;
             ExecutorTaskNotification executorTaskNotification =
                     notificationService.buildExecutorTaskNotification(taskName, poolName, diff, exception);
             notificationService.pushNotification(executorTaskNotification);

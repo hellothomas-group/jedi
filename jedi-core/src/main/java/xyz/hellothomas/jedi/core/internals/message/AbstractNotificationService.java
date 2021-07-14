@@ -80,9 +80,9 @@ public abstract class AbstractNotificationService {
         executorTaskNotification.setExecutionTime(executionTime);
         executorTaskNotification.setPoolName(poolName);
         if (t == null) {
-            executorTaskNotification.setSuccess(true);
+            executorTaskNotification.setIsSuccess(true);
         } else {
-            executorTaskNotification.setSuccess(false);
+            executorTaskNotification.setIsSuccess(false);
             String exceptionString = t.toString();
             executorTaskNotification.setFailureReason(exceptionString.length() > 300 ? exceptionString.substring(0,
                     300) : exceptionString);
