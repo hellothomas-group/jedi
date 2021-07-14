@@ -32,7 +32,7 @@ public class ExecutorShutdownService implements NotificationService<ExecutorShut
         executorShutdownMessage.setCreateTime(LocalDateTime.now());
         executorShutdownMessage.setUpdateTime(LocalDateTime.now());
         log.info("executorShutdownMessage:{}", executorShutdownMessage);
-        executorShutdownMessageMapper.insert(executorShutdownMessage);
+        executorShutdownMessageMapper.insertSelective(executorShutdownMessage);
     }
 
     @Override

@@ -52,12 +52,13 @@ CREATE TABLE `executor_task_message` (
   `pool_name` varchar(64) NOT NULL comment '线程池名称',
   `task_name` varchar(64) NOT NULL comment '任务名称',
   `execution_time` bigint(20) NOT NULL comment '执行时间',
-  `task_extra_data` varchar(2048) comment '任务附加信息',
+  `is_success` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: success, 0: fail',
+  `failure_reason` varchar(1024) comment '失败原因',
+  `task_extra_data` varchar(1024) comment '任务附加信息',
   `host` varchar(15) NOT NULL comment '主机',
   `record_time` timestamp NOT NULL comment '记录时间',
   `create_time` timestamp default CURRENT_TIMESTAMP NOT NULL comment '生成时间',
   `update_time` timestamp default CURRENT_TIMESTAMP NOT NULL on update CURRENT_TIMESTAMP comment '最后更新时间',
-
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务消息';
 
@@ -101,7 +102,7 @@ CREATE TABLE `executor_task_statistics` (
   `task_name` varchar(64) NOT NULL comment '任务名称',
   `total` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行总数',
   `failure` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行失败总数',
-  `failureRatio` decimal(4,4) unsigned NOT NULL DEFAULT 0 COMMENT '执行失败比例',
+  `failure_ratio` decimal(5,4) unsigned NOT NULL DEFAULT 0 COMMENT '执行失败比例',
   `execution_time_max` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行最长时间',
   `execution_time_min` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行最短时间',
   `execution_time_line_95` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行时间95线',
@@ -121,7 +122,7 @@ CREATE TABLE `executor_task_statistics_history` (
   `task_name` varchar(64) NOT NULL comment '任务名称',
   `total` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行总数',
   `failure` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行失败总数',
-  `failureRatio` decimal(4,4) unsigned NOT NULL DEFAULT 0 COMMENT '执行失败比例',
+  `failure_ratio` decimal(5,4) unsigned NOT NULL DEFAULT 0 COMMENT '执行失败比例',
   `execution_time_max` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行最长时间',
   `execution_time_min` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行最短时间',
   `execution_time_line_95` int(11) unsigned NOT NULL DEFAULT 0 COMMENT '执行时间95线',

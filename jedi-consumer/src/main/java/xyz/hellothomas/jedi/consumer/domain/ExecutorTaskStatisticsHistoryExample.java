@@ -567,62 +567,62 @@ public class ExecutorTaskStatisticsHistoryExample {
         }
 
         public Criteria andFailureratioIsNull() {
-            addCriterion("failureRatio is null");
+            addCriterion("failure_ratio is null");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioIsNotNull() {
-            addCriterion("failureRatio is not null");
+            addCriterion("failure_ratio is not null");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioEqualTo(BigDecimal value) {
-            addCriterion("failureRatio =", value, "failureratio");
+            addCriterion("failure_ratio =", value, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioNotEqualTo(BigDecimal value) {
-            addCriterion("failureRatio <>", value, "failureratio");
+            addCriterion("failure_ratio <>", value, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioGreaterThan(BigDecimal value) {
-            addCriterion("failureRatio >", value, "failureratio");
+            addCriterion("failure_ratio >", value, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioGreaterThanOrEqualTo(BigDecimal value) {
-            addCriterion("failureRatio >=", value, "failureratio");
+            addCriterion("failure_ratio >=", value, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioLessThan(BigDecimal value) {
-            addCriterion("failureRatio <", value, "failureratio");
+            addCriterion("failure_ratio <", value, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioLessThanOrEqualTo(BigDecimal value) {
-            addCriterion("failureRatio <=", value, "failureratio");
+            addCriterion("failure_ratio <=", value, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioIn(List<BigDecimal> values) {
-            addCriterion("failureRatio in", values, "failureratio");
+            addCriterion("failure_ratio in", values, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioNotIn(List<BigDecimal> values) {
-            addCriterion("failureRatio not in", values, "failureratio");
+            addCriterion("failure_ratio not in", values, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioBetween(BigDecimal value1, BigDecimal value2) {
-            addCriterion("failureRatio between", value1, value2, "failureratio");
+            addCriterion("failure_ratio between", value1, value2, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioNotBetween(BigDecimal value1, BigDecimal value2) {
-            addCriterion("failureRatio not between", value1, value2, "failureratio");
+            addCriterion("failure_ratio not between", value1, value2, "failureRatio");
             return (Criteria) this;
         }
 

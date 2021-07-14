@@ -9,7 +9,7 @@
     <result column="task_name" jdbcType="VARCHAR" property="taskName" />
     <result column="total" jdbcType="INTEGER" property="total" />
     <result column="failure" jdbcType="INTEGER" property="failure" />
-    <result column="failureRatio" jdbcType="DECIMAL" property="failureratio" />
+    <result column="failure_ratio" jdbcType="DECIMAL" property="failureRatio" />
     <result column="execution_time_max" jdbcType="INTEGER" property="executionTimeMax" />
     <result column="execution_time_min" jdbcType="INTEGER" property="executionTimeMin" />
     <result column="execution_time_line_95" jdbcType="INTEGER" property="executionTimeLine95" />
@@ -77,7 +77,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, namespace_name, app_id, executor_name, task_name, total, failure, failureRatio,
+    id, namespace_name, app_id, executor_name, task_name, total, failure, failure_ratio,
     execution_time_max, execution_time_min, execution_time_line_95, execution_time_line_99,
     data_change_created_time, data_change_last_modified_time, version
   </sql>
@@ -114,13 +114,13 @@
   <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistory" useGeneratedKeys="true" keyProperty="id">
     insert into executor_task_statistics_history (id, namespace_name, app_id,
       executor_name, task_name, total,
-      failure, failureRatio, execution_time_max,
+      failure, failure_ratio, execution_time_max,
       execution_time_min, execution_time_line_95,
       execution_time_line_99, data_change_created_time,
       data_change_last_modified_time, version)
     values (#{id,jdbcType=INTEGER}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR},
       #{executorName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, #{total,jdbcType=INTEGER},
-      #{failure,jdbcType=INTEGER}, #{failureratio,jdbcType=DECIMAL}, #{executionTimeMax,jdbcType=INTEGER},
+      #{failure,jdbcType=INTEGER}, #{failureRatio,jdbcType=DECIMAL}, #{executionTimeMax,jdbcType=INTEGER},
       #{executionTimeMin,jdbcType=INTEGER}, #{executionTimeLine95,jdbcType=INTEGER},
       #{executionTimeLine99,jdbcType=INTEGER}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
       #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER})
@@ -149,8 +149,8 @@
       <if test="failure != null">
         failure,
       </if>
-      <if test="failureratio != null">
-        failureRatio,
+      <if test="failureRatio != null">
+        failure_ratio,
       </if>
       <if test="executionTimeMax != null">
         execution_time_max,
@@ -196,8 +196,8 @@
       <if test="failure != null">
         #{failure,jdbcType=INTEGER},
       </if>
-      <if test="failureratio != null">
-        #{failureratio,jdbcType=DECIMAL},
+      <if test="failureRatio != null">
+        #{failureRatio,jdbcType=DECIMAL},
       </if>
       <if test="executionTimeMax != null">
         #{executionTimeMax,jdbcType=INTEGER},
@@ -252,8 +252,8 @@
       <if test="record.failure != null">
         failure = #{record.failure,jdbcType=INTEGER},
       </if>
-      <if test="record.failureratio != null">
-        failureRatio = #{record.failureratio,jdbcType=DECIMAL},
+      <if test="record.failureRatio != null">
+        failure_ratio = #{record.failureRatio,jdbcType=DECIMAL},
       </if>
       <if test="record.executionTimeMax != null">
         execution_time_max = #{record.executionTimeMax,jdbcType=INTEGER},
@@ -290,7 +290,7 @@
       task_name = #{record.taskName,jdbcType=VARCHAR},
       total = #{record.total,jdbcType=INTEGER},
       failure = #{record.failure,jdbcType=INTEGER},
-      failureRatio = #{record.failureratio,jdbcType=DECIMAL},
+      failure_ratio = #{record.failureRatio,jdbcType=DECIMAL},
       execution_time_max = #{record.executionTimeMax,jdbcType=INTEGER},
       execution_time_min = #{record.executionTimeMin,jdbcType=INTEGER},
       execution_time_line_95 = #{record.executionTimeLine95,jdbcType=INTEGER},
@@ -323,8 +323,8 @@
       <if test="failure != null">
         failure = #{failure,jdbcType=INTEGER},
       </if>
-      <if test="failureratio != null">
-        failureRatio = #{failureratio,jdbcType=DECIMAL},
+      <if test="failureRatio != null">
+        failure_ratio = #{failureRatio,jdbcType=DECIMAL},
       </if>
       <if test="executionTimeMax != null">
         execution_time_max = #{executionTimeMax,jdbcType=INTEGER},
@@ -358,7 +358,7 @@
       task_name = #{taskName,jdbcType=VARCHAR},
       total = #{total,jdbcType=INTEGER},
       failure = #{failure,jdbcType=INTEGER},
-      failureRatio = #{failureratio,jdbcType=DECIMAL},
+      failure_ratio = #{failureRatio,jdbcType=DECIMAL},
       execution_time_max = #{executionTimeMax,jdbcType=INTEGER},
       execution_time_min = #{executionTimeMin,jdbcType=INTEGER},
       execution_time_line_95 = #{executionTimeLine95,jdbcType=INTEGER},

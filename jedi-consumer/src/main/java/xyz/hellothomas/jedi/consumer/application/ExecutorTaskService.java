@@ -9,6 +9,7 @@ import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessageExample;
+import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics;
 import xyz.hellothomas.jedi.consumer.domain.pojo.ExecutorTask;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMessageMapper;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
@@ -41,7 +42,7 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
         executorTaskMessage.setCreateTime(LocalDateTime.now());
         executorTaskMessage.setUpdateTime(LocalDateTime.now());
         log.info("executorTaskMessage:{}", executorTaskMessage);
-        executorTaskMessageMapper.insert(executorTaskMessage);
+        executorTaskMessageMapper.insertSelective(executorTaskMessage);
     }
 
     @Override
@@ -86,5 +87,11 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
 
     public List<ExecutorTask> findTasksDistinct(LocalDateTime startTime, LocalDateTime endTime) {
         return executorTaskMessageMapper.selectByRecordTimeAndGroupByTask(startTime, endTime);
+    }
+
+    public ExecutorTaskStatistics genTaskStatistics(String namespaceName, String appId, String executorName,
+                                                    String taskName, LocalDateTime startTime, LocalDateTime endTime) {
+        return executorTaskMessageMapper.selectStatisticsByUniqueKeyAndRecordTime(namespaceName, appId, executorName,
+                taskName, startTime, endTime);
     }
 }

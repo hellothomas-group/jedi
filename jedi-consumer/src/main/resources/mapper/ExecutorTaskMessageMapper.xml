@@ -9,6 +9,8 @@
     <result column="pool_name" jdbcType="VARCHAR" property="poolName" />
     <result column="task_name" jdbcType="VARCHAR" property="taskName" />
     <result column="execution_time" jdbcType="BIGINT" property="executionTime" />
+    <result column="is_success" jdbcType="BIT" property="isSuccess" />
+    <result column="failure_reason" jdbcType="VARCHAR" property="failureReason" />
     <result column="task_extra_data" jdbcType="VARCHAR" property="taskExtraData" />
     <result column="host" jdbcType="VARCHAR" property="host" />
     <result column="record_time" jdbcType="TIMESTAMP" property="recordTime" />
@@ -74,8 +76,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, app_id, namespace, message_type, pool_name, task_name, execution_time, task_extra_data,
-    host, record_time, create_time, update_time
+    id, app_id, namespace, message_type, pool_name, task_name, execution_time, is_success,
+    failure_reason, task_extra_data, host, record_time, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessageExample" resultMap="BaseResultMap">
     select
@@ -110,14 +112,14 @@
   <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage">
     insert into executor_task_message (id, app_id, namespace,
       message_type, pool_name, task_name,
-      execution_time, task_extra_data, host,
-      record_time, create_time, update_time
-      )
+      execution_time, is_success, failure_reason,
+      task_extra_data, host, record_time,
+      create_time, update_time)
     values (#{id,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR},
       #{messageType,jdbcType=VARCHAR}, #{poolName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR},
-      #{executionTime,jdbcType=BIGINT}, #{taskExtraData,jdbcType=VARCHAR}, #{host,jdbcType=VARCHAR},
-      #{recordTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+      #{executionTime,jdbcType=BIGINT}, #{isSuccess,jdbcType=BIT}, #{failureReason,jdbcType=VARCHAR},
+      #{taskExtraData,jdbcType=VARCHAR}, #{host,jdbcType=VARCHAR}, #{recordTime,jdbcType=TIMESTAMP},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage">
     insert into executor_task_message
@@ -142,6 +144,12 @@
       </if>
       <if test="executionTime != null">
         execution_time,
+      </if>
+      <if test="isSuccess != null">
+        is_success,
+      </if>
+      <if test="failureReason != null">
+        failure_reason,
       </if>
       <if test="taskExtraData != null">
         task_extra_data,
@@ -181,6 +189,12 @@
       <if test="executionTime != null">
         #{executionTime,jdbcType=BIGINT},
       </if>
+      <if test="isSuccess != null">
+        #{isSuccess,jdbcType=BIT},
+      </if>
+      <if test="failureReason != null">
+        #{failureReason,jdbcType=VARCHAR},
+      </if>
       <if test="taskExtraData != null">
         #{taskExtraData,jdbcType=VARCHAR},
       </if>
@@ -206,6 +220,7 @@
   </select>
   <update id="updateByExampleSelective" parameterType="map">
     update executor_task_message
+    update executor_task_message
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=VARCHAR},
@@ -227,6 +242,12 @@
       </if>
       <if test="record.executionTime != null">
         execution_time = #{record.executionTime,jdbcType=BIGINT},
+      </if>
+      <if test="record.isSuccess != null">
+        is_success = #{record.isSuccess,jdbcType=BIT},
+      </if>
+      <if test="record.failureReason != null">
+        failure_reason = #{record.failureReason,jdbcType=VARCHAR},
       </if>
       <if test="record.taskExtraData != null">
         task_extra_data = #{record.taskExtraData,jdbcType=VARCHAR},
@@ -257,6 +278,8 @@
       pool_name = #{record.poolName,jdbcType=VARCHAR},
       task_name = #{record.taskName,jdbcType=VARCHAR},
       execution_time = #{record.executionTime,jdbcType=BIGINT},
+      is_success = #{record.isSuccess,jdbcType=BIT},
+      failure_reason = #{record.failureReason,jdbcType=VARCHAR},
       task_extra_data = #{record.taskExtraData,jdbcType=VARCHAR},
       host = #{record.host,jdbcType=VARCHAR},
       record_time = #{record.recordTime,jdbcType=TIMESTAMP},
@@ -287,6 +310,12 @@
       <if test="executionTime != null">
         execution_time = #{executionTime,jdbcType=BIGINT},
       </if>
+      <if test="isSuccess != null">
+        is_success = #{isSuccess,jdbcType=BIT},
+      </if>
+      <if test="failureReason != null">
+        failure_reason = #{failureReason,jdbcType=VARCHAR},
+      </if>
       <if test="taskExtraData != null">
         task_extra_data = #{taskExtraData,jdbcType=VARCHAR},
       </if>
@@ -313,6 +342,8 @@
       pool_name = #{poolName,jdbcType=VARCHAR},
       task_name = #{taskName,jdbcType=VARCHAR},
       execution_time = #{executionTime,jdbcType=BIGINT},
+      is_success = #{isSuccess,jdbcType=BIT},
+      failure_reason = #{failureReason,jdbcType=VARCHAR},
       task_extra_data = #{taskExtraData,jdbcType=VARCHAR},
       host = #{host,jdbcType=VARCHAR},
       record_time = #{recordTime,jdbcType=TIMESTAMP},
@@ -334,5 +365,40 @@
     from executor_task_message
     where record_time >= #{startTime,jdbcType=TIMESTAMP} and record_time <![CDATA[<]]> #{endTime,jdbcType=TIMESTAMP}
     group by namespace, app_id, pool_name, task_name
+  </select>
+
+  <resultMap id="ExecutorTaskStatisticsResultMap" type="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="namespace_name" jdbcType="VARCHAR" property="namespaceName" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="executor_name" jdbcType="VARCHAR" property="executorName" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+    <result column="total" jdbcType="INTEGER" property="total" />
+    <result column="failure" jdbcType="INTEGER" property="failure" />
+    <result column="failure_ratio" jdbcType="DECIMAL" property="failureRatio" />
+    <result column="execution_time_max" jdbcType="INTEGER" property="executionTimeMax" />
+    <result column="execution_time_min" jdbcType="INTEGER" property="executionTimeMin" />
+    <result column="execution_time_line_95" jdbcType="INTEGER" property="executionTimeLine95" />
+    <result column="execution_time_line_99" jdbcType="INTEGER" property="executionTimeLine99" />
+    <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
+    <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
+    <result column="version" jdbcType="INTEGER" property="version" />
+  </resultMap>
+
+  <select id="selectStatisticsByUniqueKeyAndRecordTime" resultMap="ExecutorTaskStatisticsResultMap">
+    select
+    app_id, namespace as namespace_name, pool_name as executor_name, task_name,
+    count(id) as total,
+    count(case when is_success = 0 then 1 else null end) as failure,
+    max(execution_time) as execution_time_max,
+    min(execution_time) as execution_time_min,
+    0 as execution_time_line_95,
+    0 as execution_time_line_99
+    from executor_task_message
+    where namespace = #{namespaceName,jdbcType=VARCHAR} and
+      app_id = #{appId,jdbcType=VARCHAR} and
+      pool_name = #{executorName,jdbcType=VARCHAR} and
+      task_name = #{taskName,jdbcType=VARCHAR} and
+      record_time >= #{startTime,jdbcType=TIMESTAMP} and record_time <![CDATA[<]]> #{endTime,jdbcType=TIMESTAMP}
   </select>
 </mapper>

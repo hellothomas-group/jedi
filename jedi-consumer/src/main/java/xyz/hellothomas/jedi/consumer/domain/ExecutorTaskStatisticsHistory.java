@@ -52,7 +52,7 @@ public class ExecutorTaskStatisticsHistory {
     /**
      * 执行失败比例
      */
-    private BigDecimal failureratio;
+    private BigDecimal failureRatio;
 
     /**
      * 执行最长时间

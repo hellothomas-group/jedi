@@ -1,8 +1,8 @@
 package xyz.hellothomas.jedi.consumer.domain;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ExecutorTaskStatisticsExample {
@@ -567,62 +567,62 @@ public class ExecutorTaskStatisticsExample {
         }
 
         public Criteria andFailureratioIsNull() {
-            addCriterion("failureRatio is null");
+            addCriterion("failure_ratio is null");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioIsNotNull() {
-            addCriterion("failureRatio is not null");
+            addCriterion("failure_ratio is not null");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioEqualTo(BigDecimal value) {
-            addCriterion("failureRatio =", value, "failureratio");
+            addCriterion("failure_ratio =", value, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioNotEqualTo(BigDecimal value) {
-            addCriterion("failureRatio <>", value, "failureratio");
+            addCriterion("failure_ratio <>", value, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioGreaterThan(BigDecimal value) {
-            addCriterion("failureRatio >", value, "failureratio");
+            addCriterion("failure_ratio >", value, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioGreaterThanOrEqualTo(BigDecimal value) {
-            addCriterion("failureRatio >=", value, "failureratio");
+            addCriterion("failure_ratio >=", value, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioLessThan(BigDecimal value) {
-            addCriterion("failureRatio <", value, "failureratio");
+            addCriterion("failure_ratio <", value, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioLessThanOrEqualTo(BigDecimal value) {
-            addCriterion("failureRatio <=", value, "failureratio");
+            addCriterion("failure_ratio <=", value, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioIn(List<BigDecimal> values) {
-            addCriterion("failureRatio in", values, "failureratio");
+            addCriterion("failure_ratio in", values, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioNotIn(List<BigDecimal> values) {
-            addCriterion("failureRatio not in", values, "failureratio");
+            addCriterion("failure_ratio not in", values, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioBetween(BigDecimal value1, BigDecimal value2) {
-            addCriterion("failureRatio between", value1, value2, "failureratio");
+            addCriterion("failure_ratio between", value1, value2, "failureRatio");
             return (Criteria) this;
         }
 
         public Criteria andFailureratioNotBetween(BigDecimal value1, BigDecimal value2) {
-            addCriterion("failureRatio not between", value1, value2, "failureratio");
+            addCriterion("failure_ratio not between", value1, value2, "failureRatio");
             return (Criteria) this;
         }
 
@@ -876,52 +876,52 @@ public class ExecutorTaskStatisticsExample {
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeEqualTo(Date value) {
+        public Criteria andDataChangeCreatedTimeEqualTo(LocalDateTime value) {
             addCriterion("data_change_created_time =", value, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeNotEqualTo(Date value) {
+        public Criteria andDataChangeCreatedTimeNotEqualTo(LocalDateTime value) {
             addCriterion("data_change_created_time <>", value, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeGreaterThan(Date value) {
+        public Criteria andDataChangeCreatedTimeGreaterThan(LocalDateTime value) {
             addCriterion("data_change_created_time >", value, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeGreaterThanOrEqualTo(Date value) {
+        public Criteria andDataChangeCreatedTimeGreaterThanOrEqualTo(LocalDateTime value) {
             addCriterion("data_change_created_time >=", value, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeLessThan(Date value) {
+        public Criteria andDataChangeCreatedTimeLessThan(LocalDateTime value) {
             addCriterion("data_change_created_time <", value, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeLessThanOrEqualTo(Date value) {
+        public Criteria andDataChangeCreatedTimeLessThanOrEqualTo(LocalDateTime value) {
             addCriterion("data_change_created_time <=", value, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeIn(List<Date> values) {
+        public Criteria andDataChangeCreatedTimeIn(List<LocalDateTime> values) {
             addCriterion("data_change_created_time in", values, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeNotIn(List<Date> values) {
+        public Criteria andDataChangeCreatedTimeNotIn(List<LocalDateTime> values) {
             addCriterion("data_change_created_time not in", values, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeBetween(Date value1, Date value2) {
+        public Criteria andDataChangeCreatedTimeBetween(LocalDateTime value1, LocalDateTime value2) {
             addCriterion("data_change_created_time between", value1, value2, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeNotBetween(Date value1, Date value2) {
+        public Criteria andDataChangeCreatedTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
             addCriterion("data_change_created_time not between", value1, value2, "dataChangeCreatedTime");
             return (Criteria) this;
         }
@@ -936,52 +936,52 @@ public class ExecutorTaskStatisticsExample {
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeEqualTo(Date value) {
+        public Criteria andDataChangeLastModifiedTimeEqualTo(LocalDateTime value) {
             addCriterion("data_change_last_modified_time =", value, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeNotEqualTo(Date value) {
+        public Criteria andDataChangeLastModifiedTimeNotEqualTo(LocalDateTime value) {
             addCriterion("data_change_last_modified_time <>", value, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeGreaterThan(Date value) {
+        public Criteria andDataChangeLastModifiedTimeGreaterThan(LocalDateTime value) {
             addCriterion("data_change_last_modified_time >", value, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeGreaterThanOrEqualTo(Date value) {
+        public Criteria andDataChangeLastModifiedTimeGreaterThanOrEqualTo(LocalDateTime value) {
             addCriterion("data_change_last_modified_time >=", value, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeLessThan(Date value) {
+        public Criteria andDataChangeLastModifiedTimeLessThan(LocalDateTime value) {
             addCriterion("data_change_last_modified_time <", value, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeLessThanOrEqualTo(Date value) {
+        public Criteria andDataChangeLastModifiedTimeLessThanOrEqualTo(LocalDateTime value) {
             addCriterion("data_change_last_modified_time <=", value, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeIn(List<Date> values) {
+        public Criteria andDataChangeLastModifiedTimeIn(List<LocalDateTime> values) {
             addCriterion("data_change_last_modified_time in", values, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeNotIn(List<Date> values) {
+        public Criteria andDataChangeLastModifiedTimeNotIn(List<LocalDateTime> values) {
             addCriterion("data_change_last_modified_time not in", values, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeBetween(Date value1, Date value2) {
+        public Criteria andDataChangeLastModifiedTimeBetween(LocalDateTime value1, LocalDateTime value2) {
             addCriterion("data_change_last_modified_time between", value1, value2, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeNotBetween(Date value1, Date value2) {
+        public Criteria andDataChangeLastModifiedTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
             addCriterion("data_change_last_modified_time not between", value1, value2, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }

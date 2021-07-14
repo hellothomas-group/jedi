@@ -16,7 +16,9 @@ import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskStatistic
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskStatisticsMapper;
 import xyz.hellothomas.jedi.core.utils.SleepUtil;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static xyz.hellothomas.jedi.consumer.common.constants.Constants.DEFAULT_PAGE_SIZE;
@@ -101,13 +103,39 @@ public class ExecutorTaskStatisticsService {
         // 计算各taskName统计数并更新
         executorTasks.stream().forEach(i -> {
             log.info("executorTask:{}", i);
+
+            ExecutorTaskStatistics executorTaskStatisticsOrigin = findCurrentOne(i.getNamespaceName(), i.getAppId(),
+                    i.getExecutorName(), i.getTaskName());
+
+            ExecutorTaskStatistics executorTaskStatistics = executorTaskService.genTaskStatistics(i.getNamespaceName()
+                    , i.getAppId(),
+                    i.getExecutorName(),
+                    i.getTaskName(), currentDate.atStartOfDay(), currentDate.plusDays(1).atStartOfDay());
+            log.info("executorTaskStatistics:{}", executorTaskStatistics);
+            if (executorTaskStatistics.getTotal() == 0) {
+                executorTaskStatistics.setFailureRatio(new BigDecimal(0));
+            } else {
+                executorTaskStatistics.setFailureRatio(new BigDecimal(executorTaskStatistics.getFailure()).divide(new BigDecimal(executorTaskStatistics.getTotal())));
+            }
+
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            if (executorTaskStatisticsOrigin == null) {
+                executorTaskStatistics.setDataChangeCreatedTime(currentDateTime);
+                executorTaskStatistics.setDataChangeLastModifiedTime(currentDateTime);
+                executorTaskStatistics.setVersion(1);
+                executorTaskStatisticsMapper.insertSelective(executorTaskStatistics);
+            } else {
+                executorTaskStatistics.setDataChangeLastModifiedTime(currentDateTime);
+                executorTaskStatistics.setVersion(executorTaskStatistics.getVersion() + 1);
+                executorTaskStatisticsMapper.updateByPrimaryKeySelective(executorTaskStatistics);
+            }
         });
 
         // 释放乐观锁
         taskLockService.unlock(currentDate, REFRESH_TASK_STATISTICS_NAME);
     }
 
-    @Scheduled(cron = "0 0 23 * * ?")
+    @Scheduled(cron = "0 20 19 * * ?")
     public void moveStatistics2History() {
         LocalDate currentDate = LocalDate.now();
         // 创建D日刷新任务并乐观锁锁住

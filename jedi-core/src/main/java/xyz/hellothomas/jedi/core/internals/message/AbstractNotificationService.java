@@ -83,7 +83,9 @@ public abstract class AbstractNotificationService {
             executorTaskNotification.setSuccess(true);
         } else {
             executorTaskNotification.setSuccess(false);
-            executorTaskNotification.setFailureReason(t.toString());
+            String exceptionString = t.toString();
+            executorTaskNotification.setFailureReason(exceptionString.length() > 300 ? exceptionString.substring(0,
+                    300) : exceptionString);
         }
 
         executorTaskNotification.setMessageType(MessageType.EXECUTOR_TASK.getTypeValue());
