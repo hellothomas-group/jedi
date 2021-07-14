@@ -1,8 +1,8 @@
 package xyz.hellothomas.jedi.consumer.domain;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ExecutorTaskStatisticsHistoryExample {
@@ -456,52 +456,52 @@ public class ExecutorTaskStatisticsHistoryExample {
             return (Criteria) this;
         }
 
-        public Criteria andTotalEqualTo(Integer value) {
+        public Criteria andTotalEqualTo(Long value) {
             addCriterion("total =", value, "total");
             return (Criteria) this;
         }
 
-        public Criteria andTotalNotEqualTo(Integer value) {
+        public Criteria andTotalNotEqualTo(Long value) {
             addCriterion("total <>", value, "total");
             return (Criteria) this;
         }
 
-        public Criteria andTotalGreaterThan(Integer value) {
+        public Criteria andTotalGreaterThan(Long value) {
             addCriterion("total >", value, "total");
             return (Criteria) this;
         }
 
-        public Criteria andTotalGreaterThanOrEqualTo(Integer value) {
+        public Criteria andTotalGreaterThanOrEqualTo(Long value) {
             addCriterion("total >=", value, "total");
             return (Criteria) this;
         }
 
-        public Criteria andTotalLessThan(Integer value) {
+        public Criteria andTotalLessThan(Long value) {
             addCriterion("total <", value, "total");
             return (Criteria) this;
         }
 
-        public Criteria andTotalLessThanOrEqualTo(Integer value) {
+        public Criteria andTotalLessThanOrEqualTo(Long value) {
             addCriterion("total <=", value, "total");
             return (Criteria) this;
         }
 
-        public Criteria andTotalIn(List<Integer> values) {
+        public Criteria andTotalIn(List<Long> values) {
             addCriterion("total in", values, "total");
             return (Criteria) this;
         }
 
-        public Criteria andTotalNotIn(List<Integer> values) {
+        public Criteria andTotalNotIn(List<Long> values) {
             addCriterion("total not in", values, "total");
             return (Criteria) this;
         }
 
-        public Criteria andTotalBetween(Integer value1, Integer value2) {
+        public Criteria andTotalBetween(Long value1, Long value2) {
             addCriterion("total between", value1, value2, "total");
             return (Criteria) this;
         }
 
-        public Criteria andTotalNotBetween(Integer value1, Integer value2) {
+        public Criteria andTotalNotBetween(Long value1, Long value2) {
             addCriterion("total not between", value1, value2, "total");
             return (Criteria) this;
         }
@@ -516,52 +516,52 @@ public class ExecutorTaskStatisticsHistoryExample {
             return (Criteria) this;
         }
 
-        public Criteria andFailureEqualTo(Integer value) {
+        public Criteria andFailureEqualTo(Long value) {
             addCriterion("failure =", value, "failure");
             return (Criteria) this;
         }
 
-        public Criteria andFailureNotEqualTo(Integer value) {
+        public Criteria andFailureNotEqualTo(Long value) {
             addCriterion("failure <>", value, "failure");
             return (Criteria) this;
         }
 
-        public Criteria andFailureGreaterThan(Integer value) {
+        public Criteria andFailureGreaterThan(Long value) {
             addCriterion("failure >", value, "failure");
             return (Criteria) this;
         }
 
-        public Criteria andFailureGreaterThanOrEqualTo(Integer value) {
+        public Criteria andFailureGreaterThanOrEqualTo(Long value) {
             addCriterion("failure >=", value, "failure");
             return (Criteria) this;
         }
 
-        public Criteria andFailureLessThan(Integer value) {
+        public Criteria andFailureLessThan(Long value) {
             addCriterion("failure <", value, "failure");
             return (Criteria) this;
         }
 
-        public Criteria andFailureLessThanOrEqualTo(Integer value) {
+        public Criteria andFailureLessThanOrEqualTo(Long value) {
             addCriterion("failure <=", value, "failure");
             return (Criteria) this;
         }
 
-        public Criteria andFailureIn(List<Integer> values) {
+        public Criteria andFailureIn(List<Long> values) {
             addCriterion("failure in", values, "failure");
             return (Criteria) this;
         }
 
-        public Criteria andFailureNotIn(List<Integer> values) {
+        public Criteria andFailureNotIn(List<Long> values) {
             addCriterion("failure not in", values, "failure");
             return (Criteria) this;
         }
 
-        public Criteria andFailureBetween(Integer value1, Integer value2) {
+        public Criteria andFailureBetween(Long value1, Long value2) {
             addCriterion("failure between", value1, value2, "failure");
             return (Criteria) this;
         }
 
-        public Criteria andFailureNotBetween(Integer value1, Integer value2) {
+        public Criteria andFailureNotBetween(Long value1, Long value2) {
             addCriterion("failure not between", value1, value2, "failure");
             return (Criteria) this;
         }
@@ -636,52 +636,52 @@ public class ExecutorTaskStatisticsHistoryExample {
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMaxEqualTo(Integer value) {
+        public Criteria andExecutionTimeMaxEqualTo(Long value) {
             addCriterion("execution_time_max =", value, "executionTimeMax");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMaxNotEqualTo(Integer value) {
+        public Criteria andExecutionTimeMaxNotEqualTo(Long value) {
             addCriterion("execution_time_max <>", value, "executionTimeMax");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMaxGreaterThan(Integer value) {
+        public Criteria andExecutionTimeMaxGreaterThan(Long value) {
             addCriterion("execution_time_max >", value, "executionTimeMax");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMaxGreaterThanOrEqualTo(Integer value) {
+        public Criteria andExecutionTimeMaxGreaterThanOrEqualTo(Long value) {
             addCriterion("execution_time_max >=", value, "executionTimeMax");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMaxLessThan(Integer value) {
+        public Criteria andExecutionTimeMaxLessThan(Long value) {
             addCriterion("execution_time_max <", value, "executionTimeMax");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMaxLessThanOrEqualTo(Integer value) {
+        public Criteria andExecutionTimeMaxLessThanOrEqualTo(Long value) {
             addCriterion("execution_time_max <=", value, "executionTimeMax");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMaxIn(List<Integer> values) {
+        public Criteria andExecutionTimeMaxIn(List<Long> values) {
             addCriterion("execution_time_max in", values, "executionTimeMax");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMaxNotIn(List<Integer> values) {
+        public Criteria andExecutionTimeMaxNotIn(List<Long> values) {
             addCriterion("execution_time_max not in", values, "executionTimeMax");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMaxBetween(Integer value1, Integer value2) {
+        public Criteria andExecutionTimeMaxBetween(Long value1, Long value2) {
             addCriterion("execution_time_max between", value1, value2, "executionTimeMax");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMaxNotBetween(Integer value1, Integer value2) {
+        public Criteria andExecutionTimeMaxNotBetween(Long value1, Long value2) {
             addCriterion("execution_time_max not between", value1, value2, "executionTimeMax");
             return (Criteria) this;
         }
@@ -696,52 +696,52 @@ public class ExecutorTaskStatisticsHistoryExample {
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMinEqualTo(Integer value) {
+        public Criteria andExecutionTimeMinEqualTo(Long value) {
             addCriterion("execution_time_min =", value, "executionTimeMin");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMinNotEqualTo(Integer value) {
+        public Criteria andExecutionTimeMinNotEqualTo(Long value) {
             addCriterion("execution_time_min <>", value, "executionTimeMin");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMinGreaterThan(Integer value) {
+        public Criteria andExecutionTimeMinGreaterThan(Long value) {
             addCriterion("execution_time_min >", value, "executionTimeMin");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMinGreaterThanOrEqualTo(Integer value) {
+        public Criteria andExecutionTimeMinGreaterThanOrEqualTo(Long value) {
             addCriterion("execution_time_min >=", value, "executionTimeMin");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMinLessThan(Integer value) {
+        public Criteria andExecutionTimeMinLessThan(Long value) {
             addCriterion("execution_time_min <", value, "executionTimeMin");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMinLessThanOrEqualTo(Integer value) {
+        public Criteria andExecutionTimeMinLessThanOrEqualTo(Long value) {
             addCriterion("execution_time_min <=", value, "executionTimeMin");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMinIn(List<Integer> values) {
+        public Criteria andExecutionTimeMinIn(List<Long> values) {
             addCriterion("execution_time_min in", values, "executionTimeMin");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMinNotIn(List<Integer> values) {
+        public Criteria andExecutionTimeMinNotIn(List<Long> values) {
             addCriterion("execution_time_min not in", values, "executionTimeMin");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMinBetween(Integer value1, Integer value2) {
+        public Criteria andExecutionTimeMinBetween(Long value1, Long value2) {
             addCriterion("execution_time_min between", value1, value2, "executionTimeMin");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeMinNotBetween(Integer value1, Integer value2) {
+        public Criteria andExecutionTimeMinNotBetween(Long value1, Long value2) {
             addCriterion("execution_time_min not between", value1, value2, "executionTimeMin");
             return (Criteria) this;
         }
@@ -756,52 +756,52 @@ public class ExecutorTaskStatisticsHistoryExample {
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine95EqualTo(Integer value) {
+        public Criteria andExecutionTimeLine95EqualTo(Long value) {
             addCriterion("execution_time_line_95 =", value, "executionTimeLine95");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine95NotEqualTo(Integer value) {
+        public Criteria andExecutionTimeLine95NotEqualTo(Long value) {
             addCriterion("execution_time_line_95 <>", value, "executionTimeLine95");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine95GreaterThan(Integer value) {
+        public Criteria andExecutionTimeLine95GreaterThan(Long value) {
             addCriterion("execution_time_line_95 >", value, "executionTimeLine95");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine95GreaterThanOrEqualTo(Integer value) {
+        public Criteria andExecutionTimeLine95GreaterThanOrEqualTo(Long value) {
             addCriterion("execution_time_line_95 >=", value, "executionTimeLine95");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine95LessThan(Integer value) {
+        public Criteria andExecutionTimeLine95LessThan(Long value) {
             addCriterion("execution_time_line_95 <", value, "executionTimeLine95");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine95LessThanOrEqualTo(Integer value) {
+        public Criteria andExecutionTimeLine95LessThanOrEqualTo(Long value) {
             addCriterion("execution_time_line_95 <=", value, "executionTimeLine95");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine95In(List<Integer> values) {
+        public Criteria andExecutionTimeLine95In(List<Long> values) {
             addCriterion("execution_time_line_95 in", values, "executionTimeLine95");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine95NotIn(List<Integer> values) {
+        public Criteria andExecutionTimeLine95NotIn(List<Long> values) {
             addCriterion("execution_time_line_95 not in", values, "executionTimeLine95");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine95Between(Integer value1, Integer value2) {
+        public Criteria andExecutionTimeLine95Between(Long value1, Long value2) {
             addCriterion("execution_time_line_95 between", value1, value2, "executionTimeLine95");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine95NotBetween(Integer value1, Integer value2) {
+        public Criteria andExecutionTimeLine95NotBetween(Long value1, Long value2) {
             addCriterion("execution_time_line_95 not between", value1, value2, "executionTimeLine95");
             return (Criteria) this;
         }
@@ -816,52 +816,52 @@ public class ExecutorTaskStatisticsHistoryExample {
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine99EqualTo(Integer value) {
+        public Criteria andExecutionTimeLine99EqualTo(Long value) {
             addCriterion("execution_time_line_99 =", value, "executionTimeLine99");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine99NotEqualTo(Integer value) {
+        public Criteria andExecutionTimeLine99NotEqualTo(Long value) {
             addCriterion("execution_time_line_99 <>", value, "executionTimeLine99");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine99GreaterThan(Integer value) {
+        public Criteria andExecutionTimeLine99GreaterThan(Long value) {
             addCriterion("execution_time_line_99 >", value, "executionTimeLine99");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine99GreaterThanOrEqualTo(Integer value) {
+        public Criteria andExecutionTimeLine99GreaterThanOrEqualTo(Long value) {
             addCriterion("execution_time_line_99 >=", value, "executionTimeLine99");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine99LessThan(Integer value) {
+        public Criteria andExecutionTimeLine99LessThan(Long value) {
             addCriterion("execution_time_line_99 <", value, "executionTimeLine99");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine99LessThanOrEqualTo(Integer value) {
+        public Criteria andExecutionTimeLine99LessThanOrEqualTo(Long value) {
             addCriterion("execution_time_line_99 <=", value, "executionTimeLine99");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine99In(List<Integer> values) {
+        public Criteria andExecutionTimeLine99In(List<Long> values) {
             addCriterion("execution_time_line_99 in", values, "executionTimeLine99");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine99NotIn(List<Integer> values) {
+        public Criteria andExecutionTimeLine99NotIn(List<Long> values) {
             addCriterion("execution_time_line_99 not in", values, "executionTimeLine99");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine99Between(Integer value1, Integer value2) {
+        public Criteria andExecutionTimeLine99Between(Long value1, Long value2) {
             addCriterion("execution_time_line_99 between", value1, value2, "executionTimeLine99");
             return (Criteria) this;
         }
 
-        public Criteria andExecutionTimeLine99NotBetween(Integer value1, Integer value2) {
+        public Criteria andExecutionTimeLine99NotBetween(Long value1, Long value2) {
             addCriterion("execution_time_line_99 not between", value1, value2, "executionTimeLine99");
             return (Criteria) this;
         }
@@ -876,52 +876,52 @@ public class ExecutorTaskStatisticsHistoryExample {
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeEqualTo(Date value) {
+        public Criteria andDataChangeCreatedTimeEqualTo(LocalDateTime value) {
             addCriterion("data_change_created_time =", value, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeNotEqualTo(Date value) {
+        public Criteria andDataChangeCreatedTimeNotEqualTo(LocalDateTime value) {
             addCriterion("data_change_created_time <>", value, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeGreaterThan(Date value) {
+        public Criteria andDataChangeCreatedTimeGreaterThan(LocalDateTime value) {
             addCriterion("data_change_created_time >", value, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeGreaterThanOrEqualTo(Date value) {
+        public Criteria andDataChangeCreatedTimeGreaterThanOrEqualTo(LocalDateTime value) {
             addCriterion("data_change_created_time >=", value, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeLessThan(Date value) {
+        public Criteria andDataChangeCreatedTimeLessThan(LocalDateTime value) {
             addCriterion("data_change_created_time <", value, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeLessThanOrEqualTo(Date value) {
+        public Criteria andDataChangeCreatedTimeLessThanOrEqualTo(LocalDateTime value) {
             addCriterion("data_change_created_time <=", value, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeIn(List<Date> values) {
+        public Criteria andDataChangeCreatedTimeIn(List<LocalDateTime> values) {
             addCriterion("data_change_created_time in", values, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeNotIn(List<Date> values) {
+        public Criteria andDataChangeCreatedTimeNotIn(List<LocalDateTime> values) {
             addCriterion("data_change_created_time not in", values, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeBetween(Date value1, Date value2) {
+        public Criteria andDataChangeCreatedTimeBetween(LocalDateTime value1, LocalDateTime value2) {
             addCriterion("data_change_created_time between", value1, value2, "dataChangeCreatedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeNotBetween(Date value1, Date value2) {
+        public Criteria andDataChangeCreatedTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
             addCriterion("data_change_created_time not between", value1, value2, "dataChangeCreatedTime");
             return (Criteria) this;
         }
@@ -936,52 +936,52 @@ public class ExecutorTaskStatisticsHistoryExample {
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeEqualTo(Date value) {
+        public Criteria andDataChangeLastModifiedTimeEqualTo(LocalDateTime value) {
             addCriterion("data_change_last_modified_time =", value, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeNotEqualTo(Date value) {
+        public Criteria andDataChangeLastModifiedTimeNotEqualTo(LocalDateTime value) {
             addCriterion("data_change_last_modified_time <>", value, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeGreaterThan(Date value) {
+        public Criteria andDataChangeLastModifiedTimeGreaterThan(LocalDateTime value) {
             addCriterion("data_change_last_modified_time >", value, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeGreaterThanOrEqualTo(Date value) {
+        public Criteria andDataChangeLastModifiedTimeGreaterThanOrEqualTo(LocalDateTime value) {
             addCriterion("data_change_last_modified_time >=", value, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeLessThan(Date value) {
+        public Criteria andDataChangeLastModifiedTimeLessThan(LocalDateTime value) {
             addCriterion("data_change_last_modified_time <", value, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeLessThanOrEqualTo(Date value) {
+        public Criteria andDataChangeLastModifiedTimeLessThanOrEqualTo(LocalDateTime value) {
             addCriterion("data_change_last_modified_time <=", value, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeIn(List<Date> values) {
+        public Criteria andDataChangeLastModifiedTimeIn(List<LocalDateTime> values) {
             addCriterion("data_change_last_modified_time in", values, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeNotIn(List<Date> values) {
+        public Criteria andDataChangeLastModifiedTimeNotIn(List<LocalDateTime> values) {
             addCriterion("data_change_last_modified_time not in", values, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeBetween(Date value1, Date value2) {
+        public Criteria andDataChangeLastModifiedTimeBetween(LocalDateTime value1, LocalDateTime value2) {
             addCriterion("data_change_last_modified_time between", value1, value2, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeNotBetween(Date value1, Date value2) {
+        public Criteria andDataChangeLastModifiedTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
             addCriterion("data_change_last_modified_time not between", value1, value2, "dataChangeLastModifiedTime");
             return (Criteria) this;
         }

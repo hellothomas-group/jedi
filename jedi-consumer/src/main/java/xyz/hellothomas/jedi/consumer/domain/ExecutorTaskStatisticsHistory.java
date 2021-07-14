@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author
@@ -42,12 +42,12 @@ public class ExecutorTaskStatisticsHistory {
     /**
      * 执行总数
      */
-    private Integer total;
+    private Long total;
 
     /**
      * 执行失败总数
      */
-    private Integer failure;
+    private Long failure;
 
     /**
      * 执行失败比例
@@ -57,32 +57,32 @@ public class ExecutorTaskStatisticsHistory {
     /**
      * 执行最长时间
      */
-    private Integer executionTimeMax;
+    private Long executionTimeMax;
 
     /**
      * 执行最短时间
      */
-    private Integer executionTimeMin;
+    private Long executionTimeMin;
 
     /**
      * 执行时间95线
      */
-    private Integer executionTimeLine95;
+    private Long executionTimeLine95;
 
     /**
      * 执行时间99线
      */
-    private Integer executionTimeLine99;
+    private Long executionTimeLine99;
 
     /**
      * 创建时间
      */
-    private Date dataChangeCreatedTime;
+    private LocalDateTime dataChangeCreatedTime;
 
     /**
      * 最后修改时间
      */
-    private Date dataChangeLastModifiedTime;
+    private LocalDateTime dataChangeLastModifiedTime;
 
     /**
      * 版本号

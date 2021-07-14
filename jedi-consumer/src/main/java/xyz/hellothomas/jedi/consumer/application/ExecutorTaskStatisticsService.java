@@ -17,6 +17,7 @@ import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskStatistic
 import xyz.hellothomas.jedi.core.utils.SleepUtil;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -115,7 +116,8 @@ public class ExecutorTaskStatisticsService {
             if (executorTaskStatistics.getTotal() == 0) {
                 executorTaskStatistics.setFailureRatio(new BigDecimal(0));
             } else {
-                executorTaskStatistics.setFailureRatio(new BigDecimal(executorTaskStatistics.getFailure()).divide(new BigDecimal(executorTaskStatistics.getTotal())));
+                executorTaskStatistics.setFailureRatio(new BigDecimal(executorTaskStatistics.getFailure())
+                        .divide(new BigDecimal(executorTaskStatistics.getTotal()), 2, RoundingMode.HALF_UP));
             }
 
             LocalDateTime currentDateTime = LocalDateTime.now();
@@ -125,8 +127,10 @@ public class ExecutorTaskStatisticsService {
                 executorTaskStatistics.setVersion(1);
                 executorTaskStatisticsMapper.insertSelective(executorTaskStatistics);
             } else {
+                executorTaskStatistics.setId(executorTaskStatisticsOrigin.getId());
+                executorTaskStatistics.setDataChangeCreatedTime(executorTaskStatisticsOrigin.getDataChangeCreatedTime());
+                executorTaskStatistics.setVersion(executorTaskStatisticsOrigin.getVersion() + 1);
                 executorTaskStatistics.setDataChangeLastModifiedTime(currentDateTime);
-                executorTaskStatistics.setVersion(executorTaskStatistics.getVersion() + 1);
                 executorTaskStatisticsMapper.updateByPrimaryKeySelective(executorTaskStatistics);
             }
         });
@@ -135,7 +139,7 @@ public class ExecutorTaskStatisticsService {
         taskLockService.unlock(currentDate, REFRESH_TASK_STATISTICS_NAME);
     }
 
-    @Scheduled(cron = "0 20 19 * * ?")
+    @Scheduled(cron = "0 28 21 * * ?")
     public void moveStatistics2History() {
         LocalDate currentDate = LocalDate.now();
         // 创建D日刷新任务并乐观锁锁住
