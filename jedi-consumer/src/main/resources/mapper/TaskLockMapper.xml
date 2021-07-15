@@ -242,6 +242,20 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+  <select id="selectByUniqueKey" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from task_lock
+    where task_date = #{taskDate,jdbcType=DATE} and task_name = #{taskName,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByPrimaryKeyForUpdate" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from task_lock
+    where id = #{id,jdbcType=INTEGER} for update
+  </select>
+
   <update id="updateLockByUniqueKey">
     update task_lock
     set is_locked = #{isLocked,jdbcType=BIT},

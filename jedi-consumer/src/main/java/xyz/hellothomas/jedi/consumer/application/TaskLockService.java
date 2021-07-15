@@ -2,6 +2,9 @@ package xyz.hellothomas.jedi.consumer.application;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.hellothomas.jedi.consumer.domain.TaskLock;
 import xyz.hellothomas.jedi.consumer.domain.TaskLockExample;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.TaskLockMapper;
@@ -24,11 +27,21 @@ public class TaskLockService {
         this.taskLockMapper = taskLockMapper;
     }
 
-    public int lock(LocalDate taskDate, String taskName) {
+    public TaskLock selectByTaskDateAndTaskName(LocalDate taskDate, String taskName) {
+        return taskLockMapper.selectByUniqueKey(taskDate, taskName);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor =
+            Exception.class)
+    public TaskLock lock(int id) {
+        return taskLockMapper.selectByPrimaryKeyForUpdate(id);
+    }
+
+    public int lockOptimistic(LocalDate taskDate, String taskName) {
         return taskLockMapper.updateLockByUniqueKey(taskDate, taskName, true, LocalDateTime.now());
     }
 
-    public int unlock(LocalDate taskDate, String taskName) {
+    public int unlockOptimistic(LocalDate taskDate, String taskName) {
         return taskLockMapper.updateLockByUniqueKey(taskDate, taskName, false, LocalDateTime.now());
     }
 

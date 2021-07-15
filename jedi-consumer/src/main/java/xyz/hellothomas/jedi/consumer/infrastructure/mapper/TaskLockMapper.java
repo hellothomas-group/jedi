@@ -31,6 +31,10 @@ public interface TaskLockMapper {
 
     int updateByPrimaryKey(TaskLock record);
 
+    TaskLock selectByUniqueKey(@Param("taskDate") LocalDate taskDate, @Param("taskName") String taskName);
+
+    TaskLock selectByPrimaryKeyForUpdate(Integer id);
+
     int updateLockByUniqueKey(@Param("taskDate") LocalDate taskDate, @Param("taskName") String taskName,
                               @Param("isLocked") Boolean isLocked,
                               @Param("dataChangeLastModifiedTime") LocalDateTime dataChangeLastModifiedTime);

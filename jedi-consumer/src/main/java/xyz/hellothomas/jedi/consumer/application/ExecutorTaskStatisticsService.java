@@ -92,7 +92,7 @@ public class ExecutorTaskStatisticsService {
     @Scheduled(fixedDelay = 1000 * 60 * 2)
     public void refreshTaskStatistics() {
         // 乐观锁锁当天刷新任务
-        if (taskLockService.lock(LocalDate.now(), REFRESH_TASK_STATISTICS_NAME) == 0) {
+        if (taskLockService.lockOptimistic(LocalDate.now(), REFRESH_TASK_STATISTICS_NAME) == 0) {
             return;
         }
 
@@ -136,7 +136,7 @@ public class ExecutorTaskStatisticsService {
         });
 
         // 释放乐观锁
-        taskLockService.unlock(currentDate, REFRESH_TASK_STATISTICS_NAME);
+        taskLockService.unlockOptimistic(currentDate, REFRESH_TASK_STATISTICS_NAME);
     }
 
     @Scheduled(cron = "0 28 21 * * ?")
@@ -156,7 +156,7 @@ public class ExecutorTaskStatisticsService {
         // 释放乐观锁
         SleepUtil.sleep(10000);
 
-        taskLockService.unlock(currentDate, REFRESH_TASK_STATISTICS_NAME);
+        taskLockService.unlockOptimistic(currentDate, REFRESH_TASK_STATISTICS_NAME);
     }
 
 }
