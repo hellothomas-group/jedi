@@ -1,11 +1,12 @@
 package xyz.hellothomas.jedi.consumer.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author Thomas
@@ -72,10 +73,12 @@ public class ExecutorTaskStatisticsHistoryResponse {
     /**
      * 创建时间
      */
-    private Date dataChangeCreatedTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dataChangeCreatedTime;
 
     /**
      * 最后修改时间
      */
-    private Date dataChangeLastModifiedTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dataChangeLastModifiedTime;
 }

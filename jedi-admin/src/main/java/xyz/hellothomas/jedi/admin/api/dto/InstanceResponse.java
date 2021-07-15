@@ -1,5 +1,6 @@
 package xyz.hellothomas.jedi.admin.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,5 +25,6 @@ public class InstanceResponse {
 
     private List<InstanceConfigResponse> configs;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dataChangeCreatedTime;
 }

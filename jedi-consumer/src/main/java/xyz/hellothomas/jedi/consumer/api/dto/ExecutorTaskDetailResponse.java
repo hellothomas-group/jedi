@@ -1,5 +1,6 @@
 package xyz.hellothomas.jedi.consumer.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -36,5 +37,6 @@ public class ExecutorTaskDetailResponse {
     /**
      * 记录时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime recordTime;
 }
