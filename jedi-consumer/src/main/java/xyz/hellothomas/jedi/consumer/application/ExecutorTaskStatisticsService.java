@@ -14,7 +14,6 @@ import xyz.hellothomas.jedi.consumer.domain.*;
 import xyz.hellothomas.jedi.consumer.domain.pojo.ExecutorTask;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskStatisticsHistoryMapper;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskStatisticsMapper;
-import xyz.hellothomas.jedi.core.utils.SleepUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -49,13 +48,14 @@ public class ExecutorTaskStatisticsService {
         this.taskLockService = taskLockService;
     }
 
-    public ExecutorTaskStatistics findCurrentOne(String namespaceName, String appId, String executorName,
-                                                 String taskName) {
+    public ExecutorTaskStatistics findOne(String namespaceName, String appId, String executorName, String taskName,
+                                          LocalDate statisticsDate) {
         ExecutorTaskStatisticsExample executorTaskStatisticsExample = new ExecutorTaskStatisticsExample();
         executorTaskStatisticsExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
                 .andAppIdEqualTo(appId)
                 .andExecutorNameEqualTo(executorName)
-                .andTaskNameEqualTo(taskName);
+                .andTaskNameEqualTo(taskName)
+                .andStatisticsDateEqualTo(statisticsDate);
 
         List<ExecutorTaskStatistics> executorTaskStatisticsList =
                 executorTaskStatisticsMapper.selectByExample(executorTaskStatisticsExample);
@@ -116,8 +116,8 @@ public class ExecutorTaskStatisticsService {
         executorTasks.stream().forEach(i -> {
             log.info("executorTask:{}", i);
 
-            ExecutorTaskStatistics executorTaskStatisticsOrigin = findCurrentOne(i.getNamespaceName(), i.getAppId(),
-                    i.getExecutorName(), i.getTaskName());
+            ExecutorTaskStatistics executorTaskStatisticsOrigin = findOne(i.getNamespaceName(), i.getAppId(),
+                    i.getExecutorName(), i.getTaskName(), currentDate);
 
             ExecutorTaskStatistics executorTaskStatistics = executorTaskService.genTaskStatistics(i.getNamespaceName()
                     , i.getAppId(),
@@ -151,7 +151,7 @@ public class ExecutorTaskStatisticsService {
         taskLockService.updateModifiedTimeAndVersion(taskLock);
     }
 
-    @Scheduled(cron = "0 59 10 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void moveStatistics2History() {
         LocalDate currentDate = LocalDate.now();
         // 创建D日刷新任务
@@ -162,9 +162,6 @@ public class ExecutorTaskStatisticsService {
         // D-30统计数据复制到历史表
 
         // 删除D-30数据
-
-        // 删除D-30刷新任务锁
-
     }
 
 }

@@ -15,6 +15,7 @@ import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistory;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -59,9 +60,11 @@ public class ExecutorTaskController {
                                                                       @PathVariable("appId") String appId,
                                                                       @PathVariable("executorName") String executorName,
                                                                       @RequestParam(value = "taskName", defaultValue =
-                                                                              "DEFAULT") String taskName) {
+                                                                              "DEFAULT") String taskName,
+                                                                      @RequestParam("statisticsDate")
+                                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate statisticsDate) {
         ExecutorTaskStatistics executorTaskStatistics =
-                executorTaskStatisticsService.findCurrentOne(namespaceName, appId, executorName, taskName);
+                executorTaskStatisticsService.findOne(namespaceName, appId, executorName, taskName, statisticsDate);
 
         return ApiResponse.success(LocalBeanUtils.transform(ExecutorTaskStatisticsResponse.class,
                 executorTaskStatistics));

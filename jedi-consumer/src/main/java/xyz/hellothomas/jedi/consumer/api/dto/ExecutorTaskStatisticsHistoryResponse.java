@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -15,6 +16,12 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class ExecutorTaskStatisticsHistoryResponse {
+    /**
+     * 统计日期
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate statisticsDate;
+
     /**
      * namespaceName
      */
@@ -38,37 +45,37 @@ public class ExecutorTaskStatisticsHistoryResponse {
     /**
      * 执行总数
      */
-    private Integer total;
+    private Long total;
 
     /**
      * 执行失败总数
      */
-    private Integer failure;
+    private Long failure;
 
     /**
      * 执行失败比例
      */
-    private BigDecimal failureratio;
+    private BigDecimal failureRatio;
 
     /**
      * 执行最长时间
      */
-    private Integer executionTimeMax;
+    private Long executionTimeMax;
 
     /**
      * 执行最短时间
      */
-    private Integer executionTimeMin;
+    private Long executionTimeMin;
 
     /**
      * 执行时间95线
      */
-    private Integer executionTimeLine95;
+    private Long executionTimeLine95;
 
     /**
      * 执行时间99线
      */
-    private Integer executionTimeLine99;
+    private Long executionTimeLine99;
 
     /**
      * 创建时间
