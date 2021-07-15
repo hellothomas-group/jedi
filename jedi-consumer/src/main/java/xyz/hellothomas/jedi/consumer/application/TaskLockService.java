@@ -37,6 +37,12 @@ public class TaskLockService {
         return taskLockMapper.selectByPrimaryKeyForUpdate(id);
     }
 
+    public int updateModifiedTimeAndVersion(TaskLock lockedTask) {
+        lockedTask.setVersion(lockedTask.getVersion() + 1);
+        lockedTask.setDataChangeLastModifiedTime(LocalDateTime.now());
+        return taskLockMapper.updateByPrimaryKey(lockedTask);
+    }
+
     public int lockOptimistic(LocalDate taskDate, String taskName) {
         return taskLockMapper.updateLockByUniqueKey(taskDate, taskName, true, LocalDateTime.now());
     }
@@ -52,7 +58,7 @@ public class TaskLockService {
         taskLockMapper.deleteByExample(taskLockExample);
     }
 
-    public int insertLockedOne(LocalDate taskDate, String taskName) {
+    public int insertTaskLock(LocalDate taskDate, String taskName) {
         TaskLock taskLock = new TaskLock();
         taskLock.setTaskDate(taskDate);
         taskLock.setTaskName(taskName);
@@ -60,7 +66,7 @@ public class TaskLockService {
         taskLock.setDataChangeCreatedTime(currentDateTime);
         taskLock.setDataChangeLastModifiedTime(currentDateTime);
         taskLock.setVersion(1);
-        taskLock.setIsLocked(true);
+        taskLock.setIsLocked(false);
 
         try {
             return taskLockMapper.insertSelective(taskLock);

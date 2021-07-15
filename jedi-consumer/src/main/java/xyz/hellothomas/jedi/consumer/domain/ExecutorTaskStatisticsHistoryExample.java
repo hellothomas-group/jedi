@@ -1,6 +1,7 @@
 package xyz.hellothomas.jedi.consumer.domain;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -163,6 +164,61 @@ public class ExecutorTaskStatisticsHistoryExample {
 
         public Criteria andIdNotBetween(Integer value1, Integer value2) {
             addCriterion("id not between", value1, value2, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatisticsDateIsNull() {
+            addCriterion("statistics_date is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatisticsDateIsNotNull() {
+            addCriterion("statistics_date is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatisticsDateEqualTo(LocalDate value) {
+            addCriterion("statistics_date =", value, "statisticsDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatisticsDateNotEqualTo(LocalDate value) {
+            addCriterion("statistics_date <>", value, "statisticsDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatisticsDateGreaterThan(LocalDate value) {
+            addCriterion("statistics_date >", value, "statisticsDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatisticsDateGreaterThanOrEqualTo(LocalDate value) {
+            addCriterion("statistics_date >=", value, "statisticsDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatisticsDateLessThan(LocalDate value) {
+            addCriterion("statistics_date <", value, "statisticsDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatisticsDateLessThanOrEqualTo(LocalDate value) {
+            addCriterion("statistics_date <=", value, "statisticsDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatisticsDateIn(List<LocalDate> values) {
+            addCriterion("statistics_date in", values, "statisticsDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatisticsDateNotIn(List<LocalDate> values) {
+            addCriterion("statistics_date not in", values, "statisticsDate");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatisticsDateBetween(LocalDate value1, LocalDate value2) {
+            addCriterion("statistics_date between", value1, value2, "statisticsDate");
             return (Criteria) this;
         }
 

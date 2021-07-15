@@ -96,6 +96,7 @@ CREATE TABLE `alarm_config` (
 
 CREATE TABLE `executor_task_statistics` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `statistics_date` date NOT NULL COMMENT '统计日期',
   `namespace_name` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
   `app_id` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'appId',
   `executor_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'executorName',
@@ -111,11 +112,12 @@ CREATE TABLE `executor_task_statistics` (
   `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `version` int(11) unsigned NOT NULL DEFAULT 1 COMMENT '版本号',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `IX_UNIQUE_KEY` (`namespace_name`,`app_id`,`executor_name`, `task_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务统计表';
+  UNIQUE KEY `IX_UNIQUE_KEY` (`namespace_name`,`app_id`,`executor_name`, `task_name`, `statistics_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务每日统计表';
 
 CREATE TABLE `executor_task_statistics_history` (
   `id` int(11) unsigned NOT NULL COMMENT 'Id',
+  `statistics_date` date NOT NULL COMMENT '统计日期',
   `namespace_name` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
   `app_id` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'appId',
   `executor_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'executorName',
@@ -131,7 +133,7 @@ CREATE TABLE `executor_task_statistics_history` (
   `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `version` int(11) unsigned NOT NULL DEFAULT 1 COMMENT '版本号',
   PRIMARY KEY (`id`),
-  KEY `IX_KEY` (`namespace_name`,`app_id`,`executor_name`, `task_name`)
+  KEY `IX_KEY` (`namespace_name`,`app_id`,`executor_name`, `task_name`, `statistics_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务历史统计表';
 
 CREATE TABLE `task_lock` (

@@ -3,6 +3,7 @@
 <mapper namespace="xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskStatisticsMapper">
   <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="statistics_date" jdbcType="DATE" property="statisticsDate" />
     <result column="namespace_name" jdbcType="VARCHAR" property="namespaceName" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
     <result column="executor_name" jdbcType="VARCHAR" property="executorName" />
@@ -77,8 +78,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, namespace_name, app_id, executor_name, task_name, total, failure, failure_ratio,
-    execution_time_max, execution_time_min, execution_time_line_95, execution_time_line_99,
+    id, statistics_date, namespace_name, app_id, executor_name, task_name, total, failure,
+    failure_ratio, execution_time_max, execution_time_min, execution_time_line_95, execution_time_line_99,
     data_change_created_time, data_change_last_modified_time, version
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsExample" resultMap="BaseResultMap">
@@ -112,16 +113,16 @@
     </if>
   </delete>
   <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics" useGeneratedKeys="true" keyProperty="id">
-    insert into executor_task_statistics (id, namespace_name, app_id,
-      executor_name, task_name, total,
-      failure, failure_ratio, execution_time_max,
-      execution_time_min, execution_time_line_95,
+    insert into executor_task_statistics (id, statistics_date, namespace_name,
+      app_id, executor_name, task_name,
+      total, failure, failure_ratio,
+      execution_time_max, execution_time_min, execution_time_line_95,
       execution_time_line_99, data_change_created_time,
       data_change_last_modified_time, version)
-    values (#{id,jdbcType=INTEGER}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR},
-      #{executorName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, #{total,jdbcType=BIGINT},
-      #{failure,jdbcType=BIGINT}, #{failureRatio,jdbcType=DECIMAL}, #{executionTimeMax,jdbcType=BIGINT},
-      #{executionTimeMin,jdbcType=BIGINT}, #{executionTimeLine95,jdbcType=BIGINT},
+    values (#{id,jdbcType=INTEGER}, #{statisticsDate,jdbcType=DATE}, #{namespaceName,jdbcType=VARCHAR},
+      #{appId,jdbcType=VARCHAR}, #{executorName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR},
+      #{total,jdbcType=BIGINT}, #{failure,jdbcType=BIGINT}, #{failureRatio,jdbcType=DECIMAL},
+      #{executionTimeMax,jdbcType=BIGINT}, #{executionTimeMin,jdbcType=BIGINT}, #{executionTimeLine95,jdbcType=BIGINT},
       #{executionTimeLine99,jdbcType=BIGINT}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
       #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER})
   </insert>
@@ -130,6 +131,9 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
+      </if>
+      <if test="statisticsDate != null">
+        statistics_date,
       </if>
       <if test="namespaceName != null">
         namespace_name,
@@ -177,6 +181,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=INTEGER},
+      </if>
+      <if test="statisticsDate != null">
+        #{statisticsDate,jdbcType=DATE},
       </if>
       <if test="namespaceName != null">
         #{namespaceName,jdbcType=VARCHAR},
@@ -234,6 +241,9 @@
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
+      <if test="record.statisticsDate != null">
+        statistics_date = #{record.statisticsDate,jdbcType=DATE},
+      </if>
       <if test="record.namespaceName != null">
         namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
       </if>
@@ -284,6 +294,7 @@
   <update id="updateByExample" parameterType="map">
     update executor_task_statistics
     set id = #{record.id,jdbcType=INTEGER},
+      statistics_date = #{record.statisticsDate,jdbcType=DATE},
       namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
       app_id = #{record.appId,jdbcType=VARCHAR},
       executor_name = #{record.executorName,jdbcType=VARCHAR},
@@ -305,6 +316,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics">
     update executor_task_statistics
     <set>
+      <if test="statisticsDate != null">
+        statistics_date = #{statisticsDate,jdbcType=DATE},
+      </if>
       <if test="namespaceName != null">
         namespace_name = #{namespaceName,jdbcType=VARCHAR},
       </if>
@@ -352,7 +366,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics">
     update executor_task_statistics
-    set namespace_name = #{namespaceName,jdbcType=VARCHAR},
+    set statistics_date = #{statisticsDate,jdbcType=DATE},
+      namespace_name = #{namespaceName,jdbcType=VARCHAR},
       app_id = #{appId,jdbcType=VARCHAR},
       executor_name = #{executorName,jdbcType=VARCHAR},
       task_name = #{taskName,jdbcType=VARCHAR},

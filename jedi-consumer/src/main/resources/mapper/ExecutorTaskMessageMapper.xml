@@ -369,6 +369,7 @@
 
   <resultMap id="ExecutorTaskStatisticsResultMap" type="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics">
     <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="statistics_date" jdbcType="DATE" property="statisticsDate" />
     <result column="namespace_name" jdbcType="VARCHAR" property="namespaceName" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
     <result column="executor_name" jdbcType="VARCHAR" property="executorName" />

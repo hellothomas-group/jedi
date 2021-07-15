@@ -5,12 +5,12 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
-import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics;
-import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsExample;
-import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistory;
-import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistoryExample;
+import xyz.hellothomas.jedi.consumer.domain.*;
 import xyz.hellothomas.jedi.consumer.domain.pojo.ExecutorTask;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskStatisticsHistoryMapper;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskStatisticsMapper;
@@ -34,6 +34,7 @@ import static xyz.hellothomas.jedi.consumer.common.constants.Constants.DEFAULT_P
 @Service
 public class ExecutorTaskStatisticsService {
     private static final String REFRESH_TASK_STATISTICS_NAME = "REFRESH_TASK_STATISTICS";
+    private static final int REFRESH_TASK_STATISTICS_CYCLE_SECONDS = 60 * 2;
     private final ExecutorTaskStatisticsMapper executorTaskStatisticsMapper;
     private final ExecutorTaskStatisticsHistoryMapper executorTaskStatisticsHistoryMapper;
     private final ExecutorTaskService executorTaskService;
@@ -89,10 +90,20 @@ public class ExecutorTaskStatisticsService {
                 .build();
     }
 
-    @Scheduled(fixedDelay = 1000 * 60 * 2)
+    @Scheduled(fixedDelay = 1000 * REFRESH_TASK_STATISTICS_CYCLE_SECONDS)
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor =
+            Exception.class)
     public void refreshTaskStatistics() {
-        // 乐观锁锁当天刷新任务
-        if (taskLockService.lockOptimistic(LocalDate.now(), REFRESH_TASK_STATISTICS_NAME) == 0) {
+        // 悲观锁锁当天刷新任务
+        TaskLock taskLock = taskLockService.selectByTaskDateAndTaskName(LocalDate.now(), REFRESH_TASK_STATISTICS_NAME);
+        if (taskLock == null ||
+                taskLock.getDataChangeLastModifiedTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_CYCLE_SECONDS))) {
+            return;
+        }
+
+        taskLock = taskLockService.lock(taskLock.getId());
+        if (taskLock == null ||
+                taskLock.getDataChangeLastModifiedTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_CYCLE_SECONDS))) {
             return;
         }
 
@@ -122,6 +133,7 @@ public class ExecutorTaskStatisticsService {
 
             LocalDateTime currentDateTime = LocalDateTime.now();
             if (executorTaskStatisticsOrigin == null) {
+                executorTaskStatistics.setStatisticsDate(currentDate);
                 executorTaskStatistics.setDataChangeCreatedTime(currentDateTime);
                 executorTaskStatistics.setDataChangeLastModifiedTime(currentDateTime);
                 executorTaskStatistics.setVersion(1);
@@ -135,28 +147,24 @@ public class ExecutorTaskStatisticsService {
             }
         });
 
-        // 释放乐观锁
-        taskLockService.unlockOptimistic(currentDate, REFRESH_TASK_STATISTICS_NAME);
+        // 更新刷新任务
+        taskLockService.updateModifiedTimeAndVersion(taskLock);
     }
 
-    @Scheduled(cron = "0 28 21 * * ?")
+    @Scheduled(cron = "0 59 10 * * ?")
     public void moveStatistics2History() {
         LocalDate currentDate = LocalDate.now();
-        // 创建D日刷新任务并乐观锁锁住
-        if (taskLockService.insertLockedOne(currentDate, REFRESH_TASK_STATISTICS_NAME) == 0) {
+        // 创建D日刷新任务
+        if (taskLockService.insertTaskLock(currentDate, REFRESH_TASK_STATISTICS_NAME) == 0) {
             return;
         }
 
-        // D-1统计数据复制到历史表
+        // D-30统计数据复制到历史表
 
-        // 删除D-1数据
+        // 删除D-30数据
 
-        // 删除D-1刷新任务锁
+        // 删除D-30刷新任务锁
 
-        // 释放乐观锁
-        SleepUtil.sleep(10000);
-
-        taskLockService.unlockOptimistic(currentDate, REFRESH_TASK_STATISTICS_NAME);
     }
 
 }

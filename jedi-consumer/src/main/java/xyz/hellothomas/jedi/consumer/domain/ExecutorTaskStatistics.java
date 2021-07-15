@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -18,6 +19,11 @@ public class ExecutorTaskStatistics {
      * 自增Id
      */
     private Integer id;
+
+    /**
+     * 统计日期
+     */
+    private LocalDate statisticsDate;
 
     /**
      * namespaceName
