@@ -174,8 +174,7 @@ export default {
       this.axios.post('/admin/namespaces/' + form.namespaceName + '/apps/' +
         form.appId + '/executors/' + form.executorName + '/alarm-configs', null, {
         params: {
-          configuration: JSON.stringify(form.configuration),
-          operator: '80234613'
+          configuration: JSON.stringify(form.configuration)
         }
       }).then(res => {
         console.log(form.executorName + 'alarmConfig created')
