@@ -82,11 +82,6 @@ const router = new Router({
           path: '/alarm',
           name: 'Alarm',
           component: Alarm
-        },
-        {
-          path: '/custom',
-          name: 'Custom',
-          component: Custom
         }
       ]
     }

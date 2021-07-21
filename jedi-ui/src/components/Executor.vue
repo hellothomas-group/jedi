@@ -53,11 +53,6 @@
                   <i class="el-icon-document"></i>
                   <span slot="title">线程池任务</span>
                 </el-menu-item>
-                <el-menu-item index="/custom"
-                              :route="{path:'/custom',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">
-                  <i class="el-icon-document"></i>
-                  <span slot="title">自定义消息</span>
-                </el-menu-item>
               </el-menu>
             </el-col>
           </el-row>
