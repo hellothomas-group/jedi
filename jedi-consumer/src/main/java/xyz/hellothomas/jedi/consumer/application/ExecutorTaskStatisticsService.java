@@ -63,6 +63,32 @@ public class ExecutorTaskStatisticsService {
         return executorTaskStatisticsList.isEmpty() ? null : executorTaskStatisticsList.get(0);
     }
 
+    public PageResult<ExecutorTaskStatistics> findList(String namespaceName, String appId, String executorName,
+                                                       LocalDate statisticsDate, PageHelperRequest pageHelperRequest) {
+        ExecutorTaskStatisticsExample executorTaskStatisticsExample = new ExecutorTaskStatisticsExample();
+        executorTaskStatisticsExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
+                .andAppIdEqualTo(appId)
+                .andExecutorNameEqualTo(executorName)
+                .andStatisticsDateEqualTo(statisticsDate);
+
+        int pageSize = pageHelperRequest.getPageSize();
+        int pageNum = pageHelperRequest.getPageNum();
+        pageSize = (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
+        PageHelper.startPage(pageNum, pageSize);
+
+        List<ExecutorTaskStatistics> executorTaskStatisticsList =
+                executorTaskStatisticsMapper.selectByExample(executorTaskStatisticsExample);
+
+        PageInfo<ExecutorTaskStatistics> pageInfo = new PageInfo<>(executorTaskStatisticsList);
+
+        return PageResult.<ExecutorTaskStatistics>builder()
+                .content(pageInfo.getList())
+                .total(pageInfo.getTotal())
+                .pageNum(pageInfo.getPageNum())
+                .pageSize(pageInfo.getPageSize())
+                .build();
+    }
+
     public PageResult<ExecutorTaskStatisticsHistory> findHistory(String namespaceName, String appId,
                                                                  String executorName,
                                                                  String taskName, PageHelperRequest pageHelperRequest) {

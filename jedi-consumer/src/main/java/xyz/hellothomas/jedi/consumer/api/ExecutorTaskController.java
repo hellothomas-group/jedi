@@ -87,6 +87,35 @@ public class ExecutorTaskController {
         return ApiResponse.success(responsePageResult);
     }
 
+    @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/task-statistics/all")
+    public ApiResponse<PageResult<ExecutorTaskStatisticsResponse>> findStatisticsList(@PathVariable("namespaceName") String namespaceName,
+                                                                                      @PathVariable("appId") String appId,
+                                                                                      @PathVariable("executorName") String executorName,
+                                                                                      @RequestParam("statisticsDate")
+                                                                                      @DateTimeFormat(pattern = "yyyy" +
+                                                                                              "-MM-dd") LocalDate statisticsDate,
+                                                                                      PageHelperRequest pageHelperRequest) {
+        PageResult<ExecutorTaskStatistics> executorTaskStatisticsPageResult =
+                executorTaskStatisticsService.findList(namespaceName, appId, executorName, statisticsDate,
+                        pageHelperRequest);
+
+        PageResult<ExecutorTaskStatisticsResponse> responsePageResult =
+                transformStatistics2PageResult(executorTaskStatisticsPageResult);
+
+        return ApiResponse.success(responsePageResult);
+    }
+
+    private PageResult<ExecutorTaskStatisticsResponse> transformStatistics2PageResult(
+            PageResult<ExecutorTaskStatistics> executorTaskStatisticsPageResult) {
+        List<ExecutorTaskStatisticsResponse> statisticsResponses =
+                LocalBeanUtils.batchTransform(ExecutorTaskStatisticsResponse.class,
+                        executorTaskStatisticsPageResult.getContent());
+
+        return new PageResult<>(statisticsResponses, executorTaskStatisticsPageResult.getTotal(),
+                executorTaskStatisticsPageResult.getPageNum(),
+                executorTaskStatisticsPageResult.getPageSize());
+    }
+
     private PageResult<ExecutorTaskDetailResponse> transform2PageResult(PageResult<ExecutorTaskMessage> taskMessagePageResult) {
         List<ExecutorTaskDetailResponse> executorTaskDetailRespons =
                 LocalBeanUtils.batchTransform(ExecutorTaskDetailResponse.class,
