@@ -129,8 +129,7 @@ export default {
       this.axios.get('/consumer/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
         '/task-statistics/all', {
         params: {
-          // statisticsDate: format(new Date(), 'yyyy-MM-dd'),
-          statisticsDate: '2021-07-15',
+          statisticsDate: format(new Date(), 'yyyy-MM-dd'),
           pageNum: this.pagination.pageNum,
           pageSize: this.pagination.pageSize
         }
