@@ -150,7 +150,7 @@ export default {
         return namespace.id === selectedNamespaceId
       })
       console.log(selectedNamespace[0].name)
-      this.newAppForm.namespace = selectedNamespace[0].name
+      this.newAppForm.namespaceName = selectedNamespace[0].name
 
       this.axios.get('/admin/namespaces/' + selectedNamespace[0].name + '/apps', {
         params: {
