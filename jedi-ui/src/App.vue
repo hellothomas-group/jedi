@@ -1,14 +1,13 @@
 <template>
   <div id="app">
     <!--<img src="./assets/logo.png">-->
-    <div style="font-size: 20px;padding: 20px;float: right" v-if="this.$store.state.RealName != null &&
-    this.$route.path != '/login'">
+    <div style="font-size: 20px;padding: 20px;float: right" v-if="this.$route.path != '/login'">
       <el-dropdown @command="handleCommand">
         <span>
           {{this.$store.state.RealName}}<i class="el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="loginOut">注销</el-dropdown-item>
+          <el-dropdown-item command="loginOff">注销</el-dropdown-item>
           <el-dropdown-item command="updatePwd">修改密码</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -19,11 +18,24 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   name: 'App',
   methods: {
+    ...mapMutations(['changeLogin']),
     handleCommand (command) {
-      this.$message('click on item ' + command)
+      if (command === 'loginOff') {
+        let _this = this
+        _this.changeLogin({ Authorization: '',
+          UserName: '',
+          RealName: ''
+        })
+        console.log(window.location.href)
+        location.href = window.location.href
+      } else {
+        this.$message('click on item ' + command)
+        // window.open('http://www.baidu.com')
+      }
     }
   }
 }
