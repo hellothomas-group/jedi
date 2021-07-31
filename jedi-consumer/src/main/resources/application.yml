@@ -12,7 +12,7 @@ spring:
       maximum-pool-size: 30
       minimum-idle: 10
   profiles:
-    active: dev
+    active: local
 logging:
   level:
     xyz:
