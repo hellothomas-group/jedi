@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.hellothomas.jedi.consumer.api.dto.*;
 import xyz.hellothomas.jedi.consumer.application.ExecutorTaskService;
+import xyz.hellothomas.jedi.consumer.application.ExecutorTaskStatisticsHistoryService;
 import xyz.hellothomas.jedi.consumer.application.ExecutorTaskStatisticsService;
 import xyz.hellothomas.jedi.consumer.common.util.LocalBeanUtils;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage;
@@ -25,11 +26,14 @@ public class ExecutorTaskController {
 
     private final ExecutorTaskService executorTaskService;
     private final ExecutorTaskStatisticsService executorTaskStatisticsService;
+    private final ExecutorTaskStatisticsHistoryService executorTaskStatisticsHistoryService;
 
     public ExecutorTaskController(ExecutorTaskService executorTaskService,
-                                  ExecutorTaskStatisticsService executorTaskStatisticsService) {
+                                  ExecutorTaskStatisticsService executorTaskStatisticsService,
+                                  ExecutorTaskStatisticsHistoryService executorTaskStatisticsHistoryService) {
         this.executorTaskService = executorTaskService;
         this.executorTaskStatisticsService = executorTaskStatisticsService;
+        this.executorTaskStatisticsHistoryService = executorTaskStatisticsHistoryService;
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/task-details")
@@ -79,7 +83,7 @@ public class ExecutorTaskController {
                     "DEFAULT") String taskName,
             PageHelperRequest pageHelperRequest) {
         PageResult<ExecutorTaskStatisticsHistory> executorTaskStatisticsHistoryPageResult =
-                executorTaskStatisticsService.findHistory(namespaceName, appId, executorName, taskName,
+                executorTaskStatisticsHistoryService.findList(namespaceName, appId, executorName, taskName,
                         pageHelperRequest);
         PageResult<ExecutorTaskStatisticsHistoryResponse> responsePageResult =
                 transformHistory2PageResult(executorTaskStatisticsHistoryPageResult);

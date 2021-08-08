@@ -10,9 +10,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
-import xyz.hellothomas.jedi.consumer.domain.*;
+import xyz.hellothomas.jedi.consumer.common.util.LocalBeanUtils;
+import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics;
+import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsExample;
+import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistory;
+import xyz.hellothomas.jedi.consumer.domain.TaskLock;
 import xyz.hellothomas.jedi.consumer.domain.pojo.ExecutorTask;
-import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskStatisticsHistoryMapper;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskStatisticsMapper;
 
 import java.math.BigDecimal;
@@ -35,17 +38,17 @@ public class ExecutorTaskStatisticsService {
     private static final String REFRESH_TASK_STATISTICS_NAME = "REFRESH_TASK_STATISTICS";
     private static final int REFRESH_TASK_STATISTICS_CYCLE_SECONDS = 60 * 2;
     private final ExecutorTaskStatisticsMapper executorTaskStatisticsMapper;
-    private final ExecutorTaskStatisticsHistoryMapper executorTaskStatisticsHistoryMapper;
     private final ExecutorTaskService executorTaskService;
     private final TaskLockService taskLockService;
+    private final ExecutorTaskStatisticsHistoryService executorTaskStatisticsHistoryService;
 
     public ExecutorTaskStatisticsService(ExecutorTaskStatisticsMapper executorTaskStatisticsMapper,
-                                         ExecutorTaskStatisticsHistoryMapper executorTaskStatisticsHistoryMapper,
-                                         ExecutorTaskService executorTaskService, TaskLockService taskLockService) {
+                                         ExecutorTaskService executorTaskService, TaskLockService taskLockService,
+                                         ExecutorTaskStatisticsHistoryService executorTaskStatisticsHistoryService) {
         this.executorTaskStatisticsMapper = executorTaskStatisticsMapper;
-        this.executorTaskStatisticsHistoryMapper = executorTaskStatisticsHistoryMapper;
         this.executorTaskService = executorTaskService;
         this.taskLockService = taskLockService;
+        this.executorTaskStatisticsHistoryService = executorTaskStatisticsHistoryService;
     }
 
     public ExecutorTaskStatistics findOne(String namespaceName, String appId, String executorName, String taskName,
@@ -89,26 +92,28 @@ public class ExecutorTaskStatisticsService {
                 .build();
     }
 
-    public PageResult<ExecutorTaskStatisticsHistory> findHistory(String namespaceName, String appId,
-                                                                 String executorName,
-                                                                 String taskName, PageHelperRequest pageHelperRequest) {
-        ExecutorTaskStatisticsHistoryExample historyExample = new ExecutorTaskStatisticsHistoryExample();
-        historyExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
-                .andAppIdEqualTo(appId)
-                .andExecutorNameEqualTo(executorName)
-                .andTaskNameEqualTo(taskName);
-        historyExample.setOrderByClause("id desc");
+    /**
+     * 不包括endStatisticsDate
+     * @param endStatisticsDate
+     * @param pageHelperRequest
+     * @return
+     */
+    public PageResult<ExecutorTaskStatistics> findList(LocalDate endStatisticsDate,
+                                                       PageHelperRequest pageHelperRequest) {
+        ExecutorTaskStatisticsExample executorTaskStatisticsExample = new ExecutorTaskStatisticsExample();
+        executorTaskStatisticsExample.createCriteria().andStatisticsDateLessThan(endStatisticsDate);
 
         int pageSize = pageHelperRequest.getPageSize();
         int pageNum = pageHelperRequest.getPageNum();
         pageSize = (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
         PageHelper.startPage(pageNum, pageSize);
 
-        List<ExecutorTaskStatisticsHistory> histories =
-                executorTaskStatisticsHistoryMapper.selectByExample(historyExample);
-        PageInfo<ExecutorTaskStatisticsHistory> pageInfo = new PageInfo<>(histories);
+        List<ExecutorTaskStatistics> executorTaskStatisticsList =
+                executorTaskStatisticsMapper.selectByExample(executorTaskStatisticsExample);
 
-        return PageResult.<ExecutorTaskStatisticsHistory>builder()
+        PageInfo<ExecutorTaskStatistics> pageInfo = new PageInfo<>(executorTaskStatisticsList);
+
+        return PageResult.<ExecutorTaskStatistics>builder()
                 .content(pageInfo.getList())
                 .total(pageInfo.getTotal())
                 .pageNum(pageInfo.getPageNum())
@@ -116,17 +121,21 @@ public class ExecutorTaskStatisticsService {
                 .build();
     }
 
+    /**
+     * 刷新统计当日任务数据
+     */
     @Scheduled(fixedDelay = 1000 * REFRESH_TASK_STATISTICS_CYCLE_SECONDS)
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor =
             Exception.class)
     public void refreshTaskStatistics() {
-        // 悲观锁锁当天刷新任务
-        TaskLock taskLock = taskLockService.selectByTaskDateAndTaskName(LocalDate.now(), REFRESH_TASK_STATISTICS_NAME);
+        LocalDate currentDate = LocalDate.now();
+        TaskLock taskLock = taskLockService.selectByTaskDateAndTaskName(currentDate, REFRESH_TASK_STATISTICS_NAME);
         if (taskLock == null ||
                 taskLock.getDataChangeLastModifiedTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_CYCLE_SECONDS))) {
             return;
         }
 
+        // 悲观锁锁当天刷新任务
         taskLock = taskLockService.lock(taskLock.getId());
         if (taskLock == null ||
                 taskLock.getDataChangeLastModifiedTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_CYCLE_SECONDS))) {
@@ -134,7 +143,6 @@ public class ExecutorTaskStatisticsService {
         }
 
         // 获取taskNames
-        LocalDate currentDate = LocalDate.now();
         List<ExecutorTask> executorTasks = executorTaskService.findTasksDistinct(currentDate.atStartOfDay(),
                 currentDate.plusDays(1).atStartOfDay());
 
@@ -177,7 +185,12 @@ public class ExecutorTaskStatisticsService {
         taskLockService.updateModifiedTimeAndVersion(taskLock);
     }
 
+    /**
+     * D日前数据移至历史表
+     */
     @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor =
+            Exception.class)
     public void moveStatistics2History() {
         LocalDate currentDate = LocalDate.now();
         // 创建D日刷新任务
@@ -185,9 +198,26 @@ public class ExecutorTaskStatisticsService {
             return;
         }
 
-        // D-30统计数据复制到历史表
+        // D日前统计数据复制到历史表
+        PageHelperRequest pageHelperRequest = new PageHelperRequest();
+        pageHelperRequest.setPageNum(1);
+        pageHelperRequest.setPageSize(1000);
+        while (true) {
+            PageResult<ExecutorTaskStatistics> pageResult = findList(currentDate, pageHelperRequest);
+            pageResult.getContent().stream().forEach(i -> {
+                ExecutorTaskStatisticsHistory executorTaskStatisticsHistory =
+                        LocalBeanUtils.transform(ExecutorTaskStatisticsHistory.class, i);
+                // 复制到历史表
+                executorTaskStatisticsHistoryService.insertOne(executorTaskStatisticsHistory);
+                // 删除数据
+                executorTaskStatisticsMapper.deleteByPrimaryKey(i.getId());
+            });
 
-        // 删除D-30数据
+            if (pageResult.getPageNum() == pageResult.getTotal()) {
+                break;
+            } else {
+                pageHelperRequest.setPageNum(pageResult.getPageNum() + 1);
+            }
+        }
     }
-
 }
