@@ -25,13 +25,15 @@ note: base on https://github.com/ctripcorp/apollo
 
 - Java客户端使用指南
 
-  https://github.com/hellothomas-group/jedi/wiki
+  https://github.com/hellothomas-group/jedi/wiki#%E4%B8%80-%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97
 
 # Design
 
 # Development
 
 # Deployment
+
+https://github.com/hellothomas-group/jedi/wiki#%E4%B8%89-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97
 
 # Release Notes
 
