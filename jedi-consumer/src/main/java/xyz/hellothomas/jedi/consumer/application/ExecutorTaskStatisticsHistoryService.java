@@ -159,9 +159,9 @@ public class ExecutorTaskStatisticsHistoryService {
     }
 
     /**
-     * D日前数据移至历史表
+     * 插入D-1日统计锁记录
      */
-    @Scheduled(cron = "0 31 23 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void insertRefreshLastDayTaskStatistics() {
         LocalDate currentDate = LocalDate.now();
         // 创建D日刷新任务

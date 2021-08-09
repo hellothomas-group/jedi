@@ -36,6 +36,7 @@ import static xyz.hellothomas.jedi.consumer.common.constants.Constants.DEFAULT_P
 @Service
 public class ExecutorTaskStatisticsService {
     private static final String REFRESH_TASK_STATISTICS_NAME = "REFRESH_TASK_STATISTICS";
+    private static final String MOVE_HISTORY_TASK_STATISTICS_NAME = "MOVE_HISTORY_TASK_STATISTICS";
     private static final int REFRESH_TASK_STATISTICS_CYCLE_SECONDS = 60 * 2;
     private final ExecutorTaskStatisticsMapper executorTaskStatisticsMapper;
     private final ExecutorTaskService executorTaskService;
@@ -186,6 +187,18 @@ public class ExecutorTaskStatisticsService {
     }
 
     /**
+     * 插入D日统计锁记录
+     */
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void insertRefreshTaskStatisticsLock() {
+        LocalDate currentDate = LocalDate.now();
+        // 创建D日刷新任务
+        if (taskLockService.insertTaskLock(currentDate, REFRESH_TASK_STATISTICS_NAME) == 0) {
+            return;
+        }
+    }
+
+    /**
      * D日前数据移至历史表
      */
     @Scheduled(cron = "0 0 0 * * ?")
@@ -193,8 +206,8 @@ public class ExecutorTaskStatisticsService {
             Exception.class)
     public void moveStatistics2History() {
         LocalDate currentDate = LocalDate.now();
-        // 创建D日刷新任务
-        if (taskLockService.insertTaskLock(currentDate, REFRESH_TASK_STATISTICS_NAME) == 0) {
+        // 创建D日过历史任务
+        if (taskLockService.insertTaskLock(currentDate, MOVE_HISTORY_TASK_STATISTICS_NAME) == 0) {
             return;
         }
 
