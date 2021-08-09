@@ -67,13 +67,21 @@ public class ExecutorTaskStatisticsHistoryService {
 
     public PageResult<ExecutorTaskStatisticsHistory> findList(String namespaceName, String appId,
                                                               String executorName,
-                                                              String taskName, PageHelperRequest pageHelperRequest) {
+                                                              LocalDate startDate,
+                                                              LocalDate endDate, String taskName,
+                                                              PageHelperRequest pageHelperRequest) {
         ExecutorTaskStatisticsHistoryExample historyExample = new ExecutorTaskStatisticsHistoryExample();
-        historyExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
-                .andAppIdEqualTo(appId)
-                .andExecutorNameEqualTo(executorName)
-                .andTaskNameEqualTo(taskName);
-        historyExample.setOrderByClause("id desc");
+
+        ExecutorTaskStatisticsHistoryExample.Criteria criteria =
+                historyExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
+                        .andAppIdEqualTo(appId)
+                        .andExecutorNameEqualTo(executorName);
+        if (taskName != null) {
+            criteria.andTaskNameEqualTo(taskName);
+        }
+        criteria.andStatisticsDateBetween(startDate, endDate);
+        historyExample.setOrderByClause("statistics_date desc");
+        historyExample.setOrderByClause("task_name");
 
         int pageSize = pageHelperRequest.getPageSize();
         int pageNum = pageHelperRequest.getPageNum();

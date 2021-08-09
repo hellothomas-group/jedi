@@ -74,17 +74,18 @@ public class ExecutorTaskController {
                 executorTaskStatistics));
     }
 
-    @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/task-statistics-history")
+    @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/task-statistics-history/all")
     public ApiResponse<PageResult<ExecutorTaskStatisticsHistoryResponse>> findStatisticsHistory(
             @PathVariable("namespaceName") String namespaceName,
             @PathVariable("appId") String appId,
             @PathVariable("executorName") String executorName,
-            @RequestParam(value = "taskName", defaultValue =
-                    "DEFAULT") String taskName,
+            @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @RequestParam(value = "taskName", required = false) String taskName,
             PageHelperRequest pageHelperRequest) {
         PageResult<ExecutorTaskStatisticsHistory> executorTaskStatisticsHistoryPageResult =
-                executorTaskStatisticsHistoryService.findList(namespaceName, appId, executorName, taskName,
-                        pageHelperRequest);
+                executorTaskStatisticsHistoryService.findList(namespaceName, appId, executorName, startDate,
+                        endDate, taskName, pageHelperRequest);
         PageResult<ExecutorTaskStatisticsHistoryResponse> responsePageResult =
                 transformHistory2PageResult(executorTaskStatisticsHistoryPageResult);
 
@@ -95,12 +96,9 @@ public class ExecutorTaskController {
     public ApiResponse<PageResult<ExecutorTaskStatisticsResponse>> findStatisticsList(@PathVariable("namespaceName") String namespaceName,
                                                                                       @PathVariable("appId") String appId,
                                                                                       @PathVariable("executorName") String executorName,
-                                                                                      @RequestParam("statisticsDate")
-                                                                                      @DateTimeFormat(pattern = "yyyy" +
-                                                                                              "-MM-dd") LocalDate statisticsDate,
                                                                                       PageHelperRequest pageHelperRequest) {
         PageResult<ExecutorTaskStatistics> executorTaskStatisticsPageResult =
-                executorTaskStatisticsService.findList(namespaceName, appId, executorName, statisticsDate,
+                executorTaskStatisticsService.findList(namespaceName, appId, executorName, LocalDate.now(),
                         pageHelperRequest);
 
         PageResult<ExecutorTaskStatisticsResponse> responsePageResult =
