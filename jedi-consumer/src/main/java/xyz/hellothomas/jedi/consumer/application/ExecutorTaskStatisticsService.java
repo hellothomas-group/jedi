@@ -196,6 +196,7 @@ public class ExecutorTaskStatisticsService {
         if (taskLockService.insertTaskLock(currentDate, REFRESH_TASK_STATISTICS_NAME) == 0) {
             return;
         }
+        log.info("创建{}插入D日统计锁记录成功", currentDate);
     }
 
     /**
@@ -210,6 +211,7 @@ public class ExecutorTaskStatisticsService {
         if (taskLockService.insertTaskLock(currentDate, MOVE_HISTORY_TASK_STATISTICS_NAME) == 0) {
             return;
         }
+        log.info("创建{}前数据移至历史表任务成功", currentDate);
 
         // D日前统计数据复制到历史表
         PageHelperRequest pageHelperRequest = new PageHelperRequest();

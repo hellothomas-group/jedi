@@ -168,5 +168,6 @@ public class ExecutorTaskStatisticsHistoryService {
         if (taskLockService.insertTaskLock(currentDate, REFRESH_LAST_DAY_TASK_STATISTICS_NAME) == 0) {
             return;
         }
+        log.info("创建{}插入D-1日统计锁记录成功", currentDate);
     }
 }
