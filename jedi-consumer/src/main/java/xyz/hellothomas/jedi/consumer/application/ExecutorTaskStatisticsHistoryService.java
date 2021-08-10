@@ -111,8 +111,9 @@ public class ExecutorTaskStatisticsHistoryService {
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_COMMITTED, rollbackFor =
             Exception.class)
     public void refreshLastDayTaskStatistics() {
-        LocalDate lastDate = LocalDate.now().minusDays(1);
-        TaskLock taskLock = taskLockService.selectByTaskDateAndTaskName(lastDate,
+        LocalDate currentDate = LocalDate.now();
+        LocalDate lastDate = currentDate.minusDays(1);
+        TaskLock taskLock = taskLockService.selectByTaskDateAndTaskName(currentDate,
                 REFRESH_LAST_DAY_TASK_STATISTICS_NAME);
         if (taskLock == null) {
             return;
@@ -125,8 +126,9 @@ public class ExecutorTaskStatisticsHistoryService {
         }
 
         // 获取taskNames
-        List<ExecutorTask> executorTasks = executorTaskService.findTasksDistinct(lastDate.atStartOfDay(),
-                lastDate.plusDays(1).atStartOfDay());
+        List<ExecutorTask> executorTasks =
+                executorTaskService.findTasksDistinct(lastDate.atStartOfDay(),
+                        currentDate.atStartOfDay());
 
         // 计算各taskName统计数并更新
         executorTasks.stream().forEach(i -> {
@@ -143,7 +145,7 @@ public class ExecutorTaskStatisticsHistoryService {
             ExecutorTaskStatistics executorTaskStatistics = executorTaskService.genTaskStatistics(i.getNamespaceName()
                     , i.getAppId(),
                     i.getExecutorName(),
-                    i.getTaskName(), lastDate.atStartOfDay(), lastDate.plusDays(1).atStartOfDay());
+                    i.getTaskName(), lastDate.atStartOfDay(), currentDate.atStartOfDay());
             ExecutorTaskStatisticsHistory executorTaskStatisticsHistory =
                     LocalBeanUtils.transform(ExecutorTaskStatisticsHistory.class, executorTaskStatistics);
             log.info("executorTaskStatisticsHistory:{}", executorTaskStatisticsHistory);
@@ -169,7 +171,7 @@ public class ExecutorTaskStatisticsHistoryService {
     /**
      * 插入D-1日统计锁记录
      */
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 15 23 * * ?")
     public void insertRefreshLastDayTaskStatistics() {
         LocalDate currentDate = LocalDate.now();
         // 创建D日刷新任务

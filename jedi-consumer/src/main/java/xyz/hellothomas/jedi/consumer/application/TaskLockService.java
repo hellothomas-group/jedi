@@ -71,7 +71,7 @@ public class TaskLockService {
         try {
             return taskLockMapper.insertSelective(taskLock);
         } catch (Exception e) {
-            log.error("insert error：{}", e);
+            log.error(String.format("insert error task：%s", taskLock.toString()), e);
             return 0;
         }
     }

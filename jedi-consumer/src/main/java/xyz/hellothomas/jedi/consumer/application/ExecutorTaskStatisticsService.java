@@ -227,8 +227,7 @@ public class ExecutorTaskStatisticsService {
                 // 删除数据
                 executorTaskStatisticsMapper.deleteByPrimaryKey(i.getId());
             });
-
-            if (pageResult.getPageNum() == pageResult.getTotal()) {
+            if (pageResult.getTotal() <= pageResult.getPageNum() * pageResult.getPageSize()) {
                 break;
             } else {
                 pageHelperRequest.setPageNum(pageResult.getPageNum() + 1);
