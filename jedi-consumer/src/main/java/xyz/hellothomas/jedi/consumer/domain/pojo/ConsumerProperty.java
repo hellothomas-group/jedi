@@ -1,4 +1,4 @@
-package xyz.hellothomas.jedi.consumer.infrastructure.config;
+package xyz.hellothomas.jedi.consumer.domain.pojo;
 
 import lombok.Getter;
 import lombok.Setter;
