@@ -1,13 +1,13 @@
 package xyz.hellothomas.jedi.core.internals.message.http;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.core.dto.ReturnT;
 import xyz.hellothomas.jedi.core.dto.consumer.AbstractNotification;
 import xyz.hellothomas.jedi.core.enums.HttpNotificationPath;
 import xyz.hellothomas.jedi.core.enums.MessageType;
 import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
 import xyz.hellothomas.jedi.core.utils.JediRemotingUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -176,7 +176,7 @@ public class HttpNotificationService extends AbstractNotificationService {
                     LOGGER.trace("获取默认消息发送队列中...");
                     abstractNotifications.add(defaultNotificationQueue.take());
                     defaultNotificationQueue.drainTo(abstractNotifications, 9);
-                    send(abstractNotifications, null);
+                    send(abstractNotifications, MessageType.CUSTOM_NOTIFICATION);
                 } catch (Exception e) {
                     if (!toStopDefault) {
                         LOGGER.error("默认消息发送任务失败, 异常为: {}, 消息为: {}! ", e, abstractNotifications);

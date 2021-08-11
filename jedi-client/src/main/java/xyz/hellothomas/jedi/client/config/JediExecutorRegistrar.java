@@ -27,6 +27,7 @@ import xyz.hellothomas.jedi.client.util.ExceptionUtil;
 import xyz.hellothomas.jedi.client.util.HttpRequest;
 import xyz.hellothomas.jedi.client.util.HttpResponse;
 import xyz.hellothomas.jedi.client.util.HttpUtil;
+import xyz.hellothomas.jedi.core.enums.MessageType;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty;
 import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
@@ -39,6 +40,7 @@ import xyz.hellothomas.jedi.core.utils.ResizableCapacityLinkedBlockingQueue;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -125,7 +127,17 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
                 return new HttpNotificationService(notificationUrl, appId, namespace);
             } else if (ConsumerTypeEnum.KAFKA.getEnumValue().equals(response.getBody().getType())) {
                 KafkaProperty kafkaProperty = new KafkaProperty();
-                kafkaProperty.setProducerConfig(response.getBody().getConfigDetails());
+                response.getBody().getConfigDetails().forEach((k, v) -> {
+                    // filter topic config
+                    for (MessageType messageType : MessageType.values()) {
+                        if (messageType.name().equals(k)) {
+                            kafkaProperty.addTopic(messageType, String.valueOf(v));
+                            return;
+                        }
+                    }
+                    // kafka config
+                    kafkaProperty.addProducerConfigValue(k, v);
+                });
                 return new KafkaNotificationService(kafkaProperty, appId, namespace);
             }
         } catch (Exception e) {

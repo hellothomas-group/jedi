@@ -10,6 +10,7 @@ public enum MessageType {
     EXECUTOR_TICKER("executor-ticker", "线程池打点消息"),
     EXECUTOR_TASK("executor-task", "线程池任务消息"),
     EXECUTOR_SHUTDOWN("executor-shutdown", "线程池关闭消息"),
+    CUSTOM_NOTIFICATION("custom-notification", "自定义消息"),
     ;
 
     private String typeValue;

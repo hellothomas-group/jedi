@@ -7,7 +7,7 @@ public enum HttpNotificationPath {
     PATH_EXECUTOR_TICKER(MessageType.EXECUTOR_TICKER, "/notification/executor-ticker"),
     PATH_EXECUTOR_TASK(MessageType.EXECUTOR_TASK, "/notification/executor-task"),
     PATH_EXECUTOR_SHUTDOWN(MessageType.EXECUTOR_SHUTDOWN, "/notification/executor-shutdown"),
-    PATH_CUSTOM(null, "/notification/custom"),
+    PATH_CUSTOM(MessageType.CUSTOM_NOTIFICATION, "/notification/custom"),
     ;
 
     private static final Map<MessageType, String> PATH_MAP = new HashMap<>();

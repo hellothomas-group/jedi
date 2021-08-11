@@ -7,7 +7,7 @@ public enum KafkaMessageTopic {
     TOPIC_EXECUTOR_TICKER(MessageType.EXECUTOR_TICKER, "executor-ticker"),
     TOPIC_EXECUTOR_TASK(MessageType.EXECUTOR_TASK, "executor-task"),
     TOPIC_EXECUTOR_SHUTDOWN(MessageType.EXECUTOR_SHUTDOWN, "executor-shutdown"),
-    TOPIC_CUSTOM(null, "custom-notification"),
+    TOPIC_CUSTOM(MessageType.CUSTOM_NOTIFICATION, "custom-notification"),
     ;
 
     private static final Map<MessageType, String> PATH_MAP = new HashMap<>();

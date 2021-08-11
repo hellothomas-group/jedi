@@ -1,16 +1,16 @@
 package xyz.hellothomas.jedi.core.internals.message.kafka;
 
-import xyz.hellothomas.jedi.core.dto.consumer.AbstractNotification;
-import xyz.hellothomas.jedi.core.enums.KafkaMessageTopic;
-import xyz.hellothomas.jedi.core.enums.MessageType;
-import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
-import xyz.hellothomas.jedi.core.utils.JsonUtil;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.KafkaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.hellothomas.jedi.core.dto.consumer.AbstractNotification;
+import xyz.hellothomas.jedi.core.enums.KafkaMessageTopic;
+import xyz.hellothomas.jedi.core.enums.MessageType;
+import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
+import xyz.hellothomas.jedi.core.utils.JsonUtil;
 
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -57,7 +57,10 @@ public class KafkaNotificationService extends AbstractNotificationService {
 
     @Override
     public void send(Object request, MessageType messageType) {
-        String topic = KafkaMessageTopic.getTopicByMessageType(messageType);
+        String topic = kafkaProperty.getTopics().get(messageType);
+        if (topic == null) {
+            topic = KafkaMessageTopic.getTopicByMessageType(messageType);
+        }
         if (topic == null) {
             topic = kafkaProperty.getDefaultTopic();
         }
@@ -146,7 +149,7 @@ public class KafkaNotificationService extends AbstractNotificationService {
                     } else if (MessageType.EXECUTOR_SHUTDOWN.getTypeValue().equals(notification.getMessageType())) {
                         send(notification, MessageType.EXECUTOR_SHUTDOWN);
                     } else {
-                        send(notification, null);
+                        send(notification, MessageType.CUSTOM_NOTIFICATION);
                     }
                 } catch (Exception e) {
                     if (!toStop) {

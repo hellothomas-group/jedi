@@ -2,6 +2,7 @@ package xyz.hellothomas.jedi.core.internals.message.kafka;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.hellothomas.jedi.core.enums.MessageType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +22,8 @@ public class KafkaProperty {
     private Integer partition = null;
 
     private Map<String, Object> producerConfig = new HashMap();
+
+    private Map<MessageType, String> topics = new HashMap<>();
 
     public String getDefaultTopic() {
         return defaultTopic;
@@ -48,6 +51,14 @@ public class KafkaProperty {
 
     public void setProducerConfig(Map<String, Object> producerConfig) {
         this.producerConfig = producerConfig;
+    }
+
+    public Map<MessageType, String> getTopics() {
+        return topics;
+    }
+
+    public void addTopic(MessageType messageType, String topic) {
+        this.topics.put(messageType, topic);
     }
 
     public boolean checkPrerequisites() {
