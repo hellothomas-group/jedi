@@ -4,6 +4,15 @@ jedi is a dynamic thread pool executor
 note: base on https://github.com/ctripcorp/apollo
 
 # Screenshots
+![1](https://images.gitee.com/uploads/images/2021/0812/074225_ce130fc7_5057838.png)
+
+![2](https://images.gitee.com/uploads/images/2021/0812/074724_5dc93566_5057838.png)
+
+![3](https://images.gitee.com/uploads/images/2021/0812/074907_1fd56f3f_5057838.jpeg)
+
+![4](https://images.gitee.com/uploads/images/2021/0812/075014_dc990510_5057838.jpeg)
+
+![5](https://images.gitee.com/uploads/images/2021/0812/075117_1327fb49_5057838.jpeg)
 
 # Features
 
@@ -19,7 +28,9 @@ note: base on https://github.com/ctripcorp/apollo
 
 - 演示地址
 
-  http://47.100.204.212:8080
+  http://jedi.hellothomas.xyz:8080
+  username: admin
+  password: 123456
 
   创建应用→创建线程池→发布
 
