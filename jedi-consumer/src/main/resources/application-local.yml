@@ -70,3 +70,8 @@ consumer:
 
 consumer-service:
   aspect.logging.enable: true
+
+logging:
+  level:
+    xyz:
+      hellothomas.jedi: debug

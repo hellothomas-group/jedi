@@ -45,3 +45,8 @@ config-service:
   cache-enabled: true
   consumer-url: http://127.0.0.1:8080
   aspect.logging.enable: true
+
+logging:
+  level:
+    xyz:
+      hellothomas.jedi.config: debug

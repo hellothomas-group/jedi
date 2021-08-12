@@ -1,7 +1,5 @@
 logging:
   level:
-    xyz:
-      hellothomas.jedi.config: debug
     root: info
   pattern:
     console: 'logback: %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %class#%method@%line
