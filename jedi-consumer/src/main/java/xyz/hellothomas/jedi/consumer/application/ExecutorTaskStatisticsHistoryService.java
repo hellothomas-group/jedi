@@ -36,6 +36,7 @@ import static xyz.hellothomas.jedi.consumer.common.constants.Constants.DEFAULT_P
 @Service
 public class ExecutorTaskStatisticsHistoryService {
     private static final String REFRESH_LAST_DAY_TASK_STATISTICS_NAME = "REFRESH_LAST_DAY_TASK_STATISTICS";
+    private static final int REFRESH_TASK_STATISTICS_INTERVAL_SECONDS = 1800;
     private final ExecutorTaskStatisticsHistoryMapper executorTaskStatisticsHistoryMapper;
     private final ExecutorTaskService executorTaskService;
     private final TaskLockService taskLockService;
@@ -115,13 +116,15 @@ public class ExecutorTaskStatisticsHistoryService {
         LocalDate lastDate = currentDate.minusDays(1);
         TaskLock taskLock = taskLockService.selectByTaskDateAndTaskName(currentDate,
                 REFRESH_LAST_DAY_TASK_STATISTICS_NAME);
-        if (taskLock == null) {
+        if (taskLock == null ||
+                taskLock.getDataChangeLastModifiedTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_INTERVAL_SECONDS))) {
             return;
         }
 
         // 悲观锁锁D-1刷新任务
         taskLock = taskLockService.lock(taskLock.getId());
-        if (taskLock == null) {
+        if (taskLock == null ||
+                taskLock.getDataChangeLastModifiedTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_INTERVAL_SECONDS))) {
             return;
         }
 
@@ -171,7 +174,7 @@ public class ExecutorTaskStatisticsHistoryService {
     /**
      * 插入D-1日统计锁记录
      */
-    @Scheduled(cron = "0 15 23 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void insertRefreshLastDayTaskStatistics() {
         LocalDate currentDate = LocalDate.now();
         // 创建D日刷新任务
