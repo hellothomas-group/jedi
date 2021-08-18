@@ -77,11 +77,11 @@ export default {
             picker.$emit('pick', [start, end])
           }
         }, {
-          text: '最近1个月',
+          text: '最近10天',
           onClick (picker) {
             const end = new Date()
             const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 10)
             picker.$emit('pick', [start, end])
           }
         }]
@@ -272,7 +272,7 @@ export default {
       pagination: {
         total: 0,
         pageNum: 1,
-        pageSize: 200
+        pageSize: 1000
       }
     }
   },
@@ -293,10 +293,20 @@ export default {
     queryLatestReleaseInstances () {
       this.asyncLatestRelease(this.namespaceName, this.appId, this.executorName)
     },
-    // 自动刷新
+    // 变更查询时间
     changeQueryTime: function () {
-      if (this.queryTime[1].getTime() - this.queryTime[0].getTime() > 3600 * 1000 * 24 * 30) {
-        alert('时间跨度最大一个月!')
+      if (this.queryTime[1].getTime() - new Date().getTime() > 0) {
+        this.$message('截止时间不能晚于现在时间!')
+        this.queryTime[1] = new Date()
+        this.queryTime[0] = new Date(this.queryTime[1].getTime() - 600 * 1000)
+      }
+      if (new Date().getTime() - this.queryTime[0].getTime() > 3600 * 1000 * 24 * 11) {
+        this.$message('开始时间不能早于10天前!')
+        this.queryTime[1] = new Date()
+        this.queryTime[0] = new Date(this.queryTime[1].getTime() - 600 * 1000)
+      }
+      if (this.queryTime[1].getTime() - this.queryTime[0].getTime() > 3600 * 1000 * 24 * 10) {
+        this.$message('时间跨度最大10天!')
         this.queryTime[1] = new Date()
         this.queryTime[0] = new Date(this.queryTime[1].getTime() - 600 * 1000)
       }
