@@ -5,12 +5,13 @@ import SingleApp from '../components/SingleApp'
 import Executor from '../components/Executor'
 import Item from '../components/Item'
 import Release from '../components/Release'
-import Task from '../components/Task'
+import TaskStatisticNow from '../components/TaskStatisticNow'
 import Alarm from '../components/Alarm'
 import ActiveReleaseInstance from '../components/ActiveReleaseInstance'
 import InactiveReleaseInstance from '../components/InactiveReleaseInstance'
 import ExecutorStatus from '../components/ExecutorStatus'
 import Login from '../components/Login'
+import TaskStatisticHistory from '../components/TaskStatisticHistory'
 
 Vue.use(Router)
 
@@ -73,9 +74,14 @@ const router = new Router({
           component: InactiveReleaseInstance
         },
         {
-          path: '/task',
-          name: 'Task',
-          component: Task
+          path: '/task/statistics-now',
+          name: 'TaskStatisticsNow',
+          component: TaskStatisticNow
+        },
+        {
+          path: '/task/statistics-history',
+          name: 'TaskStatisticsHistory',
+          component: TaskStatisticHistory
         },
         {
           path: '/alarm',

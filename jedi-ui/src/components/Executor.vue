@@ -48,11 +48,16 @@
                   <i class="el-icon-setting"></i>
                   <span slot="title">线程池报警</span>
                 </el-menu-item>
-                <el-menu-item index="/task"
-                              :route="{path:'/task',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">
-                  <i class="el-icon-document"></i>
-                  <span slot="title">线程池任务</span>
-                </el-menu-item>
+                <el-submenu index="3">
+                  <template slot="title">
+                    <i class="el-icon-menu"></i>
+                    <span>线程池任务</span>
+                  </template>
+                  <el-menu-item index="/task/statistics-now"
+                                :route="{path:'/task/statistics-now',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">当天任务统计</el-menu-item>
+                  <el-menu-item index="/task/statistics-history"
+                                :route="{path:'/task/statistics-history',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">历史任务统计</el-menu-item>
+                </el-submenu>
               </el-menu>
             </el-col>
           </el-row>
