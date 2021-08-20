@@ -1,7 +1,6 @@
 package xyz.hellothomas.jedi.consumer.application;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorShutdownMessageExample;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessageExample;
@@ -24,7 +23,6 @@ import java.time.LocalDateTime;
 @Slf4j
 @Service
 public class ClearDataService {
-    private static final String CLEAR_CLIENT_MESSAGE_NAME = "CLEAR_CLIENT_MESSAGE";
     private final TaskLockService taskLockService;
     private final ExecutorTaskMessageMapper executorTaskMessageMapper;
     private final ExecutorTickerMessageMapper executorTickerMessageMapper;
@@ -42,26 +40,7 @@ public class ClearDataService {
         this.monitorMessageMapper = monitorMessageMapper;
     }
 
-    /**
-     * D-10日数据清理
-     */
-    @Scheduled(cron = "0 0 0 * * ?")
-    public void clear() {
-        LocalDate currentDate = LocalDate.now();
-        // 创建D日数据清理任务
-        if (taskLockService.insertTaskLock(currentDate, CLEAR_CLIENT_MESSAGE_NAME) == 0) {
-            return;
-        }
-        log.info("创建{}数据清理任务成功", currentDate);
-
-        // 清理D-10日客户端消息
-        clearExecutorTickMessage(currentDate);
-        clearExecutorTaskMessage(currentDate);
-        clearExecutorShutdownMessage(currentDate);
-        clearMonitorMessage(currentDate);
-    }
-
-    private void clearMonitorMessage(LocalDate currentDate) {
+    public void clearMonitorMessage(LocalDate currentDate) {
         LocalDateTime clearDateTime = currentDate.minusDays(10).atStartOfDay();
         try {
             MonitorMessageExample monitorMessageExample = new MonitorMessageExample();
@@ -73,7 +52,7 @@ public class ClearDataService {
         }
     }
 
-    private void clearExecutorShutdownMessage(LocalDate currentDate) {
+    public void clearExecutorShutdownMessage(LocalDate currentDate) {
         LocalDateTime clearDateTime = currentDate.minusDays(10).atStartOfDay();
         try {
             ExecutorShutdownMessageExample executorShutdownMessageExample = new ExecutorShutdownMessageExample();
@@ -85,7 +64,7 @@ public class ClearDataService {
         }
     }
 
-    private void clearExecutorTaskMessage(LocalDate currentDate) {
+    public void clearExecutorTaskMessage(LocalDate currentDate) {
         LocalDateTime clearDateTime = currentDate.minusDays(10).atStartOfDay();
         try {
             ExecutorTaskMessageExample executorTaskMessageExample = new ExecutorTaskMessageExample();
@@ -97,7 +76,7 @@ public class ClearDataService {
         }
     }
 
-    private void clearExecutorTickMessage(LocalDate currentDate) {
+    public void clearExecutorTickMessage(LocalDate currentDate) {
         LocalDateTime clearDateTime = currentDate.minusDays(10).atStartOfDay();
         try {
             ExecutorTickerMessageExample executorTickerMessageExample = new ExecutorTickerMessageExample();
