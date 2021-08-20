@@ -49,19 +49,18 @@
                 <el-button type="primary" @click="submitCreateExecutorForm('newExecutorForm')">确 定</el-button>
               </div>
             </el-dialog>
-            <div style="height: 90%">
+            <div style="margin-left: 20px">
               <el-table
+                max-height="460"
                 :data="executors.filter(data => !search || data.executorName.toLowerCase().includes(search.toLowerCase()))" style="width: 100%"
                 :row-class-name="tableRowClassName">
                 <el-table-column
-                  label="id"
-                  prop="id">
-                </el-table-column>
-                <el-table-column
+                  min-width="100px"
                   label="执行器名称"
                   prop="executorName">
                 </el-table-column>
                 <el-table-column
+                  width="300px"
                   align="right">
                   <template slot="header" slot-scope="scope">
                     <el-input
