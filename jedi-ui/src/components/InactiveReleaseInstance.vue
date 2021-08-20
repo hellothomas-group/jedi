@@ -10,10 +10,6 @@
         style="width: 100%"
         :row-class-name="tableRowClassName">
         <el-table-column
-        label="id"
-        prop="id">
-        </el-table-column>
-        <el-table-column
         label="ip"
         prop="ip">
         </el-table-column>
@@ -129,7 +125,7 @@ export default {
       })
     },
     tableRowClassName ({row, rowIndex}) {
-      if (rowIndex % 2 === 1) {
+      if (rowIndex % 2 === 0) {
         return 'success-row'
       } else {
         return ''

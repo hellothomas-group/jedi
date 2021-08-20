@@ -27,30 +27,40 @@
     </el-header>
     <el-container>
       <el-main>
-        <div style="height: 90%">
+        <div>
           <el-table
             :data="taskList.filter(data => !search || data.taskExtraData.toLowerCase().includes(search.toLowerCase()))"
+            max-height="430"
             style="width: 100%"
             :row-class-name="tableRowClassName">
             <el-table-column
               label="任务名称"
+              min-width="100"
               prop="taskName"
               :formatter = "isDefaultOneFormatter">
             </el-table-column>
             <el-table-column
               label="执行时间(ms)"
+              width="140px"
+              align="center"
               prop="executionTime">
             </el-table-column>
             <el-table-column
               label="主机"
+              width="140px"
+              align="center"
               prop="host">
             </el-table-column>
             <el-table-column
               label="记录时间"
+              width="160px"
+              align="center"
               prop="recordTime">
             </el-table-column>
             <el-table-column
               label="任务附加信息"
+              min-width="100"
+              align="center"
               prop="taskExtraData">
             </el-table-column>
             <el-table-column
@@ -59,7 +69,7 @@
                 <el-input
                   v-model="search"
                   size="mini"
-                  placeholder="输入关键字搜索"/>
+                  placeholder="输入任务附加信息搜索"/>
               </template>
             </el-table-column>
           </el-table>
@@ -140,12 +150,10 @@ export default {
         this.queryDate[1] = new Date(this.queryDate[0].getTime() + 3600 * 1000 * 24 - 1)
       }
       this.taskName = this.$route.query.taskName
-      if (this.$route.query.taskName === 'DEFAULT') {
-        this.inputTaskName = '全部任务(含未命名)'
-      } else {
+      if (this.$route.query.taskName) {
         this.inputTaskName = this.$route.query.taskName
+        this.asyncQueryTaskList()
       }
-      this.asyncQueryTaskList()
     }
   },
   methods: {
@@ -174,15 +182,13 @@ export default {
     },
     submitQueryTaskList () {
       this.queryDate[1] = new Date(new Date(format(this.queryDate[1], 'yyyy/MM/dd')).getTime() + 3600 * 1000 * 24 - 1)
-      if (this.inputTaskName === undefined || this.inputTaskName.trim() === '全部任务(含未命名)' || this.inputTaskName.trim() === '') {
-        this.taskName = 'DEFAULT'
-      } else {
+      if (this.inputTaskName && this.inputTaskName.trim() === '') {
         this.taskName = this.inputTaskName.trim()
+        this.asyncQueryTaskList()
       }
-      this.asyncQueryTaskList()
     },
     tableRowClassName ({row, rowIndex}) {
-      if (rowIndex === 0) {
+      if (rowIndex % 2 === 0) {
         return 'success-row'
       } else {
         return ''

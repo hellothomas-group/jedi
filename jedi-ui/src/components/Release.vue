@@ -8,10 +8,6 @@
             style="width: 100%"
             :row-class-name="tableRowClassName" :cell-class-name="isAbandonedClassName">
             <el-table-column
-              label="id"
-              prop="id">
-            </el-table-column>
-            <el-table-column
               label="发布key"
               prop="releaseKey">
             </el-table-column>
@@ -158,7 +154,7 @@ export default {
       this.selectedReleaseDialogFormVisible = true
     },
     tableRowClassName ({row, rowIndex}) {
-      if (rowIndex % 2 === 1) {
+      if (rowIndex % 2 === 0) {
         return 'success-row'
       } else {
         return ''

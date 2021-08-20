@@ -2,38 +2,52 @@
   <div>
     <el-container>
       <el-main>
-        <div style="height: 90%">
+        <div>
           <el-table
             :data="statisticsList.filter(data => !search || data.taskName.toLowerCase().includes(search.toLowerCase()))"
+            max-height="470"
             style="width: 100%"
             :row-class-name="tableRowClassName">
             <el-table-column
               label="任务名称"
+              min-width="100"
               prop="taskName"
               :formatter = "isDefaultOneFormatter">
             </el-table-column>
             <el-table-column
               label="执行总数"
+              width="120px"
+              align="center"
               prop="total">
             </el-table-column>
             <el-table-column
               label="执行失败总数"
+              width="120px"
+              align="center"
               prop="failure">
             </el-table-column>
             <el-table-column
               label="执行失败比例"
+              width="120px"
+              align="center"
               prop="failureRatio">
             </el-table-column>
             <el-table-column
               label="执行最长时间(ms)"
+              width="140px"
+              align="center"
               prop="executionTimeMax">
             </el-table-column>
             <el-table-column
               label="执行最短时间(ms)"
+              width="140px"
+              align="center"
               prop="executionTimeMin">
             </el-table-column>
             <el-table-column
               label="更新时间"
+              width="160px"
+              align="center"
               prop="dataChangeLastModifiedTime">
             </el-table-column>
             <el-table-column
@@ -42,10 +56,11 @@
                 <el-input
                   v-model="search"
                   size="mini"
-                  placeholder="输入关键字搜索"/>
+                  placeholder="输入任务名称搜索"/>
               </template>
               <template slot-scope="scope">
                 <el-button
+                  v-if="scope.row.taskName != '全部任务(含未命名)'"
                   size="mini"
                   @click="handleTaskDetail(scope.$index, scope.row)" style="margin-right: 50%">明细</el-button>
               </template>
@@ -143,7 +158,7 @@ export default {
       })
     },
     tableRowClassName ({row, rowIndex}) {
-      if (rowIndex === 0) {
+      if (row.taskName === '全部任务(含未命名)') {
         return 'success-row'
       } else {
         return ''

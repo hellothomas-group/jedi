@@ -43,12 +43,7 @@
                                   :route="{path:'/instance/inactive-release',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">非最新配置实例</el-menu-item>
                   </el-submenu>
                 </el-submenu>
-                <el-menu-item index="/alarm"
-                              :route="{path:'/alarm',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">
-                  <i class="el-icon-setting"></i>
-                  <span slot="title">线程池报警</span>
-                </el-menu-item>
-                <el-submenu index="3">
+                <el-submenu index="2">
                   <template slot="title">
                     <i class="el-icon-menu"></i>
                     <span>线程池任务</span>
@@ -60,6 +55,11 @@
                   <el-menu-item index="/task/detail"
                                 :route="{path:'/task/detail',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">任务明细查询</el-menu-item>
                 </el-submenu>
+                <el-menu-item index="/alarm"
+                              :route="{path:'/alarm',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">
+                  <i class="el-icon-setting"></i>
+                  <span slot="title">线程池报警</span>
+                </el-menu-item>
               </el-menu>
             </el-col>
           </el-row>
