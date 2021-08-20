@@ -212,7 +212,7 @@ export default {
     },
     submitQueryTaskList () {
       this.queryDate[1] = new Date(new Date(format(this.queryDate[1], 'yyyy/MM/dd')).getTime() + 3600 * 1000 * 24 - 1)
-      if (this.inputTaskName && this.inputTaskName.trim() === '') {
+      if (this.inputTaskName && this.inputTaskName.trim() !== '') {
         this.taskName = this.inputTaskName.trim()
         this.asyncQueryTaskList()
       }
