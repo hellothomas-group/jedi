@@ -30,7 +30,7 @@
         <div>
           <el-table
             :data="statisticsList.filter(data => !search || data.taskName.toLowerCase().includes(search.toLowerCase()))"
-            max-height="470"
+            max-height="420"
             style="width: 100%"
             :row-class-name="tableRowClassName">
             <el-table-column
