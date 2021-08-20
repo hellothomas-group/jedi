@@ -25,6 +25,16 @@ public class ExecutorTaskDetailResponse {
     private Long executionTime;
 
     /**
+     * 1: success, 0: fail
+     */
+    private Boolean isSuccess;
+
+    /**
+     * 失败原因
+     */
+    private String failureReason;
+
+    /**
      * 任务附加信息
      */
     private String taskExtraData;

@@ -19,6 +19,15 @@
                   v-model="inputTaskName"
                   clearable>
         </el-input>
+        <span class="demonstration" style="margin-left: 50px">执行结果</span>
+        <el-select v-model="executeResult" clearable placeholder="请选择">
+          <el-option
+            v-for="item in executeResultOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
         <el-button
           type="primary"
           @click="submitQueryTaskList()" style="margin-left: 20px">查询
@@ -40,6 +49,13 @@
               :formatter = "isDefaultOneFormatter">
             </el-table-column>
             <el-table-column
+              label="执行结果"
+              width="80px"
+              align="center"
+              prop="isSuccess"
+              :formatter = "isSuccessFormatter">
+            </el-table-column>
+            <el-table-column
               label="执行时间(ms)"
               width="140px"
               align="center"
@@ -56,6 +72,12 @@
               width="160px"
               align="center"
               prop="recordTime">
+            </el-table-column>
+            <el-table-column
+              label="失败原因"
+              min-width="100"
+              align="center"
+              prop="failureReason">
             </el-table-column>
             <el-table-column
               label="任务附加信息"
@@ -136,7 +158,15 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 20
-      }
+      },
+      executeResultOptions: [{
+        value: 'true',
+        label: '成功'
+      }, {
+        value: 'false',
+        label: '失败'
+      }],
+      executeResult: ''
     }
   },
   created () {
@@ -211,6 +241,13 @@ export default {
         row.taskName = '全部任务(含未命名)'
       }
       return row.taskName
+    },
+    isSuccessFormatter (row, column, cellValue, index) {
+      if (row.isSuccess) {
+        return '成功'
+      } else {
+        return '失败'
+      }
     }
   }
 }
