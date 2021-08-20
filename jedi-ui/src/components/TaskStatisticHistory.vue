@@ -115,21 +115,6 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
-      selectedTask: {
-        id: undefined,
-        releaseKey: undefined,
-        name: undefined,
-        namespaceName: undefined,
-        appId: undefined,
-        executorName: undefined,
-        configurations: undefined,
-        comment: undefined,
-        isAbandoned: undefined,
-        dataChangeCreatedBy: undefined,
-        dataChangeLastModifiedBy: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: undefined
-      },
       pickerOptions: {
         shortcuts: [{
           text: '最近三天',
@@ -196,11 +181,11 @@ export default {
     },
     handleTaskDetail (index, row) {
       console.log(index, row)
-      this.selectedTask = row
+      let selectedTask = row
       if (row.taskName === '全部任务(含未命名)') {
-        this.selectedTask.taskName = 'DEFAULT'
+        selectedTask.taskName = 'DEFAULT'
       }
-      this.forwardTaskDetail(this.namespaceName, this.appId, this.executorName, this.selectedTask.statisticsDate, this.selectedTask.taskName)
+      this.forwardTaskDetail(this.namespaceName, this.appId, this.executorName, selectedTask.statisticsDate, selectedTask.taskName)
     },
     forwardTaskDetail (namespace, appId, executor, taskDate, taskName) {
       console.log('forwardTaskDetail')
@@ -224,15 +209,15 @@ export default {
     },
     nextPage (pageNum) {
       this.pagination.pageNum = pageNum
-      this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
+      this.asyncQueryStatisticsList(this.namespaceName, this.appId, this.executorName)
     },
     prevPage (pageNum) {
       this.pagination.pageNum = pageNum
-      this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
+      this.asyncQueryStatisticsList(this.namespaceName, this.appId, this.executorName)
     },
     currentPage (pageNum) {
       this.pagination.pageNum = pageNum
-      this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
+      this.asyncQueryStatisticsList(this.namespaceName, this.appId, this.executorName)
     },
     isDefaultOneFormatter (row, column, cellValue, index) {
       if (row.taskName === 'DEFAULT') {

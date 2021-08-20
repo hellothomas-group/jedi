@@ -123,11 +123,11 @@ export default {
     },
     handleTaskDetail (index, row) {
       console.log(index, row)
-      this.selectedTask = row
+      let selectedTask = row
       if (row.taskName === '全部任务(含未命名)') {
-        this.selectedTask.taskName = 'DEFAULT'
+        selectedTask.taskName = 'DEFAULT'
       }
-      this.forwardTaskDetail(this.namespaceName, this.appId, this.executorName, format(this.currentDate, 'yyyy-MM-dd'), this.selectedTask.taskName)
+      this.forwardTaskDetail(this.namespaceName, this.appId, this.executorName, format(this.currentDate, 'yyyy-MM-dd'), selectedTask.taskName)
     },
     forwardTaskDetail (namespace, appId, executor, taskDate, taskName) {
       console.log('forwardTaskDetail')
@@ -177,13 +177,6 @@ export default {
     color: #333;
     text-align: center;
     line-height: 60px;
-  }
-
-  .el-aside {
-    background-color: #D3DCE6;
-    color: #333;
-    text-align: center;
-    line-height: 200px;
   }
 
   body > .el-container {
