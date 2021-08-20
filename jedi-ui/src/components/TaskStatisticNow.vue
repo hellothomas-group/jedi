@@ -44,26 +44,13 @@
                   size="mini"
                   placeholder="输入关键字搜索"/>
               </template>
-              <!--<template slot-scope="scope">-->
-                <!--<el-button-->
-                  <!--size="mini"-->
-                  <!--@click="handleReleaseDetail(scope.$index, scope.row)" style="margin-right: 50%">明细</el-button>-->
-              <!--</template>-->
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  @click="handleTaskDetail(scope.$index, scope.row)" style="margin-right: 50%">明细</el-button>
+              </template>
             </el-table-column>
           </el-table>
-          <el-dialog title="明细" :visible.sync="selectedReleaseDialogFormVisible">
-            <el-form>
-              <el-form-item label="configuration" :label-width="formLabelWidth">
-                <el-input v-model="selectedRelease.configurations" autocomplete="off" :disabled="true"></el-input>
-              </el-form-item>
-              <el-form-item label="备注" :label-width="formLabelWidth">
-                <el-input v-model="selectedRelease.comment" autocomplete="off" :disabled="true"></el-input>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="selectedReleaseDialogFormVisible = false">确 定</el-button>
-            </div>
-          </el-dialog>
         </div>
       </el-main>
       <el-footer>
@@ -89,35 +76,25 @@ import format from '../assets/js/dateFormat.js'
 export default {
   data () {
     return {
-      formLabelWidth: '20%',
+      namespaceName: undefined,
+      appId: undefined,
+      executorName: undefined,
+      currentDate: new Date(),
       statisticsList: [],
       search: '',
-      selectedReleaseDialogFormVisible: false,
       pagination: {
         total: 0,
         pageNum: 1,
         pageSize: 10
-      },
-      selectedRelease: {
-        id: undefined,
-        releaseKey: undefined,
-        name: undefined,
-        namespaceName: undefined,
-        appId: undefined,
-        executorName: undefined,
-        configurations: undefined,
-        comment: undefined,
-        isAbandoned: undefined,
-        dataChangeCreatedBy: undefined,
-        dataChangeLastModifiedBy: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: undefined
       }
     }
   },
   created () {
     console.log(this.$route.query.executor)
     if (this.$route.query) {
+      this.namespaceName = this.$route.query.namespace
+      this.appId = this.$route.query.appId
+      this.executorName = this.$route.query.executor
       this.asyncQueryStatisticsList(this.$route.query.namespace, this.$route.query.appId, this.$route.query.executor)
     }
   },
@@ -125,11 +102,12 @@ export default {
     asyncQueryStatisticsList (namespaceName, appId, executorName) {
       console.log('asyncQueryStatisticsList')
       console.log(executorName)
+      this.currentDate = new Date()
 
       this.axios.get('/consumer/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
         '/task-statistics/all', {
         params: {
-          statisticsDate: format(new Date(), 'yyyy-MM-dd'),
+          statisticsDate: format(this.currentDate, 'yyyy-MM-dd'),
           pageNum: this.pagination.pageNum,
           pageSize: this.pagination.pageSize
         }
@@ -143,10 +121,26 @@ export default {
         console.log(error)
       })
     },
-    handleReleaseDetail (index, row) {
+    handleTaskDetail (index, row) {
       console.log(index, row)
-      this.selectedRelease = row
-      this.selectedReleaseDialogFormVisible = true
+      this.selectedTask = row
+      if (row.taskName === '全部任务(含未命名)') {
+        this.selectedTask.taskName = 'DEFAULT'
+      }
+      this.forwardTaskDetail(this.namespaceName, this.appId, this.executorName, format(this.currentDate, 'yyyy-MM-dd'), this.selectedTask.taskName)
+    },
+    forwardTaskDetail (namespace, appId, executor, taskDate, taskName) {
+      console.log('forwardTaskDetail')
+      this.$router.push({
+        path: '/task/detail',
+        query: {
+          namespace: namespace,
+          appId: appId,
+          executor: executor,
+          taskDate: taskDate,
+          taskName: taskName
+        }
+      })
     },
     tableRowClassName ({row, rowIndex}) {
       if (rowIndex === 0) {
@@ -157,15 +151,15 @@ export default {
     },
     nextPage (pageNum) {
       this.pagination.pageNum = pageNum
-      this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
+      this.asyncQueryStatisticsList(this.namespaceName, this.appId, this.executorName)
     },
     prevPage (pageNum) {
       this.pagination.pageNum = pageNum
-      this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
+      this.asyncQueryStatisticsList(this.namespaceName, this.appId, this.executorName)
     },
     currentPage (pageNum) {
       this.pagination.pageNum = pageNum
-      this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
+      this.asyncQueryStatisticsList(this.namespaceName, this.appId, this.executorName)
     },
     isDefaultOneFormatter (row, column, cellValue, index) {
       if (row.taskName === 'DEFAULT') {

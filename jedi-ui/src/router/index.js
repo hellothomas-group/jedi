@@ -11,7 +11,9 @@ import ActiveReleaseInstance from '../components/ActiveReleaseInstance'
 import InactiveReleaseInstance from '../components/InactiveReleaseInstance'
 import ExecutorStatus from '../components/ExecutorStatus'
 import Login from '../components/Login'
+import LoginAuth from '../components/LoginAuth'
 import TaskStatisticHistory from '../components/TaskStatisticHistory'
+import TaskDetail from '../components/TaskDetail'
 
 Vue.use(Router)
 
@@ -26,12 +28,17 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/login-auth'
     },
     {
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/login-auth',
+      name: 'LoginAuth',
+      component: LoginAuth
     },
     {
       path: '/home',
@@ -84,6 +91,11 @@ const router = new Router({
           component: TaskStatisticHistory
         },
         {
+          path: '/task/detail',
+          name: 'TaskDetail',
+          component: TaskDetail
+        },
+        {
           path: '/alarm',
           name: 'Alarm',
           component: Alarm
@@ -96,14 +108,14 @@ const router = new Router({
 // 导航守卫
 // 使用 router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
 router.beforeEach((to, from, next) => {
-  if (to.path === '/login') {
+  if (to.path === '/login-auth' || to.path === '/login') {
     next()
   } else {
     let token = localStorage.getItem('Authorization')
 
     if (token === null || token === '') {
       next({
-        path: '/login',
+        path: '/login-auth',
         query: { redirect: to.fullPath } // 将要跳转路由的path作为参数，传递到登录页面
       })
     } else {

@@ -3,7 +3,7 @@ use `my_monitor`;
 
 SET NAMES utf8mb4;
 
-CREATE TABLE `monitor_message` (
+CREATE TABLE IF NOT EXISTS `monitor_message` (
   `id` varchar(36) NOT NULL comment 'id',
   `app_id` varchar(32) NOT NULL comment 'appId',
   `namespace` varchar(32) NOT NULL comment 'namespace名称',
@@ -17,7 +17,7 @@ CREATE TABLE `monitor_message` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='监控消息';
 
-CREATE TABLE `executor_ticker_message` (
+CREATE TABLE IF NOT EXISTS `executor_ticker_message` (
   `id` varchar(36) NOT NULL COMMENT 'id',
   `app_id` varchar(32) NOT NULL comment 'appId',
   `namespace` varchar(32) NOT NULL comment 'namespace名称',
@@ -44,7 +44,7 @@ CREATE TABLE `executor_ticker_message` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池打点消息';
 
-CREATE TABLE `executor_task_message` (
+CREATE TABLE IF NOT EXISTS `executor_task_message` (
   `id` varchar(36) NOT NULL COMMENT 'id',
   `app_id` varchar(32) NOT NULL comment 'appId',
   `namespace` varchar(32) NOT NULL comment 'namespace名称',
@@ -62,7 +62,7 @@ CREATE TABLE `executor_task_message` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务消息';
 
-CREATE TABLE `executor_shutdown_message` (
+CREATE TABLE IF NOT EXISTS `executor_shutdown_message` (
   `id` varchar(36) NOT NULL COMMENT 'id',
   `app_id` varchar(32) NOT NULL comment 'appId',
   `namespace` varchar(32) NOT NULL comment 'namespace名称',
@@ -79,7 +79,7 @@ CREATE TABLE `executor_shutdown_message` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池关闭消息';
 
-CREATE TABLE `alarm_config` (
+CREATE TABLE IF NOT EXISTS `alarm_config` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `namespace_name` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
   `app_id` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'appId',
@@ -94,7 +94,7 @@ CREATE TABLE `alarm_config` (
   UNIQUE KEY `IX_UNIQUE_KEY` (`namespace_name`,`app_id`,`executor_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='报警配置';
 
-CREATE TABLE `executor_task_statistics` (
+CREATE TABLE IF NOT EXISTS `executor_task_statistics` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `statistics_date` date NOT NULL COMMENT '统计日期',
   `namespace_name` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
@@ -115,7 +115,7 @@ CREATE TABLE `executor_task_statistics` (
   UNIQUE KEY `IX_UNIQUE_KEY` (`namespace_name`,`app_id`,`executor_name`, `task_name`, `statistics_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务每日统计表';
 
-CREATE TABLE `executor_task_statistics_history` (
+CREATE TABLE IF NOT EXISTS `executor_task_statistics_history` (
   `id` int(11) unsigned NOT NULL COMMENT 'Id',
   `statistics_date` date NOT NULL COMMENT '统计日期',
   `namespace_name` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
@@ -136,7 +136,7 @@ CREATE TABLE `executor_task_statistics_history` (
   KEY `IX_KEY` (`namespace_name`,`app_id`,`executor_name`, `task_name`, `statistics_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务历史统计表';
 
-CREATE TABLE `task_lock` (
+CREATE TABLE IF NOT EXISTS `task_lock` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `task_date` date NOT NULL COMMENT '任务日期',
   `task_name` varchar(32) NOT NULL COMMENT '任务名称',

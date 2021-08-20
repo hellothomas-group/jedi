@@ -15,13 +15,13 @@
         </el-date-picker>
         <span class="demonstration" style="margin-left: 50px">任务名称</span>
         <el-input style="width: 200px"
-          placeholder="请输入任务名称"
-          v-model="inputTaskName"
-          clearable>
+                  placeholder="请输入任务名称"
+                  v-model="inputTaskName"
+                  clearable>
         </el-input>
         <el-button
           type="primary"
-          @click="asyncQueryStatisticsList()" style="margin-left: 20px">查询
+          @click="submitQueryTaskList()" style="margin-left: 20px">查询
         </el-button>
       </div>
     </el-header>
@@ -29,41 +29,29 @@
       <el-main>
         <div style="height: 90%">
           <el-table
-            :data="statisticsList.filter(data => !search || data.taskName.toLowerCase().includes(search.toLowerCase()))"
+            :data="taskList.filter(data => !search || data.taskExtraData.toLowerCase().includes(search.toLowerCase()))"
             style="width: 100%"
             :row-class-name="tableRowClassName">
-            <el-table-column
-              label="任务日期"
-              prop="statisticsDate">
-            </el-table-column>
             <el-table-column
               label="任务名称"
               prop="taskName"
               :formatter = "isDefaultOneFormatter">
             </el-table-column>
             <el-table-column
-              label="执行总数"
-              prop="total">
+              label="执行时间(ms)"
+              prop="executionTime">
             </el-table-column>
             <el-table-column
-              label="执行失败总数"
-              prop="failure">
+              label="任务附加信息"
+              prop="taskExtraData">
             </el-table-column>
             <el-table-column
-              label="执行失败比例"
-              prop="failureRatio">
+              label="主机"
+              prop="host">
             </el-table-column>
             <el-table-column
-              label="执行最长时间(ms)"
-              prop="executionTimeMax">
-            </el-table-column>
-            <el-table-column
-              label="执行最短时间(ms)"
-              prop="executionTimeMin">
-            </el-table-column>
-            <el-table-column
-              label="更新时间"
-              prop="dataChangeLastModifiedTime">
+              label="记录时间"
+              prop="recordTime">
             </el-table-column>
             <el-table-column
               align="right">
@@ -72,11 +60,6 @@
                   v-model="search"
                   size="mini"
                   placeholder="输入关键字搜索"/>
-              </template>
-              <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  @click="handleTaskDetail(scope.$index, scope.row)" style="margin-right: 50%">明细</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -96,7 +79,6 @@
         </div>
       </el-footer>
     </el-container>
-
   </div>
 </template>
 
@@ -108,34 +90,13 @@ export default {
       namespaceName: undefined,
       appId: undefined,
       executorName: undefined,
-      statisticsList: [],
-      search: '',
-      pagination: {
-        total: 0,
-        pageNum: 1,
-        pageSize: 10
-      },
-      selectedTask: {
-        id: undefined,
-        releaseKey: undefined,
-        name: undefined,
-        namespaceName: undefined,
-        appId: undefined,
-        executorName: undefined,
-        configurations: undefined,
-        comment: undefined,
-        isAbandoned: undefined,
-        dataChangeCreatedBy: undefined,
-        dataChangeLastModifiedBy: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: undefined
-      },
+      taskName: undefined,
       pickerOptions: {
         shortcuts: [{
           text: '最近三天',
           onClick (picker) {
             const end = new Date()
-            const start = new Date()
+            const start = new Date(format(new Date(), 'yyyy/MM/dd'))
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 3)
             picker.$emit('pick', [start, end])
           }
@@ -143,7 +104,7 @@ export default {
           text: '最近七天',
           onClick (picker) {
             const end = new Date()
-            const start = new Date()
+            const start = new Date(format(new Date(), 'yyyy/MM/dd'))
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
             picker.$emit('pick', [start, end])
           }
@@ -151,42 +112,59 @@ export default {
           text: '最近十天',
           onClick (picker) {
             const end = new Date()
-            const start = new Date()
+            const start = new Date(format(new Date(), 'yyyy/MM/dd'))
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 10)
             picker.$emit('pick', [start, end])
           }
         }]
       },
-      queryDate: [new Date(new Date().getTime() - 3600 * 1000 * 24), new Date(new Date().getTime() - 3600 * 1000 * 24)],
-      inputTaskName: ''
+      queryDate: [new Date(format(new Date(), 'yyyy/MM/dd')), new Date()],
+      inputTaskName: '',
+      taskList: [],
+      search: '',
+      pagination: {
+        total: 0,
+        pageNum: 1,
+        pageSize: 20
+      }
     }
   },
   created () {
-    console.log(this.$route.query.executor)
+    console.log(this.$route.query.taskDate)
     if (this.$route.query) {
       this.namespaceName = this.$route.query.namespace
       this.appId = this.$route.query.appId
       this.executorName = this.$route.query.executor
-      this.asyncQueryStatisticsList()
+      if (this.$route.query.taskDate) {
+        this.queryDate[0] = new Date(this.$route.query.taskDate.replace(/-/g, '/'))
+        this.queryDate[1] = new Date(this.queryDate[0].getTime() + 3600 * 1000 * 24 - 1)
+      }
+      this.taskName = this.$route.query.taskName
+      if (this.$route.query.taskName === 'DEFAULT') {
+        this.inputTaskName = '全部任务(含未命名)'
+      } else {
+        this.inputTaskName = this.$route.query.taskName
+      }
+      this.asyncQueryTaskList()
     }
   },
   methods: {
-    asyncQueryStatisticsList () {
-      console.log('asyncQueryStatisticsList')
-      console.log(this.executorName)
+    asyncQueryTaskList () {
+      console.log('asyncQueryTaskList')
+      console.log(this.taskName)
 
-      this.axios.get('/consumer/namespaces/' + this.namespaceName + '/apps/' + this.appId + '/executors/' + this.executorName +
-        '/task-statistics-history/all', {
+      this.axios.get('/consumer/namespaces/' + this.namespaceName + '/apps/' + this.appId + '/executors/' +
+        this.executorName + '/task-details', {
         params: {
-          startDate: format(this.queryDate[0], 'yyyy-MM-dd'),
-          endDate: format(this.queryDate[1], 'yyyy-MM-dd'),
-          taskName: this.inputTaskName.trim() === '' ? undefined : (this.inputTaskName.trim() === '全部任务(含未命名)' ? 'DEFAULT' : this.inputTaskName.trim()),
+          taskName: this.taskName,
+          startTime: format(this.queryDate[0], 'yyyy-MM-dd HH:mm:ss'),
+          endTime: format(this.queryDate[1], 'yyyy-MM-dd HH:mm:ss'),
           pageNum: this.pagination.pageNum,
           pageSize: this.pagination.pageSize
         }
       }).then(res => {
         console.log(res)
-        this.statisticsList = res.data.content
+        this.taskList = res.data.content
         this.pagination.total = res.data.total
         this.pagination.pageNum = res.data.pageNum
         this.pagination.pageSize = res.data.pageSize
@@ -194,26 +172,15 @@ export default {
         console.log(error)
       })
     },
-    handleTaskDetail (index, row) {
-      console.log(index, row)
-      this.selectedTask = row
-      if (row.taskName === '全部任务(含未命名)') {
-        this.selectedTask.taskName = 'DEFAULT'
+    submitQueryTaskList () {
+      this.queryDate[1] = new Date(new Date(format(this.queryDate[1], 'yyyy/MM/dd')).getTime() + 3600 * 1000 * 24 - 1)
+      if (this.inputTaskName === undefined || this.inputTaskName.trim() === '全部任务(含未命名)' || this.inputTaskName.trim()
+      === '') {
+        this.taskName = 'DEFAULT'
+      } else {
+        this.taskName = this.inputTaskName.trim()
       }
-      this.forwardTaskDetail(this.namespaceName, this.appId, this.executorName, this.selectedTask.statisticsDate, this.selectedTask.taskName)
-    },
-    forwardTaskDetail (namespace, appId, executor, taskDate, taskName) {
-      console.log('forwardTaskDetail')
-      this.$router.push({
-        path: '/task/detail',
-        query: {
-          namespace: namespace,
-          appId: appId,
-          executor: executor,
-          taskDate: taskDate,
-          taskName: taskName
-        }
-      })
+      this.asyncQueryTaskList()
     },
     tableRowClassName ({row, rowIndex}) {
       if (rowIndex === 0) {

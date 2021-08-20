@@ -3,7 +3,7 @@ use `my_monitor`;
 
 SET NAMES utf8mb4;
 
-CREATE TABLE `release_message` (
+CREATE TABLE IF NOT EXISTS `release_message` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `message` varchar(1024) NOT NULL DEFAULT '' COMMENT '发布的消息内容',
   `data_change_last_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
@@ -12,7 +12,7 @@ CREATE TABLE `release_message` (
   KEY `IX_message` (`message`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='发布消息';
 
-CREATE TABLE `release` (
+CREATE TABLE IF NOT EXISTS `release` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `release_key` varchar(64) NOT NULL DEFAULT '' COMMENT '发布的Key',
   `name` varchar(64) NOT NULL DEFAULT 'default' COMMENT '发布名字',
@@ -33,7 +33,7 @@ CREATE TABLE `release` (
   KEY `IX_release_key` (`release_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='发布';
 
-CREATE TABLE `release_history` (
+CREATE TABLE IF NOT EXISTS `release_history` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `namespace_name` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
   `app_id` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'appId',
@@ -53,7 +53,7 @@ CREATE TABLE `release_history` (
   KEY `IX_DataChange_LastTime` (`data_change_last_modified_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='发布历史';
 
-CREATE TABLE `executor` (
+CREATE TABLE IF NOT EXISTS `executor` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `namespace_name` varchar(500) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
   `app_id` varchar(500) NOT NULL DEFAULT 'default' COMMENT 'appId',
@@ -69,7 +69,7 @@ CREATE TABLE `executor` (
   KEY `IX_executor_name` (`executor_name`(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='执行器';
 
-CREATE TABLE `item` (
+CREATE TABLE IF NOT EXISTS `item` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `executor_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'executorId',
   `configuration` varchar(1024) NOT NULL COMMENT '配置项值',
@@ -84,7 +84,7 @@ CREATE TABLE `item` (
   KEY `data_change_last_modified_time` (`data_change_last_modified_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='配置项目';
 
-CREATE TABLE `instance` (
+CREATE TABLE IF NOT EXISTS `instance` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `namespace_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
   `app_id` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'appId',
@@ -97,7 +97,7 @@ CREATE TABLE `instance` (
   KEY `IX_data_change_last_modified_time` (`data_change_last_modified_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='使用配置的应用实例';
 
-CREATE TABLE `instance_config` (
+CREATE TABLE IF NOT EXISTS `instance_config` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `instance_id` int(11) unsigned DEFAULT NULL COMMENT 'instanceId',
   `config_namespace_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'configNamespaceName',
@@ -114,7 +114,7 @@ CREATE TABLE `instance_config` (
   KEY `IX_valid_exectuor` (`config_namespace_name`,`config_app_id`,`config_executor_name`,`data_change_last_modified_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='应用实例的配置信息';
 
-CREATE TABLE `executor_lock` (
+CREATE TABLE IF NOT EXISTS `executor_lock` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `executor_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'executorId',
   `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
@@ -127,7 +127,7 @@ CREATE TABLE `executor_lock` (
   KEY `data_change_last_modified_time` (`data_change_last_modified_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='executor的编辑锁';
 
-CREATE TABLE `audit` (
+CREATE TABLE IF NOT EXISTS `audit` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `entity_name` varchar(50) NOT NULL DEFAULT 'default' COMMENT '表名',
   `entity_id` int(11) unsigned DEFAULT NULL COMMENT '记录ID',
@@ -142,7 +142,7 @@ CREATE TABLE `audit` (
   KEY `data_change_last_modified_time` (`data_change_last_modified_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='日志审计表';
 
-CREATE TABLE `namespace` (
+CREATE TABLE IF NOT EXISTS `namespace` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(500) NOT NULL DEFAULT 'default' COMMENT 'namespace名字，注意，需要全局唯一',
   `description` varchar(500) NOT NULL DEFAULT 'default' COMMENT 'namespace描述',
@@ -160,7 +160,7 @@ CREATE TABLE `namespace` (
   KEY `data_change_last_modified_time` (`data_change_last_modified_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='命名空间表';
 
-CREATE TABLE `app` (
+CREATE TABLE IF NOT EXISTS `app` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
   `namespace_name` varchar(32) NOT NULL DEFAULT '' COMMENT 'namespace名字，注意，需要全局唯一',
   `app_id` varchar(32) NOT NULL DEFAULT '' COMMENT 'appId',
@@ -176,7 +176,7 @@ CREATE TABLE `app` (
   KEY `data_change_last_modified_time` (`data_change_last_modified_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='应用定义';
 
-CREATE TABLE `user` (
+CREATE TABLE IF NOT EXISTS `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `user_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
   `real_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户真实名',
@@ -188,7 +188,7 @@ CREATE TABLE `user` (
   UNIQUE KEY `IX_user_name` (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
-CREATE TABLE `role` (
+CREATE TABLE IF NOT EXISTS `role` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `role_name` varchar(256) NOT NULL DEFAULT '' COMMENT 'roleName',
   `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
@@ -201,7 +201,7 @@ CREATE TABLE `role` (
   KEY `IX_dataChange_LastTime` (`data_change_last_modified_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
 
-CREATE TABLE `user_role` (
+CREATE TABLE IF NOT EXISTS `user_role` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `user_id` varchar(128) DEFAULT '' COMMENT '用户身份标识',
   `role_id` int(10) unsigned DEFAULT NULL COMMENT 'roleId',
