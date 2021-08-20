@@ -42,16 +42,16 @@
               prop="executionTime">
             </el-table-column>
             <el-table-column
-              label="任务附加信息"
-              prop="taskExtraData">
-            </el-table-column>
-            <el-table-column
               label="主机"
               prop="host">
             </el-table-column>
             <el-table-column
               label="记录时间"
               prop="recordTime">
+            </el-table-column>
+            <el-table-column
+              label="任务附加信息"
+              prop="taskExtraData">
             </el-table-column>
             <el-table-column
               align="right">
@@ -190,15 +190,15 @@ export default {
     },
     nextPage (pageNum) {
       this.pagination.pageNum = pageNum
-      this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
+      this.asyncQueryTaskList()
     },
     prevPage (pageNum) {
       this.pagination.pageNum = pageNum
-      this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
+      this.asyncQueryTaskList()
     },
     currentPage (pageNum) {
       this.pagination.pageNum = pageNum
-      this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
+      this.asyncQueryTaskList()
     },
     isDefaultOneFormatter (row, column, cellValue, index) {
       if (row.taskName === 'DEFAULT') {
