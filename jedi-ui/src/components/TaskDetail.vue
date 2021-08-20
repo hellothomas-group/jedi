@@ -174,8 +174,7 @@ export default {
     },
     submitQueryTaskList () {
       this.queryDate[1] = new Date(new Date(format(this.queryDate[1], 'yyyy/MM/dd')).getTime() + 3600 * 1000 * 24 - 1)
-      if (this.inputTaskName === undefined || this.inputTaskName.trim() === '全部任务(含未命名)' || this.inputTaskName.trim()
-      === '') {
+      if (this.inputTaskName === undefined || this.inputTaskName.trim() === '全部任务(含未命名)' || this.inputTaskName.trim() === '') {
         this.taskName = 'DEFAULT'
       } else {
         this.taskName = this.inputTaskName.trim()
