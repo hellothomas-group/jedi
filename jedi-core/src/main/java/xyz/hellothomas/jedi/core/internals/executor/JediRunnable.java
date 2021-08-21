@@ -11,20 +11,31 @@ import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
  */
 public class JediRunnable implements Runnable {
     private final String taskName;
+    private final String taskExtraData;
     private final String poolName;
     private final Runnable runnable;
     private final AbstractNotificationService notificationService;
 
     public JediRunnable(JediThreadPoolExecutor executor, String taskName, Runnable runnable) {
         this.taskName = taskName;
+        this.taskExtraData = null;
         this.poolName = executor.getPoolName();
         this.runnable = runnable;
         this.notificationService = executor.getNotificationService();
     }
 
-    public JediRunnable(String poolName, String taskName, AbstractNotificationService notificationService,
-                        Runnable runnable) {
+    public JediRunnable(JediThreadPoolExecutor executor, String taskName, String taskExtraData, Runnable runnable) {
         this.taskName = taskName;
+        this.taskExtraData = taskExtraData;
+        this.poolName = executor.getPoolName();
+        this.runnable = runnable;
+        this.notificationService = executor.getNotificationService();
+    }
+
+    public JediRunnable(String poolName, String taskName, String taskExtraData,
+                        AbstractNotificationService notificationService, Runnable runnable) {
+        this.taskName = taskName;
+        this.taskExtraData = taskExtraData;
         this.poolName = poolName;
         this.runnable = runnable;
         this.notificationService = notificationService;
@@ -42,7 +53,8 @@ public class JediRunnable implements Runnable {
         } finally {
             long diff = System.currentTimeMillis() - startTime;
             ExecutorTaskNotification executorTaskNotification =
-                    notificationService.buildExecutorTaskNotification(taskName, poolName, diff, exception);
+                    notificationService.buildExecutorTaskNotification(taskName, taskExtraData, poolName, diff,
+                            exception);
             notificationService.pushNotification(executorTaskNotification);
         }
     }

@@ -13,20 +13,31 @@ import java.util.concurrent.Callable;
  */
 public class JediCallable implements Callable {
     private final String taskName;
+    private final String taskExtraData;
     private final String poolName;
     private final Callable callable;
     private final AbstractNotificationService notificationService;
 
     public JediCallable(Callable callable, JediThreadPoolExecutor executor, String taskName) {
         this.taskName = taskName;
+        this.taskExtraData = null;
         this.poolName = executor.getPoolName();
         this.callable = callable;
         this.notificationService = executor.getNotificationService();
     }
 
-    public JediCallable(Callable callable, String poolName, String taskName,
+    public JediCallable(Callable callable, JediThreadPoolExecutor executor, String taskName, String taskExtraData) {
+        this.taskName = taskName;
+        this.taskExtraData = taskExtraData;
+        this.poolName = executor.getPoolName();
+        this.callable = callable;
+        this.notificationService = executor.getNotificationService();
+    }
+
+    public JediCallable(Callable callable, String poolName, String taskName, String taskExtraData,
                         AbstractNotificationService notificationService) {
         this.taskName = taskName;
+        this.taskExtraData = taskExtraData;
         this.poolName = poolName;
         this.callable = callable;
         this.notificationService = notificationService;
@@ -44,8 +55,8 @@ public class JediCallable implements Callable {
         } finally {
             long diff = System.currentTimeMillis() - startTime;
             ExecutorTaskNotification executorTaskNotification =
-                    notificationService.buildExecutorTaskNotification(taskName
-                            , poolName, diff, exception);
+                    notificationService.buildExecutorTaskNotification(taskName, taskExtraData, poolName, diff,
+                            exception);
             notificationService.pushNotification(executorTaskNotification);
         }
     }

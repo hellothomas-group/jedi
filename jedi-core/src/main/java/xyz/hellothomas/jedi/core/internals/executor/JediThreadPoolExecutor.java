@@ -1,13 +1,13 @@
 package xyz.hellothomas.jedi.core.internals.executor;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorShutdownNotification;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTickerNotification;
 import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
 import xyz.hellothomas.jedi.core.utils.SleepUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.*;
@@ -91,7 +91,8 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         startTickerThread();
     }
 
-    public JediThreadPoolExecutor(JediThreadPoolProperty jediThreadPoolProperty) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public JediThreadPoolExecutor(JediThreadPoolProperty jediThreadPoolProperty) throws ClassNotFoundException,
+            IllegalAccessException, InstantiationException {
         super(jediThreadPoolProperty.getCorePoolSize(), jediThreadPoolProperty.getMaxPoolSize(),
                 jediThreadPoolProperty.getKeepAliveSeconds(),
                 TimeUnit.SECONDS,
@@ -142,8 +143,8 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         long diff = System.currentTimeMillis() - this.startTime.get();
 
         ExecutorTaskNotification executorTaskNotification =
-                this.notificationService.buildExecutorTaskNotification(null, this.poolName,
-                        diff, t);
+                this.notificationService.buildExecutorTaskNotification(null, null,
+                        this.poolName, diff, t);
         this.notificationService.pushNotification(executorTaskNotification);
     }
 

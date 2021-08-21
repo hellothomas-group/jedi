@@ -6,7 +6,7 @@
 
     <groupId>xyz.hellothomas</groupId>
     <artifactId>jedi</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>jedi</name>
     <description>Dynamic Thread Pool Executor</description>
@@ -48,7 +48,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <springboot.version>2.3.7.RELEASE</springboot.version>
-        <jedi.version>0.0.6</jedi.version>
+        <jedi.version>0.0.7-SNAPSHOT</jedi.version>
         <swagger.version>2.9.2</swagger.version>
         <swagger-models.version>1.5.24</swagger-models.version>
         <junit.version>4.13.1</junit.version>

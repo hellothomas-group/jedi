@@ -71,12 +71,13 @@ public abstract class AbstractNotificationService {
         return executorTickerNotification;
     }
 
-    public ExecutorTaskNotification buildExecutorTaskNotification(String taskName, String poolName,
-                                                                  long executionTime, Throwable t) {
+    public ExecutorTaskNotification buildExecutorTaskNotification(String taskName, String taskExtraData,
+                                                                  String poolName, long executionTime, Throwable t) {
         ExecutorTaskNotification executorTaskNotification = new ExecutorTaskNotification();
         if (StringUtils.isNotBlank(taskName)) {
             executorTaskNotification.setTaskName(taskName);
         }
+        executorTaskNotification.setTaskExtraData(taskExtraData);
         executorTaskNotification.setExecutionTime(executionTime);
         executorTaskNotification.setPoolName(poolName);
         if (t == null) {
