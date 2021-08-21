@@ -52,7 +52,8 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
 
     public PageResult<ExecutorTaskMessage> findByTaskNameAndRecordTime(String namespaceName, String appId,
                                                                        String executorName,
-                                                                       String taskName, String instanceIp,
+                                                                       String taskName, String taskExtraData,
+                                                                       Boolean isSuccess, String instanceIp,
                                                                        LocalDateTime startTime, LocalDateTime endTime,
                                                                        PageHelperRequest pageHelperRequest) {
         ExecutorTaskMessageExample executorTaskMessageExample = new ExecutorTaskMessageExample();
@@ -62,6 +63,12 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
                         .andPoolNameEqualTo(executorName)
                         .andTaskNameEqualTo(taskName)
                         .andRecordTimeBetween(startTime, endTime);
+        if (taskExtraData != null) {
+            criteria.andTaskExtraDataEqualTo(taskExtraData);
+        }
+        if (isSuccess != null) {
+            criteria.andIsSuccessEqualTo(isSuccess);
+        }
         if (instanceIp != null) {
             criteria.andHostEqualTo(instanceIp);
         }

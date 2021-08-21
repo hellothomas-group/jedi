@@ -35,12 +35,12 @@
             :row-class-name="tableRowClassName">
             <el-table-column
               label="任务日期"
-              width="100px"
+              width="95px"
               prop="statisticsDate">
             </el-table-column>
             <el-table-column
               label="任务名称"
-              min-width="100px"
+              min-width="85px"
               prop="taskName"
               :formatter = "isDefaultOneFormatter">
             </el-table-column>
@@ -58,7 +58,7 @@
             </el-table-column>
             <el-table-column
               label="执行失败比例"
-              width="120px"
+              width="105px"
               align="center"
               prop="failureRatio">
             </el-table-column>

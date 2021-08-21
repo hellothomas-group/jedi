@@ -14,13 +14,13 @@
           :picker-options="pickerOptions">
         </el-date-picker>
         <span class="demonstration" style="margin-left: 50px">任务名称</span>
-        <el-input style="width: 200px"
-                  placeholder="请输入任务名称"
+        <el-input style="width: 250px"
+                  placeholder="请输入任务名称(必填)"
                   v-model="inputTaskName"
                   clearable>
         </el-input>
         <span class="demonstration" style="margin-left: 50px">执行结果</span>
-        <el-select v-model="executeResult" clearable placeholder="请选择">
+        <el-select v-model="executeResult" style="width: 120px" clearable placeholder="请选择">
           <el-option
             v-for="item in executeResultOptions"
             :key="item.value"
@@ -30,13 +30,21 @@
         </el-select>
         <el-button
           type="primary"
-          @click="submitQueryTaskList()" style="margin-left: 20px">查询
+          @click="submitQueryTaskList()" style="margin-left: 50px;">查询
         </el-button>
+        <div style="margin-top: 10px">
+        <span class="demonstration">任务附加信息</span>
+        <el-input style="width: 285px"
+                  placeholder="请输入任务附加信息"
+                  v-model="inputTaskExtraData"
+                  clearable>
+        </el-input>
+        </div>
       </div>
     </el-header>
     <el-container>
       <el-main>
-        <div>
+        <div style="margin-top: 20px">
           <el-table
             :data="taskList.filter(data => !search || data.taskExtraData.toLowerCase().includes(search.toLowerCase()))"
             max-height="430"
@@ -44,7 +52,7 @@
             :row-class-name="tableRowClassName">
             <el-table-column
               label="任务名称"
-              min-width="100"
+              min-width="85"
               prop="taskName"
               :formatter = "isDefaultOneFormatter">
             </el-table-column>
@@ -63,7 +71,7 @@
             </el-table-column>
             <el-table-column
               label="主机"
-              width="140px"
+              width="80px"
               align="center"
               prop="host">
             </el-table-column>
@@ -75,13 +83,13 @@
             </el-table-column>
             <el-table-column
               label="失败原因"
-              min-width="100"
+              min-width="60px"
               align="center"
               prop="failureReason">
             </el-table-column>
             <el-table-column
               label="任务附加信息"
-              min-width="100"
+              min-width="60px"
               align="center"
               prop="taskExtraData">
             </el-table-column>
@@ -152,6 +160,7 @@ export default {
       },
       queryDate: [new Date(format(new Date(), 'yyyy/MM/dd')), new Date()],
       inputTaskName: '',
+      inputTaskExtraData: '',
       taskList: [],
       search: '',
       pagination: {
@@ -166,7 +175,7 @@ export default {
         value: 'false',
         label: '失败'
       }],
-      executeResult: ''
+      executeResult: undefined
     }
   },
   created () {
@@ -195,6 +204,8 @@ export default {
         this.executorName + '/task-details', {
         params: {
           taskName: this.taskName,
+          taskExtraData: (this.taskExtraData === undefined || this.taskExtraData.trim() === '') ? undefined : this.taskExtraData.trim(),
+          isSuccess: this.executeResult === undefined ? undefined : this.executeResult,
           startTime: format(this.queryDate[0], 'yyyy-MM-dd HH:mm:ss'),
           endTime: format(this.queryDate[1], 'yyyy-MM-dd HH:mm:ss'),
           pageNum: this.pagination.pageNum,
@@ -257,7 +268,7 @@ export default {
   .el-header {
     color: #333;
     text-align: center;
-    line-height: 60px;
+    line-height: 40px;
   }
 
   body > .el-container {

@@ -42,6 +42,10 @@ public class ExecutorTaskController {
                                                                           @PathVariable("executorName") String executorName,
                                                                           @RequestParam(value = "taskName",
                                                                                   defaultValue = "DEFAULT") String taskName,
+                                                                          @RequestParam(value = "taskExtraData", required =
+                                                                                  false) String taskExtraData,
+                                                                          @RequestParam(value = "isSuccess", required =
+                                                                                  false) Boolean isSuccess,
                                                                           @RequestParam(value = "instanceIp", required =
                                                                                   false) String instanceIp,
                                                                           @RequestParam("startTime") @DateTimeFormat(pattern = "yyyy-MM-dd " +
@@ -52,7 +56,8 @@ public class ExecutorTaskController {
                                                                           PageHelperRequest pageHelperRequest) {
         PageResult<ExecutorTaskMessage> taskMessagePageResult =
                 executorTaskService.findByTaskNameAndRecordTime(namespaceName
-                        , appId, executorName, taskName, instanceIp, startTime, endTime, pageHelperRequest);
+                        , appId, executorName, taskName, taskExtraData, isSuccess, instanceIp, startTime, endTime,
+                        pageHelperRequest);
         PageResult<ExecutorTaskDetailResponse> executorStatusResponsePageResult =
                 transform2PageResult(taskMessagePageResult);
 

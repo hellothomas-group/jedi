@@ -2,7 +2,7 @@
   <div style="height: 85%">
     <el-container>
       <el-container>
-        <el-aside width="25%">
+        <el-aside width="30%">
           <div style="text-align: center">
             <el-tag type="info" style="cursor: pointer;" @click="forwardNamespace()"
                     onmouseover="this.style.background='#99a9bf';" onmouseleave="this.style.background='#f4f4f5';">所属环境:

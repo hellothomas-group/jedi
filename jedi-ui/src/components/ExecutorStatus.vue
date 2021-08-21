@@ -451,7 +451,8 @@ export default {
 <style>
   /*设定宽高，不然超出windows会显示不出来*/
   #myChart{
-    width: 100%;
+    margin-left: 20px !important;
+    width: 90%;
     height: 700px;
     margin: 0 auto;
   }
