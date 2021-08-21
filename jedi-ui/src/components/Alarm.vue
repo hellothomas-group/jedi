@@ -10,27 +10,27 @@
           </el-tag>
       </el-header>
       <el-main>
-        <div style="height: 90%">
+        <div style="height: 90%;margin-left: 30%">
             <el-form :model="updateAlarmConfigForm" :rules="alarmConfigFormRules" ref="updateAlarmConfigForm">
-              <el-form-item label="alarmEnabled" :label-width="formLabelWidth">
+              <el-form-item label="报警是否启用" :label-width="formLabelWidth" prop="alarmEnabled">
                 <el-switch
-                  v-model="updateAlarmConfigForm.configuration.alarmEnabled"
+                  v-model="updateAlarmConfigForm.alarmEnabled"
                   active-color="#13ce66"
                   inactive-color="#ff4949"
                   :disabled="!alarmConfigEditable">
                 </el-switch>
               </el-form-item>
-              <el-form-item label="queueThreshold" :label-width="formLabelWidth">
-                <el-input v-model="updateAlarmConfigForm.configuration.queueThreshold" autocomplete="off"
-                          :disabled="!alarmConfigEditable"></el-input>
+              <el-form-item label="队列容量阈值" :label-width="formLabelWidth" prop="queueThreshold">
+                <el-input v-model.number="updateAlarmConfigForm.queueThreshold" autocomplete="off"
+                          :disabled="!alarmConfigEditable" style="width: 200px"></el-input>
               </el-form-item>
-              <el-form-item label="poolActivationThreshold" :label-width="formLabelWidth">
-                <el-input v-model="updateAlarmConfigForm.configuration.poolActivationThreshold" autocomplete="off"
-                          :disabled="!alarmConfigEditable"></el-input>
+              <el-form-item label="线程池饱和度阈值(%)" :label-width="formLabelWidth" prop="poolActivationThreshold">
+                <el-input v-model.number="updateAlarmConfigForm.poolActivationThreshold" autocomplete="off"
+                          :disabled="!alarmConfigEditable" style="width: 200px"></el-input>
               </el-form-item>
-              <el-form-item label="rejectCountThreshold" :label-width="formLabelWidth">
-                <el-input v-model="updateAlarmConfigForm.configuration.rejectCountThreshold" autocomplete="off"
-                          :disabled="!alarmConfigEditable"></el-input>
+              <el-form-item label="任务拒绝数阈值" :label-width="formLabelWidth" prop="rejectCountThreshold">
+                <el-input v-model.number="updateAlarmConfigForm.rejectCountThreshold" autocomplete="off"
+                          :disabled="!alarmConfigEditable" style="width: 200px"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer" style="text-align: right">
@@ -47,14 +47,6 @@
 <script>
 export default {
   data () {
-    const isNum = (rule, value, callback) => {
-      const validData = /^[0-9]*$/
-      if (!validData.test(value)) {
-        callback(new Error('只能为数字'))
-      } else {
-        callback()
-      }
-    }
     return {
       formLabelWidth: '20%',
       alarmConfig: {
@@ -73,16 +65,26 @@ export default {
         namespaceName: undefined,
         appId: undefined,
         executorName: undefined,
-        configuration: {
-          alarmEnabled: 'false',
-          queueThreshold: undefined,
-          poolActivationThreshold: undefined,
-          rejectCountThreshold: undefined
-        }
+        alarmEnabled: 'false',
+        queueThreshold: undefined,
+        poolActivationThreshold: undefined,
+        rejectCountThreshold: undefined
+      },
+      alarmConfiguration: {
+        alarmEnabled: 'false',
+        queueThreshold: undefined,
+        poolActivationThreshold: undefined,
+        rejectCountThreshold: undefined
       },
       alarmConfigFormRules: {
         queueThreshold: [
-          {required: true, validator: isNum, message: '请输入json字符串', trigger: 'blur'}
+          {type: 'number', message: '队列容量阈值必须为数字值'}
+        ],
+        poolActivationThreshold: [
+          {type: 'number', message: '线程池饱和度阈值必须为数字值'}
+        ],
+        rejectCountThreshold: [
+          {type: 'number', message: '任务拒绝数阈值必须为数字值'}
         ]
       }
     }
@@ -106,7 +108,11 @@ export default {
       ).then(res => {
         console.log(res)
         this.alarmConfig = res.data
-        this.updateAlarmConfigForm.configuration = JSON.parse(res.data.configuration)
+        this.alarmConfiguration = JSON.parse(res.data.configuration)
+        this.updateAlarmConfigForm.alarmEnabled = this.alarmConfiguration.alarmEnabled
+        this.updateAlarmConfigForm.queueThreshold = this.alarmConfiguration.queueThreshold
+        this.updateAlarmConfigForm.poolActivationThreshold = this.alarmConfiguration.poolActivationThreshold
+        this.updateAlarmConfigForm.rejectCountThreshold = this.alarmConfiguration.rejectCountThreshold
       }).catch(function (error) {
         console.log(error)
         _this.asyncCreateAlarmConfig(_this.updateAlarmConfigForm)
@@ -114,9 +120,10 @@ export default {
     },
     cancelUpdateAlarmConfigForm (formName) {
       console.log(formName)
-      if (this.alarmConfig.configuration) {
-        this.updateAlarmConfigForm.configuration = JSON.parse(this.alarmConfig.configuration)
-      }
+      this.updateAlarmConfigForm.alarmEnabled = this.alarmConfiguration.alarmEnabled
+      this.updateAlarmConfigForm.queueThreshold = this.alarmConfiguration.queueThreshold
+      this.updateAlarmConfigForm.poolActivationThreshold = this.alarmConfiguration.poolActivationThreshold
+      this.updateAlarmConfigForm.rejectCountThreshold = this.alarmConfiguration.rejectCountThreshold
       this.alarmConfigEditable = false
     },
     submitUpdateAlarmConfigForm (formName) {
@@ -135,18 +142,16 @@ export default {
       console.log('update alarmConfig...' + form.executorName)
       this.alarmConfigEditable = false
 
-      for (let attr in form.configuration) {
-        if (attr === 'alarmEnabled') continue
-        if (!form.configuration[attr]) {
-          form.configuration[attr] = undefined
-        }
-      }
+      this.alarmConfiguration.alarmEnabled = this.updateAlarmConfigForm.alarmEnabled
+      this.alarmConfiguration.queueThreshold = this.updateAlarmConfigForm.queueThreshold === undefined ? undefined : this.updateAlarmConfigForm.queueThreshold
+      this.alarmConfiguration.poolActivationThreshold = (this.updateAlarmConfigForm.poolActivationThreshold === undefined || this.updateAlarmConfigForm.poolActivationThreshold.trim() === '') ? undefined : this.updateAlarmConfigForm.poolActivationThreshold.trim()
+      this.alarmConfiguration.rejectCountThreshold = this.updateAlarmConfigForm.rejectCountThreshold === undefined ? undefined : this.updateAlarmConfigForm.rejectCountThreshold
       let that = this
 
       this.axios.put('/admin/namespaces/' + form.namespaceName + '/apps/' +
         form.appId + '/executors/' + form.executorName + '/alarm-configs', null, {
         params: {
-          configuration: JSON.stringify(form.configuration)
+          configuration: JSON.stringify(this.alarmConfiguration)
         }
       }).then(res => {
         console.log(form.executorName + 'alarmConfig updated')
@@ -155,7 +160,11 @@ export default {
         console.log(error)
         console.log(that.alarmConfig.configuration)
         if (that.alarmConfig.configuration) {
-          that.updateAlarmConfigForm.configuration = JSON.parse(that.alarmConfig.configuration)
+          this.alarmConfiguration = JSON.parse(that.alarmConfig.configuration)
+          this.updateAlarmConfigForm.alarmEnabled = this.alarmConfiguration.alarmEnabled
+          this.updateAlarmConfigForm.queueThreshold = this.alarmConfiguration.queueThreshold
+          this.updateAlarmConfigForm.poolActivationThreshold = this.alarmConfiguration.poolActivationThreshold
+          this.updateAlarmConfigForm.rejectCountThreshold = this.alarmConfiguration.rejectCountThreshold
         }
       })
     },
@@ -164,17 +173,15 @@ export default {
       console.log('create alarmConfig...' + form.executorName)
       this.alarmConfigEditable = false
 
-      for (let attr in form.configuration) {
-        if (attr === 'alarmEnabled') continue
-        if (!form.configuration[attr]) {
-          form.configuration[attr] = undefined
-        }
-      }
+      this.alarmConfiguration.alarmEnabled = this.updateAlarmConfigForm.alarmEnabled
+      this.alarmConfiguration.queueThreshold = this.updateAlarmConfigForm.queueThreshold === undefined ? undefined : this.updateAlarmConfigForm.queueThreshold
+      this.alarmConfiguration.poolActivationThreshold = (this.updateAlarmConfigForm.poolActivationThreshold === undefined || this.updateAlarmConfigForm.poolActivationThreshold.trim() === '') ? undefined : this.updateAlarmConfigForm.poolActivationThreshold.trim()
+      this.alarmConfiguration.rejectCountThreshold = this.updateAlarmConfigForm.rejectCountThreshold === undefined ? undefined : this.updateAlarmConfigForm.rejectCountThreshold
 
       this.axios.post('/admin/namespaces/' + form.namespaceName + '/apps/' +
         form.appId + '/executors/' + form.executorName + '/alarm-configs', null, {
         params: {
-          configuration: JSON.stringify(form.configuration)
+          configuration: JSON.stringify(this.alarmConfiguration)
         }
       }).then(res => {
         console.log(form.executorName + 'alarmConfig created')

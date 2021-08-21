@@ -112,8 +112,8 @@ public class ExecutorTickerService implements NotificationService<ExecutorTicker
         }
         BigDecimal poolActivation =
                 new BigDecimal(notification.getActiveCount()).divide(new BigDecimal(notification.getMaximumPoolSize()));
-        if (configurationProperty.getPoolActivationThreshold().compareTo(new BigDecimal(0)) > 0
-                && poolActivation.compareTo(configurationProperty.getPoolActivationThreshold()) > 0) {
+        if (configurationProperty.getPoolActivationThreshold() > 0
+                && poolActivation.compareTo(BigDecimal.valueOf(configurationProperty.getPoolActivationThreshold()).divide(new BigDecimal(100))) > 0) {
             msg += String.format("poolActivation:%s;", poolActivation);
         }
 

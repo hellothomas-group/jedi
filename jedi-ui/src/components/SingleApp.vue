@@ -93,33 +93,37 @@
               </el-table>
             </div>
             <el-dialog title="更新线程池配置" :visible.sync="updateExecutorDialogFormVisible">
-            <el-form :model="updateExecutorForm" ref="updateExecutorForm">
-              <el-form-item label="corePoolSize" :label-width="formLabelWidth" prop="corePoolSize">
-                <el-input v-model="updateExecutorForm.configuration.corePoolSize" autocomplete="off"
-                          placeholder="正整数"></el-input>
+            <el-form :model="updateExecutorForm" :rules="updateExecutorRules" ref="updateExecutorForm">
+              <el-form-item label="核心线程数" :label-width="formLabelWidth" prop="corePoolSize">
+                <el-input v-model.number="updateExecutorForm.corePoolSize" autocomplete="off"
+                          placeholder="正整数" style="width: 300px"></el-input>
               </el-form-item>
-              <el-form-item label="maxPoolSize" :label-width="formLabelWidth" prop="maxPoolSize">
-                <el-input v-model="updateExecutorForm.configuration.maxPoolSize" autocomplete="off"
-                          placeholder="正整数"></el-input>
+              <el-form-item label="最大线程数" :label-width="formLabelWidth" prop="maxPoolSize">
+                <el-input v-model.number="updateExecutorForm.maxPoolSize" autocomplete="off"
+                          placeholder="正整数" style="width: 300px"></el-input>
               </el-form-item>
-              <el-form-item label="queueCapacity" :label-width="formLabelWidth" prop="queueCapacity">
-                <el-input v-model="updateExecutorForm.configuration.queueCapacity" autocomplete="off"
-                          placeholder="正整数,若改小则重启时生效"></el-input>
+              <el-form-item label="队列容量" :label-width="formLabelWidth" prop="queueCapacity">
+                <el-input v-model.number="updateExecutorForm.queueCapacity" autocomplete="off"
+                          placeholder="正整数,若改小则重启时生效" style="width: 300px"></el-input>
               </el-form-item>
-              <el-form-item label="keepAliveSeconds" :label-width="formLabelWidth" prop="keepAliveSeconds">
-                <el-input v-model="updateExecutorForm.configuration.keepAliveSeconds" autocomplete="off"
-                          placeholder="正整数"></el-input>
+              <el-form-item label="空闲线程超时时间(s)" :label-width="formLabelWidth" prop="keepAliveSeconds">
+                <el-input v-model.number="updateExecutorForm.keepAliveSeconds" autocomplete="off"
+                          placeholder="正整数" style="width: 300px"></el-input>
               </el-form-item>
-              <el-form-item label="tickerCycle" :label-width="formLabelWidth" prop="tickerCycle">
-                <el-input v-model="updateExecutorForm.configuration.tickerCycle" autocomplete="off"
-                          placeholder="正整数"></el-input>
+              <el-form-item label="打点频率(ms)" :label-width="formLabelWidth" prop="tickerCycle">
+                <el-input v-model.number="updateExecutorForm.tickerCycle" autocomplete="off"
+                          placeholder="正整数" style="width: 300px"></el-input>
               </el-form-item>
-              <el-form-item label="allowCoreThreadTimeOut" :label-width="formLabelWidth" prop="allowCoreThreadTimeOut">
-                <el-input v-model="updateExecutorForm.configuration.allowCoreThreadTimeOut" autocomplete="off"
-                          placeholder="正整数"></el-input>
+              <el-form-item label="是否允许核心线程池超时" :label-width="formLabelWidth" prop="allowCoreThreadTimeOut">
+                <el-switch
+                  v-model="updateExecutorForm.allowCoreThreadTimeOut"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949">
+                </el-switch>
               </el-form-item>
               <el-form-item label="备注" :label-width="formLabelWidth" prop="comment" >
-                <el-input v-model="updateExecutorForm.comment" autocomplete="off"></el-input>
+                <el-input v-model="updateExecutorForm.comment" autocomplete="off"
+                          style="width: 300px"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -220,14 +224,13 @@ export default {
         namespace: undefined,
         appId: undefined,
         executorName: undefined,
-        configuration: {
-          corePoolSize: undefined,
-          maxPoolSize: undefined,
-          queueCapacity: undefined,
-          keepAliveSeconds: undefined,
-          tickerCycle: undefined,
-          allowCoreThreadTimeOut: undefined
-        },
+        // configuration
+        corePoolSize: undefined,
+        maxPoolSize: undefined,
+        queueCapacity: undefined,
+        keepAliveSeconds: undefined,
+        tickerCycle: undefined,
+        allowCoreThreadTimeOut: undefined,
         comment: undefined
       },
       releaseExecutorForm: {
@@ -237,7 +240,7 @@ export default {
         name: undefined,
         comment: undefined
       },
-      formLabelWidth: '20%',
+      formLabelWidth: '30%',
       creatExecutorFormRules: {
         newExecutor: [
           {required: true, message: '请输入线程池名称', trigger: 'blur'},
@@ -248,6 +251,36 @@ export default {
         name: [
           {required: true, message: '请输入发布名称', trigger: 'blur'}
         ]
+      },
+      updateExecutorRules: {
+        corePoolSize: [
+          {required: true, message: '核心线程数不能为空'},
+          {type: 'number', message: '核心线程数必须为数字值'}
+        ],
+        maxPoolSize: [
+          {required: true, message: '最大线程数不能为空'},
+          {type: 'number', message: '最大线程数必须为数字值'}
+        ],
+        queueCapacity: [
+          {required: true, message: '队列容量不能为空'},
+          {type: 'number', message: '队列容量必须为数字值'}
+        ],
+        keepAliveSeconds: [
+          {required: true, message: '空闲线程超时时间不能为空'},
+          {type: 'number', message: '空闲线程超时时间必须为数字值'}
+        ],
+        tickerCycle: [
+          {required: true, message: '打点频率不能为空'},
+          {type: 'number', message: '打点频率必须为数字值'}
+        ]
+      },
+      itemConfiguration: {
+        corePoolSize: undefined,
+        maxPoolSize: undefined,
+        queueCapacity: undefined,
+        keepAliveSeconds: undefined,
+        tickerCycle: undefined,
+        allowCoreThreadTimeOut: undefined
       }
     }
   },
@@ -470,18 +503,19 @@ export default {
       console.log('updating...' + form.executorName)
       this.updateExecutorDialogFormVisible = false
 
-      for (let attr in form.configuration) {
-        if (!form.configuration[attr]) {
-          form.configuration[attr] = undefined
-        }
-      }
+      this.itemConfiguration.corePoolSize = form.corePoolSize
+      this.itemConfiguration.maxPoolSize = form.maxPoolSize
+      this.itemConfiguration.queueCapacity = form.queueCapacity
+      this.itemConfiguration.keepAliveSeconds = form.keepAliveSeconds
+      this.itemConfiguration.tickerCycle = form.tickerCycle
+      this.itemConfiguration.allowCoreThreadTimeOut = form.allowCoreThreadTimeOut
 
-      console.log('更新的配置为: ' + JSON.stringify(form.configuration))
+      console.log('更新的配置为: ' + JSON.stringify(this.itemConfiguration))
 
       this.axios.put('/admin/namespaces/' + form.namespace + '/apps/' +
         form.appId + '/executors/' + form.executorName + '/items', null, {
         params: {
-          configuration: JSON.stringify(form.configuration),
+          configuration: JSON.stringify(this.itemConfiguration),
           comment: form.comment
         }
       }).then(res => {
@@ -500,7 +534,14 @@ export default {
       this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName + '/items'
       ).then(res => {
         console.log(res)
-        this.updateExecutorForm.configuration = JSON.parse(res.data.configuration)
+        this.itemConfiguration = JSON.parse(res.data.configuration)
+        this.updateExecutorForm.corePoolSize = this.itemConfiguration.corePoolSize
+        this.updateExecutorForm.maxPoolSize = this.itemConfiguration.maxPoolSize
+        this.updateExecutorForm.queueCapacity = this.itemConfiguration.queueCapacity
+        this.updateExecutorForm.keepAliveSeconds = this.itemConfiguration.keepAliveSeconds
+        this.updateExecutorForm.tickerCycle = this.itemConfiguration.tickerCycle
+        this.updateExecutorForm.allowCoreThreadTimeOut = this.itemConfiguration.allowCoreThreadTimeOut
+        this.updateExecutorForm.comment = res.data.comment
         this.updateExecutorDialogFormVisible = true
       }).catch(function (error) {
         console.log(error)

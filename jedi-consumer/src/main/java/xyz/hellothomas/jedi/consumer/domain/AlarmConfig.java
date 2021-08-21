@@ -45,7 +45,10 @@ public class AlarmConfig extends BaseEntity {
 
         private int queueThreshold;
 
-        private BigDecimal poolActivationThreshold = new BigDecimal(0);
+        /**
+         * 0-100
+         */
+        private int poolActivationThreshold;
 
         private int rejectCountThreshold;
     }

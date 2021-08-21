@@ -204,8 +204,7 @@ export default {
         this.executorName + '/task-details', {
         params: {
           taskName: this.taskName,
-          taskExtraData: (this.inputTaskExtraData === undefined || this.inputTaskExtraData.trim() === '') ? undefined :
-            this.inputTaskExtraData.trim(),
+          taskExtraData: (this.inputTaskExtraData === undefined || this.inputTaskExtraData.trim() === '') ? undefined : this.inputTaskExtraData.trim(),
           isSuccess: this.executeResult === undefined ? undefined : this.executeResult,
           startTime: format(this.queryDate[0], 'yyyy-MM-dd HH:mm:ss'),
           endTime: format(this.queryDate[1], 'yyyy-MM-dd HH:mm:ss'),
