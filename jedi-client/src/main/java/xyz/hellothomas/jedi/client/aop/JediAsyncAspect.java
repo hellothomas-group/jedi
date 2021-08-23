@@ -21,9 +21,15 @@ import java.util.Map;
 @Slf4j
 public class JediAsyncAspect {
     private final Map<String, JediThreadPoolExecutor> executorMap;
+    private final JediThreadPoolExecutor uniqueExecutor;
 
     public JediAsyncAspect(Map<String, JediThreadPoolExecutor> executorMap) {
         this.executorMap = executorMap;
+        if (executorMap.size() == 1) {
+            uniqueExecutor = executorMap.values().stream().findFirst().get();
+        } else {
+            uniqueExecutor = null;
+        }
     }
 
     @Pointcut("@annotation(xyz.hellothomas.jedi.client.annotation.JediAsync))")
@@ -43,12 +49,22 @@ public class JediAsyncAspect {
     public void logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         JediAsync jediAsync = AnnotationUtils.getAnnotation(methodSignature.getMethod(), JediAsync.class);
-        JediThreadPoolExecutor jediThreadPoolExecutor = executorMap.get(jediAsync.executorName());
-        if (jediThreadPoolExecutor == null) {
-            log.error("@JediAsync无效, 未配置线程池:{}, 将以同步方式执行", jediAsync.executorName());
-            joinPoint.proceed();
-            return;
+
+        JediThreadPoolExecutor jediThreadPoolExecutor;
+        if (StringUtils.isNotBlank(jediAsync.executorName())) {
+            jediThreadPoolExecutor = executorMap.get(jediAsync.executorName());
+            if (jediThreadPoolExecutor == null) {
+                throw new RuntimeException(String.format("未配置@JediAsync指定线程池:%s", jediAsync.executorName()));
+            }
+        } else {
+            // only one executor
+            if (uniqueExecutor != null) {
+                jediThreadPoolExecutor = uniqueExecutor;
+            } else {
+                throw new RuntimeException(String.format("容器中有 %d 个线程池, 在@JediAsync中指定", executorMap.size()));
+            }
         }
+
         String taskName = StringUtils.isBlank(jediAsync.taskName()) ? Constants.JEDI_DEFAULT_TASK_NAME :
                 jediAsync.taskName();
 
