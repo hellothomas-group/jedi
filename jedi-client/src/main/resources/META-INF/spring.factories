@@ -1,5 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-xyz.hellothomas.jedi.client.config.JediExecutorAutoConfig
+xyz.hellothomas.jedi.client.config.JediExecutorAutoConfig,,xyz.hellothomas.jedi.client.config.JediAsyncAspectConfig
 org.springframework.context.ApplicationContextInitializer=\
 xyz.hellothomas.jedi.client.config.JediApplicationInitializer
 org.springframework.boot.env.EnvironmentPostProcessor=\
