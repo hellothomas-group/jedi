@@ -11,7 +11,7 @@ import xyz.hellothomas.jedi.client.constants.Constants;
 public class JediAsyncAspectConfig {
 
     @Bean
-    public JediAsyncAspect loggingAspect() {
+    public JediAsyncAspect jediAsyncAspect() {
         return new JediAsyncAspect();
     }
 }

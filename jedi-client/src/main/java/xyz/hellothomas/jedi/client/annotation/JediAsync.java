@@ -4,7 +4,7 @@ import xyz.hellothomas.jedi.client.constants.Constants;
 
 import java.lang.annotation.*;
 
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface JediAsync {
