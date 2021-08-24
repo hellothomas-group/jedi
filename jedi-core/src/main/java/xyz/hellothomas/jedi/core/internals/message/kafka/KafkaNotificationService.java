@@ -41,7 +41,7 @@ public class KafkaNotificationService extends AbstractNotificationService {
     public KafkaNotificationService(KafkaProperty kafkaProperty, String appId, String namespace) {
         super(appId, namespace);
         this.kafkaProperty = kafkaProperty;
-        this.notificationQueue = new LinkedBlockingQueue<>(1000);
+        this.notificationQueue = new LinkedBlockingQueue<>(5000);
         start();
         startMessageSendThread();
     }
