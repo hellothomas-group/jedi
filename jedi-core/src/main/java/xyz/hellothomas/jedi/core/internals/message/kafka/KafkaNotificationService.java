@@ -69,7 +69,7 @@ public class KafkaNotificationService extends AbstractNotificationService {
             if (exception == null) {
                 LOGGER.trace("Success sent message: {}, metadata: {}", producerRecord, metadata);
             } else {
-                LOGGER.error(String.format("Fail send message: %s, metadata: {}", producerRecord, metadata), exception);
+                LOGGER.error(String.format("Fail send message: %s, metadata: %s", producerRecord, metadata), exception);
             }
         }));
     }
