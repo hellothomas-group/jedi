@@ -54,14 +54,14 @@ public class JediAsyncAspect {
         if (StringUtils.isNotBlank(jediAsync.executorName())) {
             jediThreadPoolExecutor = executorMap.get(jediAsync.executorName());
             if (jediThreadPoolExecutor == null) {
-                throw new RuntimeException(String.format("未配置@JediAsync指定线程池:%s", jediAsync.executorName()));
+                throw new RuntimeException(String.format("未配置@JediAsync指定的线程池:%s", jediAsync.executorName()));
             }
         } else {
             // only one executor
             if (uniqueExecutor != null) {
                 jediThreadPoolExecutor = uniqueExecutor;
             } else {
-                throw new RuntimeException(String.format("容器中有 %d 个线程池, 在@JediAsync中指定", executorMap.size()));
+                throw new RuntimeException(String.format("容器中有 %d 个线程池, 需在@JediAsync中指定", executorMap.size()));
             }
         }
 

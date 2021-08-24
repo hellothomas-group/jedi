@@ -1,6 +1,5 @@
 package xyz.hellothomas.jedi.client.config;
 
-import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -23,9 +22,6 @@ public class JediAsyncAspectConfig implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
-        Map<String, JediThreadPoolExecutor> executorMap =
-                this.applicationContext.getBeansOfType(JediThreadPoolExecutor.class);
-        log.warn(Joiner.on(",").withKeyValueSeparator("-").join(executorMap));
     }
 
     @Bean
