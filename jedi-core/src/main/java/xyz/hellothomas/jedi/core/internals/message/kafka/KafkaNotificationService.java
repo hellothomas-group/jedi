@@ -64,8 +64,14 @@ public class KafkaNotificationService extends AbstractNotificationService {
         if (topic == null) {
             topic = kafkaProperty.getDefaultTopic();
         }
-        lazyProducer.get().send(new ProducerRecord<>(topic, JsonUtil.serialize(request)));
-        LOGGER.trace("success send to {}, message: {}", topic, request);
+        final ProducerRecord<String, String> producerRecord = new ProducerRecord(topic, JsonUtil.serialize(request));
+        lazyProducer.get().send(producerRecord, ((metadata, exception) -> {
+            if (exception == null) {
+                LOGGER.trace("Success sent message: {}, metadata: {}", producerRecord, metadata);
+            } else {
+                LOGGER.error(String.format("Fail send message: %s, metadata: {}", producerRecord, metadata), exception);
+            }
+        }));
     }
 
     public void stop() {
