@@ -3,9 +3,9 @@ package xyz.hellothomas.jedi.consumer.api;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.security.auth.SecurityProtocol;
-import org.apache.kafka.common.security.plain.PlainLoginModule;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +31,9 @@ import static org.apache.kafka.clients.producer.ProducerConfig.*;
 @RestController
 @RequestMapping("/static-config")
 @Slf4j
-public class StaticConfigController {
+public class StaticConfigController implements EnvironmentAware {
     private final ConsumerLocalProperties consumerLocalProperties;
+    private Environment environment;
 
     public StaticConfigController(ConsumerLocalProperties consumerLocalProperties) {
         this.consumerLocalProperties = consumerLocalProperties;
@@ -47,15 +48,16 @@ public class StaticConfigController {
 
         if (ConsumerTypeEnum.KAFKA.getEnumValue().equals(consumerLocalProperties.getType())) {
             // KAFKA配置
-            configProperty.put(BOOTSTRAP_SERVERS_CONFIG, "55.6.73.239:9091,55.6.73.239:9092,55.6.73.239:9093");
+            configProperty.put(BOOTSTRAP_SERVERS_CONFIG, environment.getRequiredProperty("spring.kafka" +
+                    ".bootstrap-servers"));
             configProperty.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
             configProperty.put(VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-
-            String jaasTemplate = PlainLoginModule.class.getName() + " required username=\"%s\" password=" + "\"%s\";";
-            String jaasCfg = String.format(jaasTemplate, "LW12.04", "LW12.04");
-            configProperty.put(SECURITY_PROTOCOL_CONFIG, SecurityProtocol.SASL_PLAINTEXT.name);
-            configProperty.put("sasl.mechanism", "PLAIN");
-            configProperty.put("sasl.jaas.config", jaasCfg);
+            configProperty.put(SECURITY_PROTOCOL_CONFIG, environment.getProperty("spring.kafka.consumer.properties" +
+                    ".security.protocol"));
+            configProperty.put("sasl.mechanism", environment.getProperty("spring.kafka.consumer.properties.sasl" +
+                    ".mechanism"));
+            configProperty.put("sasl.jaas.config", environment.getProperty("spring.kafka.consumer.properties.sasl" +
+                    ".jaas.config"));
 
             // TOPIC配置
             if (consumerLocalProperties.getExecutorTickerTopic() != null) {
@@ -84,5 +86,10 @@ public class StaticConfigController {
         }
 
         return consumerProperty;
+    }
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 }
