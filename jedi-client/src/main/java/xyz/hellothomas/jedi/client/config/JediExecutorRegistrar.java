@@ -136,7 +136,9 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
                         }
                     }
                     // kafka config
-                    kafkaProperty.addProducerConfigValue(k, v);
+                    if (v != null) {
+                        kafkaProperty.addProducerConfigValue(k, v);
+                    }
                 });
                 return new KafkaNotificationService(kafkaProperty, appId, namespace);
             }
