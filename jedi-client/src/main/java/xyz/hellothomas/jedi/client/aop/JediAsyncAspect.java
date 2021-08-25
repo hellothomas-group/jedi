@@ -10,6 +10,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.AnnotationUtils;
 import xyz.hellothomas.jedi.client.annotation.JediAsync;
 import xyz.hellothomas.jedi.client.constants.Constants;
+import xyz.hellothomas.jedi.client.exception.JediClientException;
 import xyz.hellothomas.jedi.core.internals.executor.JediRunnable;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 
@@ -44,14 +45,14 @@ public class JediAsyncAspect {
         if (StringUtils.isNotBlank(jediAsync.executorName())) {
             jediThreadPoolExecutor = executorMap.get(jediAsync.executorName());
             if (jediThreadPoolExecutor == null) {
-                throw new RuntimeException(String.format("未配置@JediAsync指定的线程池:%s", jediAsync.executorName()));
+                throw new JediClientException(String.format("未配置@JediAsync指定的线程池:%s", jediAsync.executorName()));
             }
         } else {
             // only one executor
             if (uniqueExecutor != null) {
                 jediThreadPoolExecutor = uniqueExecutor;
             } else {
-                throw new RuntimeException(String.format("容器中有 %d 个线程池, 需在@JediAsync中指定", executorMap.size()));
+                throw new JediClientException(String.format("容器中有 %d 个线程池, 需在@JediAsync中指定", executorMap.size()));
             }
         }
 
