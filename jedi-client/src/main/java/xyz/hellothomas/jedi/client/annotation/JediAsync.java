@@ -30,7 +30,7 @@ public @interface JediAsync {
     String taskName() default "";
 
     /**
-     * 任务附件信息
+     * 任务附加信息
      * @return
      */
     String taskExtraData() default "";
