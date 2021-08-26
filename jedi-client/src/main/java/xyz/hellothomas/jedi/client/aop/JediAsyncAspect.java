@@ -5,6 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import xyz.hellothomas.jedi.client.annotation.JediAsync;
 import xyz.hellothomas.jedi.client.constants.Constants;
 import xyz.hellothomas.jedi.client.exception.JediClientException;
@@ -16,6 +18,7 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
+@Order(Ordered.LOWEST_PRECEDENCE - 100)
 @Aspect
 @Slf4j
 public class JediAsyncAspect {
