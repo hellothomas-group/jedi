@@ -5,16 +5,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.core.annotation.AnnotationUtils;
 import xyz.hellothomas.jedi.client.annotation.JediAsync;
 import xyz.hellothomas.jedi.client.constants.Constants;
 import xyz.hellothomas.jedi.client.exception.JediClientException;
+import xyz.hellothomas.jedi.client.util.AspectSupportUtil;
 import xyz.hellothomas.jedi.core.internals.executor.JediRunnable;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 
 import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @Aspect
 @Slf4j
@@ -31,16 +31,27 @@ public class JediAsyncAspect {
         }
     }
 
-    @Pointcut("@annotation(xyz.hellothomas.jedi.client.annotation.JediAsync))")
-    public void jediAsyncAnnotationPointcut() {
-        // 仅定义切点
+    @Around("@annotation(jediAsync)")
+    public void logAround(ProceedingJoinPoint joinPoint, JediAsync jediAsync) throws Throwable {
+        JediThreadPoolExecutor jediThreadPoolExecutor = extractJediThreadPoolExecutor(jediAsync);
+        String taskName = extractTaskName(joinPoint, jediAsync);
+        String taskExtraData = extractTaskExtraData(joinPoint, jediAsync);
+
+        jediThreadPoolExecutor.execute(new JediRunnable(jediThreadPoolExecutor, taskName, taskExtraData,
+                () -> {
+                    try {
+                        joinPoint.proceed();
+                    } catch (Throwable throwable) {
+                        log.error("Exception in {}.{}() with cause = \'{}\' and exception = \'{}\'",
+                                joinPoint.getSignature().getDeclaringTypeName(),
+                                joinPoint.getSignature().getName(), null != throwable.getCause() ?
+                                        throwable.getCause() :
+                                        "NULL", throwable.getMessage(), throwable);
+                    }
+                }));
     }
 
-    @Around("jediAsyncAnnotationPointcut()")
-    public void logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        JediAsync jediAsync = AnnotationUtils.getAnnotation(methodSignature.getMethod(), JediAsync.class);
-
+    private JediThreadPoolExecutor extractJediThreadPoolExecutor(JediAsync jediAsync) {
         JediThreadPoolExecutor jediThreadPoolExecutor;
         if (StringUtils.isNotBlank(jediAsync.executorName())) {
             jediThreadPoolExecutor = executorMap.get(jediAsync.executorName());
@@ -55,21 +66,52 @@ public class JediAsyncAspect {
                 throw new JediClientException(String.format("容器中有 %d 个线程池, 需在@JediAsync中指定", executorMap.size()));
             }
         }
+        return jediThreadPoolExecutor;
+    }
 
-        String taskName = StringUtils.isBlank(jediAsync.taskName()) ? Constants.JEDI_DEFAULT_TASK_NAME :
-                jediAsync.taskName();
+    private String extractTaskName(ProceedingJoinPoint joinPoint, JediAsync jediAsync) {
+        String taskName;
+        if (StringUtils.isBlank(jediAsync.taskName())) {
+            taskName = Constants.JEDI_DEFAULT_TASK_NAME;
+        } else {
+            try {
+                Object taskNameObject = AspectSupportUtil.getKeyValue(joinPoint, jediAsync.taskName());
+                if (taskNameObject == null) {
+                    throw new JediClientException(String.format("@JediAsync taskName:%s, cannot be null",
+                            jediAsync.taskName()));
+                }
+                taskName = StringUtils.isBlank(taskNameObject.toString()) ? Constants.JEDI_DEFAULT_TASK_NAME :
+                        taskNameObject.toString();
+            } catch (JediClientException e1) {
+                throw e1;
+            } catch (Exception e) {
+                throw new JediClientException(String.format("@JediAsync taskName:%s, SpEL Expression exception:%s",
+                        jediAsync.taskName(), e));
+            }
+        }
+        return taskName;
+    }
 
-        jediThreadPoolExecutor.execute(new JediRunnable(jediThreadPoolExecutor, taskName, jediAsync.taskExtraData(),
-                () -> {
-                    try {
-                        joinPoint.proceed();
-                    } catch (Throwable throwable) {
-                        log.error("Exception in {}.{}() with cause = \'{}\' and exception = \'{}\'",
-                                joinPoint.getSignature().getDeclaringTypeName(),
-                                joinPoint.getSignature().getName(), null != throwable.getCause() ?
-                                        throwable.getCause() :
-                                        "NULL", throwable.getMessage(), throwable);
-                    }
-                }));
+    private String extractTaskExtraData(ProceedingJoinPoint joinPoint, JediAsync jediAsync) {
+        String taskExtraData;
+        if (StringUtils.isBlank(jediAsync.taskExtraData())) {
+            taskExtraData = EMPTY;
+        } else {
+            try {
+                Object taskExtraDataObject = AspectSupportUtil.getKeyValue(joinPoint, jediAsync.taskExtraData());
+                if (taskExtraDataObject == null) {
+                    throw new JediClientException(String.format("@JediAsync taskExtraData:%s, cannot be null",
+                            jediAsync.taskExtraData()));
+                }
+                taskExtraData = StringUtils.isBlank(taskExtraDataObject.toString()) ? EMPTY :
+                        taskExtraDataObject.toString();
+            } catch (JediClientException e1) {
+                throw e1;
+            } catch (Exception e) {
+                throw new JediClientException(String.format("@JediAsync taskExtraData:%s, SpEL Expression exception:%s",
+                        jediAsync.taskExtraData(), e));
+            }
+        }
+        return taskExtraData;
     }
 }
