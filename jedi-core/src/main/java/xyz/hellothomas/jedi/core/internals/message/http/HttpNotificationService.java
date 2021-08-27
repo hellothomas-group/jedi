@@ -113,7 +113,7 @@ public class HttpNotificationService extends AbstractNotificationService {
                     send(abstractNotifications, MessageType.EXECUTOR_TICKER);
                 } catch (Exception e) {
                     if (!toStopTicker) {
-                        LOGGER.error("打点消息发送任务失败, 异常为: {}, 消息为: {}! ", e, abstractNotifications);
+                        LOGGER.warn("打点消息发送任务失败, 异常为: {}, 消息为: {}! ", e, abstractNotifications);
                     }
                 } finally {
                     abstractNotifications.clear();
@@ -146,7 +146,7 @@ public class HttpNotificationService extends AbstractNotificationService {
                     send(abstractNotifications, MessageType.EXECUTOR_TASK);
                 } catch (Exception e) {
                     if (!toStopTask) {
-                        LOGGER.error("任务消息发送任务失败, 异常为: {}, 消息为: {}! ", e, abstractNotifications);
+                        LOGGER.warn("任务消息发送任务失败, 异常为: {}, 消息为: {}! ", e, abstractNotifications);
                     }
                 } finally {
                     abstractNotifications.clear();
@@ -179,7 +179,7 @@ public class HttpNotificationService extends AbstractNotificationService {
                     send(abstractNotifications, MessageType.CUSTOM_NOTIFICATION);
                 } catch (Exception e) {
                     if (!toStopDefault) {
-                        LOGGER.error("默认消息发送任务失败, 异常为: {}, 消息为: {}! ", e, abstractNotifications);
+                        LOGGER.warn("默认消息发送任务失败, 异常为: {}, 消息为: {}! ", e, abstractNotifications);
                     }
                 } finally {
                     abstractNotifications.clear();
