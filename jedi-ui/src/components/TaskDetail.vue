@@ -2,49 +2,47 @@
   <div>
     <el-header>
       <div class="block" style="text-align: left;margin-left: 20px">
-        <span class="demonstration">日期</span>
-        <el-date-picker
-          v-model="queryDate"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :picker-options="pickerOptions">
-        </el-date-picker>
-        <span class="demonstration" style="margin-left: 50px">任务名称</span>
-        <el-input style="width: 250px"
-                  placeholder="请输入任务名称(必填)"
-                  v-model="inputTaskName"
-                  clearable>
-        </el-input>
-        <span class="demonstration" style="margin-left: 50px">执行结果</span>
-        <el-select v-model="executeResult" style="width: 120px" clearable placeholder="请选择">
-          <el-option
-            v-for="item in executeResultOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-        <el-button
-          type="primary"
-          @click="submitQueryTaskList()" style="margin-left: 50px;">查询
-        </el-button>
-        <div style="margin-top: 10px">
-        <span class="demonstration">任务附加信息</span>
-        <el-input style="width: 285px"
-                  placeholder="请输入任务附加信息"
-                  v-model="inputTaskExtraData"
-                  clearable>
-        </el-input>
-        </div>
+        <el-form :inline="true" :model="queryTaskDetailForm" class="demo-form-inline" :rules="queryTaskDetailRules" ref="queryTaskDetailForm">
+          <el-form-item label="日期" prop="queryDate">
+            <el-date-picker
+              v-model="queryTaskDetailForm.queryDate"
+              type="daterange"
+              align="right"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="任务名称" prop="inputTaskName">
+            <el-input v-model="queryTaskDetailForm.inputTaskName" placeholder="请输入任务名称" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="执行结果" prop="executeResult">
+            <el-select v-model="queryTaskDetailForm.executeResult" placeholder="执行结果" clearable="">
+              <el-option
+                v-for="item in executeResultOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              @click="submitQueryTaskList('queryTaskDetailForm')" style="margin-left: 50px;">查询
+            </el-button>
+          </el-form-item>
+          <el-form-item label="任务附加信息" prop="inputTaskExtraData">
+            <el-input v-model="queryTaskDetailForm.inputTaskExtraData" placeholder="请输入任务附加信息" clearable></el-input>
+          </el-form-item>
+        </el-form>
       </div>
     </el-header>
     <el-container>
       <el-main>
-        <div style="margin-top: 20px">
+        <div style="margin-top: 30px">
           <el-table
             :data="taskList.filter(data => !search || data.taskExtraData.toLowerCase().includes(search.toLowerCase()))"
             max-height="430"
@@ -157,9 +155,17 @@ export default {
           }
         }]
       },
-      queryDate: [new Date(format(new Date(), 'yyyy/MM/dd')), new Date()],
-      inputTaskName: '',
-      inputTaskExtraData: '',
+      queryTaskDetailForm: {
+        queryDate: [new Date(format(new Date(), 'yyyy/MM/dd')), new Date()],
+        inputTaskName: '',
+        inputTaskExtraData: '',
+        executeResult: undefined
+      },
+      queryTaskDetailRules: {
+        inputTaskName: [
+          {required: true, message: '任务名称不能为空', trigger: 'blur'}
+        ]
+      },
       taskList: [],
       search: '',
       pagination: {
@@ -173,8 +179,7 @@ export default {
       }, {
         value: 'false',
         label: '失败'
-      }],
-      executeResult: undefined
+      }]
     }
   },
   created () {
@@ -184,12 +189,12 @@ export default {
       this.appId = this.$route.query.appId
       this.executorName = this.$route.query.executor
       if (this.$route.query.taskDate) {
-        this.queryDate[0] = new Date(this.$route.query.taskDate.replace(/-/g, '/'))
-        this.queryDate[1] = new Date(this.queryDate[0].getTime() + 3600 * 1000 * 24 - 1)
+        this.queryTaskDetailForm.queryDate[0] = new Date(this.$route.query.taskDate.replace(/-/g, '/'))
+        this.queryTaskDetailForm.queryDate[1] = new Date(this.queryTaskDetailForm.queryDate[0].getTime() + 3600 *
+          1000 * 24 - 1)
       }
-      this.taskName = this.$route.query.taskName
       if (this.$route.query.taskName) {
-        this.inputTaskName = this.$route.query.taskName
+        this.queryTaskDetailForm.inputTaskName = this.$route.query.taskName
         this.asyncQueryTaskList()
       }
     }
@@ -197,16 +202,17 @@ export default {
   methods: {
     asyncQueryTaskList () {
       console.log('asyncQueryTaskList')
-      console.log(this.taskName)
+      console.log(this.queryTaskDetailForm.inputTaskName)
 
       this.axios.get('/consumer/namespaces/' + this.namespaceName + '/apps/' + this.appId + '/executors/' +
         this.executorName + '/task-details', {
         params: {
-          taskName: this.taskName,
-          taskExtraData: (this.inputTaskExtraData === undefined || this.inputTaskExtraData.trim() === '') ? undefined : this.inputTaskExtraData.trim(),
-          isSuccess: this.executeResult === undefined ? undefined : this.executeResult,
-          startTime: format(this.queryDate[0], 'yyyy-MM-dd HH:mm:ss'),
-          endTime: format(this.queryDate[1], 'yyyy-MM-dd HH:mm:ss'),
+          taskName: this.queryTaskDetailForm.inputTaskName,
+          taskExtraData: (this.queryTaskDetailForm.inputTaskExtraData === undefined ||
+            this.queryTaskDetailForm.inputTaskExtraData.trim() === '') ? undefined : this.queryTaskDetailForm.inputTaskExtraData.trim(),
+          isSuccess: this.queryTaskDetailForm.executeResult === undefined ? undefined : this.queryTaskDetailForm.executeResult,
+          startTime: format(this.queryTaskDetailForm.queryDate[0], 'yyyy-MM-dd HH:mm:ss'),
+          endTime: format(this.queryTaskDetailForm.queryDate[1], 'yyyy-MM-dd HH:mm:ss'),
           pageNum: this.pagination.pageNum,
           pageSize: this.pagination.pageSize
         }
@@ -220,12 +226,20 @@ export default {
         console.log(error)
       })
     },
-    submitQueryTaskList () {
-      this.queryDate[1] = new Date(new Date(format(this.queryDate[1], 'yyyy/MM/dd')).getTime() + 3600 * 1000 * 24 - 1)
-      if (this.inputTaskName && this.inputTaskName.trim() !== '') {
-        this.taskName = this.inputTaskName.trim()
-        this.asyncQueryTaskList()
-      }
+    submitQueryTaskList (formName) {
+      console.log(formName)
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.queryTaskDetailForm.queryDate[1] = new
+          Date(new Date(format(this.queryTaskDetailForm.queryDate[1], 'yyyy/MM/dd')).getTime() + 3600 * 1000 * 24 - 1)
+          if (this.queryTaskDetailForm.inputTaskName && this.queryTaskDetailForm.inputTaskName.trim() !== '') {
+            this.asyncQueryTaskList()
+          }
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
     tableRowClassName ({row, rowIndex}) {
       if (rowIndex % 2 === 0) {
