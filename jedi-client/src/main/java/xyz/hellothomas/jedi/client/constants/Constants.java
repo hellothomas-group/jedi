@@ -28,11 +28,10 @@ public class Constants {
     public static final String JEDI_CONFIG_BEAN_NAME = "jediConfig";
 
     public static final String JEDI_DEFAULT_EXECUTOR_NAME = "jedi-default-executor";
-    public static final String JEDI_DEFAULT_TASK_NAME = "jedi-default-task";
     public static final String JEDI_BOOTSTRAP_PROPERTY_SOURCE_NAME = "JediBootstrapPropertySources";
 
 
     private Constants() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Constant class");
     }
 }

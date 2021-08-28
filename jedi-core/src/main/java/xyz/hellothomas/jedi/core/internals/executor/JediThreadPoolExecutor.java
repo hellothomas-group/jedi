@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static xyz.hellothomas.jedi.core.constants.Constants.JEDI_DEFAULT_TASK_NAME;
+
 /**
  * @author Thomas
  * @date 2020/12/28 22:54
@@ -33,9 +35,12 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
     private AtomicLong rejectCount = new AtomicLong();
 
     /**
-     * 保存任务开始执行的时间，当任务结束时，用任务结束时间减去开始时间计算任务执行时间
+     * 保存任务属性
+     *  任务名称
+     *  任务附加信息
+     *  开始执行的时间，当任务结束时，用任务结束时间减去开始时间计算任务执行时间
      */
-    private ThreadLocal<Long> startTime = new ThreadLocal<>();
+    private ThreadLocal<TaskProperty> taskProperty = new ThreadLocal<>();
 
     /**
      * 打点线程结束标志
@@ -134,18 +139,23 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
 
     @Override
     protected void beforeExecute(Thread t, Runnable r) {
-        this.startTime.set(System.currentTimeMillis());
+        TaskProperty defaultTaskProperty = new TaskProperty(JEDI_DEFAULT_TASK_NAME, null);
+        defaultTaskProperty.setStartTime(System.currentTimeMillis());
+        this.taskProperty.set(defaultTaskProperty);
         super.beforeExecute(t, r);
     }
 
     @Override
     protected void afterExecute(Runnable r, Throwable t) {
-        long diff = System.currentTimeMillis() - this.startTime.get();
+        TaskProperty currentTaskProperty = this.taskProperty.get();
+        long diff = System.currentTimeMillis() - currentTaskProperty.getStartTime();
 
         ExecutorTaskNotification executorTaskNotification =
-                this.notificationService.buildExecutorTaskNotification(null, null,
+                this.notificationService.buildExecutorTaskNotification(currentTaskProperty.getTaskName(),
+                        currentTaskProperty.getTaskExtraData(),
                         this.poolName, diff, t);
         this.notificationService.pushNotification(executorTaskNotification);
+        this.taskProperty.remove();
     }
 
     @Override
@@ -240,15 +250,19 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         return notificationService;
     }
 
-    public void setNotificationService(AbstractNotificationService notificationService) {
-        this.notificationService = notificationService;
-    }
-
     public long getLastRejectCount() {
         return lastRejectCount;
     }
 
     public void setLastRejectCount(long lastRejectCount) {
         this.lastRejectCount = lastRejectCount;
+    }
+
+    public void setTaskProperty(TaskProperty taskProperty) {
+        this.taskProperty.set(taskProperty);
+    }
+
+    public TaskProperty getTaskProperty() {
+        return this.taskProperty.get();
     }
 }

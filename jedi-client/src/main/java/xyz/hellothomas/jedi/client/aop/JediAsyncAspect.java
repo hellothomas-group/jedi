@@ -8,7 +8,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import xyz.hellothomas.jedi.client.annotation.JediAsync;
-import xyz.hellothomas.jedi.client.constants.Constants;
 import xyz.hellothomas.jedi.client.exception.JediClientException;
 import xyz.hellothomas.jedi.client.util.AspectSupportUtil;
 import xyz.hellothomas.jedi.core.internals.executor.JediRunnable;
@@ -17,6 +16,7 @@ import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static xyz.hellothomas.jedi.core.constants.Constants.JEDI_DEFAULT_TASK_NAME;
 
 @Order(Ordered.LOWEST_PRECEDENCE - 100)
 @Aspect
@@ -75,7 +75,7 @@ public class JediAsyncAspect {
     private String extractTaskName(ProceedingJoinPoint joinPoint, JediAsync jediAsync) {
         String taskName;
         if (StringUtils.isBlank(jediAsync.taskName())) {
-            taskName = Constants.JEDI_DEFAULT_TASK_NAME;
+            taskName = JEDI_DEFAULT_TASK_NAME;
         } else {
             try {
                 Object taskNameObject = AspectSupportUtil.getKeyValue(joinPoint, jediAsync.taskName());
@@ -83,7 +83,7 @@ public class JediAsyncAspect {
                     throw new JediClientException(String.format("@JediAsync taskName:%s, cannot be null",
                             jediAsync.taskName()));
                 }
-                taskName = StringUtils.isBlank(taskNameObject.toString()) ? Constants.JEDI_DEFAULT_TASK_NAME :
+                taskName = StringUtils.isBlank(taskNameObject.toString()) ? JEDI_DEFAULT_TASK_NAME :
                         taskNameObject.toString();
             } catch (JediClientException e1) {
                 throw e1;

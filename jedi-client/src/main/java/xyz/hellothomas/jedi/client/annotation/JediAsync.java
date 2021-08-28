@@ -36,7 +36,7 @@ public @interface JediAsync {
     /**
      * Spring Expression Language (SpEL) expression for computing the key dynamically.
      * <p>Default is {@code ""}, use the default taskName
-     * {@link xyz.hellothomas.jedi.client.constants.Constants#JEDI_DEFAULT_TASK_NAME}.
+     * {@link xyz.hellothomas.jedi.core.constants.Constants#JEDI_DEFAULT_TASK_NAME}.
      *
      * 任务名称
      * @return

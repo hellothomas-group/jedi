@@ -10,8 +10,9 @@ public class Constants {
     public static final String NAMESPACE_EXECUTOR_SEPARATOR = "+";
     public static final long NOTIFICATION_ID_PLACEHOLDER = -1;
     public static final String NO_APPID_PLACEHOLDER = "JediNoAppIdPlaceHolder";
+    public static final String JEDI_DEFAULT_TASK_NAME = "jedi-default-task";
     
     private Constants() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Constant class");
     }
 }

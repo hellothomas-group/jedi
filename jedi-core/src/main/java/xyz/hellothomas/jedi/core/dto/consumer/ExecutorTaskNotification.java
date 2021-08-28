@@ -2,6 +2,8 @@ package xyz.hellothomas.jedi.core.dto.consumer;
 
 import javax.validation.constraints.NotBlank;
 
+import static xyz.hellothomas.jedi.core.constants.Constants.JEDI_DEFAULT_TASK_NAME;
+
 /**
  * @author Thomas
  * @date 2021/1/3 17:44
@@ -9,13 +11,11 @@ import javax.validation.constraints.NotBlank;
  * @version 1.0
  */
 public class ExecutorTaskNotification extends AbstractNotification {
-    public static final String DEFAULT_TASK_NAME = "DEFAULT";
-
     /**
      * 任务名称
      */
     @NotBlank
-    private String taskName = DEFAULT_TASK_NAME;
+    private String taskName = JEDI_DEFAULT_TASK_NAME;
 
     /**
      * 线程池名称
