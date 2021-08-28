@@ -85,9 +85,9 @@
 </template>
 
 <script>
-  import format from '../assets/js/dateFormat.js'
+import format from '../assets/js/dateFormat.js'
 
-  export default {
+export default {
   data () {
     return {
       namespaceName: undefined,

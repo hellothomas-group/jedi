@@ -2,7 +2,7 @@
   <div>
     <el-header>
       <div class="block" style="margin-left: 60px">
-        <el-form ref="elForm" :model="selectInstanceForm" :rules="rules" size="medium" label-width="100px"
+        <el-form :model="selectInstanceForm" :rules="rules" size="medium" label-width="100px"
                  style="display: inline-block;">
           <el-form-item label="实例" prop="instance" style="width: 250px">
             <el-select v-model="selectInstanceForm.ip" placeholder="请选择下拉选择" clearable style="width:100%"
