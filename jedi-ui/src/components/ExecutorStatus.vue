@@ -145,7 +145,9 @@ export default {
             type: 'value',
             scale: true,
             min: 0,
-            boundaryGap: ['0', '15%'],
+            max: function (value) {
+              return value.max + 5;
+            },
             axisLabel: {
               interval: 'auto',
               formatter: '{value}'
@@ -186,7 +188,9 @@ export default {
             type: 'value',
             scale: true,
             min: 0,
-            boundaryGap: ['0', '15%'],
+            max: function (value) {
+              return value.max + 5;
+            },
             axisLabel: {
               interval: 'auto',
               formatter: '{value}'
