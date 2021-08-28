@@ -53,8 +53,7 @@
             <el-table-column
               label="任务名称"
               min-width="85"
-              prop="taskName"
-              :formatter = "isDefaultOneFormatter">
+              prop="taskName">
             </el-table-column>
             <el-table-column
               label="执行结果"
@@ -246,12 +245,6 @@ export default {
     currentPage (pageNum) {
       this.pagination.pageNum = pageNum
       this.asyncQueryTaskList()
-    },
-    isDefaultOneFormatter (row, column, cellValue, index) {
-      if (row.taskName === 'DEFAULT') {
-        row.taskName = '全部任务(含未命名)'
-      }
-      return row.taskName
     },
     isSuccessFormatter (row, column, cellValue, index) {
       if (row.isSuccess) {

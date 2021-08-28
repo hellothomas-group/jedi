@@ -40,10 +40,9 @@ public class ExecutorTaskController {
     public ApiResponse<PageResult<ExecutorTaskDetailResponse>> findDetail(@PathVariable("namespaceName") String namespaceName,
                                                                           @PathVariable("appId") String appId,
                                                                           @PathVariable("executorName") String executorName,
-                                                                          @RequestParam(value = "taskName",
-                                                                                  defaultValue = "DEFAULT") String taskName,
-                                                                          @RequestParam(value = "taskExtraData", required =
-                                                                                  false) String taskExtraData,
+                                                                          @RequestParam(value = "taskName") String taskName,
+                                                                          @RequestParam(value = "taskExtraData",
+                                                                                  required = false) String taskExtraData,
                                                                           @RequestParam(value = "isSuccess", required =
                                                                                   false) Boolean isSuccess,
                                                                           @RequestParam(value = "instanceIp", required =
@@ -68,8 +67,7 @@ public class ExecutorTaskController {
     public ApiResponse<ExecutorTaskStatisticsResponse> findStatistics(@PathVariable("namespaceName") String namespaceName,
                                                                       @PathVariable("appId") String appId,
                                                                       @PathVariable("executorName") String executorName,
-                                                                      @RequestParam(value = "taskName", defaultValue =
-                                                                              "DEFAULT") String taskName,
+                                                                      @RequestParam(value = "taskName") String taskName,
                                                                       @RequestParam("statisticsDate")
                                                                       @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate statisticsDate) {
         ExecutorTaskStatistics executorTaskStatistics =

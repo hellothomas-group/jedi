@@ -146,7 +146,7 @@ export default {
             scale: true,
             min: 0,
             max: function (value) {
-              return value.max + 5;
+              return value.max + 5
             },
             axisLabel: {
               interval: 'auto',
@@ -189,7 +189,7 @@ export default {
             scale: true,
             min: 0,
             max: function (value) {
-              return value.max + 5;
+              return value.max + 5
             },
             axisLabel: {
               interval: 'auto',

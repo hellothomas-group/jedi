@@ -41,8 +41,7 @@
             <el-table-column
               label="任务名称"
               min-width="85px"
-              prop="taskName"
-              :formatter = "isDefaultOneFormatter">
+              prop="taskName">
             </el-table-column>
             <el-table-column
               label="执行总数"
@@ -90,7 +89,6 @@
               </template>
               <template slot-scope="scope">
                 <el-button
-                  v-if="scope.row.taskName != '全部任务(含未命名)'"
                   size="mini"
                   @click="handleTaskDetail(scope.$index, scope.row)" style="margin-right: 50%">明细</el-button>
               </template>
@@ -181,7 +179,7 @@ export default {
         params: {
           startDate: format(this.queryDate[0], 'yyyy-MM-dd'),
           endDate: format(this.queryDate[1], 'yyyy-MM-dd'),
-          taskName: this.inputTaskName.trim() === '' ? undefined : (this.inputTaskName.trim() === '全部任务(含未命名)' ? 'DEFAULT' : this.inputTaskName.trim()),
+          taskName: this.inputTaskName.trim() === '' ? undefined : this.inputTaskName.trim(),
           pageNum: this.pagination.pageNum,
           pageSize: this.pagination.pageSize
         }
@@ -197,11 +195,8 @@ export default {
     },
     handleTaskDetail (index, row) {
       console.log(index, row)
-      let selectedTask = row
-      if (row.taskName === '全部任务(含未命名)') {
-        selectedTask.taskName = 'DEFAULT'
-      }
-      this.forwardTaskDetail(this.namespaceName, this.appId, this.executorName, selectedTask.statisticsDate, selectedTask.taskName)
+      this.forwardTaskDetail(this.namespaceName, this.appId, this.executorName, row.statisticsDate,
+        row.taskName)
     },
     forwardTaskDetail (namespace, appId, executor, taskDate, taskName) {
       console.log('forwardTaskDetail')
@@ -217,7 +212,7 @@ export default {
       })
     },
     tableRowClassName ({row, rowIndex}) {
-      if (row.taskName === '全部任务(含未命名)') {
+      if (rowIndex % 2 === 0) {
         return 'success-row'
       } else {
         return ''
@@ -234,12 +229,6 @@ export default {
     currentPage (pageNum) {
       this.pagination.pageNum = pageNum
       this.asyncQueryStatisticsList(this.namespaceName, this.appId, this.executorName)
-    },
-    isDefaultOneFormatter (row, column, cellValue, index) {
-      if (row.taskName === 'DEFAULT') {
-        row.taskName = '全部任务(含未命名)'
-      }
-      return row.taskName
     }
   }
 }
