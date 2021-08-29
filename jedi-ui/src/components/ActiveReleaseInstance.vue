@@ -60,7 +60,7 @@ export default {
       activeRelease: {
         id: undefined,
         releaseKey: undefined,
-        name: undefined,
+        name: ' 无 ',
         namespaceName: undefined,
         appId: undefined,
         executorName: undefined,
@@ -101,8 +101,10 @@ export default {
       this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
         '/releases/latest').then(res => {
         console.log(res)
-        this.activeRelease = res.data
-        this.asyncQueryInstance(this.activeRelease.id)
+        if (res.data !== null) {
+          this.activeRelease = res.data
+          this.asyncQueryInstance(this.activeRelease.id)
+        }
       }).catch(function (error) {
         console.log(error)
       })

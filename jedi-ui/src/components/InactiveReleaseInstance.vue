@@ -54,7 +54,7 @@ export default {
       activeRelease: {
         id: undefined,
         releaseKey: undefined,
-        name: undefined,
+        name: ' 无 ',
         namespaceName: undefined,
         appId: undefined,
         executorName: undefined,
@@ -93,15 +93,12 @@ export default {
       console.log(executorName)
 
       this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
-        '/releases/active', {
-        params: {
-          pageNum: 1,
-          pageSize: 1
-        }
-      }).then(res => {
+        '/releases/latest').then(res => {
         console.log(res)
-        this.activeRelease = res.data.content[0]
-        this.asyncQueryInstance(namespaceName, appId, executorName, this.activeRelease.id)
+        if (res.data !== null) {
+          this.activeRelease = res.data
+          this.asyncQueryInstance(namespaceName, appId, executorName, this.activeRelease.id)
+        }
       }).catch(function (error) {
         console.log(error)
       })

@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Namespace from '@/components/Namespace'
+import Namespace from '../components/Namespace'
 import SingleApp from '../components/SingleApp'
 import Executor from '../components/Executor'
-import Item from '../components/Item'
+import Overview from '../components/Overview'
 import Release from '../components/Release'
 import TaskStatisticNow from '../components/TaskStatisticNow'
 import Alarm from '../components/Alarm'
@@ -50,9 +50,9 @@ const router = new Router({
       component: Executor,
       children: [
         {
-          path: '/item',
-          name: 'Item',
-          component: Item
+          path: '/overview',
+          name: 'Overview',
+          component: Overview
         },
         {
           path: '/executor-status',

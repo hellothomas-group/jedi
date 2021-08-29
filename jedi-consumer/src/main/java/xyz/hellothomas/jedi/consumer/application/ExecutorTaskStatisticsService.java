@@ -8,9 +8,13 @@ import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsExample;
+import xyz.hellothomas.jedi.consumer.domain.pojo.ExecutorTaskSummary;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskStatisticsMapper;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static xyz.hellothomas.jedi.consumer.common.constants.Constants.DEFAULT_PAGE_SIZE;
@@ -110,5 +114,49 @@ public class ExecutorTaskStatisticsService {
 
     public int deleteByPrimaryKey(Integer id) {
         return executorTaskStatisticsMapper.deleteByPrimaryKey(id);
+    }
+
+    public ExecutorTaskSummary summaryTaskStatistics(String namespaceName, String appId, String executorName,
+                                                     LocalDate statisticsDate) {
+        PageHelperRequest pageHelperRequest = new PageHelperRequest();
+        pageHelperRequest.setPageNum(1);
+        pageHelperRequest.setPageSize(1000);
+
+        ExecutorTaskSummary executorTaskSummary = new ExecutorTaskSummary();
+        executorTaskSummary.setNamespaceName(namespaceName);
+        executorTaskSummary.setAppId(appId);
+        executorTaskSummary.setExecutorName(executorName);
+        executorTaskSummary.setStatisticsDate(statisticsDate);
+
+        while (true) {
+            PageResult<ExecutorTaskStatistics> pageResult = findList(namespaceName, appId, executorName,
+                    LocalDate.now(),
+                    pageHelperRequest);
+            pageResult.getContent().stream().forEach(i -> {
+                executorTaskSummary.setTotal(executorTaskSummary.getTotal() + i.getTotal());
+                executorTaskSummary.setFailure(executorTaskSummary.getFailure() + i.getFailure());
+                if (i.getExecutionTimeMin() < executorTaskSummary.getExecutionTimeMin()) {
+                    executorTaskSummary.setExecutionTimeMin(i.getExecutionTimeMin());
+                }
+                if (i.getExecutionTimeMax() > executorTaskSummary.getExecutionTimeMax()) {
+                    executorTaskSummary.setExecutionTimeMax(i.getExecutionTimeMax());
+                }
+            });
+            if (pageResult.getTotal() <= pageResult.getPageNum() * pageResult.getPageSize()) {
+                break;
+            } else {
+                pageHelperRequest.setPageNum(pageResult.getPageNum() + 1);
+            }
+        }
+
+        if (executorTaskSummary.getTotal() == 0) {
+            executorTaskSummary.setFailureRatio(new BigDecimal(0));
+        } else {
+            executorTaskSummary.setFailureRatio(new BigDecimal(executorTaskSummary.getFailure())
+                    .divide(new BigDecimal(executorTaskSummary.getTotal()), 2, RoundingMode.HALF_UP));
+        }
+        executorTaskSummary.setDataChangeCreatedTime(LocalDateTime.now());
+        executorTaskSummary.setDataChangeLastModifiedTime(LocalDateTime.now());
+        return executorTaskSummary;
     }
 }

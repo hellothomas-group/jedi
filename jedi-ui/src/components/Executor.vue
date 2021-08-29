@@ -16,7 +16,7 @@
                 <el-tag type="info" style="margin-bottom: 5px">线程池名称: {{this.executor.executorName}}</el-tag>
               </div>
               <el-menu
-                default-active="/item"
+                :default-active="defaultView"
                 class="el-menu-vertical-demo"
                 unique-opened
                 router
@@ -28,8 +28,8 @@
                     <i class="el-icon-menu"></i>
                     <span>线程池信息</span>
                   </template>
-                  <el-menu-item index="/item"
-                                :route="{path:'/item',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">配置信息
+                  <el-menu-item index="/overview"
+                                :route="{path:'/overview',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">概览
                   </el-menu-item>
                   <el-menu-item index="/executor-status"
                                 :route="{path:'/executor-status',query:{namespace:executor.namespaceName,appId:executor.appId,executor:executor.executorName}}">实时状态
@@ -85,7 +85,8 @@ export default {
         dataChangeLastModifiedBy: undefined,
         dataChangeCreatedTime: undefined,
         dataChangeLastModifiedTime: undefined
-      }
+      },
+      defaultView: '/overview'
     }
   },
   computed: {},
@@ -109,8 +110,20 @@ export default {
       ).then(res => {
         console.log(res)
         this.executor = res.data
-
-        this.forwardDefaultActive(namespaceName, appId, executorName)
+        if (this.$route.path === '/executor') {
+          this.defaultView = '/overview'
+          this.forwardDefaultActive(namespaceName, appId, executorName)
+        } else {
+          this.defaultView = this.$route.path
+          this.$router.push({
+            path: this.$route.path,
+            query: {
+              namespace: namespaceName,
+              appId: appId,
+              executor: executorName
+            }
+          })
+        }
       }).catch(function (error) {
         console.log(error)
       })
@@ -146,7 +159,7 @@ export default {
     forwardDefaultActive (namespaceName, appId, executorName) {
       console.log('forwardDefaultActive')
       this.$router.push({
-        path: '/item',
+        path: '/overview',
         query: {
           namespace: namespaceName,
           appId: appId,

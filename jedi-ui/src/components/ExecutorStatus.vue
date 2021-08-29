@@ -409,8 +409,10 @@ export default {
       this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
         '/releases/latest').then(res => {
         console.log(res)
-        let latestRelease = res.data
-        this.asyncQueryInstance(latestRelease.id)
+        if (res.data !== null) {
+          let latestRelease = res.data
+          this.asyncQueryInstance(latestRelease.id)
+        }
       }).catch(function (error) {
         console.log(error)
       })
