@@ -280,6 +280,10 @@ export default {
     line-height: 40px;
   }
 
+  .el-footer {
+    height: 40px !important;
+  }
+
   body > .el-container {
     margin-bottom: 40px;
   }
