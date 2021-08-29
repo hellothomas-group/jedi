@@ -407,14 +407,9 @@ export default {
       console.log(executorName)
 
       this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
-        '/releases/active', {
-        params: {
-          pageNum: 1,
-          pageSize: 1
-        }
-      }).then(res => {
+        '/releases/latest').then(res => {
         console.log(res)
-        let latestRelease = res.data.content[0]
+        let latestRelease = res.data
         this.asyncQueryInstance(latestRelease.id)
       }).catch(function (error) {
         console.log(error)
