@@ -34,9 +34,11 @@
               @click="submitQueryTaskList('queryTaskDetailForm')" style="margin-left: 50px;">查询
             </el-button>
           </el-form-item>
-          <el-form-item label="任务附加信息" prop="inputTaskExtraData">
-            <el-input v-model="queryTaskDetailForm.inputTaskExtraData" placeholder="请输入任务附加信息" clearable></el-input>
-          </el-form-item>
+          <div>
+            <el-form-item label="任务附加信息" prop="inputTaskExtraData">
+              <el-input v-model="queryTaskDetailForm.inputTaskExtraData" placeholder="请输入任务附加信息" clearable></el-input>
+            </el-form-item>
+          </div>
         </el-form>
       </div>
     </el-header>
