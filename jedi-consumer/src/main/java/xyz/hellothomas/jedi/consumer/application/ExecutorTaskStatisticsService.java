@@ -138,7 +138,7 @@ public class ExecutorTaskStatisticsService {
                 if (i.getExecutionTimeMin() < executorTaskSummary.getExecutionTimeMin()) {
                     executorTaskSummary.setExecutionTimeMin(i.getExecutionTimeMin());
                 }
-                if (i.getExecutionTimeMax() > executorTaskSummary.getExecutionTimeMax()) {
+                if (i.getExecutionTimeMax() > executorTaskSummary.getExecutionTimeMax() || executorTaskSummary.getExecutionTimeMin() == 0) {
                     executorTaskSummary.setExecutionTimeMax(i.getExecutionTimeMax());
                 }
             });
