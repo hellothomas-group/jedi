@@ -40,7 +40,6 @@ import xyz.hellothomas.jedi.core.utils.ResizableCapacityLinkedBlockingQueue;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -66,8 +65,8 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
                 this.jediConfig);
         log.info("{} registered.", Constants.JEDI_CONFIG_BEAN_NAME);
 
-        AbstractNotificationService notificationService = buildNotificationService(jediConfig.getUrl(),
-                jediConfig.getNamespace(), jediConfig.getAppId());
+        AbstractNotificationService notificationService = buildNotificationService(jediConfig.isOfflineEnable(),
+                jediConfig.getUrl(), jediConfig.getNamespace(), jediConfig.getAppId());
 
         ((DefaultListableBeanFactory) this.beanFactory).registerSingleton(NOTIFICATION_SERVICE_BEAN_NAME,
                 notificationService);
@@ -109,7 +108,12 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
         log.debug("jediConfig:{}", jediConfig);
     }
 
-    private AbstractNotificationService buildNotificationService(String url, String namespace, String appId) {
+    private AbstractNotificationService buildNotificationService(boolean offlineEnable, String url, String namespace,
+                                                                 String appId) {
+        if (offlineEnable) {
+            return new NullNotificationService(appId, namespace);
+        }
+
         try {
             // 从远端获取consumerUrl或者kafkaProperty
             String getConsumerEndpointUrl = String.format("%s/static-config/consumer/%s/%s", url, namespace, appId);

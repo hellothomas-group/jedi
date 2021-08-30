@@ -29,6 +29,7 @@ import java.util.List;
 public class JediApplicationInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>,
         EnvironmentPostProcessor {
     private static final String[] JEDI_SYSTEM_PROPERTIES = {Constants.JEDI_CONFIG_ENABLE_KEY,
+            Constants.JEDI_CONFIG_OFFLINE_ENABLE_KEY,
             Constants.JEDI_CONFIG_URL_KEY,
             Constants.JEDI_CONFIG_NAMESPACE_KEY, Constants.JEDI_CONFIG_APP_ID_KEY};
     private static final Splitter EXECUTOR_SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
@@ -38,6 +39,13 @@ public class JediApplicationInitializer implements ApplicationContextInitializer
         Boolean jediEnable = environment.getProperty(Constants.JEDI_CONFIG_ENABLE_KEY, Boolean.class, false);
 
         if (!jediEnable) {
+            return;
+        }
+
+        Boolean jediOfflineEnable = environment.getProperty(Constants.JEDI_CONFIG_OFFLINE_ENABLE_KEY, Boolean.class,
+                false);
+
+        if (jediOfflineEnable) {
             return;
         }
 
@@ -51,6 +59,14 @@ public class JediApplicationInitializer implements ApplicationContextInitializer
                 Boolean.class, false);
 
         if (!jediEnable) {
+            return;
+        }
+
+        Boolean jediOfflineEnable =
+                applicationContext.getEnvironment().getProperty(Constants.JEDI_CONFIG_OFFLINE_ENABLE_KEY,
+                        Boolean.class, false);
+
+        if (jediOfflineEnable) {
             return;
         }
 

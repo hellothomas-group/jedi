@@ -29,6 +29,8 @@ public class JediExecutorAutoConfig {
      * @return
      */
     @Bean
+    @ConditionalOnProperty(value = Constants.JEDI_CONFIG_OFFLINE_ENABLE_KEY, havingValue = "false", matchIfMissing =
+            true)
     public static PropertySourcesProcessor propertySourcesProcessor() {
         return new PropertySourcesProcessor();
     }

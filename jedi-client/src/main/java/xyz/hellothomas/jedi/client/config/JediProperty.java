@@ -16,6 +16,8 @@ import lombok.ToString;
 public class JediProperty {
     private boolean enable;
 
+    private boolean offlineEnable;
+
     private String url;
 
     private String namespace;
