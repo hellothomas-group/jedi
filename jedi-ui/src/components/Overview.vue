@@ -7,10 +7,6 @@
           </div>
           <table border="1" style="margin: auto;line-height: 60px;table-layout:fixed;">
             <tr>
-              <th>线程池名称</th>
-              <td style="width: 60%;text-align: center">{{this.executor.executorName}}</td>
-            </tr>
-            <tr>
               <th>线程池负责人</th>
               <td style="width: 60%;text-align: center">{{this.executor.dataChangeCreatedBy}}</td>
             </tr>
