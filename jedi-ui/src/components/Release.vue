@@ -6,7 +6,7 @@
           <el-table
             :data="releases.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
             style="width: 100%"
-            :row-class-name="tableRowClassName" :cell-class-name="isAbandonedClassName">
+            :row-class-name="tableRowClassName">
             <el-table-column
               label="发布key"
               prop="releaseKey">
@@ -16,9 +16,8 @@
               prop="name">
             </el-table-column>
             <el-table-column
-              label="是否废弃"
-              prop="isAbandoned"
-              :formatter = "isAbandonedFormatter">
+              label="发布者"
+              prop="dataChangeLastModifiedBy">
             </el-table-column>
             <el-table-column
               align="right">
@@ -171,22 +170,6 @@ export default {
     currentPage (pageNum) {
       this.pagination.pageNum = pageNum
       this.asyncQueryReleases(this.executor.namespaceName, this.executor.appId, this.executor.executorName)
-    },
-    isAbandonedFormatter (row, column, cellValue, index) {
-      if (row.isAbandoned === true) {
-        row.isAbandoned = '已废弃'
-      }
-      if (row.isAbandoned === false) {
-        row.isAbandoned = '未废弃'
-      }
-      return row.isAbandoned
-    },
-    isAbandonedClassName (row, column, cellValue, index) {
-      if (row.columnIndex === 3 && row.row.isAbandoned === '已废弃') {
-        return 'warning-row'
-      } else {
-        return ''
-      }
     }
   }
 }
