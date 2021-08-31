@@ -20,6 +20,10 @@
               prop="dataChangeLastModifiedBy">
             </el-table-column>
             <el-table-column
+              label="发布时间"
+              prop="dataChangeLastModifiedTime">
+            </el-table-column>
+            <el-table-column
               align="right">
               <template slot="header" slot-scope="scope">
                 <el-input

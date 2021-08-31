@@ -62,8 +62,7 @@ public class ExecutorTaskStatisticsHistoryService {
             criteria.andTaskNameEqualTo(taskName);
         }
         criteria.andStatisticsDateBetween(startDate, endDate);
-        historyExample.setOrderByClause("statistics_date desc");
-        historyExample.setOrderByClause("task_name");
+        historyExample.setOrderByClause("statistics_date, task_name");
 
         int pageSize = pageHelperRequest.getPageSize();
         int pageNum = pageHelperRequest.getPageNum();
