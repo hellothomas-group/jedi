@@ -135,10 +135,10 @@ public class ExecutorTaskStatisticsService {
             pageResult.getContent().stream().forEach(i -> {
                 executorTaskSummary.setTotal(executorTaskSummary.getTotal() + i.getTotal());
                 executorTaskSummary.setFailure(executorTaskSummary.getFailure() + i.getFailure());
-                if (i.getExecutionTimeMin() < executorTaskSummary.getExecutionTimeMin()) {
+                if (i.getExecutionTimeMin() < executorTaskSummary.getExecutionTimeMin()  || executorTaskSummary.getExecutionTimeMin() == 0) {
                     executorTaskSummary.setExecutionTimeMin(i.getExecutionTimeMin());
                 }
-                if (i.getExecutionTimeMax() > executorTaskSummary.getExecutionTimeMax() || executorTaskSummary.getExecutionTimeMin() == 0) {
+                if (i.getExecutionTimeMax() > executorTaskSummary.getExecutionTimeMax()) {
                     executorTaskSummary.setExecutionTimeMax(i.getExecutionTimeMax());
                 }
             });
