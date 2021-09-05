@@ -51,7 +51,7 @@ public class ExecutorTickerService implements NotificationService<ExecutorTicker
         BeanUtils.copyProperties(executorTickerNotification, executorTickerMessage);
         executorTickerMessage.setCreateTime(LocalDateTime.now());
         executorTickerMessage.setUpdateTime(LocalDateTime.now());
-        log.info("executorTickerMessage:{}", executorTickerMessage);
+        log.debug("executorTickerMessage:{}", executorTickerMessage);
         executorTickerMessageMapper.insertSelective(executorTickerMessage);
     }
 

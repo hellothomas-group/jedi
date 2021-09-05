@@ -30,7 +30,7 @@ public class CustomMessageService implements NotificationService<CustomNotificat
         BeanUtils.copyProperties(customNotification, monitorMessage);
         monitorMessage.setCreateTime(LocalDateTime.now());
         monitorMessage.setUpdateTime(LocalDateTime.now());
-        log.info("monitorMessage:{}", monitorMessage);
+        log.debug("monitorMessage:{}", monitorMessage);
         monitorMessageMapper.insert(monitorMessage);
     }
 

@@ -37,7 +37,7 @@ public class KafkaConsumer {
     @KafkaListener(topics = "${consumer.executor-ticker-topic}")
     public void onMessageExecutorTicker(ConsumerRecord<?, ?> record) {
         // 消费的哪个topic、partition的消息,打印出消息内容
-        log.info("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
+        log.debug("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
         ExecutorTickerNotification executorTickerNotification = JsonUtil.deserialize(record.value().toString(),
                 ExecutorTickerNotification.class);
         executorTickerService.process(executorTickerNotification);
@@ -50,7 +50,7 @@ public class KafkaConsumer {
     @KafkaListener(topics = "${consumer.executor-task-topic}")
     public void onMessageExecutorTask(ConsumerRecord<?, ?> record) {
         // 消费的哪个topic、partition的消息,打印出消息内容
-        log.info("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
+        log.debug("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
         ExecutorTaskNotification executorTaskNotification = JsonUtil.deserialize(record.value().toString(),
                 ExecutorTaskNotification.class);
         executorTaskService.process(executorTaskNotification);
@@ -63,7 +63,7 @@ public class KafkaConsumer {
     @KafkaListener(topics = "${consumer.executor-shutdown-topic}")
     public void onMessageExecutorShutdown(ConsumerRecord<?, ?> record) {
         // 消费的哪个topic、partition的消息,打印出消息内容
-        log.info("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
+        log.debug("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
         ExecutorShutdownNotification executorShutdownNotification = JsonUtil.deserialize(record.value().toString(),
                 ExecutorShutdownNotification.class);
         executorShutdownService.process(executorShutdownNotification);
@@ -76,7 +76,7 @@ public class KafkaConsumer {
     @KafkaListener(topics = "${consumer.custom-notification-topic}")
     public void onMessageCustomNotification(ConsumerRecord<?, ?> record) {
         // 消费的哪个topic、partition的消息,打印出消息内容
-        log.info("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
+        log.debug("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
         CustomNotification customNotification = JsonUtil.deserialize(record.value().toString(),
                 CustomNotification.class);
         customMessageService.process(customNotification);

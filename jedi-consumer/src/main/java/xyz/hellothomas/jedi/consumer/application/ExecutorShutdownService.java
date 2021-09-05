@@ -31,7 +31,7 @@ public class ExecutorShutdownService implements NotificationService<ExecutorShut
         BeanUtils.copyProperties(executorShutdownNotification, executorShutdownMessage);
         executorShutdownMessage.setCreateTime(LocalDateTime.now());
         executorShutdownMessage.setUpdateTime(LocalDateTime.now());
-        log.info("executorShutdownMessage:{}", executorShutdownMessage);
+        log.debug("executorShutdownMessage:{}", executorShutdownMessage);
         executorShutdownMessageMapper.insertSelective(executorShutdownMessage);
     }
 

@@ -41,7 +41,7 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
         BeanUtils.copyProperties(executorTaskNotification, executorTaskMessage);
         executorTaskMessage.setCreateTime(LocalDateTime.now());
         executorTaskMessage.setUpdateTime(LocalDateTime.now());
-        log.info("executorTaskMessage:{}", executorTaskMessage);
+        log.debug("executorTaskMessage:{}", executorTaskMessage);
         executorTaskMessageMapper.insertSelective(executorTaskMessage);
     }
 
