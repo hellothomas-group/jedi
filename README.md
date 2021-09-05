@@ -4,15 +4,28 @@ jedi is a dynamic thread pool executor
 note: base on https://github.com/ctripcorp/apollo
 
 # Screenshots
-![1](https://images.gitee.com/uploads/images/2021/0812/074225_ce130fc7_5057838.png)
 
-![2](https://images.gitee.com/uploads/images/2021/0812/074724_5dc93566_5057838.png)
+动态配置线程池参数
 
-![3](https://images.gitee.com/uploads/images/2021/0812/074907_1fd56f3f_5057838.jpeg)
+![动态配置线程池参数](https://images.gitee.com/uploads/images/2021/0905/170010_6be8758e_5057838.png)
 
-![4](https://images.gitee.com/uploads/images/2021/0812/075014_dc990510_5057838.jpeg)
+线程池概览
 
-![5](https://images.gitee.com/uploads/images/2021/0812/075117_1327fb49_5057838.jpeg)
+![线程池概览](https://images.gitee.com/uploads/images/2021/0905/170437_924750df_5057838.png)
+
+线程池实时状态监控
+
+![线程池实时状态监控](https://images.gitee.com/uploads/images/2021/0905/170551_292e2bc5_5057838.png)
+
+线程池任务监控
+
+![线程池任务汇总监控](https://images.gitee.com/uploads/images/2021/0905/170714_e8371566_5057838.png)
+
+![线程池任务明细监控](https://images.gitee.com/uploads/images/2021/0905/170748_df7d6765_5057838.png)
+
+线程池监控报警对接公司IM系统
+
+![线程池监控报警对接公司IM系统](https://images.gitee.com/uploads/images/2021/0812/075117_1327fb49_5057838.jpeg)
 
 # Features
 
