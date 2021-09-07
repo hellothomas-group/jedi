@@ -35,7 +35,7 @@ public class JediAsyncAspect {
     }
 
     @Around("@annotation(jediAsync)")
-    public void logAround(ProceedingJoinPoint joinPoint, JediAsync jediAsync) throws Throwable {
+    public void jediAsyncAround(ProceedingJoinPoint joinPoint, JediAsync jediAsync) throws Throwable {
         JediThreadPoolExecutor jediThreadPoolExecutor = extractJediThreadPoolExecutor(jediAsync);
         String taskName = extractTaskName(joinPoint, jediAsync);
         String taskExtraData = extractTaskExtraData(joinPoint, jediAsync);
