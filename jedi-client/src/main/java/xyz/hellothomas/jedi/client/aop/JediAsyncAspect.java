@@ -5,7 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import xyz.hellothomas.jedi.client.annotation.JediAsync;
 import xyz.hellothomas.jedi.client.exception.JediClientException;
@@ -34,8 +37,16 @@ public class JediAsyncAspect {
         }
     }
 
-    @Around("@annotation(jediAsync)")
-    public void jediAsyncAround(ProceedingJoinPoint joinPoint, JediAsync jediAsync) throws Throwable {
+    @Pointcut("within(xyz.hellothomas.jedi.client.annotation.JediAsync)")
+    public void annotationPointcut() {
+        // 仅定义切点
+    }
+
+    @Around("annotationPointcut()")
+    public void jediAsyncAround(ProceedingJoinPoint joinPoint) throws Throwable {
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        JediAsync jediAsync = AnnotationUtils.getAnnotation(methodSignature.getMethod(), JediAsync.class);
+
         JediThreadPoolExecutor jediThreadPoolExecutor = extractJediThreadPoolExecutor(jediAsync);
         String taskName = extractTaskName(joinPoint, jediAsync);
         String taskExtraData = extractTaskExtraData(joinPoint, jediAsync);
