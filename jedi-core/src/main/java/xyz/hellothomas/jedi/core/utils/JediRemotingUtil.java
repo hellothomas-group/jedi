@@ -119,7 +119,7 @@ public class JediRemotingUtil {
             // valid StatusCode
             int statusCode = connection.getResponseCode();
             if (statusCode != 200) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "xxl-rpc remoting fail, StatusCode(" + statusCode + ") " +
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "jedi-rpc remoting fail, StatusCode(" + statusCode + ") " +
                         "invalid. for url : " + url);
             }
 
@@ -138,8 +138,8 @@ public class JediRemotingUtil {
                 ReturnT returnT = JsonUtil.deserializeReturnT(resultJson, returnTargetClassOfT);
                 return returnT;
             } catch (Exception e) {
-                logger.error("xxl-rpc remoting (url=" + url + ") response content invalid(" + resultJson + ").", e);
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "xxl-rpc remoting (url=" + url + ") response content " +
+                logger.error("jedi-rpc remoting (url=" + url + ") response content invalid(" + resultJson + ").", e);
+                return new ReturnT<String>(ReturnT.FAIL_CODE, "jedi-rpc remoting (url=" + url + ") response content " +
                         "invalid(" + resultJson + ").");
             }
 
