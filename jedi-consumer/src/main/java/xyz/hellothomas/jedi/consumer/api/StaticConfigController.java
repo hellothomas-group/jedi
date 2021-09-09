@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import xyz.hellothomas.jedi.consumer.common.enums.ConsumerTypeEnum;
 import xyz.hellothomas.jedi.consumer.domain.pojo.ConsumerProperty;
 import xyz.hellothomas.jedi.consumer.infrastructure.config.ConsumerLocalProperties;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
 import xyz.hellothomas.jedi.core.enums.MessageType;
 
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class StaticConfigController implements EnvironmentAware {
 
     @GetMapping(value = "/consumer/{namespace}/{appId}")
     @ApiOperation("consumer")
-    public ConsumerProperty consumer(@PathVariable String namespace, @PathVariable String appId) {
+    public ApiResponse<ConsumerProperty> consumer(@PathVariable String namespace, @PathVariable String appId) {
         log.info("namespace:{}, appId:{}", namespace, appId);
         Map<String, Object> configProperty = new HashMap<>();
         ConsumerProperty consumerProperty = new ConsumerProperty();
@@ -85,7 +86,7 @@ public class StaticConfigController implements EnvironmentAware {
             consumerProperty.setConfigDetails(configProperty);
         }
 
-        return consumerProperty;
+        return ApiResponse.success(consumerProperty);
     }
 
     @Override
