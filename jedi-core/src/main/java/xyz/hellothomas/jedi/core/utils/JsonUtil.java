@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
-import xyz.hellothomas.jedi.core.dto.ReturnT;
 import xyz.hellothomas.jedi.core.enums.ErrorCodeEnum;
 import xyz.hellothomas.jedi.core.exception.JediCoreException;
 
@@ -47,30 +46,13 @@ public class JsonUtil {
         }
     }
 
-    public static <T> ReturnT<T> deserializeReturnT(String content, Class<T> valueType) {
-        try {
-            ReturnT<T> returnT = OBJECT_MAPPER.readValue(content, new TypeReference<ReturnT<T>>() {
-            });
+    public static <T> ApiResponse<T> deserializeApiResponse(String content, Class<T> valueType) throws JsonProcessingException {
+        ApiResponse<T> apiResponse = OBJECT_MAPPER.readValue(content, new TypeReference<ApiResponse<T>>() {
+        });
 
-            T body = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(returnT.getContent()), valueType);
-            returnT.setContent(body);
-            return returnT;
-        } catch (JsonProcessingException e) {
-            throw new JediCoreException(ErrorCodeEnum.JSON_DESERIALIZE_ERROR, content, e);
-        }
-    }
-
-    public static <T> ApiResponse<T> deserializeApiResponse(String content, Class<T> valueType) {
-        try {
-            ApiResponse<T> apiResponse = OBJECT_MAPPER.readValue(content, new TypeReference<ApiResponse<T>>() {
-            });
-
-            T body = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(apiResponse.getData()), valueType);
-            apiResponse.setData(body);
-            return apiResponse;
-        } catch (JsonProcessingException e) {
-            throw new JediCoreException(ErrorCodeEnum.JSON_DESERIALIZE_ERROR, content, e);
-        }
+        T body = OBJECT_MAPPER.readValue(OBJECT_MAPPER.writeValueAsString(apiResponse.getData()), valueType);
+        apiResponse.setData(body);
+        return apiResponse;
     }
 
     public static <T> List<T> deserializeToList(String listJson, Class<T> valueType) {

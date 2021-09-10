@@ -25,6 +25,9 @@ public enum ErrorCodeEnum implements ICodeEnum {
 
     JSON_SERIALIZE_ERROR("CODE006", "JSON序列化错误,异常为:{0}"),
     JSON_DESERIALIZE_ERROR("CODE007", "JSON反序列化错误,内容为{0},异常为:{1}"),
+    CMM_JSON_DESERIALIZE_ERROR("CODE008", "通讯JSON反序列化异常"),
+    CMM_FAIL("CODE009", "通讯失败"),
+    CMM_ERROR("CODE010", "通讯异常"),
     ;
 
     private String code;

@@ -1,8 +1,9 @@
 package xyz.hellothomas.jedi.core.utils;
 
-import xyz.hellothomas.jedi.core.dto.ReturnT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
+import xyz.hellothomas.jedi.core.enums.ErrorCodeEnum;
 
 import javax.net.ssl.*;
 import java.io.BufferedReader;
@@ -13,6 +14,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+
+import static xyz.hellothomas.jedi.core.enums.ErrorCodeEnum.CMM_JSON_DESERIALIZE_ERROR;
 
 /**
  * @author Thomas
@@ -63,8 +66,8 @@ public class JediRemotingUtil {
      * @param returnTargetClassOfT
      * @return
      */
-    public static ReturnT postBody(String url, String accessToken, int timeout, Object requestObj,
-                                   Class returnTargetClassOfT) {
+    public static ApiResponse postBody(String url, String accessToken, int timeout, Object requestObj,
+                                       Class returnTargetClassOfT) {
         HttpURLConnection connection = null;
         BufferedReader bufferedReader = null;
         try {
@@ -109,18 +112,11 @@ public class JediRemotingUtil {
                 dataOutputStream.close();
             }
 
-            /*byte[] requestBodyBytes = requestBody.getBytes("UTF-8");
-            connection.setRequestProperty("Content-Length", String.valueOf(requestBodyBytes.length));
-            OutputStream outwritestream = connection.getOutputStream();
-            outwritestream.write(requestBodyBytes);
-            outwritestream.flush();
-            outwritestream.close();*/
-
             // valid StatusCode
             int statusCode = connection.getResponseCode();
             if (statusCode != 200) {
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "jedi-rpc remoting fail, StatusCode(" + statusCode + ") " +
-                        "invalid. for url : " + url);
+                return ApiResponse.fail("jedi-rpc remoting fail, StatusCode(" + statusCode + ")" +
+                        " invalid. for url : " + url, ErrorCodeEnum.CMM_FAIL.getCode());
             }
 
             // result
@@ -132,21 +128,21 @@ public class JediRemotingUtil {
             }
             String resultJson = result.toString();
 
-            // parse returnT
+            // parse ApiResponse
             try {
-//                ReturnT returnT = GsonTool.fromJson(resultJson, ReturnT.class, returnTargetClassOfT);
-                ReturnT returnT = JsonUtil.deserializeReturnT(resultJson, returnTargetClassOfT);
-                return returnT;
+//                ApiResponse apiResponse = GsonTool.fromJson(resultJson, ApiResponse.class, returnTargetClassOfT);
+                ApiResponse apiResponse = JsonUtil.deserializeApiResponse(resultJson, returnTargetClassOfT);
+                return apiResponse;
             } catch (Exception e) {
                 logger.error("jedi-rpc remoting (url=" + url + ") response content invalid(" + resultJson + ").", e);
-                return new ReturnT<String>(ReturnT.FAIL_CODE, "jedi-rpc remoting (url=" + url + ") response content " +
-                        "invalid(" + resultJson + ").");
+                return ApiResponse.fail("jedi-rpc remoting (url=" + url + ") response content " +
+                        "invalid(" + resultJson + ").", CMM_JSON_DESERIALIZE_ERROR.getCode());
             }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return new ReturnT<String>(ReturnT.FAIL_CODE, "jedi-rpc remoting error(" + e.getMessage() + "), for " +
-                    "url : " + url);
+            return ApiResponse.fail("jedi-rpc remoting error(" + e.getMessage() + "), for " +
+                    "url : " + url, ErrorCodeEnum.CMM_ERROR.getCode());
         } finally {
             try {
                 if (bufferedReader != null) {

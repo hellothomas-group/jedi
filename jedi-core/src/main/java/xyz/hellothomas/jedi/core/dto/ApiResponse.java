@@ -34,10 +34,10 @@ public class ApiResponse<T> {
         return response;
     }
 
-    public static <T> ApiResponse<T> fail(T data, String code) {
+    public static <T> ApiResponse<T> fail(T msg, String code) {
         ApiResponse<T> response = new ApiResponse<>();
         response.setCode(code);
-        response.setMessage(data.toString());
+        response.setMessage(msg.toString());
         return response;
     }
 

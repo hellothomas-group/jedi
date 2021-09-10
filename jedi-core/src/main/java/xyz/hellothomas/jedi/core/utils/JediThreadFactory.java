@@ -11,15 +11,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class JediThreadFactory implements ThreadFactory {
+    private static final ThreadGroup threadGroup = new ThreadGroup("Jedi");
     private static Logger log = LoggerFactory.getLogger(JediThreadFactory.class);
-
     private final AtomicLong threadNumber = new AtomicLong(1);
-
     private final String namePrefix;
-
     private final boolean daemon;
 
-    private static final ThreadGroup threadGroup = new ThreadGroup("Jedi");
+    private JediThreadFactory(String namePrefix, boolean daemon) {
+        this.namePrefix = namePrefix;
+        this.daemon = daemon;
+    }
 
     public static ThreadGroup getThreadGroup() {
         return threadGroup;
@@ -61,10 +62,6 @@ public class JediThreadFactory implements ThreadFactory {
         return false;
     }
 
-    private static interface ClassifyStandard<T> {
-        boolean satisfy(T thread);
-    }
-
     private static <T> void classify(Set<T> src, Set<T> des, ClassifyStandard<T> standard) {
         Set<T> set = new HashSet<>();
         for (T t : src) {
@@ -76,11 +73,6 @@ public class JediThreadFactory implements ThreadFactory {
         des.addAll(set);
     }
 
-    private JediThreadFactory(String namePrefix, boolean daemon) {
-        this.namePrefix = namePrefix;
-        this.daemon = daemon;
-    }
-
     @Override
     public Thread newThread(Runnable runnable) {
         Thread thread = new Thread(threadGroup, runnable,
@@ -90,5 +82,9 @@ public class JediThreadFactory implements ThreadFactory {
             thread.setPriority(Thread.NORM_PRIORITY);
         }
         return thread;
+    }
+
+    private static interface ClassifyStandard<T> {
+        boolean satisfy(T thread);
     }
 }

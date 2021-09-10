@@ -11,7 +11,7 @@ public class Constants {
     public static final long NOTIFICATION_ID_PLACEHOLDER = -1;
     public static final String NO_APPID_PLACEHOLDER = "JediNoAppIdPlaceHolder";
     public static final String JEDI_DEFAULT_TASK_NAME = "jedi-default-task";
-    
+
     private Constants() {
         throw new IllegalStateException("Constant class");
     }

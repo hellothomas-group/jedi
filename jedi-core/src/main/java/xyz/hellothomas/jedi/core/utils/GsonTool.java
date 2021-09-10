@@ -18,23 +18,23 @@ public class GsonTool {
     //序列化
     private final static JsonSerializer<LocalDateTime> jsonSerializerDateTime = (localDateTime, type,
                                                                                  jsonSerializationContext)
-            -> new JsonPrimitive(localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            -> new JsonPrimitive(localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
     private final static JsonSerializer<LocalDate> jsonSerializerDate = (localDate, type, jsonSerializationContext)
-            -> new JsonPrimitive(localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            -> new JsonPrimitive(localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
     //反序列化
     private final static JsonDeserializer<LocalDateTime> jsonDeserializerDateTime = (jsonElement, type,
                                                                                      jsonDeserializationContext)
             -> LocalDateTime.parse(jsonElement.getAsJsonPrimitive().getAsString(),
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
     private final static JsonDeserializer<LocalDate> jsonDeserializerDate = (jsonElement, type,
                                                                              jsonDeserializationContext)
             -> LocalDate.parse(jsonElement.getAsJsonPrimitive().getAsString(),
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
 
     private static Gson gson = null;
 
     static {
-        gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+        gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
                 .setPrettyPrinting()
                 .registerTypeAdapter(LocalDateTime.class, jsonSerializerDateTime)
                 .registerTypeAdapter(LocalDate.class, jsonSerializerDate)
@@ -73,7 +73,7 @@ public class GsonTool {
      * @return
      */
     public static <T> T fromJson(String json, Class<T> classOfT, Class argClassOfT) {
-        Type type = new ParameterizedType4ReturnT(classOfT, new Class[]{argClassOfT});
+        Type type = new ParameterizedType4ApiResponse(classOfT, new Class[]{argClassOfT});
         return gson.fromJson(json, type);
     }
 
@@ -111,6 +111,31 @@ public class GsonTool {
         private final Type[] args;
 
         public ParameterizedType4ReturnT(Class raw, Type[] args) {
+            this.raw = raw;
+            this.args = args != null ? args : new Type[0];
+        }
+
+        @Override
+        public Type[] getActualTypeArguments() {
+            return args;
+        }
+
+        @Override
+        public Type getRawType() {
+            return raw;
+        }
+
+        @Override
+        public Type getOwnerType() {
+            return null;
+        }
+    }
+
+    public static class ParameterizedType4ApiResponse implements ParameterizedType {
+        private final Class raw;
+        private final Type[] args;
+
+        public ParameterizedType4ApiResponse(Class raw, Type[] args) {
             this.raw = raw;
             this.args = args != null ? args : new Type[0];
         }

@@ -98,42 +98,6 @@ public class KafkaNotificationService extends AbstractNotificationService {
         lazyProducer = new LazyProducer();
     }
 
-    private class LazyProducer {
-        private volatile Producer<String, String> producer;
-
-        public Producer<String, String> get() {
-            Producer<String, String> result = this.producer;
-            if (result == null) {
-                synchronized (this) {
-                    result = this.producer;
-                    if (result == null) {
-                        this.producer = result = this.initialize();
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public boolean isInitialized() {
-            return producer != null;
-        }
-
-        private Producer<String, String> initialize() {
-            Producer<String, String> newProducer = null;
-            try {
-                newProducer = createProducer();
-            } catch (Exception e) {
-                LOGGER.error("error creating producer", e);
-            }
-            return newProducer;
-        }
-
-        private Producer<String, String> createProducer() {
-            return new KafkaProducer<>(new HashMap<>(KafkaNotificationService.this.kafkaProperty.getProducerConfig()));
-        }
-    }
-
     /**
      * 启动守护线程执行消息发送任务
      *
@@ -169,5 +133,41 @@ public class KafkaNotificationService extends AbstractNotificationService {
         messageSendThread.setName("消息发送线程");
         messageSendThread.start();
         LOGGER.debug("{}已启动", messageSendThread.getName());
+    }
+
+    private class LazyProducer {
+        private volatile Producer<String, String> producer;
+
+        public Producer<String, String> get() {
+            Producer<String, String> result = this.producer;
+            if (result == null) {
+                synchronized (this) {
+                    result = this.producer;
+                    if (result == null) {
+                        this.producer = result = this.initialize();
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public boolean isInitialized() {
+            return producer != null;
+        }
+
+        private Producer<String, String> initialize() {
+            Producer<String, String> newProducer = null;
+            try {
+                newProducer = createProducer();
+            } catch (Exception e) {
+                LOGGER.error("error creating producer", e);
+            }
+            return newProducer;
+        }
+
+        private Producer<String, String> createProducer() {
+            return new KafkaProducer<>(new HashMap<>(KafkaNotificationService.this.kafkaProperty.getProducerConfig()));
+        }
     }
 }

@@ -258,11 +258,11 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         this.lastRejectCount = lastRejectCount;
     }
 
-    public void setTaskProperty(TaskProperty taskProperty) {
-        this.taskProperty.set(taskProperty);
-    }
-
     public TaskProperty getTaskProperty() {
         return this.taskProperty.get();
+    }
+
+    public void setTaskProperty(TaskProperty taskProperty) {
+        this.taskProperty.set(taskProperty);
     }
 }
