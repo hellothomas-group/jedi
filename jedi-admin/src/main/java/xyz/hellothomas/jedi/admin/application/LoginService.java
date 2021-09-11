@@ -3,13 +3,11 @@ package xyz.hellothomas.jedi.admin.application;
 import org.springframework.stereotype.Service;
 import xyz.hellothomas.jedi.admin.api.dto.LoginRequest;
 import xyz.hellothomas.jedi.admin.api.dto.LoginResponse;
+import xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum;
 import xyz.hellothomas.jedi.admin.common.utils.JwtUtil;
 import xyz.hellothomas.jedi.admin.domain.User;
-import xyz.hellothomas.jedi.core.exception.BusinessException;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
-
-import static xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum.PASSWORD_INVALID;
-import static xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum.USER_NOT_EXIST;
+import xyz.hellothomas.jedi.core.exception.BusinessException;
 
 /**
  * @author Thomas
@@ -34,11 +32,11 @@ public class LoginService {
     public LoginResponse login(LoginRequest loginRequest) {
         User user = userService.getUserByUserName(loginRequest.getUsername());
         if (user == null) {
-            throw new BusinessException(USER_NOT_EXIST);
+            throw new BusinessException(AdminErrorCodeEnum.USER_NOT_EXIST);
         }
 
         if (!loginRequest.getPassword().equals(user.getPassword())) {
-            throw new BusinessException(PASSWORD_INVALID);
+            throw new BusinessException(AdminErrorCodeEnum.PASSWORD_INVALID);
         }
 
         LoginResponse loginResponse = LocalBeanUtils.transform(LoginResponse.class, user);

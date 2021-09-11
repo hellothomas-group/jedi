@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
-import xyz.hellothomas.jedi.core.enums.ErrorCodeEnum;
+import xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum;
 import xyz.hellothomas.jedi.core.exception.BusinessException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +40,7 @@ public class ExceptionHandlerAdvice {
     @ResponseBody
     public ApiResponse paramsHandler(Exception e) {
         log.error("传参错误", e);
-        return ApiResponse.fail(ErrorCodeEnum.PARAM_ERROR);
+        return ApiResponse.fail(CoreErrorCodeEnum.PARAM_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -52,13 +52,13 @@ public class ExceptionHandlerAdvice {
                 .map(e -> e.getField() + ":" + e.getDefaultMessage())
                 .collect(Collectors.toList()));
         log.error("handleError: " + message);
-        return ApiResponse.fail(message, ErrorCodeEnum.PARAM_ERROR.getCode());
+        return ApiResponse.fail(message, CoreErrorCodeEnum.PARAM_ERROR.getCode());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ApiResponse defaultErrorHandler(Exception e) {
         log.error("default error handler", e);
-        return ApiResponse.fail(ErrorCodeEnum.SYSTEM_ERROR);
+        return ApiResponse.fail(CoreErrorCodeEnum.SYSTEM_ERROR);
     }
 }

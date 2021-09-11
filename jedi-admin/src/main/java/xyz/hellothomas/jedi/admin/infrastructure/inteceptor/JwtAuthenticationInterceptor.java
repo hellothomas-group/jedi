@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import xyz.hellothomas.jedi.admin.application.UserService;
+import xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum;
 import xyz.hellothomas.jedi.admin.common.utils.JwtUtil;
 import xyz.hellothomas.jedi.admin.domain.User;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.PassToken;
@@ -14,9 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
-import static xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum.USER_NOT_EXIST;
 import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
-import static xyz.hellothomas.jedi.core.enums.ErrorCodeEnum.TOKEN_IS_NULL;
 
 /**
  * @author 80234613 唐圆
@@ -98,7 +97,7 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
         // 执行认证
         if (token == null) {
             //这里其实是登录失效,没token了   这个错误也是我自定义的，读者需要自己修改
-            throw new BusinessException(TOKEN_IS_NULL);
+            throw new BusinessException(AdminErrorCodeEnum.TOKEN_IS_NULL);
         }
 
         // 获取 token 中的 userId
@@ -109,7 +108,7 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
 
         if (user == null) {
             //这个错误也是我自定义的
-            throw new BusinessException(USER_NOT_EXIST);
+            throw new BusinessException(AdminErrorCodeEnum.USER_NOT_EXIST);
         }
 
         // 验证 token

@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import xyz.hellothomas.jedi.biz.infrastructure.exception.ServiceException;
 import xyz.hellothomas.jedi.config.domain.ConsumerProperty;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
+
+import static xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum.SUCCESS;
 
 /**
  * @author Thomas
@@ -37,14 +40,19 @@ public class StaticConfigController {
 
     @GetMapping(value = "/consumer/{namespace}/{appId}")
     @ApiOperation("consumer")
-    public ApiResponse<ConsumerProperty> consumer(@PathVariable String namespace,
-                                                  @PathVariable String appId) {
+    public ConsumerProperty consumer(@PathVariable String namespace,
+                                     @PathVariable String appId) {
         log.info("namespace:{}, appId:{}", namespace, appId);
         ResponseEntity<ApiResponse<ConsumerProperty>> responseEntity = restTemplate.exchange(consumerUrl +
                         "/static-config/consumer/{namespace}/{appId}", HttpMethod.GET, null,
                 new ParameterizedTypeReference<ApiResponse<ConsumerProperty>>() {
                 }, namespace, appId);
 
-        return responseEntity.getBody();
+        ApiResponse<ConsumerProperty> apiResponse = responseEntity.getBody();
+        if (!SUCCESS.getCode().equals(apiResponse.getCode())) {
+            throw new ServiceException(String.format("%s-%s", apiResponse.getCode(), apiResponse.getMessage()));
+        }
+
+        return apiResponse.getData();
     }
 }

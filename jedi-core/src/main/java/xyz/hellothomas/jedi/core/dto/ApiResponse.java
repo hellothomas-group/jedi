@@ -1,7 +1,7 @@
 package xyz.hellothomas.jedi.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import xyz.hellothomas.jedi.core.enums.ErrorCodeEnum;
+import xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum;
 import xyz.hellothomas.jedi.core.enums.ICodeEnum;
 
 /**
@@ -28,8 +28,8 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> success(T data) {
         ApiResponse<T> response = new ApiResponse<>();
-        response.setCode(ErrorCodeEnum.SUCCESS.getCode());
-        response.setMessage(ErrorCodeEnum.SUCCESS.getMessage());
+        response.setCode(CoreErrorCodeEnum.SUCCESS.getCode());
+        response.setMessage(CoreErrorCodeEnum.SUCCESS.getMessage());
         response.setData(data);
         return response;
     }
@@ -43,7 +43,7 @@ public class ApiResponse<T> {
 
     public static ApiResponse fail(String msg) {
         ApiResponse response = new ApiResponse<>();
-        response.setCode(ErrorCodeEnum.FAIL.getCode());
+        response.setCode(CoreErrorCodeEnum.FAIL.getCode());
         response.setMessage(msg);
         return response;
     }

@@ -6,13 +6,12 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum;
 import xyz.hellothomas.jedi.admin.domain.User;
 import xyz.hellothomas.jedi.core.exception.BusinessException;
 
 import java.util.Calendar;
 import java.util.Date;
-
-import static xyz.hellothomas.jedi.core.enums.ErrorCodeEnum.TOKEN_UNAVAILABLE;
 
 /**
  * @author 80234613 唐圆
@@ -62,7 +61,7 @@ public class JwtUtil {
         } catch (Exception e) {
             //效验失败
             //这里抛出的异常是我自定义的一个异常，你也可以写成别的
-            throw new BusinessException(TOKEN_UNAVAILABLE);
+            throw new BusinessException(AdminErrorCodeEnum.TOKEN_UNAVAILABLE);
         }
     }
 
@@ -75,7 +74,7 @@ public class JwtUtil {
             audience = JWT.decode(token).getAudience().get(0);
         } catch (JWTDecodeException j) {
             //这里是token解析失败
-            throw new BusinessException(TOKEN_UNAVAILABLE);
+            throw new BusinessException(AdminErrorCodeEnum.TOKEN_UNAVAILABLE);
         }
         return audience;
     }

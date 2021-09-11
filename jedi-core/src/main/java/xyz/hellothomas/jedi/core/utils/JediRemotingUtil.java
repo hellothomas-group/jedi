@@ -3,7 +3,7 @@ package xyz.hellothomas.jedi.core.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
-import xyz.hellothomas.jedi.core.enums.ErrorCodeEnum;
+import xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum;
 
 import javax.net.ssl.*;
 import java.io.BufferedReader;
@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import static xyz.hellothomas.jedi.core.enums.ErrorCodeEnum.CMM_JSON_DESERIALIZE_ERROR;
+import static xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum.CMM_JSON_DESERIALIZE_ERROR;
 
 /**
  * @author Thomas
@@ -116,7 +116,7 @@ public class JediRemotingUtil {
             int statusCode = connection.getResponseCode();
             if (statusCode != 200) {
                 return ApiResponse.fail("jedi-rpc remoting fail, StatusCode(" + statusCode + ")" +
-                        " invalid. for url : " + url, ErrorCodeEnum.CMM_FAIL.getCode());
+                        " invalid. for url : " + url, CoreErrorCodeEnum.CMM_FAIL.getCode());
             }
 
             // result
@@ -142,7 +142,7 @@ public class JediRemotingUtil {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ApiResponse.fail("jedi-rpc remoting error(" + e.getMessage() + "), for " +
-                    "url : " + url, ErrorCodeEnum.CMM_ERROR.getCode());
+                    "url : " + url, CoreErrorCodeEnum.CMM_ERROR.getCode());
         } finally {
             try {
                 if (bufferedReader != null) {

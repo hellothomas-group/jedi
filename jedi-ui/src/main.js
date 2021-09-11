@@ -41,7 +41,7 @@ axios.interceptors.response.use(
 
         // 未登录则跳转登录页面，并携带当前页面的路径
         // 在登录成功后返回当前页面，这一步需要在登录页操作。
-        case 'CODE005':
+        case 'ADM0004':
           router.replace({
             path: '/login',
             query: {
@@ -53,7 +53,7 @@ axios.interceptors.response.use(
         // 登录过期对用户进行提示
         // 清除本地token和清空vuex中token对象
         // 跳转登录页面
-        case 'CODE004':
+        case 'ADM0003':
           alert('登录过期，请重新登录')
           // 清除token
           localStorage.clear()

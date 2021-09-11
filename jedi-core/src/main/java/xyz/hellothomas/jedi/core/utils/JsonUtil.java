@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
-import xyz.hellothomas.jedi.core.enums.ErrorCodeEnum;
+import xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum;
 import xyz.hellothomas.jedi.core.exception.JediCoreException;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class JsonUtil {
         try {
             return OBJECT_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            throw new JediCoreException(ErrorCodeEnum.JSON_SERIALIZE_ERROR, e);
+            throw new JediCoreException(CoreErrorCodeEnum.JSON_SERIALIZE_ERROR, e);
         }
     }
 
@@ -42,7 +42,7 @@ public class JsonUtil {
         try {
             return OBJECT_MAPPER.readValue(content, valueType);
         } catch (IOException e) {
-            throw new JediCoreException(ErrorCodeEnum.JSON_DESERIALIZE_ERROR, content, e);
+            throw new JediCoreException(CoreErrorCodeEnum.JSON_DESERIALIZE_ERROR, content, e);
         }
     }
 
@@ -62,7 +62,7 @@ public class JsonUtil {
             JavaType type = mapper.getTypeFactory().constructParametricType(List.class, valueType);
             return mapper.readValue(listJson, type);
         } catch (JsonProcessingException e) {
-            throw new JediCoreException(ErrorCodeEnum.JSON_DESERIALIZE_ERROR, listJson, e);
+            throw new JediCoreException(CoreErrorCodeEnum.JSON_DESERIALIZE_ERROR, listJson, e);
         }
     }
 
