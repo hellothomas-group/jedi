@@ -29,6 +29,8 @@ public class JediConfig {
 
     private String appId;
 
+    private int order;
+
     @NestedConfigurationProperty
     private List<JediThreadPoolProperty> executors = new ArrayList<>();
 }

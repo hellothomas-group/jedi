@@ -28,6 +28,7 @@ public class JediAsyncAspectConfig implements ApplicationContextAware {
     public JediAsyncAspect jediAsyncAspect() {
         Map<String, JediThreadPoolExecutor> executorMap =
                 this.applicationContext.getBeansOfType(JediThreadPoolExecutor.class);
-        return new JediAsyncAspect(executorMap);
+        JediConfig jediConfig = this.applicationContext.getBean(JediConfig.class);
+        return new JediAsyncAspect(executorMap, jediConfig.getOrder());
     }
 }

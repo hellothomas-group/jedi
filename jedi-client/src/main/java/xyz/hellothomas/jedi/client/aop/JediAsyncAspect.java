@@ -9,7 +9,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.core.annotation.Order;
 import xyz.hellothomas.jedi.client.annotation.JediAsync;
 import xyz.hellothomas.jedi.client.exception.JediClientException;
 import xyz.hellothomas.jedi.client.util.AspectSupportUtil;
@@ -21,15 +20,16 @@ import java.util.Map;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static xyz.hellothomas.jedi.core.constants.Constants.JEDI_DEFAULT_TASK_NAME;
 
-@Order(Ordered.LOWEST_PRECEDENCE - 100)
 @Aspect
 @Slf4j
-public class JediAsyncAspect {
+public class JediAsyncAspect implements Ordered {
     private final Map<String, JediThreadPoolExecutor> executorMap;
     private final JediThreadPoolExecutor uniqueExecutor;
+    private final int order;
 
-    public JediAsyncAspect(Map<String, JediThreadPoolExecutor> executorMap) {
+    public JediAsyncAspect(Map<String, JediThreadPoolExecutor> executorMap, int order) {
         this.executorMap = executorMap;
+        this.order = order;
         if (executorMap.size() == 1) {
             uniqueExecutor = executorMap.values().stream().findFirst().get();
         } else {
@@ -37,7 +37,7 @@ public class JediAsyncAspect {
         }
     }
 
-    @Pointcut("within(xyz.hellothomas.jedi.client.annotation.JediAsync)")
+    @Pointcut("@annotation(xyz.hellothomas.jedi.client.annotation.JediAsync)")
     public void annotationPointcut() {
         // 仅定义切点
     }
@@ -127,5 +127,10 @@ public class JediAsyncAspect {
             }
         }
         return taskExtraData;
+    }
+
+    @Override
+    public int getOrder() {
+        return order;
     }
 }

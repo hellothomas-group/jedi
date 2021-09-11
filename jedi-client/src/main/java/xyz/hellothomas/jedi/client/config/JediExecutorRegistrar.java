@@ -100,6 +100,8 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
         BeanUtils.copyProperties(jediProperty, jediConfig);
 
         if (StringUtils.isBlank(jediProperty.getExecutors())) {
+            log.warn("未配置{}, 将使用默认executor:{}", Constants.JEDI_CONFIG_EXECUTORS_KEY,
+                    Constants.JEDI_DEFAULT_EXECUTOR_NAME);
             jediProperty.setExecutors(Constants.JEDI_DEFAULT_EXECUTOR_NAME);
         }
 

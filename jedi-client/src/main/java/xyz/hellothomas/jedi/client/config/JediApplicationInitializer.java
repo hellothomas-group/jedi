@@ -110,8 +110,6 @@ public class JediApplicationInitializer implements ApplicationContextInitializer
         List<String> executorNames;
         String executors = environment.getProperty(Constants.JEDI_CONFIG_EXECUTORS_KEY);
         if (StringUtils.isBlank(executors)) {
-            log.warn("未配置{}, 将使用默认executor:{}", Constants.JEDI_CONFIG_EXECUTORS_KEY,
-                    Constants.JEDI_DEFAULT_EXECUTOR_NAME);
             executorNames = Lists.newArrayList(Constants.JEDI_DEFAULT_EXECUTOR_NAME);
         } else {
             log.debug("Jedi bootstrap executors: {}", executors);
