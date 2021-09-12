@@ -23,4 +23,12 @@ public class SleepUtil {
             LOGGER.error("休眠异常为: {}", e);
         }
     }
+
+    public static void sleepInSecond(long seconds) {
+        try {
+            Thread.sleep(1000 * seconds);
+        } catch (Exception e) {
+            LOGGER.error("休眠异常为: {}", e);
+        }
+    }
 }
