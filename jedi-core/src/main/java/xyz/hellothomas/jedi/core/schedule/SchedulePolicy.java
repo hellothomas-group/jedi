@@ -1,4 +1,4 @@
-package xyz.hellothomas.jedi.client.schedule;
+package xyz.hellothomas.jedi.core.schedule;
 
 /**
  * Schedule policy
