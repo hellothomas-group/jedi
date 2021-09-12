@@ -192,9 +192,10 @@ public class KafkaNotificationService extends AbstractNotificationService {
     private void startMessageSendFailbackThread() {
         Thread messageSendFailbackThread = new Thread(() -> {
             while (!toStopFailback) {
+                AbstractNotification notification = null;
                 try {
                     LOGGER.trace("获取发送失败消息队列中...");
-                    AbstractNotification notification = failSendQueue.take();
+                    notification = failSendQueue.take();
                     if (MessageType.EXECUTOR_TASK.getTypeValue().equals(notification.getMessageType())) {
                         sendFailMessage(notification, MessageType.EXECUTOR_TASK);
                     } else if (MessageType.EXECUTOR_TICKER.getTypeValue().equals(notification.getMessageType())) {
@@ -208,6 +209,7 @@ public class KafkaNotificationService extends AbstractNotificationService {
                 } catch (Exception e) {
                     if (!toStopFailback) {
                         LOGGER.error("失败消息补偿发送任务失败, 异常为: {}, 消息为: {}! ", e, notificationQueue);
+                        pushFailMessage(notification);
                         long sleepTimeInSecond = sendFailbackSchedulePolicyInSecond.fail();
                         SleepUtil.sleepInSecond(sleepTimeInSecond);
                     }
