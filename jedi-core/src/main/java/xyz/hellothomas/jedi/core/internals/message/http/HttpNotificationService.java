@@ -86,11 +86,11 @@ public class HttpNotificationService extends AbstractNotificationService {
     }
 
     @Override
-    public void send(Object request, MessageType messageType) {
+    public void send(AbstractNotification notification, MessageType messageType) {
         String requestUrl = messageServerUrl + HttpNotificationPath.getPathByMessageType(messageType);
-        LOGGER.trace("send to {}, message: {}", requestUrl, request);
+        LOGGER.trace("send to {}, message: {}", requestUrl, notification);
         ApiResponse<String> result = JediRemotingUtil.postBody(requestUrl, null, 3,
-                request, String.class);
+                notification, String.class);
         LOGGER.trace("result: {}", result);
     }
 

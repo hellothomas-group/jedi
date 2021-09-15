@@ -21,7 +21,7 @@ public class NullNotificationService extends AbstractNotificationService {
     }
 
     @Override
-    public void send(Object request, MessageType messageType) {
+    public void send(AbstractNotification notification, MessageType messageType) {
 
     }
 

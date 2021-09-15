@@ -25,7 +25,7 @@ public class CustomNotification extends AbstractNotification {
 
     @Override
     public String toString() {
-        return "AbstractNotification(id=" + this.getId() + ", appId=" + this.getAppId() + ", namespace" +
+        return "CustomNotification(id=" + this.getId() + ", appId=" + this.getAppId() + ", namespace" +
                 "=" + this.getNamespace() + ", messageType=" + this.getMessageType() + ", content=" +
                 this.getContent() + ", recordTime=" + this.getRecordTime() + ", host=" + this.getHost() + ")";
     }

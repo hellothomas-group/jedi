@@ -129,7 +129,7 @@ public abstract class AbstractNotificationService {
 
     public abstract void pushNotification(AbstractNotification notification);
 
-    public abstract void send(Object request, MessageType messageType);
+    public abstract void send(AbstractNotification notification, MessageType messageType);
 
     private void fillMessageCommonField(AbstractNotification notification) {
         notification.setId(UUID.randomUUID().toString());

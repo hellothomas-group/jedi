@@ -1,5 +1,7 @@
 package xyz.hellothomas.jedi.core.enums;
 
+import java.util.Arrays;
+
 /**
  * @author Thomas
  * @date 2021/1/9 22:13
@@ -23,5 +25,13 @@ public enum MessageType {
 
     public String getTypeValue() {
         return typeValue;
+    }
+
+    public static MessageType getMessageType(String typeValue) {
+        if (typeValue == null) {
+            return null;
+        }
+
+        return Arrays.stream(MessageType.values()).filter(i -> i.getTypeValue().equals(typeValue)).findFirst().orElse(null);
     }
 }
