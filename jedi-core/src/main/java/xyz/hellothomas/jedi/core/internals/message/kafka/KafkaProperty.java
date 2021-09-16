@@ -62,13 +62,12 @@ public class KafkaProperty {
     }
 
     public boolean checkPrerequisites() {
-        boolean errorFree = true;
 
         if (producerConfig.get(BOOTSTRAP_SERVERS_CONFIG) == null) {
             LOGGER.error("No \"" + BOOTSTRAP_SERVERS_CONFIG + "\" set.");
-            errorFree = false;
+            return false;
         }
 
-        return errorFree;
+        return true;
     }
 }

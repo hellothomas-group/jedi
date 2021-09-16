@@ -55,6 +55,10 @@ public class KafkaNotificationService extends AbstractNotificationService {
 
     @Override
     public void pushNotification(AbstractNotification notification) {
+        if (lazyProducer == null) {
+            return;
+        }
+
         try {
             sendNotificationExecutor.execute(() -> {
                 MessageType messageType = MessageType.getMessageType(notification.getMessageType());
@@ -66,7 +70,7 @@ public class KafkaNotificationService extends AbstractNotificationService {
     }
 
     @Override
-    public void send(AbstractNotification notification, MessageType messageType) {
+    public void send(Object notification, MessageType messageType) {
         try {
             String topic = getMessageTopic(messageType);
             final ProducerRecord<String, String> producerRecord = new ProducerRecord(topic,
@@ -79,12 +83,12 @@ public class KafkaNotificationService extends AbstractNotificationService {
                             exception);
                     // 任务消息避免丢失
                     if (MessageType.EXECUTOR_TASK == messageType) {
-                        pushFailMessage(notification, messageType);
+                        pushFailMessage((AbstractNotification) notification, messageType);
                     }
                 }
             }));
         } catch (Exception e) {
-            LOGGER.error("消息发送任务失败, 异常为: {}, 消息为: {}! ", e, notification);
+            LOGGER.warn("消息发送任务失败, 异常为: {}, 消息为: {}! ", e, notification);
         }
     }
 
@@ -100,7 +104,6 @@ public class KafkaNotificationService extends AbstractNotificationService {
     }
 
     private void start() {
-        // only error free appenders should be activated
         if (!kafkaProperty.checkPrerequisites()) {
             return;
         }
@@ -145,7 +148,7 @@ public class KafkaNotificationService extends AbstractNotificationService {
                     JsonUtil.serialize(notification));
             lazyRetryProducer.get().send(producerRecord).get();
         } catch (Exception e) {
-            LOGGER.error("失败消息补偿发送任务失败, 异常为: {}, 消息为: {}! ", e, notification);
+            LOGGER.warn("失败消息补偿发送任务失败, 异常为: {}, 消息为: {}! ", e, notification);
             pushFailMessage(notification, messageType);
             long sleepTimeInSecond = retrySendSchedulePolicyInSecond.fail();
             SleepUtil.sleepInSecond(sleepTimeInSecond);
