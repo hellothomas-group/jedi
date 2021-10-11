@@ -62,7 +62,7 @@ public class CalibrationController implements ReleaseMessageListener {
     public CalibrationController(
             final ReleaseMessageServiceWithCache releaseMessageService, Gson gson) {
         largeNotificationBatchExecutorService = Executors.newSingleThreadExecutor(JediThreadFactory.create
-                ("NotificationControllerV2", true));
+                ("CalibrationController", true));
         this.releaseMessageService = releaseMessageService;
         this.gson = gson;
     }
