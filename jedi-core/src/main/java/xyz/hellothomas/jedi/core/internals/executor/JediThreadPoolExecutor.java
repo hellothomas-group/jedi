@@ -139,7 +139,7 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
 
     @Override
     protected void beforeExecute(Thread t, Runnable r) {
-        TaskProperty defaultTaskProperty = new TaskProperty(JEDI_DEFAULT_TASK_NAME, null);
+        TaskProperty defaultTaskProperty = new TaskProperty(JEDI_DEFAULT_TASK_NAME, null, 0L);
         defaultTaskProperty.setStartTime(System.currentTimeMillis());
         this.taskProperty.set(defaultTaskProperty);
         super.beforeExecute(t, r);
@@ -153,7 +153,7 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         ExecutorTaskNotification executorTaskNotification =
                 this.notificationService.buildExecutorTaskNotification(currentTaskProperty.getTaskName(),
                         currentTaskProperty.getTaskExtraData(),
-                        this.poolName, diff, t);
+                        this.poolName, currentTaskProperty.getWaitTime(), diff, t);
         this.notificationService.pushNotification(executorTaskNotification);
         this.taskProperty.remove();
     }

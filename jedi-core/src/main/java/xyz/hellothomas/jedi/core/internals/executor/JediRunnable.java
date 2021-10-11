@@ -11,12 +11,14 @@ public class JediRunnable implements Runnable {
     private final String taskExtraData;
     private final JediThreadPoolExecutor executor;
     private final Runnable runnable;
+    private final long submitTime;
 
     public JediRunnable(JediThreadPoolExecutor executor, String taskName, Runnable runnable) {
         this.taskName = taskName;
         this.taskExtraData = null;
         this.executor = executor;
         this.runnable = runnable;
+        this.submitTime = System.currentTimeMillis();
     }
 
     public JediRunnable(JediThreadPoolExecutor executor, String taskName, String taskExtraData, Runnable runnable) {
@@ -24,13 +26,15 @@ public class JediRunnable implements Runnable {
         this.taskExtraData = taskExtraData;
         this.executor = executor;
         this.runnable = runnable;
+        this.submitTime = System.currentTimeMillis();
     }
 
     @Override
     public void run() {
         // 替换默认的taskProperty
-        TaskProperty taskProperty = new TaskProperty(taskName, taskExtraData);
-        taskProperty.setStartTime(System.currentTimeMillis());
+        long startTime = System.currentTimeMillis();
+        TaskProperty taskProperty = new TaskProperty(taskName, taskExtraData, startTime - submitTime);
+        taskProperty.setStartTime(startTime);
         executor.setTaskProperty(taskProperty);
         runnable.run();
     }

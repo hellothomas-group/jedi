@@ -72,7 +72,8 @@ public abstract class AbstractNotificationService {
     }
 
     public ExecutorTaskNotification buildExecutorTaskNotification(String taskName, String taskExtraData,
-                                                                  String poolName, long executionTime, Throwable t) {
+                                                                  String poolName, long waitTime, long executionTime,
+                                                                  Throwable t) {
         ExecutorTaskNotification executorTaskNotification = new ExecutorTaskNotification();
         if (StringUtils.isNotBlank(taskName)) {
             executorTaskNotification.setTaskName(taskName);
@@ -80,6 +81,7 @@ public abstract class AbstractNotificationService {
         if (StringUtils.isNotBlank(taskExtraData)) {
             executorTaskNotification.setTaskExtraData(taskExtraData);
         }
+        executorTaskNotification.setWaitTime(waitTime);
         executorTaskNotification.setExecutionTime(executionTime);
         executorTaskNotification.setPoolName(poolName);
         if (t == null) {

@@ -44,6 +44,11 @@ public class ExecutorTaskMessage {
     private String taskName;
 
     /**
+     * 等待时间
+     */
+    private long waitTime;
+
+    /**
      * 执行时间
      */
     private Long executionTime;

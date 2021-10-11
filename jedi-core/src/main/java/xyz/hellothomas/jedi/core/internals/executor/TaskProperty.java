@@ -9,11 +9,13 @@ package xyz.hellothomas.jedi.core.internals.executor;
 public class TaskProperty {
     private final String taskName;
     private final String taskExtraData;
-    private Long startTime;
+    private final long waitTime;
+    private long startTime;
 
-    public TaskProperty(String taskName, String taskExtraData) {
+    public TaskProperty(String taskName, String taskExtraData, long waitTime) {
         this.taskName = taskName;
         this.taskExtraData = taskExtraData;
+        this.waitTime = waitTime;
     }
 
     public String getTaskName() {
@@ -24,7 +26,11 @@ public class TaskProperty {
         return taskExtraData;
     }
 
-    public Long getStartTime() {
+    public long getWaitTime() {
+        return waitTime;
+    }
+
+    public long getStartTime() {
         return startTime;
     }
 

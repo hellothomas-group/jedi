@@ -525,6 +525,66 @@ public class ExecutorTaskMessageExample {
             return (Criteria) this;
         }
 
+        public Criteria andWaitTimeIsNull() {
+            addCriterion("wait_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeIsNotNull() {
+            addCriterion("wait_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeEqualTo(Long value) {
+            addCriterion("wait_time =", value, "waitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeNotEqualTo(Long value) {
+            addCriterion("wait_time <>", value, "waitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeGreaterThan(Long value) {
+            addCriterion("wait_time >", value, "waitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeGreaterThanOrEqualTo(Long value) {
+            addCriterion("wait_time >=", value, "waitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeLessThan(Long value) {
+            addCriterion("wait_time <", value, "waitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeLessThanOrEqualTo(Long value) {
+            addCriterion("wait_time <=", value, "waitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeIn(List<Long> values) {
+            addCriterion("wait_time in", values, "waitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeNotIn(List<Long> values) {
+            addCriterion("wait_time not in", values, "waitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeBetween(Long value1, Long value2) {
+            addCriterion("wait_time between", value1, value2, "waitTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeNotBetween(Long value1, Long value2) {
+            addCriterion("wait_time not between", value1, value2, "waitTime");
+            return (Criteria) this;
+        }
+
         public Criteria andExecutionTimeIsNull() {
             addCriterion("execution_time is null");
             return (Criteria) this;

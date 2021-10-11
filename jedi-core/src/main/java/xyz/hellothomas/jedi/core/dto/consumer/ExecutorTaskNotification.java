@@ -24,6 +24,11 @@ public class ExecutorTaskNotification extends AbstractNotification {
     private String poolName;
 
     /**
+     * 等待时间
+     */
+    private long waitTime;
+
+    /**
      * 执行时间
      */
     private long executionTime;
@@ -55,9 +60,9 @@ public class ExecutorTaskNotification extends AbstractNotification {
     public String toString() {
         return "ExecutorTaskMessage(id=" + this.getId() + ", appId=" + this.getAppId() + ", namespace" +
                 "=" + this.getNamespace() + ", messageType=" + this.getMessageType() + ", recordTime=" + this.getRecordTime() + ", host=" + this.getHost() +
-                ", taskName=" + this.taskName + ", poolName=" + this.poolName + ", executionTime=" +
-                this.executionTime + ", isSuccess=" + this.isSuccess + ", failureReason=" + this.failureReason + ", " +
-                "taskExtraData=" + this.taskExtraData + ")";
+                ", taskName=" + this.taskName + ", poolName=" + this.poolName + ", waitTime=" +
+                this.waitTime + ", executionTime=" + this.executionTime + ", isSuccess=" + this.isSuccess + ", " +
+                "failureReason=" + this.failureReason + ", " + "taskExtraData=" + this.taskExtraData + ")";
     }
 
     public String getTaskName() {
@@ -66,6 +71,14 @@ public class ExecutorTaskNotification extends AbstractNotification {
 
     public void setTaskName(String taskName) {
         this.taskName = taskName;
+    }
+
+    public long getWaitTime() {
+        return waitTime;
+    }
+
+    public void setWaitTime(long waitTime) {
+        this.waitTime = waitTime;
     }
 
     public long getExecutionTime() {
