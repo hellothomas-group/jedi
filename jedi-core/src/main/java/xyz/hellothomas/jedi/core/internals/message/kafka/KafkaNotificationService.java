@@ -147,6 +147,7 @@ public class KafkaNotificationService extends AbstractNotificationService {
             final ProducerRecord<String, String> producerRecord = new ProducerRecord(topic,
                     JsonUtil.serialize(notification));
             lazyRetryProducer.get().send(producerRecord).get();
+            retrySendSchedulePolicyInSecond.success();
         } catch (Exception e) {
             LOGGER.warn("失败消息补偿发送任务失败, 异常为: {}, 消息为: {}! ", e, notification);
             pushFailMessage(notification, messageType);
