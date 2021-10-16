@@ -22,10 +22,10 @@ spring:
     listener:
       missing-topics-fatal: false
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/my_monitor?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    url: jdbc:mysql://127.0.0.1:3306/jedi_consumer?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
       &serverTimezone=Asia/Shanghai
     username: root
-    password: 222222
+    password: 123456
 
 management:
 #  endpoint:

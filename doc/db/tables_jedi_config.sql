@@ -1,5 +1,5 @@
-CREATE database if NOT EXISTS `my_monitor` default character set utf8mb4 collate utf8mb4_unicode_ci;
-use `my_monitor`;
+CREATE database if NOT EXISTS `jedi_config` default character set utf8mb4 collate utf8mb4_unicode_ci;
+use `jedi_config`;
 
 SET NAMES utf8mb4;
 

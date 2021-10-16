@@ -1,5 +1,5 @@
-CREATE database if NOT EXISTS `my_monitor` default character set utf8mb4 collate utf8mb4_unicode_ci;
-use `my_monitor`;
+CREATE database if NOT EXISTS `jedi_consumer` default character set utf8mb4 collate utf8mb4_unicode_ci;
+use `jedi_consumer`;
 
 SET NAMES utf8mb4;
 
@@ -147,3 +147,31 @@ CREATE TABLE IF NOT EXISTS `task_lock` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `IX_UNIQUE_KEY` (`task_date`,`task_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='任务锁表';
+
+CREATE TABLE IF NOT EXISTS `app` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+  `namespace_name` varchar(32) NOT NULL DEFAULT '' COMMENT 'namespace名字，注意，需要全局唯一',
+  `app_id` varchar(32) NOT NULL DEFAULT '' COMMENT 'appId',
+  `app_description` varchar(64) NOT NULL DEFAULT '' COMMENT 'app描述',
+  `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
+  `data_change_created_by` varchar(32) NOT NULL DEFAULT 'default' COMMENT '创建人邮箱前缀',
+  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `data_change_last_modified_by` varchar(32) DEFAULT '' COMMENT '最后修改人邮箱前缀',
+  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  KEY `IX_app_id` (`app_id`),
+  KEY `nnamespaceName_AppId` (`namespace_name`,`app_id`),
+  KEY `data_change_last_modified_time` (`data_change_last_modified_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='应用定义';
+
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `user_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
+  `real_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户真实名',
+  `password` varchar(64) NOT NULL DEFAULT 'default' COMMENT '密码',
+  `email` varchar(64) NOT NULL DEFAULT 'default' COMMENT '邮箱地址',
+  `is_manual` bit(1) NOT NULL DEFAULT b'0' COMMENT '0: 系统生成, 1: 手工生成 ',
+  `enabled` bit(1) NOT NULL DEFAULT b'1' COMMENT '1: 有效, 0: 无效',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IX_user_name` (`user_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
