@@ -14,8 +14,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @EnableAsync
 @EnableScheduling
-@SpringBootApplication
-@MapperScan(basePackages = {"xyz.hellothomas.jedi.consumer.infrastructure.mapper"})
+@SpringBootApplication(scanBasePackages = "xyz.hellothomas.jedi.*")
+@MapperScan(basePackages = {"xyz.hellothomas.jedi.*.infrastructure.mapper"})
 public class ConsumerApplication {
     public static void main(String[] args) {
         SpringApplication.run(ConsumerApplication.class, args);

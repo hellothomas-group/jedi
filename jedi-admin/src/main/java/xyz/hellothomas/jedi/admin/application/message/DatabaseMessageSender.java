@@ -4,8 +4,8 @@ import com.google.common.collect.Queues;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import xyz.hellothomas.jedi.biz.domain.ReleaseMessage;
-import xyz.hellothomas.jedi.biz.infrastructure.mapper.ReleaseMessageMapper;
+import xyz.hellothomas.jedi.biz.domain.config.ReleaseMessage;
+import xyz.hellothomas.jedi.biz.infrastructure.mapper.config.ReleaseMessageMapper;
 import xyz.hellothomas.jedi.core.utils.JediThreadFactory;
 
 import javax.annotation.PostConstruct;

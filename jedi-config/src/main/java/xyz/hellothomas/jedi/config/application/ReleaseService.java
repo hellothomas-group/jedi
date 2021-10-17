@@ -1,9 +1,9 @@
 package xyz.hellothomas.jedi.config.application;
 
 import org.springframework.stereotype.Service;
-import xyz.hellothomas.jedi.biz.domain.Release;
-import xyz.hellothomas.jedi.biz.domain.ReleaseExample;
-import xyz.hellothomas.jedi.biz.infrastructure.mapper.ReleaseMapper;
+import xyz.hellothomas.jedi.biz.domain.config.Release;
+import xyz.hellothomas.jedi.biz.domain.config.ReleaseExample;
+import xyz.hellothomas.jedi.biz.infrastructure.mapper.config.ReleaseMapper;
 
 import java.util.List;
 

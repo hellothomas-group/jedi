@@ -8,7 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.biz.common.utils.ReleaseMessageKeyGenerator;
-import xyz.hellothomas.jedi.biz.domain.Release;
+import xyz.hellothomas.jedi.biz.domain.config.Release;
 import xyz.hellothomas.jedi.config.application.config.ConfigService;
 import xyz.hellothomas.jedi.config.common.utils.InstanceConfigAuditUtil;
 import xyz.hellothomas.jedi.core.dto.config.JediExecutorConfig;

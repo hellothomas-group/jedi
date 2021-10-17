@@ -5,7 +5,7 @@ import xyz.hellothomas.jedi.admin.api.dto.LoginRequest;
 import xyz.hellothomas.jedi.admin.api.dto.LoginResponse;
 import xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum;
 import xyz.hellothomas.jedi.admin.common.utils.JwtUtil;
-import xyz.hellothomas.jedi.admin.domain.User;
+import xyz.hellothomas.jedi.biz.domain.monitor.User;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.core.exception.BusinessException;
 

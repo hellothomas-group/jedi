@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
 import xyz.hellothomas.jedi.admin.api.dto.UserRequest;
 import xyz.hellothomas.jedi.admin.application.UserService;
-import xyz.hellothomas.jedi.admin.domain.User;
+import xyz.hellothomas.jedi.biz.domain.monitor.User;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 
 /**

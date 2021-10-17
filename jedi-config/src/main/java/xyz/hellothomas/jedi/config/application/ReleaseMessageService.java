@@ -2,9 +2,9 @@ package xyz.hellothomas.jedi.config.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import xyz.hellothomas.jedi.biz.domain.ReleaseMessage;
-import xyz.hellothomas.jedi.biz.domain.ReleaseMessageExample;
-import xyz.hellothomas.jedi.biz.infrastructure.mapper.ReleaseMessageMapper;
+import xyz.hellothomas.jedi.biz.domain.config.ReleaseMessage;
+import xyz.hellothomas.jedi.biz.domain.config.ReleaseMessageExample;
+import xyz.hellothomas.jedi.biz.infrastructure.mapper.config.ReleaseMessageMapper;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package xyz.hellothomas.jedi.config.application.message;
 
-import xyz.hellothomas.jedi.biz.domain.ReleaseMessage;
+import xyz.hellothomas.jedi.biz.domain.config.ReleaseMessage;
 
 /**
  * @author Thomas

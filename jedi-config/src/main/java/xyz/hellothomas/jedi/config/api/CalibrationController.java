@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 import xyz.hellothomas.jedi.biz.common.utils.ReleaseMessageKeyGenerator;
-import xyz.hellothomas.jedi.biz.domain.ReleaseMessage;
+import xyz.hellothomas.jedi.biz.domain.config.ReleaseMessage;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.config.application.message.DeferredResultWrapper;
 import xyz.hellothomas.jedi.config.application.message.ReleaseMessageListener;

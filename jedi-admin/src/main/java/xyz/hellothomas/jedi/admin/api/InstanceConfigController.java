@@ -15,9 +15,9 @@ import xyz.hellothomas.jedi.admin.api.dto.*;
 import xyz.hellothomas.jedi.admin.application.InstanceService;
 import xyz.hellothomas.jedi.admin.application.ReleaseService;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
-import xyz.hellothomas.jedi.biz.domain.Instance;
-import xyz.hellothomas.jedi.biz.domain.InstanceConfig;
-import xyz.hellothomas.jedi.biz.domain.Release;
+import xyz.hellothomas.jedi.biz.domain.config.Instance;
+import xyz.hellothomas.jedi.biz.domain.config.InstanceConfig;
+import xyz.hellothomas.jedi.biz.domain.config.Release;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
 

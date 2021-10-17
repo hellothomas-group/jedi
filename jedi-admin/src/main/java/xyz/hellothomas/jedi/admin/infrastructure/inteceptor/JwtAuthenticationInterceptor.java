@@ -6,7 +6,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import xyz.hellothomas.jedi.admin.application.UserService;
 import xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum;
 import xyz.hellothomas.jedi.admin.common.utils.JwtUtil;
-import xyz.hellothomas.jedi.admin.domain.User;
+import xyz.hellothomas.jedi.biz.domain.monitor.User;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.PassToken;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.core.exception.BusinessException;

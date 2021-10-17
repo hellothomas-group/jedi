@@ -1,6 +1,6 @@
 package xyz.hellothomas.jedi.config.application.config;
 
-import xyz.hellothomas.jedi.biz.domain.Release;
+import xyz.hellothomas.jedi.biz.domain.config.Release;
 
 public abstract class AbstractConfigService implements ConfigService {
 

@@ -1,8 +1,8 @@
 package xyz.hellothomas.jedi.config.application.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import xyz.hellothomas.jedi.biz.domain.Release;
-import xyz.hellothomas.jedi.biz.domain.ReleaseMessage;
+import xyz.hellothomas.jedi.biz.domain.config.Release;
+import xyz.hellothomas.jedi.biz.domain.config.ReleaseMessage;
 import xyz.hellothomas.jedi.config.application.ReleaseService;
 
 /**

@@ -2,9 +2,9 @@ package xyz.hellothomas.jedi.consumer.application;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import xyz.hellothomas.jedi.consumer.domain.User;
-import xyz.hellothomas.jedi.consumer.domain.UserExample;
-import xyz.hellothomas.jedi.consumer.infrastructure.mapper.UserMapper;
+import xyz.hellothomas.jedi.biz.domain.monitor.User;
+import xyz.hellothomas.jedi.biz.domain.monitor.UserExample;
+import xyz.hellothomas.jedi.biz.infrastructure.mapper.monitor.UserMapper;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
 package xyz.hellothomas.jedi.admin.application;
 
 import org.springframework.stereotype.Service;
-import xyz.hellothomas.jedi.admin.domain.User;
-import xyz.hellothomas.jedi.admin.infrastructure.mapper.UserMapper;
+import xyz.hellothomas.jedi.biz.domain.monitor.User;
+import xyz.hellothomas.jedi.biz.infrastructure.mapper.monitor.UserMapper;
 
 /**
  * @author 80234613 唐圆

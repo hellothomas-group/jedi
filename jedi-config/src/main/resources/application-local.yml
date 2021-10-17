@@ -17,7 +17,7 @@ management:
           include: readinessState,db
 
 mybatis:
-  mapper-locations: classpath*:mapper/*.xml
+  mapper-locations: classpath*:mapper/config/*.xml
 
 server:
   port: 8081

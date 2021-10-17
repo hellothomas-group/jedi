@@ -13,11 +13,11 @@ import xyz.hellothomas.jedi.admin.common.utils.ReleaseKeyGenerator;
 import xyz.hellothomas.jedi.admin.domain.Audit;
 import xyz.hellothomas.jedi.admin.domain.Executor;
 import xyz.hellothomas.jedi.admin.domain.Item;
-import xyz.hellothomas.jedi.biz.domain.Release;
-import xyz.hellothomas.jedi.biz.domain.ReleaseExample;
+import xyz.hellothomas.jedi.biz.domain.config.Release;
+import xyz.hellothomas.jedi.biz.domain.config.ReleaseExample;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
-import xyz.hellothomas.jedi.biz.infrastructure.mapper.ReleaseMapper;
+import xyz.hellothomas.jedi.biz.infrastructure.mapper.config.ReleaseMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;

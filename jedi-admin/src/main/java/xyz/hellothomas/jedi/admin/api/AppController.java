@@ -7,7 +7,7 @@ import xyz.hellothomas.jedi.admin.api.dto.AppResponse;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.application.AppService;
-import xyz.hellothomas.jedi.admin.domain.App;
+import xyz.hellothomas.jedi.biz.domain.monitor.App;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;

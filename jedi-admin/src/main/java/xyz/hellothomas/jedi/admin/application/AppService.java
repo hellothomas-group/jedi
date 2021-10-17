@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.domain.*;
-import xyz.hellothomas.jedi.admin.infrastructure.mapper.AppMapper;
+import xyz.hellothomas.jedi.biz.infrastructure.mapper.monitor.AppMapper;
+import xyz.hellothomas.jedi.biz.domain.monitor.App;
+import xyz.hellothomas.jedi.biz.domain.monitor.AppExample;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.ServiceException;
 

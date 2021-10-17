@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="xyz.hellothomas.jedi.consumer.infrastructure.mapper.AlarmConfigMapper">
-  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.consumer.domain.AlarmConfig">
+  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfig">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="namespace_name" jdbcType="VARCHAR" property="namespaceName" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
@@ -75,7 +75,7 @@
     id, namespace_name, app_id, executor_name, configuration, is_deleted, data_change_created_by,
     data_change_created_time, data_change_last_modified_by, data_change_last_modified_time
   </sql>
-  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.AlarmConfigExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfigExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -99,13 +99,13 @@
     delete from alarm_config
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.AlarmConfigExample">
+  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfigExample">
     delete from alarm_config
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.AlarmConfig" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfig" useGeneratedKeys="true" keyProperty="id">
     insert into alarm_config (id, namespace_name, app_id,
       executor_name, configuration, is_deleted,
       data_change_created_by, data_change_created_time,
@@ -117,7 +117,7 @@
       #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.AlarmConfig" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfig" useGeneratedKeys="true" keyProperty="id">
     insert into alarm_config
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -184,7 +184,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.AlarmConfigExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfigExample" resultType="java.lang.Long">
     select count(*) from alarm_config
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -244,7 +244,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.consumer.domain.AlarmConfig">
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfig">
     update alarm_config
     <set>
       <if test="namespaceName != null">
@@ -277,7 +277,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.consumer.domain.AlarmConfig">
+  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfig">
     update alarm_config
     set namespace_name = #{namespaceName,jdbcType=VARCHAR},
       app_id = #{appId,jdbcType=VARCHAR},

@@ -2,7 +2,7 @@ package xyz.hellothomas.jedi.config.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import xyz.hellothomas.jedi.biz.infrastructure.mapper.ReleaseMessageMapper;
+import xyz.hellothomas.jedi.biz.infrastructure.mapper.config.ReleaseMessageMapper;
 import xyz.hellothomas.jedi.config.api.CalibrationController;
 import xyz.hellothomas.jedi.config.application.config.ConfigService;
 import xyz.hellothomas.jedi.config.application.config.ConfigServiceWithCache;

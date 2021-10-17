@@ -12,7 +12,7 @@ import xyz.hellothomas.jedi.admin.domain.Executor;
 import xyz.hellothomas.jedi.admin.domain.Item;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
-import xyz.hellothomas.jedi.biz.domain.Release;
+import xyz.hellothomas.jedi.biz.domain.config.Release;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;

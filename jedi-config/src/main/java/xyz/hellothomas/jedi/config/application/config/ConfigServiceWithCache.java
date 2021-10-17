@@ -8,8 +8,8 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import xyz.hellothomas.jedi.biz.common.utils.ReleaseMessageKeyGenerator;
-import xyz.hellothomas.jedi.biz.domain.Release;
-import xyz.hellothomas.jedi.biz.domain.ReleaseMessage;
+import xyz.hellothomas.jedi.biz.domain.config.Release;
+import xyz.hellothomas.jedi.biz.domain.config.ReleaseMessage;
 import xyz.hellothomas.jedi.config.application.ReleaseMessageService;
 import xyz.hellothomas.jedi.config.application.ReleaseService;
 

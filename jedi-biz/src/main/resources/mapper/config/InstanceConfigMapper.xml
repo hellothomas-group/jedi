@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.hellothomas.jedi.biz.infrastructure.mapper.config.InstanceConfigMapper">
+  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.biz.domain.config.InstanceConfig">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="instance_id" jdbcType="BIGINT" property="instanceId" />
+    <result column="config_namespace_name" jdbcType="VARCHAR" property="configNamespaceName" />
+    <result column="config_app_id" jdbcType="VARCHAR" property="configAppId" />
+    <result column="config_executor_name" jdbcType="VARCHAR" property="configExecutorName" />
+    <result column="release_key" jdbcType="VARCHAR" property="releaseKey" />
+    <result column="release_delivery_time" jdbcType="TIMESTAMP" property="releaseDeliveryTime" />
+    <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
+    <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, instance_id, config_namespace_name, config_app_id, config_executor_name, release_key, 
+    release_delivery_time, data_change_created_time, data_change_last_modified_time
+  </sql>
+  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.biz.domain.config.InstanceConfigExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from instance_config
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from instance_config
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from instance_config
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.biz.domain.config.InstanceConfigExample">
+    delete from instance_config
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.biz.domain.config.InstanceConfig" useGeneratedKeys="true" keyProperty="id">
+    insert into instance_config (id, instance_id, config_namespace_name, 
+      config_app_id, config_executor_name, release_key, 
+      release_delivery_time, data_change_created_time, 
+      data_change_last_modified_time)
+    values (#{id,jdbcType=BIGINT}, #{instanceId,jdbcType=BIGINT}, #{configNamespaceName,jdbcType=VARCHAR}, 
+      #{configAppId,jdbcType=VARCHAR}, #{configExecutorName,jdbcType=VARCHAR}, #{releaseKey,jdbcType=VARCHAR}, 
+      #{releaseDeliveryTime,jdbcType=TIMESTAMP}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, 
+      #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.biz.domain.config.InstanceConfig" useGeneratedKeys="true" keyProperty="id">
+    insert into instance_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="instanceId != null">
+        instance_id,
+      </if>
+      <if test="configNamespaceName != null">
+        config_namespace_name,
+      </if>
+      <if test="configAppId != null">
+        config_app_id,
+      </if>
+      <if test="configExecutorName != null">
+        config_executor_name,
+      </if>
+      <if test="releaseKey != null">
+        release_key,
+      </if>
+      <if test="releaseDeliveryTime != null">
+        release_delivery_time,
+      </if>
+      <if test="dataChangeCreatedTime != null">
+        data_change_created_time,
+      </if>
+      <if test="dataChangeLastModifiedTime != null">
+        data_change_last_modified_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="instanceId != null">
+        #{instanceId,jdbcType=BIGINT},
+      </if>
+      <if test="configNamespaceName != null">
+        #{configNamespaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="configAppId != null">
+        #{configAppId,jdbcType=VARCHAR},
+      </if>
+      <if test="configExecutorName != null">
+        #{configExecutorName,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseKey != null">
+        #{releaseKey,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseDeliveryTime != null">
+        #{releaseDeliveryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dataChangeCreatedTime != null">
+        #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dataChangeLastModifiedTime != null">
+        #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="xyz.hellothomas.jedi.biz.domain.config.InstanceConfigExample" resultType="java.lang.Long">
+    select count(*) from instance_config
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update instance_config
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.instanceId != null">
+        instance_id = #{record.instanceId,jdbcType=BIGINT},
+      </if>
+      <if test="record.configNamespaceName != null">
+        config_namespace_name = #{record.configNamespaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.configAppId != null">
+        config_app_id = #{record.configAppId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.configExecutorName != null">
+        config_executor_name = #{record.configExecutorName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.releaseKey != null">
+        release_key = #{record.releaseKey,jdbcType=VARCHAR},
+      </if>
+      <if test="record.releaseDeliveryTime != null">
+        release_delivery_time = #{record.releaseDeliveryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.dataChangeCreatedTime != null">
+        data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.dataChangeLastModifiedTime != null">
+        data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update instance_config
+    set id = #{record.id,jdbcType=BIGINT},
+      instance_id = #{record.instanceId,jdbcType=BIGINT},
+      config_namespace_name = #{record.configNamespaceName,jdbcType=VARCHAR},
+      config_app_id = #{record.configAppId,jdbcType=VARCHAR},
+      config_executor_name = #{record.configExecutorName,jdbcType=VARCHAR},
+      release_key = #{record.releaseKey,jdbcType=VARCHAR},
+      release_delivery_time = #{record.releaseDeliveryTime,jdbcType=TIMESTAMP},
+      data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.biz.domain.config.InstanceConfig">
+    update instance_config
+    <set>
+      <if test="instanceId != null">
+        instance_id = #{instanceId,jdbcType=BIGINT},
+      </if>
+      <if test="configNamespaceName != null">
+        config_namespace_name = #{configNamespaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="configAppId != null">
+        config_app_id = #{configAppId,jdbcType=VARCHAR},
+      </if>
+      <if test="configExecutorName != null">
+        config_executor_name = #{configExecutorName,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseKey != null">
+        release_key = #{releaseKey,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseDeliveryTime != null">
+        release_delivery_time = #{releaseDeliveryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dataChangeCreatedTime != null">
+        data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dataChangeLastModifiedTime != null">
+        data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.biz.domain.config.InstanceConfig">
+    update instance_config
+    set instance_id = #{instanceId,jdbcType=BIGINT},
+      config_namespace_name = #{configNamespaceName,jdbcType=VARCHAR},
+      config_app_id = #{configAppId,jdbcType=VARCHAR},
+      config_executor_name = #{configExecutorName,jdbcType=VARCHAR},
+      release_key = #{releaseKey,jdbcType=VARCHAR},
+      release_delivery_time = #{releaseDeliveryTime,jdbcType=TIMESTAMP},
+      data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

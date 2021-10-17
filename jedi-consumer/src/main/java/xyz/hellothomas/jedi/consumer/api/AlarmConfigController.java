@@ -3,12 +3,12 @@ package xyz.hellothomas.jedi.consumer.api;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
+import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
+import xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfig;
+import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
+import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
 import xyz.hellothomas.jedi.consumer.api.dto.AlarmConfigResponse;
 import xyz.hellothomas.jedi.consumer.application.AlarmConfigService;
-import xyz.hellothomas.jedi.consumer.common.util.LocalBeanUtils;
-import xyz.hellothomas.jedi.consumer.domain.AlarmConfig;
-import xyz.hellothomas.jedi.consumer.infrastructure.exception.BadRequestException;
-import xyz.hellothomas.jedi.consumer.infrastructure.exception.NotFoundException;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
 import xyz.hellothomas.jedi.core.utils.JsonUtil;
 

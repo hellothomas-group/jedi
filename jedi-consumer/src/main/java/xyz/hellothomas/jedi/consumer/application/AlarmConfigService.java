@@ -2,8 +2,8 @@ package xyz.hellothomas.jedi.consumer.application;
 
 
 import org.springframework.stereotype.Service;
-import xyz.hellothomas.jedi.consumer.domain.AlarmConfig;
-import xyz.hellothomas.jedi.consumer.domain.AlarmConfigExample;
+import xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfig;
+import xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfigExample;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.AlarmConfigMapper;
 
 import java.time.LocalDateTime;

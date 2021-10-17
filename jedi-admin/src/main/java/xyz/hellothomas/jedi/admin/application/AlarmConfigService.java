@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import xyz.hellothomas.jedi.admin.api.dto.AlarmConfigResponse;
-import xyz.hellothomas.jedi.admin.domain.AlarmConfig;
+import xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfig;
 import xyz.hellothomas.jedi.admin.domain.Audit;
 import xyz.hellothomas.jedi.admin.domain.Executor;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;

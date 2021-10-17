@@ -2,7 +2,7 @@ package xyz.hellothomas.jedi.admin.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import xyz.hellothomas.jedi.admin.domain.App;
+import xyz.hellothomas.jedi.biz.domain.monitor.App;
 import xyz.hellothomas.jedi.admin.domain.Audit;
 import xyz.hellothomas.jedi.admin.domain.Namespace;
 import xyz.hellothomas.jedi.admin.domain.NamespaceExample;

@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import xyz.hellothomas.jedi.biz.domain.Instance;
-import xyz.hellothomas.jedi.biz.domain.InstanceConfig;
+import xyz.hellothomas.jedi.biz.domain.config.Instance;
+import xyz.hellothomas.jedi.biz.domain.config.InstanceConfig;
 import xyz.hellothomas.jedi.config.application.InstanceService;
 import xyz.hellothomas.jedi.core.utils.JediThreadFactory;
 

@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.api.dto.PageResult;
-import xyz.hellothomas.jedi.biz.domain.Instance;
-import xyz.hellothomas.jedi.biz.domain.InstanceConfig;
-import xyz.hellothomas.jedi.biz.domain.InstanceConfigExample;
-import xyz.hellothomas.jedi.biz.domain.InstanceExample;
-import xyz.hellothomas.jedi.biz.infrastructure.mapper.InstanceConfigMapper;
-import xyz.hellothomas.jedi.biz.infrastructure.mapper.InstanceMapper;
+import xyz.hellothomas.jedi.biz.domain.config.Instance;
+import xyz.hellothomas.jedi.biz.domain.config.InstanceConfig;
+import xyz.hellothomas.jedi.biz.domain.config.InstanceConfigExample;
+import xyz.hellothomas.jedi.biz.domain.config.InstanceExample;
+import xyz.hellothomas.jedi.biz.infrastructure.mapper.config.InstanceConfigMapper;
+import xyz.hellothomas.jedi.biz.infrastructure.mapper.config.InstanceMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;

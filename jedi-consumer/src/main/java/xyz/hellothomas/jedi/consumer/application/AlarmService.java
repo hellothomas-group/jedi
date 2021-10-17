@@ -4,9 +4,9 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import xyz.hellothomas.jedi.consumer.domain.App;
-import xyz.hellothomas.jedi.consumer.domain.AppExample;
-import xyz.hellothomas.jedi.consumer.infrastructure.mapper.AppMapper;
+import xyz.hellothomas.jedi.biz.domain.monitor.App;
+import xyz.hellothomas.jedi.biz.domain.monitor.AppExample;
+import xyz.hellothomas.jedi.biz.infrastructure.mapper.monitor.AppMapper;
 
 import java.util.List;
 
