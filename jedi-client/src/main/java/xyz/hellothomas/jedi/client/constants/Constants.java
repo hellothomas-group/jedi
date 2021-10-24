@@ -21,10 +21,11 @@ public class Constants {
 
     public static final String JEDI_CONFIG_PREFIX = "jedi";
     public static final String JEDI_CONFIG_ENABLE_KEY = "jedi.enable";
-    public static final String JEDI_CONFIG_OFFLINE_ENABLE_KEY = "jedi.offline-enable";
+    public static final String JEDI_CONFIG_MODE_KEY = "jedi.mode";
     public static final String JEDI_CONFIG_URL_KEY = "jedi.url";
     public static final String JEDI_CONFIG_NAMESPACE_KEY = "jedi.namespace";
     public static final String JEDI_CONFIG_APP_ID_KEY = "jedi.app-id";
+    public static final String JEDI_CONFIG_ORDER_KEY = "jedi.order";
     public static final String JEDI_CONFIG_EXECUTORS_KEY = "jedi.executors";
     public static final String JEDI_CONFIG_BEAN_NAME = "jediConfig";
 

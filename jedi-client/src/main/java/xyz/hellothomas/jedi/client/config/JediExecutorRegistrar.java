@@ -23,6 +23,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import xyz.hellothomas.jedi.client.constants.Constants;
 import xyz.hellothomas.jedi.client.enums.ConsumerTypeEnum;
+import xyz.hellothomas.jedi.client.enums.JediModeEnum;
 import xyz.hellothomas.jedi.client.util.ExceptionUtil;
 import xyz.hellothomas.jedi.client.util.HttpRequest;
 import xyz.hellothomas.jedi.client.util.HttpResponse;
@@ -65,7 +66,7 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
                 this.jediConfig);
         log.info("{} registered.", Constants.JEDI_CONFIG_BEAN_NAME);
 
-        AbstractNotificationService notificationService = buildNotificationService(jediConfig.isOfflineEnable(),
+        AbstractNotificationService notificationService = buildNotificationService(jediConfig.getMode(),
                 jediConfig.getUrl(), jediConfig.getNamespace(), jediConfig.getAppId());
 
         ((DefaultListableBeanFactory) this.beanFactory).registerSingleton(NOTIFICATION_SERVICE_BEAN_NAME,
@@ -110,9 +111,9 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
         log.debug("jediConfig:{}", jediConfig);
     }
 
-    private AbstractNotificationService buildNotificationService(boolean offlineEnable, String url, String namespace,
+    private AbstractNotificationService buildNotificationService(int mode, String url, String namespace,
                                                                  String appId) {
-        if (offlineEnable) {
+        if (!(JediModeEnum.DEFAULT.getEnumValue() == mode || JediModeEnum.MONITOR_ONLY.getEnumValue() == mode)) {
             return new NullNotificationService(appId, namespace);
         }
 

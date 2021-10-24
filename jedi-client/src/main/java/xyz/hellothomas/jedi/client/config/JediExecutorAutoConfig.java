@@ -1,6 +1,7 @@
 package xyz.hellothomas.jedi.client.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,8 @@ import xyz.hellothomas.jedi.client.internals.PropertySourcesProcessor;
 public class JediExecutorAutoConfig {
 
     /**
+     * mode enum see {@link xyz.hellothomas.jedi.client.enums.JediModeEnum}
+     *
      * see the {@link Bean @Bean} javadocs for details
      * on working with {@code BeanFactoryPostProcessor} types such as
      * {@code PropertySourcesPlaceholderConfigurer}
@@ -29,8 +32,8 @@ public class JediExecutorAutoConfig {
      * @return
      */
     @Bean
-    @ConditionalOnProperty(value = Constants.JEDI_CONFIG_OFFLINE_ENABLE_KEY, havingValue = "false", matchIfMissing =
-            true)
+    @ConditionalOnExpression("#{environment['jedi.mode']==null||'0'.equals(environment['jedi.mode'])||" +
+            "'2'.equals(environment['jedi.mode'])}")
     public static PropertySourcesProcessor propertySourcesProcessor() {
         return new PropertySourcesProcessor();
     }

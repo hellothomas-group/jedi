@@ -7,6 +7,7 @@ import xyz.hellothomas.jedi.core.dto.consumer.ExecutorShutdownNotification;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTickerNotification;
 import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
+import xyz.hellothomas.jedi.core.internals.message.NullNotificationService;
 import xyz.hellothomas.jedi.core.utils.SleepUtil;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
      * 保存任务属性
      *  任务名称
      *  任务附加信息
+     *  等待执行时间
      *  开始执行的时间，当任务结束时，用任务结束时间减去开始时间计算任务执行时间
      */
     private ThreadLocal<TaskProperty> taskProperty = new ThreadLocal<>();
@@ -52,6 +54,9 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
      */
     private volatile int tickerCycle = 5000;
 
+    /**
+     * 上一次拒绝计数器
+     */
     private long lastRejectCount = rejectCount.longValue();
 
     /**
@@ -65,7 +70,9 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
         this.poolName = poolName;
         this.notificationService = notificationService;
-        startTickerThread();
+        if (!(notificationService instanceof NullNotificationService)) {
+            startTickerThread();
+        }
     }
 
     public JediThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
@@ -74,7 +81,9 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
         this.poolName = poolName;
         this.notificationService = notificationService;
-        startTickerThread();
+        if (!(notificationService instanceof NullNotificationService)) {
+            startTickerThread();
+        }
     }
 
     public JediThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
@@ -83,7 +92,9 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, handler);
         this.poolName = poolName;
         this.notificationService = notificationService;
-        startTickerThread();
+        if (!(notificationService instanceof NullNotificationService)) {
+            startTickerThread();
+        }
     }
 
     public JediThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
@@ -93,7 +104,9 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
         this.poolName = poolName;
         this.notificationService = notificationService;
-        startTickerThread();
+        if (!(notificationService instanceof NullNotificationService)) {
+            startTickerThread();
+        }
     }
 
     public JediThreadPoolExecutor(JediThreadPoolProperty jediThreadPoolProperty) throws ClassNotFoundException,
@@ -116,16 +129,20 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
                     Class.forName(jediThreadPoolProperty.getRejectedExecutionHandler()).newInstance());
         }
 
-        startTickerThread();
+        if (!(notificationService instanceof NullNotificationService)) {
+            startTickerThread();
+        }
     }
 
     @Override
     public void shutdown() {
-        ExecutorShutdownNotification executorShutdownNotification =
-                this.notificationService.buildExecutorShutdownNotification(this.poolName,
-                        this.getCompletedTaskCount(),
-                        this.getActiveCount(), this.getQueue().size());
-        this.notificationService.pushNotification(executorShutdownNotification);
+        if (!(notificationService instanceof NullNotificationService)) {
+            ExecutorShutdownNotification executorShutdownNotification =
+                    this.notificationService.buildExecutorShutdownNotification(this.poolName,
+                            this.getCompletedTaskCount(),
+                            this.getActiveCount(), this.getQueue().size());
+            this.notificationService.pushNotification(executorShutdownNotification);
+        }
         super.shutdown();
     }
 
@@ -150,11 +167,13 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         TaskProperty currentTaskProperty = this.taskProperty.get();
         long diff = System.currentTimeMillis() - currentTaskProperty.getStartTime();
 
-        ExecutorTaskNotification executorTaskNotification =
-                this.notificationService.buildExecutorTaskNotification(currentTaskProperty.getTaskName(),
-                        currentTaskProperty.getTaskExtraData(),
-                        this.poolName, currentTaskProperty.getWaitTime(), diff, t);
-        this.notificationService.pushNotification(executorTaskNotification);
+        if (!(notificationService instanceof NullNotificationService)) {
+            ExecutorTaskNotification executorTaskNotification =
+                    this.notificationService.buildExecutorTaskNotification(currentTaskProperty.getTaskName(),
+                            currentTaskProperty.getTaskExtraData(),
+                            this.poolName, currentTaskProperty.getWaitTime(), diff, t);
+            this.notificationService.pushNotification(executorTaskNotification);
+        }
         this.taskProperty.remove();
     }
 

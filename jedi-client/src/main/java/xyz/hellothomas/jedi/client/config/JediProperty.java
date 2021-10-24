@@ -18,7 +18,13 @@ import static xyz.hellothomas.jedi.client.constants.Constants.JEDI_ASYNC_DEFAULT
 public class JediProperty {
     private boolean enable;
 
-    private boolean offlineEnable;
+    /**
+     * 0：监控 + 服务端配置
+     * 1：仅监控
+     * 2：仅服务端配置
+     * 3：脱机模式(仅本地配置)
+     */
+    private int mode;
 
     private String url;
 

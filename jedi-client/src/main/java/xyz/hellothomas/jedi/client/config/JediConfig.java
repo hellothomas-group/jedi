@@ -21,7 +21,7 @@ import java.util.List;
 public class JediConfig {
     private boolean enable;
 
-    private boolean offlineEnable;
+    private int mode;
 
     private String url;
 

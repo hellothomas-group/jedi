@@ -14,6 +14,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import xyz.hellothomas.jedi.client.Config;
 import xyz.hellothomas.jedi.client.ConfigService;
 import xyz.hellothomas.jedi.client.constants.Constants;
+import xyz.hellothomas.jedi.client.enums.JediModeEnum;
 import xyz.hellothomas.jedi.client.internals.ConfigPropertySourceFactory;
 
 import java.util.List;
@@ -29,9 +30,11 @@ import java.util.List;
 public class JediApplicationInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>,
         EnvironmentPostProcessor {
     private static final String[] JEDI_SYSTEM_PROPERTIES = {Constants.JEDI_CONFIG_ENABLE_KEY,
-            Constants.JEDI_CONFIG_OFFLINE_ENABLE_KEY,
+            Constants.JEDI_CONFIG_MODE_KEY,
             Constants.JEDI_CONFIG_URL_KEY,
-            Constants.JEDI_CONFIG_NAMESPACE_KEY, Constants.JEDI_CONFIG_APP_ID_KEY};
+            Constants.JEDI_CONFIG_NAMESPACE_KEY,
+            Constants.JEDI_CONFIG_APP_ID_KEY,
+            Constants.JEDI_CONFIG_ORDER_KEY};
     private static final Splitter EXECUTOR_SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
 
     @Override
@@ -42,10 +45,10 @@ public class JediApplicationInitializer implements ApplicationContextInitializer
             return;
         }
 
-        Boolean jediOfflineEnable = environment.getProperty(Constants.JEDI_CONFIG_OFFLINE_ENABLE_KEY, Boolean.class,
-                false);
+        Integer jediMode = environment.getProperty(Constants.JEDI_CONFIG_MODE_KEY, Integer.class,
+                JediModeEnum.DEFAULT.getEnumValue());
 
-        if (jediOfflineEnable) {
+        if (JediModeEnum.OFFLINE.getEnumValue() == jediMode) {
             return;
         }
 
@@ -62,15 +65,12 @@ public class JediApplicationInitializer implements ApplicationContextInitializer
             return;
         }
 
-        Boolean jediOfflineEnable =
-                applicationContext.getEnvironment().getProperty(Constants.JEDI_CONFIG_OFFLINE_ENABLE_KEY,
-                        Boolean.class, false);
+        int jediMode = applicationContext.getEnvironment().getProperty(Constants.JEDI_CONFIG_MODE_KEY,
+                Integer.class, JediModeEnum.DEFAULT.getEnumValue());
 
-        if (jediOfflineEnable) {
-            return;
+        if (JediModeEnum.DEFAULT.getEnumValue() == jediMode || JediModeEnum.CONFIG_ONLY.getEnumValue() == jediMode) {
+            initializeConfig(applicationContext.getEnvironment());
         }
-
-        initializeConfig(applicationContext.getEnvironment());
     }
 
     /**
