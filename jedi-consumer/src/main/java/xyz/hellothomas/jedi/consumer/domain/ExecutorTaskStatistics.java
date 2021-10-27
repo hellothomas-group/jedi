@@ -61,6 +61,26 @@ public class ExecutorTaskStatistics {
     private BigDecimal failureRatio;
 
     /**
+     * 最长总时间
+     */
+    private Long totalTimeMax;
+
+    /**
+     * 最短总时间
+     */
+    private Long totalTimeMin;
+
+    /**
+     * 等待最长时间
+     */
+    private Long waitTimeMax;
+
+    /**
+     * 等待最短时间
+     */
+    private Long waitTimeMin;
+
+    /**
      * 执行最长时间
      */
     private Long executionTimeMax;

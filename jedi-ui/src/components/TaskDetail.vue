@@ -63,6 +63,12 @@
               :formatter = "isSuccessFormatter">
             </el-table-column>
             <el-table-column
+              label="等待时间(ms)"
+              width="140px"
+              align="center"
+              prop="waitTime">
+            </el-table-column>
+            <el-table-column
               label="执行时间(ms)"
               width="140px"
               align="center"

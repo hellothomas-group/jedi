@@ -687,6 +687,246 @@ public class ExecutorTaskStatisticsExample {
             return (Criteria) this;
         }
 
+        public Criteria andTotalTimeMaxIsNull() {
+            addCriterion("total_time_max is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMaxIsNotNull() {
+            addCriterion("total_time_max is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMaxEqualTo(Long value) {
+            addCriterion("total_time_max =", value, "totalTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMaxNotEqualTo(Long value) {
+            addCriterion("total_time_max <>", value, "totalTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMaxGreaterThan(Long value) {
+            addCriterion("total_time_max >", value, "totalTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMaxGreaterThanOrEqualTo(Long value) {
+            addCriterion("total_time_max >=", value, "totalTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMaxLessThan(Long value) {
+            addCriterion("total_time_max <", value, "totalTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMaxLessThanOrEqualTo(Long value) {
+            addCriterion("total_time_max <=", value, "totalTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMaxIn(List<Long> values) {
+            addCriterion("total_time_max in", values, "totalTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMaxNotIn(List<Long> values) {
+            addCriterion("total_time_max not in", values, "totalTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMaxBetween(Long value1, Long value2) {
+            addCriterion("total_time_max between", value1, value2, "totalTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMaxNotBetween(Long value1, Long value2) {
+            addCriterion("total_time_max not between", value1, value2, "totalTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMinIsNull() {
+            addCriterion("total_time_min is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMinIsNotNull() {
+            addCriterion("total_time_min is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMinEqualTo(Long value) {
+            addCriterion("total_time_min =", value, "totalTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMinNotEqualTo(Long value) {
+            addCriterion("total_time_min <>", value, "totalTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMinGreaterThan(Long value) {
+            addCriterion("total_time_min >", value, "totalTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMinGreaterThanOrEqualTo(Long value) {
+            addCriterion("total_time_min >=", value, "totalTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMinLessThan(Long value) {
+            addCriterion("total_time_min <", value, "totalTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMinLessThanOrEqualTo(Long value) {
+            addCriterion("total_time_min <=", value, "totalTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMinIn(List<Long> values) {
+            addCriterion("total_time_min in", values, "totalTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMinNotIn(List<Long> values) {
+            addCriterion("total_time_min not in", values, "totalTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMinBetween(Long value1, Long value2) {
+            addCriterion("total_time_min between", value1, value2, "totalTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andTotalTimeMinNotBetween(Long value1, Long value2) {
+            addCriterion("total_time_min not between", value1, value2, "totalTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMaxIsNull() {
+            addCriterion("wait_time_max is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMaxIsNotNull() {
+            addCriterion("wait_time_max is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMaxEqualTo(Long value) {
+            addCriterion("wait_time_max =", value, "waitTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMaxNotEqualTo(Long value) {
+            addCriterion("wait_time_max <>", value, "waitTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMaxGreaterThan(Long value) {
+            addCriterion("wait_time_max >", value, "waitTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMaxGreaterThanOrEqualTo(Long value) {
+            addCriterion("wait_time_max >=", value, "waitTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMaxLessThan(Long value) {
+            addCriterion("wait_time_max <", value, "waitTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMaxLessThanOrEqualTo(Long value) {
+            addCriterion("wait_time_max <=", value, "waitTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMaxIn(List<Long> values) {
+            addCriterion("wait_time_max in", values, "waitTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMaxNotIn(List<Long> values) {
+            addCriterion("wait_time_max not in", values, "waitTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMaxBetween(Long value1, Long value2) {
+            addCriterion("wait_time_max between", value1, value2, "waitTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMaxNotBetween(Long value1, Long value2) {
+            addCriterion("wait_time_max not between", value1, value2, "waitTimeMax");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMinIsNull() {
+            addCriterion("wait_time_min is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMinIsNotNull() {
+            addCriterion("wait_time_min is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMinEqualTo(Long value) {
+            addCriterion("wait_time_min =", value, "waitTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMinNotEqualTo(Long value) {
+            addCriterion("wait_time_min <>", value, "waitTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMinGreaterThan(Long value) {
+            addCriterion("wait_time_min >", value, "waitTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMinGreaterThanOrEqualTo(Long value) {
+            addCriterion("wait_time_min >=", value, "waitTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMinLessThan(Long value) {
+            addCriterion("wait_time_min <", value, "waitTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMinLessThanOrEqualTo(Long value) {
+            addCriterion("wait_time_min <=", value, "waitTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMinIn(List<Long> values) {
+            addCriterion("wait_time_min in", values, "waitTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMinNotIn(List<Long> values) {
+            addCriterion("wait_time_min not in", values, "waitTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMinBetween(Long value1, Long value2) {
+            addCriterion("wait_time_min between", value1, value2, "waitTimeMin");
+            return (Criteria) this;
+        }
+
+        public Criteria andWaitTimeMinNotBetween(Long value1, Long value2) {
+            addCriterion("wait_time_min not between", value1, value2, "waitTimeMin");
+            return (Criteria) this;
+        }
+
         public Criteria andExecutionTimeMaxIsNull() {
             addCriterion("execution_time_max is null");
             return (Criteria) this;
