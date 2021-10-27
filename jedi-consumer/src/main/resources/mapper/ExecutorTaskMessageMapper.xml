@@ -392,6 +392,10 @@
     <result column="total" jdbcType="INTEGER" property="total" />
     <result column="failure" jdbcType="INTEGER" property="failure" />
     <result column="failure_ratio" jdbcType="DECIMAL" property="failureRatio" />
+    <result column="total_time_max" jdbcType="BIGINT" property="totalTimeMax" />
+    <result column="total_time_min" jdbcType="BIGINT" property="totalTimeMin" />
+    <result column="wait_time_max" jdbcType="BIGINT" property="waitTimeMax" />
+    <result column="wait_time_min" jdbcType="BIGINT" property="waitTimeMin" />
     <result column="execution_time_max" jdbcType="INTEGER" property="executionTimeMax" />
     <result column="execution_time_min" jdbcType="INTEGER" property="executionTimeMin" />
     <result column="execution_time_line_95" jdbcType="INTEGER" property="executionTimeLine95" />
@@ -406,6 +410,10 @@
     app_id, namespace as namespace_name, pool_name as executor_name, task_name,
     count(id) as total,
     count(case when is_success = 0 then 1 else null end) as failure,
+    max(wait_time + execution_time) as total_time_max,
+    min(wait_time + execution_time) as total_time_min,
+    max(wait_time) as wait_time_max,
+    min(wait_time) as wait_time_min,
     max(execution_time) as execution_time_max,
     min(execution_time) as execution_time_min,
     0 as execution_time_line_95,

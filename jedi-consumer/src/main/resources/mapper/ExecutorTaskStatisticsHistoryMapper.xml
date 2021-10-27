@@ -11,6 +11,10 @@
     <result column="total" jdbcType="BIGINT" property="total" />
     <result column="failure" jdbcType="BIGINT" property="failure" />
     <result column="failure_ratio" jdbcType="DECIMAL" property="failureRatio" />
+    <result column="total_time_max" jdbcType="BIGINT" property="totalTimeMax" />
+    <result column="total_time_min" jdbcType="BIGINT" property="totalTimeMin" />
+    <result column="wait_time_max" jdbcType="BIGINT" property="waitTimeMax" />
+    <result column="wait_time_min" jdbcType="BIGINT" property="waitTimeMin" />
     <result column="execution_time_max" jdbcType="BIGINT" property="executionTimeMax" />
     <result column="execution_time_min" jdbcType="BIGINT" property="executionTimeMin" />
     <result column="execution_time_line_95" jdbcType="BIGINT" property="executionTimeLine95" />
@@ -79,8 +83,9 @@
   </sql>
   <sql id="Base_Column_List">
     id, statistics_date, namespace_name, app_id, executor_name, task_name, total, failure,
-    failure_ratio, execution_time_max, execution_time_min, execution_time_line_95, execution_time_line_99,
-    data_change_created_time, data_change_last_modified_time, version
+    failure_ratio, total_time_max, total_time_min, wait_time_max, wait_time_min, execution_time_max,
+    execution_time_min, execution_time_line_95, execution_time_line_99,data_change_created_time,
+    data_change_last_modified_time, version
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistoryExample" resultMap="BaseResultMap">
     select
@@ -116,14 +121,16 @@
     insert into executor_task_statistics_history (id, statistics_date, namespace_name,
       app_id, executor_name, task_name,
       total, failure, failure_ratio,
-      execution_time_max, execution_time_min, execution_time_line_95,
-      execution_time_line_99, data_change_created_time,
+      total_time_max, total_time_min, wait_time_max,
+      wait_time_min, execution_time_max, execution_time_min,
+      execution_time_line_95, execution_time_line_99, data_change_created_time,
       data_change_last_modified_time, version)
     values (#{id,jdbcType=INTEGER}, #{statisticsDate,jdbcType=DATE}, #{namespaceName,jdbcType=VARCHAR},
       #{appId,jdbcType=VARCHAR}, #{executorName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR},
       #{total,jdbcType=BIGINT}, #{failure,jdbcType=BIGINT}, #{failureRatio,jdbcType=DECIMAL},
-      #{executionTimeMax,jdbcType=BIGINT}, #{executionTimeMin,jdbcType=BIGINT}, #{executionTimeLine95,jdbcType=BIGINT},
-      #{executionTimeLine99,jdbcType=BIGINT}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      #{totalTimeMax,jdbcType=BIGINT}, #{totalTimeMin,jdbcType=BIGINT}, #{waitTimeMax,jdbcType=BIGINT},
+      #{waitTimeMin,jdbcType=BIGINT}, #{executionTimeMax,jdbcType=BIGINT}, #{executionTimeMin,jdbcType=BIGINT},
+      #{executionTimeLine95,jdbcType=BIGINT}, #{executionTimeLine99,jdbcType=BIGINT}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
       #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistory" useGeneratedKeys="true" keyProperty="id">
@@ -155,6 +162,18 @@
       </if>
       <if test="failureRatio != null">
         failure_ratio,
+      </if>
+      <if test="totalTimeMax != null">
+        total_time_max,
+      </if>
+      <if test="executionTimeMin != null">
+        total_time_min,
+      </if>
+      <if test="executionTimeMax != null">
+        wait_time_max,
+      </if>
+      <if test="executionTimeMin != null">
+        wait_time_min,
       </if>
       <if test="executionTimeMax != null">
         execution_time_max,
@@ -205,6 +224,18 @@
       </if>
       <if test="failureRatio != null">
         #{failureRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="totalTimeMax != null">
+        #{totalTimeMax,jdbcType=BIGINT},
+      </if>
+      <if test="totalTimeMin != null">
+        #{totalTimeMin,jdbcType=BIGINT},
+      </if>
+      <if test="waitTimeMax != null">
+        #{waitTimeMax,jdbcType=BIGINT},
+      </if>
+      <if test="waitTimeMin != null">
+        #{waitTimeMin,jdbcType=BIGINT},
       </if>
       <if test="executionTimeMax != null">
         #{executionTimeMax,jdbcType=BIGINT},
@@ -265,6 +296,18 @@
       <if test="record.failureRatio != null">
         failure_ratio = #{record.failureRatio,jdbcType=DECIMAL},
       </if>
+      <if test="record.totalTimeMax != null">
+        total_time_max = #{record.totalTimeMax,jdbcType=INTEGER},
+      </if>
+      <if test="record.totalTimeMin != null">
+        total_time_min = #{record.totalTimeMin,jdbcType=INTEGER},
+      </if>
+      <if test="record.waitTimeMax != null">
+        wait_time_max = #{record.waitTimeMax,jdbcType=INTEGER},
+      </if>
+      <if test="record.waitTimeMin != null">
+        wait_time_min = #{record.waitTimeMin,jdbcType=INTEGER},
+      </if>
       <if test="record.executionTimeMax != null">
         execution_time_max = #{record.executionTimeMax,jdbcType=INTEGER},
       </if>
@@ -302,6 +345,10 @@
       total = #{record.total,jdbcType=INTEGER},
       failure = #{record.failure,jdbcType=INTEGER},
       failure_ratio = #{record.failureRatio,jdbcType=DECIMAL},
+      total_time_max = #{record.totalTimeMax,jdbcType=INTEGER},
+      total_time_min = #{record.totalTimeMin,jdbcType=INTEGER},
+      wait_time_max = #{record.waitTimeMax,jdbcType=INTEGER},
+      wait_time_min = #{record.waitTimeMin,jdbcType=INTEGER},
       execution_time_max = #{record.executionTimeMax,jdbcType=INTEGER},
       execution_time_min = #{record.executionTimeMin,jdbcType=INTEGER},
       execution_time_line_95 = #{record.executionTimeLine95,jdbcType=INTEGER},
@@ -340,6 +387,18 @@
       <if test="failureRatio != null">
         failure_ratio = #{failureRatio,jdbcType=DECIMAL},
       </if>
+      <if test="totalTimeMax != null">
+        total_time_max = #{totalTimeMax,jdbcType=BIGINT},
+      </if>
+      <if test="totalTimeMin != null">
+        total_time_min = #{totalTimeMin,jdbcType=BIGINT},
+      </if>
+      <if test="waitTimeMax != null">
+        wait_time_max = #{waitTimeMax,jdbcType=BIGINT},
+      </if>
+      <if test="waitTimeMin != null">
+        wait_time_min = #{waitTimeMin,jdbcType=BIGINT},
+      </if>
       <if test="executionTimeMax != null">
         execution_time_max = #{executionTimeMax,jdbcType=BIGINT},
       </if>
@@ -374,6 +433,10 @@
       total = #{total,jdbcType=BIGINT},
       failure = #{failure,jdbcType=BIGINT},
       failure_ratio = #{failureRatio,jdbcType=DECIMAL},
+      total_time_max = #{totalTimeMax,jdbcType=BIGINT},
+      total_time_min = #{totalTimeMin,jdbcType=BIGINT},
+      wait_time_max = #{waitTimeMax,jdbcType=BIGINT},
+      wait_time_min = #{waitTimeMin,jdbcType=BIGINT},
       execution_time_max = #{executionTimeMax,jdbcType=BIGINT},
       execution_time_min = #{executionTimeMin,jdbcType=BIGINT},
       execution_time_line_95 = #{executionTimeLine95,jdbcType=BIGINT},
