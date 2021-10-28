@@ -18,6 +18,7 @@ import xyz.hellothomas.jedi.core.utils.JsonUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -53,6 +54,21 @@ public class ExecutorTickerService implements NotificationService<ExecutorTicker
         executorTickerMessage.setUpdateTime(LocalDateTime.now());
         log.debug("executorTickerMessage:{}", executorTickerMessage);
         executorTickerMessageMapper.insertSelective(executorTickerMessage);
+    }
+
+    @Override
+    public void process(List<ExecutorTickerNotification> notifications) {
+        List<ExecutorTickerMessage> executorTickerMessages = new ArrayList<>(notifications.size());
+        notifications.stream().forEach(i -> {
+            alarm(i);
+
+            ExecutorTickerMessage executorTickerMessage = new ExecutorTickerMessage();
+            BeanUtils.copyProperties(i, executorTickerMessage);
+            executorTickerMessage.setCreateTime(LocalDateTime.now());
+            executorTickerMessage.setUpdateTime(LocalDateTime.now());
+            executorTickerMessages.add(executorTickerMessage);
+        });
+        executorTickerMessageMapper.insertBatch(executorTickerMessages);
     }
 
     @Override

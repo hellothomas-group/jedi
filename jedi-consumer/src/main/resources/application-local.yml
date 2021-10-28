@@ -19,8 +19,11 @@ spring:
         session:
           timeout:
             ms: 120000
+      max-poll-records: 200
     listener:
       missing-topics-fatal: false
+      type: batch
+      concurrency: 1
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/jedi_consumer?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
       &serverTimezone=Asia/Shanghai

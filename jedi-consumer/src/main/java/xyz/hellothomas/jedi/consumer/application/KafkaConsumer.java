@@ -9,6 +9,9 @@ import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTickerNotification;
 import xyz.hellothomas.jedi.core.utils.JsonUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Thomas
  * @date 2021/1/30 22:28
@@ -32,53 +35,66 @@ public class KafkaConsumer {
 
     /**
      * 消费监听
-     * @param record
+     * @param records
      */
     @KafkaListener(topics = "${consumer.executor-ticker-topic}")
-    public void onMessageExecutorTicker(ConsumerRecord<?, ?> record) {
+    public void onMessageExecutorTicker(List<ConsumerRecord<?, ?>> records) {
+        // todo manual-commit
         // 消费的哪个topic、partition的消息,打印出消息内容
-        log.debug("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
-        ExecutorTickerNotification executorTickerNotification = JsonUtil.deserialize(record.value().toString(),
-                ExecutorTickerNotification.class);
-        executorTickerService.process(executorTickerNotification);
+        List notifications = new ArrayList(records.size());
+        records.stream().forEach(i -> {
+            log.debug("ticker消费：{}-{}-{}", i.topic(), i.partition(), i.value());
+            ExecutorTickerNotification executorTickerNotification = JsonUtil.deserialize(i.value().toString(),
+                    ExecutorTickerNotification.class);
+            notifications.add(executorTickerNotification);
+        });
+        executorTickerService.process(notifications);
     }
 
     /**
      * 消费监听
-     * @param record
+     * @param records
      */
     @KafkaListener(topics = "${consumer.executor-task-topic}")
-    public void onMessageExecutorTask(ConsumerRecord<?, ?> record) {
+    public void onMessageExecutorTask(List<ConsumerRecord<?, ?>> records) {
         // 消费的哪个topic、partition的消息,打印出消息内容
-        log.debug("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
-        ExecutorTaskNotification executorTaskNotification = JsonUtil.deserialize(record.value().toString(),
-                ExecutorTaskNotification.class);
-        executorTaskService.process(executorTaskNotification);
+        List notifications = new ArrayList(records.size());
+        records.stream().forEach(i -> {
+            log.debug("task消费：{}-{}-{}", i.topic(), i.partition(), i.value());
+            ExecutorTaskNotification executorTaskNotification = JsonUtil.deserialize(i.value().toString(),
+                    ExecutorTaskNotification.class);
+            notifications.add(executorTaskNotification);
+        });
+        executorTaskService.process(notifications);
     }
 
     /**
      * 消费监听
-     * @param record
+     * @param records
      */
     @KafkaListener(topics = "${consumer.executor-shutdown-topic}")
-    public void onMessageExecutorShutdown(ConsumerRecord<?, ?> record) {
+    public void onMessageExecutorShutdown(List<ConsumerRecord<?, ?>> records) {
         // 消费的哪个topic、partition的消息,打印出消息内容
-        log.debug("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
-        ExecutorShutdownNotification executorShutdownNotification = JsonUtil.deserialize(record.value().toString(),
-                ExecutorShutdownNotification.class);
-        executorShutdownService.process(executorShutdownNotification);
+        records.stream().forEach(i -> {
+            log.debug("shutdown消费：{}-{}-{}", i.topic(), i.partition(), i.value());
+            ExecutorShutdownNotification executorShutdownNotification = JsonUtil.deserialize(i.value().toString(),
+                    ExecutorShutdownNotification.class);
+            executorShutdownService.process(executorShutdownNotification);
+        });
     }
 
     /**
      * 消费监听
-     * @param record
+     * @param records
      */
     @KafkaListener(topics = "${consumer.custom-notification-topic}")
-    public void onMessageCustomNotification(ConsumerRecord<?, ?> record) {
+    public void onMessageCustomNotification(List<ConsumerRecord<?, ?>> records) {
         // 消费的哪个topic、partition的消息,打印出消息内容
-        log.debug("简单消费：{}-{}-{}", record.topic(), record.partition(), record.value());
-        CustomNotification customNotification = JsonUtil.deserialize(record.value().toString(),
-                CustomNotification.class);
-        customMessageService.process(customNotification);
+        records.stream().forEach(i -> {
+            log.debug("custom消费：{}-{}-{}", i.topic(), i.partition(), i.value());
+            CustomNotification customNotification = JsonUtil.deserialize(i.value().toString(),
+                    CustomNotification.class);
+            customMessageService.process(customNotification);
+        });
     }
 }

@@ -16,6 +16,7 @@ import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.enums.MessageType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static xyz.hellothomas.jedi.consumer.common.constants.Constants.DEFAULT_PAGE_SIZE;
@@ -43,6 +44,19 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
         executorTaskMessage.setUpdateTime(LocalDateTime.now());
         log.debug("executorTaskMessage:{}", executorTaskMessage);
         executorTaskMessageMapper.insertSelective(executorTaskMessage);
+    }
+
+    @Override
+    public void process(List<ExecutorTaskNotification> notifications) {
+        List<ExecutorTaskMessage> executorTaskMessages = new ArrayList<>(notifications.size());
+        notifications.stream().forEach(i -> {
+            ExecutorTaskMessage executorTaskMessage = new ExecutorTaskMessage();
+            BeanUtils.copyProperties(i, executorTaskMessage);
+            executorTaskMessage.setCreateTime(LocalDateTime.now());
+            executorTaskMessage.setUpdateTime(LocalDateTime.now());
+            executorTaskMessages.add(executorTaskMessage);
+        });
+        executorTaskMessageMapper.insertBatch(executorTaskMessages);
     }
 
     @Override

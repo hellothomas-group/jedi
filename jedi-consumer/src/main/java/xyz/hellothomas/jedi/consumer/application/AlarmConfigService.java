@@ -1,6 +1,8 @@
 package xyz.hellothomas.jedi.consumer.application;
 
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfig;
 import xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfigExample;
@@ -9,6 +11,9 @@ import xyz.hellothomas.jedi.consumer.infrastructure.mapper.AlarmConfigMapper;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static xyz.hellothomas.jedi.consumer.common.constants.Constants.CAFFEINE_CACHE_NAME_ALARM;
+
+@Slf4j
 @Service
 public class AlarmConfigService {
 
@@ -43,6 +48,12 @@ public class AlarmConfigService {
         alarmConfig.setDataChangeLastModifiedBy(operator);
         alarmConfig.setDataChangeLastModifiedTime(LocalDateTime.now());
         return alarmConfigMapper.updateByExampleSelective(alarmConfig, alarmConfigExample);
+    }
+
+    @Cacheable(cacheNames = CAFFEINE_CACHE_NAME_ALARM, key = "#namespaceName + '+' + #appId + '+' + #executorName",
+            cacheManager = "caffeineCacheManager", unless = "#result == null")
+    public AlarmConfig findOneCache(String namespaceName, String appId, String executorName) {
+        return findOne(namespaceName, appId, executorName);
     }
 
     public AlarmConfig findOne(String namespaceName, String appId, String executorName) {

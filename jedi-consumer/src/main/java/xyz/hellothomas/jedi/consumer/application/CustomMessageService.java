@@ -8,6 +8,7 @@ import xyz.hellothomas.jedi.consumer.infrastructure.mapper.MonitorMessageMapper;
 import xyz.hellothomas.jedi.core.dto.consumer.CustomNotification;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Thomas
@@ -32,6 +33,11 @@ public class CustomMessageService implements NotificationService<CustomNotificat
         monitorMessage.setUpdateTime(LocalDateTime.now());
         log.debug("monitorMessage:{}", monitorMessage);
         monitorMessageMapper.insert(monitorMessage);
+    }
+
+    @Override
+    public void process(List<CustomNotification> notifications) {
+
     }
 
     @Override

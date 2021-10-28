@@ -48,6 +48,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <springboot.version>2.3.7.RELEASE</springboot.version>
+        <spring-framework.version>5.2.12.RELEASE</spring-framework.version>
         <jedi.version>0.0.9-SNAPSHOT</jedi.version>
         <swagger.version>2.9.2</swagger.version>
         <swagger-models.version>1.5.24</swagger-models.version>
@@ -148,6 +149,12 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson-datatype-jsr310.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${spring-framework.version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->

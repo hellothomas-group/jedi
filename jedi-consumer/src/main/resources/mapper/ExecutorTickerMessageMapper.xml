@@ -478,4 +478,26 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into executor_ticker_message (id, app_id, namespace,
+    message_type, pool_name, core_pool_size,
+    maximum_pool_size, pool_size, active_count,
+    largest_pool_size, queue_type, queue_size,
+    queue_remaining_capacity, task_count, completed_task_count,
+    reject_count, is_shutdown, is_terminated,
+    host, record_time, create_time,
+    update_time)
+    values
+    <foreach collection="records" item="record" separator=",">
+      (#{record.id,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR}, #{record.namespace,jdbcType=VARCHAR},
+      #{record.messageType,jdbcType=VARCHAR}, #{record.poolName,jdbcType=VARCHAR}, #{record.corePoolSize,jdbcType=INTEGER},
+      #{record.maximumPoolSize,jdbcType=INTEGER}, #{record.poolSize,jdbcType=INTEGER}, #{record.activeCount,jdbcType=INTEGER},
+      #{record.largestPoolSize,jdbcType=INTEGER}, #{record.queueType,jdbcType=VARCHAR}, #{record.queueSize,jdbcType=INTEGER},
+      #{record.queueRemainingCapacity,jdbcType=INTEGER}, #{record.taskCount,jdbcType=BIGINT}, #{record.completedTaskCount,jdbcType=BIGINT},
+      #{record.rejectCount,jdbcType=BIGINT}, #{record.isShutdown,jdbcType=TINYINT}, #{record.isTerminated,jdbcType=TINYINT},
+      #{record.host,jdbcType=VARCHAR}, #{record.recordTime,jdbcType=TIMESTAMP}, #{record.createTime,jdbcType=TIMESTAMP},
+      #{record.updateTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
 </mapper>

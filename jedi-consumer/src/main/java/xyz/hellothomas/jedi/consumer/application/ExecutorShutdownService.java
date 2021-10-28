@@ -9,6 +9,7 @@ import xyz.hellothomas.jedi.core.dto.consumer.ExecutorShutdownNotification;
 import xyz.hellothomas.jedi.core.enums.MessageType;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Thomas
@@ -33,6 +34,11 @@ public class ExecutorShutdownService implements NotificationService<ExecutorShut
         executorShutdownMessage.setUpdateTime(LocalDateTime.now());
         log.debug("executorShutdownMessage:{}", executorShutdownMessage);
         executorShutdownMessageMapper.insertSelective(executorShutdownMessage);
+    }
+
+    @Override
+    public void process(List<ExecutorShutdownNotification> notifications) {
+        
     }
 
     @Override

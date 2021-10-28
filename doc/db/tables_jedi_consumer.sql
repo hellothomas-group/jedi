@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS `monitor_message` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='监控消息';
 
+-- todo index
 CREATE TABLE IF NOT EXISTS `executor_ticker_message` (
   `id` varchar(36) NOT NULL COMMENT 'id',
   `app_id` varchar(32) NOT NULL comment 'appId',
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `executor_ticker_message` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池打点消息';
 
+-- todo index
 CREATE TABLE IF NOT EXISTS `executor_task_message` (
   `id` varchar(36) NOT NULL COMMENT 'id',
   `app_id` varchar(32) NOT NULL comment 'appId',

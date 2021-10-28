@@ -29,6 +29,7 @@ public class AlarmConfigController {
         this.alarmConfigService = alarmConfigService;
     }
 
+    // todo
     @PostMapping(value = "/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
     @ApiOperation("create")
     public AlarmConfigResponse create(@PathVariable("namespaceName") String namespaceName,
@@ -45,6 +46,7 @@ public class AlarmConfigController {
         return LocalBeanUtils.transform(AlarmConfigResponse.class, entity);
     }
 
+    // todo
     @ApiOperation("update")
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
     public AlarmConfigResponse update(@PathVariable("namespaceName") String namespaceName,
@@ -69,6 +71,7 @@ public class AlarmConfigController {
         return LocalBeanUtils.transform(AlarmConfigResponse.class, managedEntity);
     }
 
+    // todo
     @ApiOperation("delete")
     @DeleteMapping("/alarm-configs/{alarmConfigId}")
     public void delete(@PathVariable("alarmConfigId") long alarmConfigId,
