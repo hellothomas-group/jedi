@@ -48,5 +48,7 @@ public interface ExecutorTaskMessageMapper {
 
     int insertIgnoreBatch(@Param("records") List<ExecutorTaskMessage> records);
 
+    int insertOrUpdateBatch(@Param("records") List<ExecutorTaskMessage> records);
+
     int deleteBeforeUpdateTimeLimit(@Param("updateTime") LocalDateTime updateTime);
 }

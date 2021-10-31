@@ -36,5 +36,7 @@ public interface ExecutorTickerMessageMapper {
 
     int insertIgnoreBatch(@Param("records") List<ExecutorTickerMessage> records);
 
+    int insertOrUpdateBatch(@Param("records") List<ExecutorTickerMessage> records);
+
     int deleteBeforeUpdateTimeLimit(@Param("updateTime") LocalDateTime updateTime);
 }

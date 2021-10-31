@@ -59,8 +59,7 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
         try {
             executorTaskMessageMapper.insertBatch(executorTaskMessages);
         } catch (Exception e) {
-            // todo update
-            executorTaskMessageMapper.insertIgnoreBatch(executorTaskMessages);
+            executorTaskMessageMapper.insertOrUpdateBatch(executorTaskMessages);
         }
     }
 

@@ -71,8 +71,7 @@ public class ExecutorTickerService implements NotificationService<ExecutorTicker
         try {
             executorTickerMessageMapper.insertBatch(executorTickerMessages);
         } catch (Exception e) {
-            // todo update
-            executorTickerMessageMapper.insertIgnoreBatch(executorTickerMessages);
+            executorTickerMessageMapper.insertOrUpdateBatch(executorTickerMessages);
         }
     }
 

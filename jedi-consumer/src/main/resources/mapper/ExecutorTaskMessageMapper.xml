@@ -443,6 +443,22 @@
   </insert>
 
   <insert id="insertIgnoreBatch" parameterType="java.util.List">
+    insert ignore into executor_task_message (id, app_id, namespace,
+    message_type, pool_name, task_name,
+    wait_time, execution_time, is_success,
+    failure_reason, task_extra_data, host,
+    record_time, create_time, update_time)
+    values
+    <foreach collection="records" item="record" separator=",">
+      (#{record.id,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR}, #{record.namespace,jdbcType=VARCHAR},
+      #{record.messageType,jdbcType=VARCHAR}, #{record.poolName,jdbcType=VARCHAR}, #{record.taskName,jdbcType=VARCHAR},
+      #{record.waitTime,jdbcType=BIGINT}, #{record.executionTime,jdbcType=BIGINT}, #{record.isSuccess,jdbcType=BIT},
+      #{record.failureReason,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR}, #{record.host,jdbcType=VARCHAR},
+      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+
+  <insert id="insertOrUpdateBatch" parameterType="java.util.List">
     insert into executor_task_message (id, app_id, namespace,
     message_type, pool_name, task_name,
     wait_time, execution_time, is_success,
@@ -456,6 +472,8 @@
       #{record.failureReason,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR}, #{record.host,jdbcType=VARCHAR},
       #{record.recordTime,jdbcType=TIMESTAMP}, #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
     </foreach>
+    on duplicate key
+    update update_time = now()
   </insert>
 
   <delete id="deleteBeforeUpdateTimeLimit" parameterType="java.time.LocalDateTime">
