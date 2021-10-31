@@ -53,6 +53,7 @@ public class ScheduledService {
     }
 
     /**
+     * todo
      * 刷新统计当日任务数据
      */
     @Scheduled(fixedDelay = 1000 * REFRESH_TASK_STATISTICS_CYCLE_SECONDS)
@@ -131,6 +132,7 @@ public class ScheduledService {
     }
 
     /**
+     * todo
      * D日前数据移至历史表
      */
     @Scheduled(cron = "0 0 0 * * ?")
@@ -168,6 +170,7 @@ public class ScheduledService {
     }
 
     /**
+     * todo
      * 刷新统计D-1日数据
      */
     @Scheduled(cron = "0 0 1,3,5,9,17,23 * * ?")
@@ -248,6 +251,7 @@ public class ScheduledService {
     }
 
     /**
+     * todo
      * D-10日数据清理
      */
     @Scheduled(cron = "0 0 0 * * ?")
