@@ -51,14 +51,14 @@ public class NotificationController {
     @PostMapping(value = "/executor-ticker")
     @ApiOperation("executor-ticker")
     public ApiResponse<String> executorTick(@Valid @RequestBody List<ExecutorTickerNotification> executorTickerNotifications) {
-        executorTickerNotifications.stream().forEach(i -> executorTickerService.process(i));
+        executorTickerService.process(executorTickerNotifications);
         return ApiResponse.success("接收成功");
     }
 
     @PostMapping(value = "/executor-task")
     @ApiOperation("executor-task")
     public ApiResponse<String> executorTask(@Valid @RequestBody List<ExecutorTaskNotification> executorTaskNotifications) {
-        executorTaskNotifications.stream().forEach(i -> executorTaskService.process(i));
+        executorTaskService.process(executorTaskNotifications);
         return ApiResponse.success("接收成功");
     }
 
