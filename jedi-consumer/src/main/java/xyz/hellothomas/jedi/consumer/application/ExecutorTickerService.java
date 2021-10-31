@@ -111,8 +111,7 @@ public class ExecutorTickerService implements NotificationService<ExecutorTicker
     }
 
     private void alarm(ExecutorTickerNotification notification) {
-        // todo 缓存
-        AlarmConfig alarmConfig = alarmConfigService.findOne(notification.getNamespace(), notification.getAppId(),
+        AlarmConfig alarmConfig = alarmConfigService.findOneCache(notification.getNamespace(), notification.getAppId(),
                 notification.getPoolName());
         // 未配置报警
         if (alarmConfig == null) {
