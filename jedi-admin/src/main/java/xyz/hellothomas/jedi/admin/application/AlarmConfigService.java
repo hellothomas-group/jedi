@@ -3,15 +3,20 @@ package xyz.hellothomas.jedi.admin.application;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import xyz.hellothomas.jedi.admin.api.dto.AlarmConfigResponse;
-import xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfig;
 import xyz.hellothomas.jedi.admin.domain.Audit;
 import xyz.hellothomas.jedi.admin.domain.Executor;
+import xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfig;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
+import xyz.hellothomas.jedi.biz.infrastructure.exception.ServiceException;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
+
+import static xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum.SUCCESS;
 
 @Service
 public class AlarmConfigService {
@@ -40,29 +45,40 @@ public class AlarmConfigService {
                     String.format("executor not found for %s %s %s", namespaceName, appId, executorName));
         }
 
-        // todo
-        ResponseEntity<AlarmConfigResponse> responseEntity = restTemplate.postForEntity(consumerUrl + "/namespaces" +
-                        "/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs?configuration" +
-                        "={configuration}&operator={operator}", null, AlarmConfigResponse.class,
-                namespaceName, appId, executorName, configuration, operator);
+        ResponseEntity<ApiResponse<AlarmConfigResponse>> responseEntity = restTemplate.exchange(consumerUrl +
+                        "/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs" +
+                        "?configuration={configuration}&operator={operator}", HttpMethod.POST, null,
+                new ParameterizedTypeReference<ApiResponse<AlarmConfigResponse>>() {
+                }, namespaceName, appId, executorName, configuration, operator);
 
-        auditService.audit(AlarmConfig.class.getSimpleName(), responseEntity.getBody().getId(), Audit.OP.INSERT,
-                responseEntity.getBody().getDataChangeCreatedBy());
+        ApiResponse<AlarmConfigResponse> apiResponse = responseEntity.getBody();
+        if (!SUCCESS.getCode().equals(apiResponse.getCode())) {
+            throw new ServiceException(String.format("%s-%s", apiResponse.getCode(), apiResponse.getMessage()));
+        }
 
-        return responseEntity.getBody();
+        auditService.audit(AlarmConfig.class.getSimpleName(), apiResponse.getData().getId(), Audit.OP.INSERT,
+                apiResponse.getData().getDataChangeCreatedBy());
+
+        return apiResponse.getData();
     }
 
     public AlarmConfigResponse update(String namespaceName, String appId, String executorName, String configuration,
                                       String operator) {
-        ResponseEntity<AlarmConfigResponse> responseEntity = restTemplate.exchange(consumerUrl + "/namespaces" +
-                        "/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs?configuration" +
-                        "={configuration}&operator={operator}", HttpMethod.PUT, null, AlarmConfigResponse.class,
-                namespaceName, appId, executorName, configuration, operator);
+        ResponseEntity<ApiResponse<AlarmConfigResponse>> responseEntity = restTemplate.exchange(consumerUrl +
+                        "/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs" +
+                        "?configuration={configuration}&operator={operator}", HttpMethod.PUT, null,
+                new ParameterizedTypeReference<ApiResponse<AlarmConfigResponse>>() {
+                }, namespaceName, appId, executorName, configuration, operator);
 
-        auditService.audit(AlarmConfig.class.getSimpleName(), responseEntity.getBody().getId(), Audit.OP.UPDATE,
-                responseEntity.getBody().getDataChangeLastModifiedBy());
+        ApiResponse<AlarmConfigResponse> apiResponse = responseEntity.getBody();
+        if (!SUCCESS.getCode().equals(apiResponse.getCode())) {
+            throw new ServiceException(String.format("%s-%s", apiResponse.getCode(), apiResponse.getMessage()));
+        }
 
-        return responseEntity.getBody();
+        auditService.audit(AlarmConfig.class.getSimpleName(), apiResponse.getData().getId(), Audit.OP.UPDATE,
+                apiResponse.getData().getDataChangeCreatedBy());
+
+        return apiResponse.getData();
     }
 
     public void delete(long alarmConfigId, String operator) {
