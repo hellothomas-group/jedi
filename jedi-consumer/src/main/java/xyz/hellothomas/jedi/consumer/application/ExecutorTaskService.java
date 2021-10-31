@@ -56,7 +56,11 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
             executorTaskMessage.setUpdateTime(LocalDateTime.now());
             executorTaskMessages.add(executorTaskMessage);
         });
-        executorTaskMessageMapper.insertBatch(executorTaskMessages);
+        try {
+            executorTaskMessageMapper.insertBatch(executorTaskMessages);
+        } catch (Exception e) {
+            executorTaskMessageMapper.insertIgnoreBatch(executorTaskMessages);
+        }
     }
 
     @Override

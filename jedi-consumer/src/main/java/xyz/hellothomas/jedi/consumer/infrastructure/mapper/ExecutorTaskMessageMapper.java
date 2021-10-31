@@ -44,6 +44,7 @@ public interface ExecutorTaskMessageMapper {
                                                                     @Param("startTime") LocalDateTime startTime,
                                                                     @Param("endTime") LocalDateTime endTime);
 
-    // todo duplicate key
     int insertBatch(@Param("records") List<ExecutorTaskMessage> records);
+
+    int insertIgnoreBatch(@Param("records") List<ExecutorTaskMessage> records);
 }

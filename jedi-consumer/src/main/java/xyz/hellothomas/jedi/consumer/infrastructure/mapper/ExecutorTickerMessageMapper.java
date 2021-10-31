@@ -32,4 +32,6 @@ public interface ExecutorTickerMessageMapper {
     int updateByPrimaryKey(ExecutorTickerMessage record);
 
     int insertBatch(@Param("records") List<ExecutorTickerMessage> records);
+
+    int insertIgnoreBatch(@Param("records") List<ExecutorTickerMessage> records);
 }

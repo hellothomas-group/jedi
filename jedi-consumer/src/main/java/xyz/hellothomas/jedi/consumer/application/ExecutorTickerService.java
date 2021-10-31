@@ -68,7 +68,11 @@ public class ExecutorTickerService implements NotificationService<ExecutorTicker
             executorTickerMessage.setUpdateTime(LocalDateTime.now());
             executorTickerMessages.add(executorTickerMessage);
         });
-        executorTickerMessageMapper.insertBatch(executorTickerMessages);
+        try {
+            executorTickerMessageMapper.insertBatch(executorTickerMessages);
+        } catch (Exception e) {
+            executorTickerMessageMapper.insertIgnoreBatch(executorTickerMessages);
+        }
     }
 
     @Override
