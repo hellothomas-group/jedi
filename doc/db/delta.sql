@@ -15,3 +15,10 @@ ALTER TABLE jedi_consumer.executor_task_statistics_history ADD column wait_time_
  after total_time_min;
 ALTER TABLE jedi_consumer.executor_task_statistics_history ADD column wait_time_min bigint(20) NOT NULL DEFAULT 0 comment '等待最长时间'
  after wait_time_max;
+
+CREATE INDEX `executor_host_recordTime_IDX` ON jedi_consumer.executor_ticker_message (namespace, app_id, pool_name,
+host, record_time);
+CREATE INDEX `updateTime_IDX` ON jedi_consumer.executor_ticker_message (update_time);
+CREATE INDEX `executor_host_task_recordTime_IDX` ON jedi_consumer.executor_task_message (namespace, app_id,
+pool_name, task_name, record_time);
+CREATE INDEX `updateTime_IDX` ON jedi_consumer.executor_task_message (update_time);

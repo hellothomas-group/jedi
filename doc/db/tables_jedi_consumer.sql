@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS `monitor_message` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='监控消息';
 
--- todo index
 CREATE TABLE IF NOT EXISTS `executor_ticker_message` (
   `id` varchar(36) NOT NULL COMMENT 'id',
   `app_id` varchar(32) NOT NULL comment 'appId',
@@ -41,11 +40,11 @@ CREATE TABLE IF NOT EXISTS `executor_ticker_message` (
   `record_time` timestamp NOT NULL comment '记录时间',
   `create_time` timestamp default CURRENT_TIMESTAMP NOT NULL comment '生成时间',
   `update_time` timestamp default CURRENT_TIMESTAMP NOT NULL on update CURRENT_TIMESTAMP comment '最后更新时间',
-
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `executor_host_recordTime_IDX` (`namespace`,`app_id`,`pool_name`,`host`,`record_time`),
+  KEY `updateTime_IDX` (`update_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池打点消息';
 
--- todo index
 CREATE TABLE IF NOT EXISTS `executor_task_message` (
   `id` varchar(36) NOT NULL COMMENT 'id',
   `app_id` varchar(32) NOT NULL comment 'appId',
@@ -62,7 +61,9 @@ CREATE TABLE IF NOT EXISTS `executor_task_message` (
   `record_time` timestamp NOT NULL comment '记录时间',
   `create_time` timestamp default CURRENT_TIMESTAMP NOT NULL comment '生成时间',
   `update_time` timestamp default CURRENT_TIMESTAMP NOT NULL on update CURRENT_TIMESTAMP comment '最后更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `executor_host_task_recordTime_IDX` (`namespace`,`app_id`,`pool_name`,`task_name`,`record_time`),
+  KEY `updateTime_IDX` (`update_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务消息';
 
 CREATE TABLE IF NOT EXISTS `executor_shutdown_message` (
