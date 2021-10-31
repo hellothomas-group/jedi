@@ -37,14 +37,16 @@ public interface ExecutorTaskMessageMapper {
     List<ExecutorTask> selectByRecordTimeAndGroupByTask(@Param("startTime") LocalDateTime startTime,
                                                         @Param("endTime") LocalDateTime endTime);
 
-    ExecutorTaskStatistics selectStatisticsByUniqueKeyAndRecordTime(@Param("namespaceName") String namespaceName,
-                                                                    @Param("appId") String appId,
-                                                                    @Param("executorName") String executorName,
-                                                                    @Param("taskName") String taskName,
-                                                                    @Param("startTime") LocalDateTime startTime,
-                                                                    @Param("endTime") LocalDateTime endTime);
+    ExecutorTaskStatistics selectStatisticsByTaskNameAndRecordTime(@Param("namespaceName") String namespaceName,
+                                                                   @Param("appId") String appId,
+                                                                   @Param("executorName") String executorName,
+                                                                   @Param("taskName") String taskName,
+                                                                   @Param("startTime") LocalDateTime startTime,
+                                                                   @Param("endTime") LocalDateTime endTime);
 
     int insertBatch(@Param("records") List<ExecutorTaskMessage> records);
 
     int insertIgnoreBatch(@Param("records") List<ExecutorTaskMessage> records);
+
+    int deleteBeforeUpdateTimeLimit(@Param("updateTime") LocalDateTime updateTime);
 }

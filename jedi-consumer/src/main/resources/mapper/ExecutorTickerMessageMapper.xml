@@ -104,7 +104,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from executor_ticker_message
     where id = #{id,jdbcType=VARCHAR}
@@ -522,4 +522,9 @@
       #{record.updateTime,jdbcType=TIMESTAMP})
     </foreach>
   </insert>
+
+  <delete id="deleteBeforeUpdateTimeLimit" parameterType="java.time.LocalDateTime">
+    delete from executor_ticker_message
+    where update_time <![CDATA[<]]> #{updateTime,jdbcType=TIMESTAMP} limit 10000
+  </delete>
 </mapper>

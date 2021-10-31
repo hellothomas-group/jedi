@@ -4,6 +4,7 @@ import xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessage;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessageExample;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ExecutorTickerMessageMapper {
@@ -34,4 +35,6 @@ public interface ExecutorTickerMessageMapper {
     int insertBatch(@Param("records") List<ExecutorTickerMessage> records);
 
     int insertIgnoreBatch(@Param("records") List<ExecutorTickerMessage> records);
+
+    int deleteBeforeUpdateTimeLimit(@Param("updateTime") LocalDateTime updateTime);
 }

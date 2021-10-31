@@ -405,7 +405,7 @@
     <result column="version" jdbcType="INTEGER" property="version" />
   </resultMap>
 
-  <select id="selectStatisticsByUniqueKeyAndRecordTime" resultMap="ExecutorTaskStatisticsResultMap">
+  <select id="selectStatisticsByTaskNameAndRecordTime" resultMap="ExecutorTaskStatisticsResultMap">
     select
     app_id, namespace as namespace_name, pool_name as executor_name, task_name,
     count(id) as total,
@@ -457,4 +457,9 @@
       #{record.recordTime,jdbcType=TIMESTAMP}, #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
     </foreach>
   </insert>
+
+  <delete id="deleteBeforeUpdateTimeLimit" parameterType="java.time.LocalDateTime">
+    delete from executor_task_message
+    where update_time <![CDATA[<]]> #{updateTime,jdbcType=TIMESTAMP} limit 10000
+  </delete>
 </mapper>

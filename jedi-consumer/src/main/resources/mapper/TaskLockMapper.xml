@@ -253,7 +253,7 @@
     select
     <include refid="Base_Column_List" />
     from task_lock
-    where id = #{id,jdbcType=INTEGER} for update
+    where id = #{id,jdbcType=INTEGER} for update nowait
   </select>
 
   <update id="updateLockByUniqueKey">

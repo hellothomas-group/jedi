@@ -59,6 +59,7 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
         try {
             executorTaskMessageMapper.insertBatch(executorTaskMessages);
         } catch (Exception e) {
+            // todo update
             executorTaskMessageMapper.insertIgnoreBatch(executorTaskMessages);
         }
     }
@@ -116,7 +117,7 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
 
     public ExecutorTaskStatistics genTaskStatistics(String namespaceName, String appId, String executorName,
                                                     String taskName, LocalDateTime startTime, LocalDateTime endTime) {
-        return executorTaskMessageMapper.selectStatisticsByUniqueKeyAndRecordTime(namespaceName, appId, executorName,
+        return executorTaskMessageMapper.selectStatisticsByTaskNameAndRecordTime(namespaceName, appId, executorName,
                 taskName, startTime, endTime);
     }
 }

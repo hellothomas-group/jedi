@@ -3,8 +3,6 @@ package xyz.hellothomas.jedi.consumer.application;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorShutdownMessageExample;
-import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessageExample;
-import xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessageExample;
 import xyz.hellothomas.jedi.consumer.domain.MonitorMessageExample;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorShutdownMessageMapper;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMessageMapper;
@@ -67,9 +65,15 @@ public class ClearDataService {
     public void clearExecutorTaskMessage(LocalDate currentDate) {
         LocalDateTime clearDateTime = currentDate.minusDays(10).atStartOfDay();
         try {
-            ExecutorTaskMessageExample executorTaskMessageExample = new ExecutorTaskMessageExample();
-            executorTaskMessageExample.createCriteria().andUpdateTimeLessThan(clearDateTime);
-            executorTaskMessageMapper.deleteByExample(executorTaskMessageExample);
+            int count = 0;
+            while (true) {
+                int deletedRows = executorTaskMessageMapper.deleteBeforeUpdateTimeLimit(clearDateTime);
+                count++;
+                log.debug("第{}次删除{}条成功", count, deletedRows);
+                if (deletedRows == 0) {
+                    break;
+                }
+            }
             log.info("clearExecutorTaskMessage before {} success", clearDateTime);
         } catch (Exception e) {
             log.error(String.format("clearExecutorTaskMessage before %s error", clearDateTime.toString()), e);
@@ -79,9 +83,15 @@ public class ClearDataService {
     public void clearExecutorTickMessage(LocalDate currentDate) {
         LocalDateTime clearDateTime = currentDate.minusDays(10).atStartOfDay();
         try {
-            ExecutorTickerMessageExample executorTickerMessageExample = new ExecutorTickerMessageExample();
-            executorTickerMessageExample.createCriteria().andUpdateTimeLessThan(clearDateTime);
-            executorTickerMessageMapper.deleteByExample(executorTickerMessageExample);
+            int count = 0;
+            while (true) {
+                int deletedRows = executorTickerMessageMapper.deleteBeforeUpdateTimeLimit(clearDateTime);
+                count++;
+                log.debug("第{}次删除{}条成功", count, deletedRows);
+                if (deletedRows == 0) {
+                    break;
+                }
+            }
             log.info("clearExecutorTickMessage before {} success", clearDateTime);
         } catch (Exception e) {
             log.error(String.format("clearExecutorTickMessage before %s error", clearDateTime.toString()), e);

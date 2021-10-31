@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
@@ -53,7 +54,7 @@ public class ScheduledService {
     }
 
     /**
-     * todo
+     * todo 优化group by性能问题
      * 刷新统计当日任务数据
      */
     @Scheduled(fixedDelay = 1000 * REFRESH_TASK_STATISTICS_CYCLE_SECONDS)
@@ -68,7 +69,13 @@ public class ScheduledService {
         }
 
         // 悲观锁锁当天刷新任务
-        taskLock = taskLockService.lock(taskLock.getId());
+        try {
+            taskLock = taskLockService.lock(taskLock.getId());
+        } catch (Exception e) {
+            log.info("悲观锁 {} 获取失败: {}", REFRESH_LAST_DAY_TASK_STATISTICS_NAME, e.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return;
+        }
         if (taskLock == null ||
                 taskLock.getDataChangeLastModifiedTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_CYCLE_SECONDS))) {
             return;
@@ -132,7 +139,6 @@ public class ScheduledService {
     }
 
     /**
-     * todo
      * D日前数据移至历史表
      */
     @Scheduled(cron = "0 0 0 * * ?")
@@ -170,7 +176,7 @@ public class ScheduledService {
     }
 
     /**
-     * todo
+     * todo 优化group by性能问题
      * 刷新统计D-1日数据
      */
     @Scheduled(cron = "0 0 1,3,5,9,17,23 * * ?")
@@ -187,7 +193,14 @@ public class ScheduledService {
         }
 
         // 悲观锁锁D-1刷新任务
-        taskLock = taskLockService.lock(taskLock.getId());
+        try {
+            taskLock = taskLockService.lock(taskLock.getId());
+        } catch (Exception e) {
+            log.info("悲观锁 {} 获取失败: {}", REFRESH_LAST_DAY_TASK_STATISTICS_NAME, e.getMessage());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return;
+        }
+
         if (taskLock == null ||
                 taskLock.getDataChangeLastModifiedTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_INTERVAL_SECONDS))) {
             return;
@@ -251,7 +264,6 @@ public class ScheduledService {
     }
 
     /**
-     * todo
      * D-10日数据清理
      */
     @Scheduled(cron = "0 0 0 * * ?")
