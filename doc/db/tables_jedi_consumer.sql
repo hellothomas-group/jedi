@@ -187,3 +187,18 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `IX_user_name` (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+
+CREATE TABLE IF NOT EXISTS `executor_task` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `namespace_name` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
+  `app_id` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'appId',
+  `executor_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'executorName',
+  `task_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'taskName',
+  `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
+  `data_change_created_by` varchar(32) NOT NULL DEFAULT 'default' COMMENT '创建人邮箱前缀',
+  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `data_change_last_modified_by` varchar(32) DEFAULT '' COMMENT '最后修改人邮箱前缀',
+  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IX_Namespace` (`namespace_name`,`app_id`,`executor_name`, `task_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务表';
