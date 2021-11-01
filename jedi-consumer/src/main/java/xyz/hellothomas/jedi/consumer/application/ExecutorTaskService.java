@@ -11,6 +11,7 @@ import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessageExample;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics;
 import xyz.hellothomas.jedi.consumer.domain.pojo.ExecutorTask;
+import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMapper;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMessageMapper;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.enums.MessageType;
@@ -31,9 +32,12 @@ import static xyz.hellothomas.jedi.consumer.common.constants.Constants.DEFAULT_P
 @Service
 public class ExecutorTaskService implements NotificationService<ExecutorTaskNotification> {
     private final ExecutorTaskMessageMapper executorTaskMessageMapper;
+    private final ExecutorTaskMapper executorTaskMapper;
 
-    public ExecutorTaskService(ExecutorTaskMessageMapper executorTaskMessageMapper) {
+    public ExecutorTaskService(ExecutorTaskMessageMapper executorTaskMessageMapper,
+                               ExecutorTaskMapper executorTaskMapper) {
         this.executorTaskMessageMapper = executorTaskMessageMapper;
+        this.executorTaskMapper = executorTaskMapper;
     }
 
     @Override
@@ -110,6 +114,7 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
                 .build();
     }
 
+    // todo
     public List<ExecutorTask> findTasksDistinct(LocalDateTime startTime, LocalDateTime endTime) {
         return executorTaskMessageMapper.selectByRecordTimeAndGroupByTask(startTime, endTime);
     }

@@ -44,7 +44,8 @@ public class CacheConfig extends CachingConfigurerSupport {
                 .expireAfterWrite(caffeineProperty.getExpireAfterWrite(), TimeUnit.SECONDS);
         cacheManager.setCaffeine(caffeine);
         //根据名字可以创建多个cache，但是多个cache使用相同的策略
-        cacheManager.setCacheNames(Arrays.asList(Constants.CAFFEINE_CACHE_NAME_ALARM));
+        cacheManager.setCacheNames(Arrays.asList(Constants.CAFFEINE_CACHE_NAME_ALARM,
+                Constants.CAFFEINE_CACHE_NAME_EXECUTOR_TASK));
         return cacheManager;
     }
 
