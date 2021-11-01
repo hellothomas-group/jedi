@@ -72,7 +72,7 @@ public class ScheduledService {
         try {
             taskLock = taskLockService.lock(taskLock.getId());
         } catch (Exception e) {
-            log.info("悲观锁 {} 获取失败: {}", REFRESH_LAST_DAY_TASK_STATISTICS_NAME, e.getMessage());
+            log.info("悲观锁 {} 获取失败", REFRESH_TASK_STATISTICS_NAME);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return;
         }
@@ -196,7 +196,7 @@ public class ScheduledService {
         try {
             taskLock = taskLockService.lock(taskLock.getId());
         } catch (Exception e) {
-            log.info("悲观锁 {} 获取失败: {}", REFRESH_LAST_DAY_TASK_STATISTICS_NAME, e.getMessage());
+            log.info("悲观锁 {} 获取失败", REFRESH_LAST_DAY_TASK_STATISTICS_NAME);
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return;
         }
