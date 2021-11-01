@@ -7,6 +7,7 @@ import xyz.hellothomas.jedi.core.dto.consumer.*;
 import xyz.hellothomas.jedi.core.enums.MessageType;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 import xyz.hellothomas.jedi.core.utils.NetUtil;
+import xyz.hellothomas.jedi.core.utils.ResizableCapacityLinkedBlockingQueue;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -50,6 +51,9 @@ public abstract class AbstractNotificationService {
         executorTickerNotification.setLargestPoolSize(executor.getLargestPoolSize());
 
         executorTickerNotification.setQueueType(executor.getQueue().getClass().getSimpleName());
+        if (executor.getQueue() instanceof ResizableCapacityLinkedBlockingQueue) {
+            executorTickerNotification.setQueueCapacity(((ResizableCapacityLinkedBlockingQueue) executor.getQueue()).getCapacity());
+        }
         executorTickerNotification.setQueueSize(executor.getQueue().size());
         executorTickerNotification.setQueueRemainingCapacity(executor.getQueue().remainingCapacity());
 
