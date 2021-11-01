@@ -46,7 +46,7 @@ public class ExecutorTickerNotification extends AbstractNotification {
     private String queueType;
 
     /**
-     * 队列容量 todo
+     * 队列容量
      */
     private int queueCapacity;
 

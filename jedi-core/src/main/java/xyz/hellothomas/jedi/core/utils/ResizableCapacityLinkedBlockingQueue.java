@@ -1040,6 +1040,10 @@ public class ResizableCapacityLinkedBlockingQueue<E> extends AbstractQueue<E>
         return true;
     }
 
+    public int getCapacity() {
+        return capacity;
+    }
+
     /**
      * Saves this queue to a stream (that is, serializes it).
      *
