@@ -18,10 +18,10 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class CustomMessageService implements NotificationService<CustomNotification> {
+public class CustomMsgService implements NotificationService<CustomNotification> {
     private final MonitorMessageMapper monitorMessageMapper;
 
-    public CustomMessageService(MonitorMessageMapper monitorMessageMapper) {
+    public CustomMsgService(MonitorMessageMapper monitorMessageMapper) {
         this.monitorMessageMapper = monitorMessageMapper;
     }
 

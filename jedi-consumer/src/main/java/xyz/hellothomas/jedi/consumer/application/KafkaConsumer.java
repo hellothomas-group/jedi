@@ -20,17 +20,17 @@ import java.util.List;
  */
 @Slf4j
 public class KafkaConsumer {
-    private final ExecutorTickerService executorTickerService;
-    private final ExecutorTaskService executorTaskService;
-    private final ExecutorShutdownService executorShutdownService;
-    private final CustomMessageService customMessageService;
+    private final ExecutorTickerMsgService executorTickerMsgService;
+    private final ExecutorTaskMsgService executorTaskMsgService;
+    private final ExecutorShutdownMsgService executorShutdownMsgService;
+    private final CustomMsgService customMsgService;
 
-    public KafkaConsumer(ExecutorTickerService executorTickerService, ExecutorTaskService executorTaskService,
-                         ExecutorShutdownService executorShutdownService, CustomMessageService customMessageService) {
-        this.executorTickerService = executorTickerService;
-        this.executorTaskService = executorTaskService;
-        this.executorShutdownService = executorShutdownService;
-        this.customMessageService = customMessageService;
+    public KafkaConsumer(ExecutorTickerMsgService executorTickerMsgService, ExecutorTaskMsgService executorTaskMsgService,
+                         ExecutorShutdownMsgService executorShutdownMsgService, CustomMsgService customMsgService) {
+        this.executorTickerMsgService = executorTickerMsgService;
+        this.executorTaskMsgService = executorTaskMsgService;
+        this.executorShutdownMsgService = executorShutdownMsgService;
+        this.customMsgService = customMsgService;
     }
 
     /**
@@ -48,7 +48,7 @@ public class KafkaConsumer {
                     ExecutorTickerNotification.class);
             notifications.add(executorTickerNotification);
         });
-        executorTickerService.process(notifications);
+        executorTickerMsgService.process(notifications);
     }
 
     /**
@@ -65,7 +65,7 @@ public class KafkaConsumer {
                     ExecutorTaskNotification.class);
             notifications.add(executorTaskNotification);
         });
-        executorTaskService.process(notifications);
+        executorTaskMsgService.process(notifications);
     }
 
     /**
@@ -79,7 +79,7 @@ public class KafkaConsumer {
             log.debug("shutdown消费：{}-{}-{}", i.topic(), i.partition(), i.value());
             ExecutorShutdownNotification executorShutdownNotification = JsonUtil.deserialize(i.value().toString(),
                     ExecutorShutdownNotification.class);
-            executorShutdownService.process(executorShutdownNotification);
+            executorShutdownMsgService.process(executorShutdownNotification);
         });
     }
 
@@ -94,7 +94,7 @@ public class KafkaConsumer {
             log.debug("custom消费：{}-{}-{}", i.topic(), i.partition(), i.value());
             CustomNotification customNotification = JsonUtil.deserialize(i.value().toString(),
                     CustomNotification.class);
-            customMessageService.process(customNotification);
+            customMsgService.process(customNotification);
         });
     }
 }

@@ -42,19 +42,21 @@ public class ScheduledService {
     private final ExecutorTaskStatisticsService taskStatisticsService;
     private final ClearDataService clearDataService;
     private final TaskLockService taskLockService;
-    private final ExecutorTaskService executorTaskService;
+    private final ExecutorTaskMsgService executorTaskMsgService;
     private final AppService appService;
+    private final ExecutorTaskService executorTaskService;
 
     public ScheduledService(ExecutorTaskStatisticsHistoryService taskStatisticsHistoryService,
                             ExecutorTaskStatisticsService taskStatisticsService, ClearDataService clearDataService,
-                            TaskLockService taskLockService, ExecutorTaskService executorTaskService,
-                            AppService appService) {
+                            TaskLockService taskLockService, ExecutorTaskMsgService executorTaskMsgService,
+                            AppService appService, ExecutorTaskService executorTaskService) {
         this.taskStatisticsHistoryService = taskStatisticsHistoryService;
         this.taskStatisticsService = taskStatisticsService;
         this.clearDataService = clearDataService;
         this.taskLockService = taskLockService;
-        this.executorTaskService = executorTaskService;
+        this.executorTaskMsgService = executorTaskMsgService;
         this.appService = appService;
+        this.executorTaskService = executorTaskService;
     }
 
     /**
@@ -89,7 +91,8 @@ public class ScheduledService {
 
         apps.stream().forEach(app -> {
             // 获取tasks
-            List<ExecutorTask> executorTasks = executorTaskService.findTaskList(app.getNamespaceName(), app.getAppId());
+            List<ExecutorTask> executorTasks = executorTaskService.findTaskList(app.getNamespaceName(),
+                    app.getAppId());
 
             // 计算各task统计数并更新
             executorTasks.stream().forEach(i -> {
@@ -103,7 +106,7 @@ public class ScheduledService {
                         , i.getAppId(), i.getExecutorName(), i.getTaskName(), currentDate);
 
                 ExecutorTaskStatistics executorTaskStatistics =
-                        executorTaskService.genTaskStatistics(i.getNamespaceName()
+                        executorTaskMsgService.genTaskStatistics(i.getNamespaceName()
                                 , i.getAppId(),
                                 i.getExecutorName(),
                                 i.getTaskName(), currentDate.atStartOfDay(), currentDate.plusDays(1).atStartOfDay());
@@ -221,8 +224,7 @@ public class ScheduledService {
 
         apps.stream().forEach(app -> {
             // 获取tasks
-            List<ExecutorTask> executorTasks =
-                    executorTaskService.findTaskList(app.getNamespaceName(), app.getAppId());
+            List<ExecutorTask> executorTasks = executorTaskService.findTaskList(app.getNamespaceName(), app.getAppId());
 
             // 计算各task统计数并更新
             executorTasks.stream().forEach(i -> {
@@ -238,7 +240,7 @@ public class ScheduledService {
                 }
 
                 ExecutorTaskStatistics executorTaskStatistics =
-                        executorTaskService.genTaskStatistics(i.getNamespaceName()
+                        executorTaskMsgService.genTaskStatistics(i.getNamespaceName()
                                 , i.getAppId(),
                                 i.getExecutorName(),
                                 i.getTaskName(), lastDate.atStartOfDay(), currentDate.atStartOfDay());

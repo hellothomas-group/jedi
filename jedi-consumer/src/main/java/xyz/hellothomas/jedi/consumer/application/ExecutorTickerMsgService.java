@@ -32,13 +32,13 @@ import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZ
  */
 @Slf4j
 @Service
-public class ExecutorTickerService implements NotificationService<ExecutorTickerNotification> {
+public class ExecutorTickerMsgService implements NotificationService<ExecutorTickerNotification> {
     private final ExecutorTickerMessageMapper executorTickerMessageMapper;
     private final AlarmConfigService alarmConfigService;
     private final AlarmService alarmService;
 
-    public ExecutorTickerService(ExecutorTickerMessageMapper executorTickerMessageMapper,
-                                 AlarmConfigService alarmConfigService, AlarmService alarmService) {
+    public ExecutorTickerMsgService(ExecutorTickerMessageMapper executorTickerMessageMapper,
+                                    AlarmConfigService alarmConfigService, AlarmService alarmService) {
         this.executorTickerMessageMapper = executorTickerMessageMapper;
         this.alarmConfigService = alarmConfigService;
         this.alarmService = alarmService;

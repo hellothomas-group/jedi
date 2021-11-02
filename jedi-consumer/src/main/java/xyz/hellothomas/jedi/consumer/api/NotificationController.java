@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.hellothomas.jedi.consumer.application.CustomMessageService;
-import xyz.hellothomas.jedi.consumer.application.ExecutorShutdownService;
-import xyz.hellothomas.jedi.consumer.application.ExecutorTaskService;
-import xyz.hellothomas.jedi.consumer.application.ExecutorTickerService;
+import xyz.hellothomas.jedi.consumer.application.CustomMsgService;
+import xyz.hellothomas.jedi.consumer.application.ExecutorShutdownMsgService;
+import xyz.hellothomas.jedi.consumer.application.ExecutorTaskMsgService;
+import xyz.hellothomas.jedi.consumer.application.ExecutorTickerMsgService;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
 import xyz.hellothomas.jedi.core.dto.consumer.CustomNotification;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorShutdownNotification;
@@ -33,46 +33,46 @@ import java.util.List;
 @Api(value = "notification", tags = "notification")
 @Validated
 public class NotificationController {
-    private final ExecutorTickerService executorTickerService;
-    private final ExecutorTaskService executorTaskService;
-    private final ExecutorShutdownService executorShutdownService;
-    private final CustomMessageService customMessageService;
+    private final ExecutorTickerMsgService executorTickerMsgService;
+    private final ExecutorTaskMsgService executorTaskMsgService;
+    private final ExecutorShutdownMsgService executorShutdownMsgService;
+    private final CustomMsgService customMsgService;
 
-    public NotificationController(ExecutorTickerService executorTickerService,
-                                  ExecutorTaskService executorTaskService,
-                                  ExecutorShutdownService executorShutdownService,
-                                  CustomMessageService customMessageService) {
-        this.executorTickerService = executorTickerService;
-        this.executorTaskService = executorTaskService;
-        this.executorShutdownService = executorShutdownService;
-        this.customMessageService = customMessageService;
+    public NotificationController(ExecutorTickerMsgService executorTickerMsgService,
+                                  ExecutorTaskMsgService executorTaskMsgService,
+                                  ExecutorShutdownMsgService executorShutdownMsgService,
+                                  CustomMsgService customMsgService) {
+        this.executorTickerMsgService = executorTickerMsgService;
+        this.executorTaskMsgService = executorTaskMsgService;
+        this.executorShutdownMsgService = executorShutdownMsgService;
+        this.customMsgService = customMsgService;
     }
 
     @PostMapping(value = "/executor-ticker")
     @ApiOperation("executor-ticker")
     public ApiResponse<String> executorTick(@Valid @RequestBody List<ExecutorTickerNotification> executorTickerNotifications) {
-        executorTickerService.process(executorTickerNotifications);
+        executorTickerMsgService.process(executorTickerNotifications);
         return ApiResponse.success("接收成功");
     }
 
     @PostMapping(value = "/executor-task")
     @ApiOperation("executor-task")
     public ApiResponse<String> executorTask(@Valid @RequestBody List<ExecutorTaskNotification> executorTaskNotifications) {
-        executorTaskService.process(executorTaskNotifications);
+        executorTaskMsgService.process(executorTaskNotifications);
         return ApiResponse.success("接收成功");
     }
 
     @PostMapping(value = "/executor-shutdown")
     @ApiOperation("executor-shutdown")
     public ApiResponse<String> executorShutdown(@Valid @RequestBody ExecutorShutdownNotification executorShutdownNotification) {
-        executorShutdownService.process(executorShutdownNotification);
+        executorShutdownMsgService.process(executorShutdownNotification);
         return ApiResponse.success("接收成功");
     }
 
     @PostMapping(value = "/custom")
     @ApiOperation("custom")
     public ApiResponse<String> defaultNotification(@Valid @RequestBody List<CustomNotification> customNotifications) {
-        customNotifications.stream().forEach(i -> customMessageService.process(i));
+        customNotifications.stream().forEach(i -> customMsgService.process(i));
         return ApiResponse.success("接收成功");
     }
 }

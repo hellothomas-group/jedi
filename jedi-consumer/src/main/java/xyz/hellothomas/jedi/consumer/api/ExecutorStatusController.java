@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import xyz.hellothomas.jedi.consumer.api.dto.ExecutorStatusResponse;
 import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
-import xyz.hellothomas.jedi.consumer.application.ExecutorTickerService;
+import xyz.hellothomas.jedi.consumer.application.ExecutorTickerMsgService;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTickerMessage;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
@@ -22,10 +22,10 @@ import java.util.List;
 @RestController
 public class ExecutorStatusController {
 
-    private final ExecutorTickerService executorTickerService;
+    private final ExecutorTickerMsgService executorTickerMsgService;
 
-    public ExecutorStatusController(ExecutorTickerService executorTickerService) {
-        this.executorTickerService = executorTickerService;
+    public ExecutorStatusController(ExecutorTickerMsgService executorTickerMsgService) {
+        this.executorTickerMsgService = executorTickerMsgService;
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/status")
@@ -39,7 +39,7 @@ public class ExecutorStatusController {
                                                            "HH:mm:ss") LocalDateTime endTime,
                                                                PageHelperRequest pageHelperRequest) {
         PageResult<ExecutorTickerMessage> tickerMessagePageResult =
-                executorTickerService.findByExecutorHostAndRecordTime(namespaceName
+                executorTickerMsgService.findByExecutorHostAndRecordTime(namespaceName
                         , appId, executorName, instanceIp, startTime, endTime, pageHelperRequest);
         PageResult<ExecutorStatusResponse> executorStatusResponsePageResult =
                 transform2PageResult(tickerMessagePageResult);

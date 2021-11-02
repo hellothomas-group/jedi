@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.consumer.api.dto.*;
-import xyz.hellothomas.jedi.consumer.application.ExecutorTaskService;
+import xyz.hellothomas.jedi.consumer.application.ExecutorTaskMsgService;
 import xyz.hellothomas.jedi.consumer.application.ExecutorTaskStatisticsHistoryService;
 import xyz.hellothomas.jedi.consumer.application.ExecutorTaskStatisticsService;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage;
@@ -25,14 +25,14 @@ import java.util.List;
 @RestController
 public class ExecutorTaskController {
 
-    private final ExecutorTaskService executorTaskService;
+    private final ExecutorTaskMsgService executorTaskMsgService;
     private final ExecutorTaskStatisticsService executorTaskStatisticsService;
     private final ExecutorTaskStatisticsHistoryService executorTaskStatisticsHistoryService;
 
-    public ExecutorTaskController(ExecutorTaskService executorTaskService,
+    public ExecutorTaskController(ExecutorTaskMsgService executorTaskMsgService,
                                   ExecutorTaskStatisticsService executorTaskStatisticsService,
                                   ExecutorTaskStatisticsHistoryService executorTaskStatisticsHistoryService) {
-        this.executorTaskService = executorTaskService;
+        this.executorTaskMsgService = executorTaskMsgService;
         this.executorTaskStatisticsService = executorTaskStatisticsService;
         this.executorTaskStatisticsHistoryService = executorTaskStatisticsHistoryService;
     }
@@ -57,7 +57,7 @@ public class ExecutorTaskController {
                                                                                       "HH:mm:ss") LocalDateTime endTime,
                                                                               PageHelperRequest pageHelperRequest) {
         PageResult<ExecutorTaskMessage> taskMessagePageResult =
-                executorTaskService.findByTaskNameAndRecordTime(namespaceName
+                executorTaskMsgService.findByTaskNameAndRecordTime(namespaceName
                         , appId, executorName, taskName, taskExtraData, isSuccess, instanceIp, startTime, endTime,
                         pageHelperRequest);
         PageResult<ExecutorTaskDetailResponse> executorStatusResponsePageResult =

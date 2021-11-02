@@ -28,4 +28,6 @@ public interface ExecutorTaskMapper {
     int updateByPrimaryKeySelective(ExecutorTask record);
 
     int updateByPrimaryKey(ExecutorTask record);
+
+    int insertOrUpdate(@Param("record") ExecutorTask record);
 }

@@ -105,7 +105,8 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTask">
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTask" useGeneratedKeys="true"
+          keyProperty="id">
     insert into executor_task (id, namespace_name, app_id, 
       executor_name, task_name, is_deleted, 
       data_change_created_by, data_change_created_time, 
@@ -117,7 +118,8 @@
       #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTask">
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTask" useGeneratedKeys="true"
+          keyProperty="id">
     insert into executor_task
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -290,4 +292,20 @@
       data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <insert id="insertOrUpdate" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTask" useGeneratedKeys="true"
+          keyProperty="id">
+    insert into executor_task (id, namespace_name, app_id,
+      executor_name, task_name, is_deleted,
+      data_change_created_by, data_change_created_time,
+      data_change_last_modified_by, data_change_last_modified_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR},
+      #{executorName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, #{isDeleted,jdbcType=BIT},
+      #{dataChangeCreatedBy,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+      )
+    on duplicate key
+    update is_deleted = 0
+  </insert>
 </mapper>

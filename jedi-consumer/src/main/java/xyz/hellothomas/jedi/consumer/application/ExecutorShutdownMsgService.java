@@ -19,10 +19,10 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class ExecutorShutdownService implements NotificationService<ExecutorShutdownNotification> {
+public class ExecutorShutdownMsgService implements NotificationService<ExecutorShutdownNotification> {
     private final ExecutorShutdownMessageMapper executorShutdownMessageMapper;
 
-    public ExecutorShutdownService(ExecutorShutdownMessageMapper executorShutdownMessageMapper) {
+    public ExecutorShutdownMsgService(ExecutorShutdownMessageMapper executorShutdownMessageMapper) {
         this.executorShutdownMessageMapper = executorShutdownMessageMapper;
     }
 

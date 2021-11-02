@@ -1,23 +1,17 @@
 package xyz.hellothomas.jedi.consumer.application;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
-import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
-import xyz.hellothomas.jedi.consumer.domain.*;
+import xyz.hellothomas.jedi.consumer.domain.ExecutorTask;
+import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskExample;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMapper;
-import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMessageMapper;
-import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
-import xyz.hellothomas.jedi.core.enums.MessageType;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-import static xyz.hellothomas.jedi.consumer.common.constants.Constants.DEFAULT_PAGE_SIZE;
+import static xyz.hellothomas.jedi.consumer.common.constants.Constants.CAFFEINE_CACHE_NAME_EXECUTOR_TASK;
 
 /**
  * @author Thomas
@@ -27,88 +21,11 @@ import static xyz.hellothomas.jedi.consumer.common.constants.Constants.DEFAULT_P
  */
 @Slf4j
 @Service
-public class ExecutorTaskService implements NotificationService<ExecutorTaskNotification> {
-    private final ExecutorTaskMessageMapper executorTaskMessageMapper;
+public class ExecutorTaskService {
     private final ExecutorTaskMapper executorTaskMapper;
 
-    public ExecutorTaskService(ExecutorTaskMessageMapper executorTaskMessageMapper,
-                               ExecutorTaskMapper executorTaskMapper) {
-        this.executorTaskMessageMapper = executorTaskMessageMapper;
+    public ExecutorTaskService(ExecutorTaskMapper executorTaskMapper) {
         this.executorTaskMapper = executorTaskMapper;
-    }
-
-    @Override
-    public void process(ExecutorTaskNotification executorTaskNotification) {
-        ExecutorTaskMessage executorTaskMessage = new ExecutorTaskMessage();
-        BeanUtils.copyProperties(executorTaskNotification, executorTaskMessage);
-        executorTaskMessage.setCreateTime(LocalDateTime.now());
-        executorTaskMessage.setUpdateTime(LocalDateTime.now());
-        log.debug("executorTaskMessage:{}", executorTaskMessage);
-        executorTaskMessageMapper.insertSelective(executorTaskMessage);
-    }
-
-    @Override
-    public void process(List<ExecutorTaskNotification> notifications) {
-        List<ExecutorTaskMessage> executorTaskMessages = new ArrayList<>(notifications.size());
-        notifications.stream().forEach(i -> {
-            ExecutorTaskMessage executorTaskMessage = new ExecutorTaskMessage();
-            BeanUtils.copyProperties(i, executorTaskMessage);
-            executorTaskMessage.setCreateTime(LocalDateTime.now());
-            executorTaskMessage.setUpdateTime(LocalDateTime.now());
-            executorTaskMessages.add(executorTaskMessage);
-        });
-        try {
-            executorTaskMessageMapper.insertBatch(executorTaskMessages);
-        } catch (Exception e) {
-            executorTaskMessageMapper.insertOrUpdateBatch(executorTaskMessages);
-        }
-    }
-
-    @Override
-    public boolean match(ExecutorTaskNotification notification) {
-        return MessageType.EXECUTOR_TASK.getTypeValue().equals(notification.getMessageType());
-    }
-
-    public PageResult<ExecutorTaskMessage> findByTaskNameAndRecordTime(String namespaceName, String appId,
-                                                                       String executorName,
-                                                                       String taskName, String taskExtraData,
-                                                                       Boolean isSuccess, String instanceIp,
-                                                                       LocalDateTime startTime, LocalDateTime endTime,
-                                                                       PageHelperRequest pageHelperRequest) {
-        ExecutorTaskMessageExample executorTaskMessageExample = new ExecutorTaskMessageExample();
-        ExecutorTaskMessageExample.Criteria criteria =
-                executorTaskMessageExample.createCriteria().andNamespaceEqualTo(namespaceName)
-                        .andAppIdEqualTo(appId)
-                        .andPoolNameEqualTo(executorName)
-                        .andTaskNameEqualTo(taskName)
-                        .andRecordTimeBetween(startTime, endTime);
-        if (taskExtraData != null) {
-            criteria.andTaskExtraDataEqualTo(taskExtraData);
-        }
-        if (isSuccess != null) {
-            criteria.andIsSuccessEqualTo(isSuccess);
-        }
-        if (instanceIp != null) {
-            criteria.andHostEqualTo(instanceIp);
-        }
-
-        executorTaskMessageExample.setOrderByClause("record_time");
-
-        int pageSize = pageHelperRequest.getPageSize();
-        int pageNum = pageHelperRequest.getPageNum();
-        pageSize = (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
-        PageHelper.startPage(pageNum, pageSize);
-
-        List<ExecutorTaskMessage> executorTaskMessages =
-                executorTaskMessageMapper.selectByExample(executorTaskMessageExample);
-        PageInfo<ExecutorTaskMessage> pageInfo = new PageInfo<>(executorTaskMessages);
-
-        return PageResult.<ExecutorTaskMessage>builder()
-                .content(pageInfo.getList())
-                .total(pageInfo.getTotal())
-                .pageNum(pageInfo.getPageNum())
-                .pageSize(pageInfo.getPageSize())
-                .build();
     }
 
     public List<ExecutorTask> findTaskList(String namespaceName, String appId) {
@@ -118,9 +35,34 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
         return executorTaskMapper.selectByExample(executorTaskExample);
     }
 
-    public ExecutorTaskStatistics genTaskStatistics(String namespaceName, String appId, String executorName,
-                                                    String taskName, LocalDateTime startTime, LocalDateTime endTime) {
-        return executorTaskMessageMapper.selectStatisticsByTaskNameAndRecordTime(namespaceName, appId, executorName,
-                taskName, startTime, endTime);
+    @Cacheable(cacheNames = CAFFEINE_CACHE_NAME_EXECUTOR_TASK, key = "#namespaceName + '+' + #appId + '+' + " +
+            "#executorName + '+' + #taskName", cacheManager = "caffeineCacheManager", unless = "#result == null")
+    public ExecutorTask findTask(String namespaceName, String appId, String executorName, String taskName) {
+        ExecutorTaskExample executorTaskExample = new ExecutorTaskExample();
+        executorTaskExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
+                .andAppIdEqualTo(appId)
+                .andExecutorNameEqualTo(executorName);
+        List<ExecutorTask> executorTaskList = executorTaskMapper.selectByExample(executorTaskExample);
+
+        return executorTaskList.isEmpty() ? null : executorTaskList.get(0);
+    }
+
+    @CachePut(cacheNames = CAFFEINE_CACHE_NAME_EXECUTOR_TASK, key = "#namespaceName + '+' + #appId + '+' + " +
+            "#executorName + '+' + #taskName", unless = "#result == null")
+    public ExecutorTask saveTask(String namespaceName, String appId, String executorName, String taskName) {
+        ExecutorTask executorTask = new ExecutorTask();
+        executorTask.setNamespaceName(namespaceName);
+        executorTask.setAppId(appId);
+        executorTask.setExecutorName(executorName);
+        executorTask.setTaskName(taskName);
+        executorTask.setIsDeleted(false);
+        executorTask.setDataChangeCreatedBy("admin");
+        executorTask.setDataChangeLastModifiedBy("admin");
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        executorTask.setDataChangeCreatedTime(currentDateTime);
+        executorTask.setDataChangeLastModifiedTime(currentDateTime);
+
+        executorTaskMapper.insertOrUpdate(executorTask);
+        return executorTask;
     }
 }

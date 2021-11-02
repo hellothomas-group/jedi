@@ -16,11 +16,11 @@ import xyz.hellothomas.jedi.consumer.application.*;
 public class KafkaConfig {
 
     @Bean
-    public KafkaConsumer kafkaConsumer(ExecutorTickerService executorTickerService,
-                                       ExecutorTaskService executorTaskService,
-                                       ExecutorShutdownService executorShutdownService,
-                                       CustomMessageService customMessageService) {
-        return new KafkaConsumer(executorTickerService, executorTaskService, executorShutdownService,
-                customMessageService);
+    public KafkaConsumer kafkaConsumer(ExecutorTickerMsgService executorTickerMsgService,
+                                       ExecutorTaskMsgService executorTaskMsgService,
+                                       ExecutorShutdownMsgService executorShutdownMsgService,
+                                       CustomMsgService customMsgService) {
+        return new KafkaConsumer(executorTickerMsgService, executorTaskMsgService, executorShutdownMsgService,
+                customMsgService);
     }
 }
