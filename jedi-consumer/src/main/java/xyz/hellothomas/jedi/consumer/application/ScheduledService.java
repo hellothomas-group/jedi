@@ -8,12 +8,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
+import xyz.hellothomas.jedi.biz.domain.monitor.App;
 import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
+import xyz.hellothomas.jedi.consumer.domain.ExecutorTask;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistory;
 import xyz.hellothomas.jedi.consumer.domain.TaskLock;
-import xyz.hellothomas.jedi.consumer.domain.pojo.ExecutorTask;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -42,19 +43,21 @@ public class ScheduledService {
     private final ClearDataService clearDataService;
     private final TaskLockService taskLockService;
     private final ExecutorTaskService executorTaskService;
+    private final AppService appService;
 
     public ScheduledService(ExecutorTaskStatisticsHistoryService taskStatisticsHistoryService,
                             ExecutorTaskStatisticsService taskStatisticsService, ClearDataService clearDataService,
-                            TaskLockService taskLockService, ExecutorTaskService executorTaskService) {
+                            TaskLockService taskLockService, ExecutorTaskService executorTaskService,
+                            AppService appService) {
         this.taskStatisticsHistoryService = taskStatisticsHistoryService;
         this.taskStatisticsService = taskStatisticsService;
         this.clearDataService = clearDataService;
         this.taskLockService = taskLockService;
         this.executorTaskService = executorTaskService;
+        this.appService = appService;
     }
 
     /**
-     * todo 优化group by性能问题
      * 刷新统计当日任务数据
      */
     @Scheduled(fixedDelay = 1000 * REFRESH_TASK_STATISTICS_CYCLE_SECONDS)
@@ -81,44 +84,52 @@ public class ScheduledService {
             return;
         }
 
-        // 获取taskNames
-        List<ExecutorTask> executorTasks = executorTaskService.findTasksDistinct(currentDate.atStartOfDay(),
-                currentDate.plusDays(1).atStartOfDay());
+        // 获取apps
+        List<App> apps = appService.findAppIds();
 
-        // 计算各taskName统计数并更新
-        executorTasks.stream().forEach(i -> {
-            log.info("executorTask:{}", i);
+        apps.stream().forEach(app -> {
+            // 获取tasks
+            List<ExecutorTask> executorTasks = executorTaskService.findTaskList(app.getNamespaceName(), app.getAppId());
 
-            ExecutorTaskStatistics executorTaskStatisticsOrigin = taskStatisticsService.findOne(i.getNamespaceName()
-                    , i.getAppId(),
-                    i.getExecutorName(), i.getTaskName(), currentDate);
+            // 计算各task统计数并更新
+            executorTasks.stream().forEach(i -> {
+                log.info("executorTask:{}", i);
 
-            ExecutorTaskStatistics executorTaskStatistics = executorTaskService.genTaskStatistics(i.getNamespaceName()
-                    , i.getAppId(),
-                    i.getExecutorName(),
-                    i.getTaskName(), currentDate.atStartOfDay(), currentDate.plusDays(1).atStartOfDay());
-            log.info("executorTaskStatistics:{}", executorTaskStatistics);
-            if (executorTaskStatistics.getTotal() == 0) {
-                executorTaskStatistics.setFailureRatio(new BigDecimal(0));
-            } else {
-                executorTaskStatistics.setFailureRatio(new BigDecimal(executorTaskStatistics.getFailure())
-                        .divide(new BigDecimal(executorTaskStatistics.getTotal()), 2, RoundingMode.HALF_UP));
-            }
+                if (i.getIsDeleted()) {
+                    return;
+                }
 
-            LocalDateTime currentDateTime = LocalDateTime.now();
-            if (executorTaskStatisticsOrigin == null) {
-                executorTaskStatistics.setStatisticsDate(currentDate);
-                executorTaskStatistics.setDataChangeCreatedTime(currentDateTime);
-                executorTaskStatistics.setDataChangeLastModifiedTime(currentDateTime);
-                executorTaskStatistics.setVersion(1);
-                taskStatisticsService.insertSelective(executorTaskStatistics);
-            } else {
-                executorTaskStatistics.setId(executorTaskStatisticsOrigin.getId());
-                executorTaskStatistics.setDataChangeCreatedTime(executorTaskStatisticsOrigin.getDataChangeCreatedTime());
-                executorTaskStatistics.setVersion(executorTaskStatisticsOrigin.getVersion() + 1);
-                executorTaskStatistics.setDataChangeLastModifiedTime(currentDateTime);
-                taskStatisticsService.updateByPrimaryKeySelective(executorTaskStatistics);
-            }
+                ExecutorTaskStatistics executorTaskStatisticsOrigin = taskStatisticsService.findOne(i.getNamespaceName()
+                        , i.getAppId(), i.getExecutorName(), i.getTaskName(), currentDate);
+
+                ExecutorTaskStatistics executorTaskStatistics =
+                        executorTaskService.genTaskStatistics(i.getNamespaceName()
+                                , i.getAppId(),
+                                i.getExecutorName(),
+                                i.getTaskName(), currentDate.atStartOfDay(), currentDate.plusDays(1).atStartOfDay());
+                log.info("executorTaskStatistics:{}", executorTaskStatistics);
+                if (executorTaskStatistics.getTotal() == 0) {
+                    executorTaskStatistics.setFailureRatio(new BigDecimal(0));
+                } else {
+                    executorTaskStatistics.setFailureRatio(new BigDecimal(executorTaskStatistics.getFailure())
+                            .divide(new BigDecimal(executorTaskStatistics.getTotal()), 2, RoundingMode.HALF_UP));
+                }
+
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                if (executorTaskStatisticsOrigin == null) {
+                    executorTaskStatistics.setStatisticsDate(currentDate);
+                    executorTaskStatistics.setDataChangeCreatedTime(currentDateTime);
+                    executorTaskStatistics.setDataChangeLastModifiedTime(currentDateTime);
+                    executorTaskStatistics.setVersion(1);
+                    taskStatisticsService.insertSelective(executorTaskStatistics);
+                } else {
+                    executorTaskStatistics.setId(executorTaskStatisticsOrigin.getId());
+                    executorTaskStatistics.setDataChangeCreatedTime(executorTaskStatisticsOrigin.getDataChangeCreatedTime());
+                    executorTaskStatistics.setVersion(executorTaskStatisticsOrigin.getVersion() + 1);
+                    executorTaskStatistics.setDataChangeLastModifiedTime(currentDateTime);
+                    taskStatisticsService.updateByPrimaryKeySelective(executorTaskStatistics);
+                }
+            });
         });
 
         // 更新刷新任务
@@ -128,7 +139,7 @@ public class ScheduledService {
     /**
      * 插入D日统计锁记录
      */
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 4 8 * * ?")
     public void insertRefreshTaskStatisticsLock() {
         LocalDate currentDate = LocalDate.now();
         // 创建D日刷新任务
@@ -176,7 +187,6 @@ public class ScheduledService {
     }
 
     /**
-     * todo 优化group by性能问题
      * 刷新统计D-1日数据
      */
     @Scheduled(cron = "0 0 1,3,5,9,17,23 * * ?")
@@ -206,44 +216,49 @@ public class ScheduledService {
             return;
         }
 
-        // 获取taskNames
-        List<ExecutorTask> executorTasks =
-                executorTaskService.findTasksDistinct(lastDate.atStartOfDay(),
-                        currentDate.atStartOfDay());
+        // 获取apps
+        List<App> apps = appService.findAppIds();
 
-        // 计算各taskName统计数并更新
-        executorTasks.stream().forEach(i -> {
-            log.info("executorTask:{}", i);
+        apps.stream().forEach(app -> {
+            // 获取tasks
+            List<ExecutorTask> executorTasks =
+                    executorTaskService.findTaskList(app.getNamespaceName(), app.getAppId());
 
-            ExecutorTaskStatisticsHistory executorTaskStatisticsHistoryOrigin =
-                    taskStatisticsHistoryService.findOne(i.getNamespaceName(),
-                            i.getAppId(),
-                            i.getExecutorName(), i.getTaskName(), lastDate);
+            // 计算各task统计数并更新
+            executorTasks.stream().forEach(i -> {
+                log.info("executorTask:{}", i);
 
-            if (executorTaskStatisticsHistoryOrigin == null) {
-                return;
-            }
+                ExecutorTaskStatisticsHistory executorTaskStatisticsHistoryOrigin =
+                        taskStatisticsHistoryService.findOne(i.getNamespaceName(),
+                                i.getAppId(),
+                                i.getExecutorName(), i.getTaskName(), lastDate);
 
-            ExecutorTaskStatistics executorTaskStatistics = executorTaskService.genTaskStatistics(i.getNamespaceName()
-                    , i.getAppId(),
-                    i.getExecutorName(),
-                    i.getTaskName(), lastDate.atStartOfDay(), currentDate.atStartOfDay());
-            ExecutorTaskStatisticsHistory executorTaskStatisticsHistory =
-                    LocalBeanUtils.transform(ExecutorTaskStatisticsHistory.class, executorTaskStatistics);
-            log.info("executorTaskStatisticsHistory:{}", executorTaskStatisticsHistory);
-            if (executorTaskStatisticsHistory.getTotal() == 0) {
-                executorTaskStatisticsHistory.setFailureRatio(new BigDecimal(0));
-            } else {
-                executorTaskStatisticsHistory.setFailureRatio(new BigDecimal(executorTaskStatisticsHistory.getFailure())
-                        .divide(new BigDecimal(executorTaskStatisticsHistory.getTotal()), 2, RoundingMode.HALF_UP));
-            }
+                if (executorTaskStatisticsHistoryOrigin == null) {
+                    return;
+                }
 
-            LocalDateTime currentDateTime = LocalDateTime.now();
-            executorTaskStatisticsHistory.setId(executorTaskStatisticsHistoryOrigin.getId());
-            executorTaskStatisticsHistory.setDataChangeCreatedTime(executorTaskStatisticsHistoryOrigin.getDataChangeCreatedTime());
-            executorTaskStatisticsHistory.setVersion(executorTaskStatisticsHistoryOrigin.getVersion() + 1);
-            executorTaskStatisticsHistory.setDataChangeLastModifiedTime(currentDateTime);
-            taskStatisticsHistoryService.updateByPrimaryKeySelective(executorTaskStatisticsHistory);
+                ExecutorTaskStatistics executorTaskStatistics =
+                        executorTaskService.genTaskStatistics(i.getNamespaceName()
+                                , i.getAppId(),
+                                i.getExecutorName(),
+                                i.getTaskName(), lastDate.atStartOfDay(), currentDate.atStartOfDay());
+                ExecutorTaskStatisticsHistory executorTaskStatisticsHistory =
+                        LocalBeanUtils.transform(ExecutorTaskStatisticsHistory.class, executorTaskStatistics);
+                log.info("executorTaskStatisticsHistory:{}", executorTaskStatisticsHistory);
+                if (executorTaskStatisticsHistory.getTotal() == 0) {
+                    executorTaskStatisticsHistory.setFailureRatio(new BigDecimal(0));
+                } else {
+                    executorTaskStatisticsHistory.setFailureRatio(new BigDecimal(executorTaskStatisticsHistory.getFailure())
+                            .divide(new BigDecimal(executorTaskStatisticsHistory.getTotal()), 2, RoundingMode.HALF_UP));
+                }
+
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                executorTaskStatisticsHistory.setId(executorTaskStatisticsHistoryOrigin.getId());
+                executorTaskStatisticsHistory.setDataChangeCreatedTime(executorTaskStatisticsHistoryOrigin.getDataChangeCreatedTime());
+                executorTaskStatisticsHistory.setVersion(executorTaskStatisticsHistoryOrigin.getVersion() + 1);
+                executorTaskStatisticsHistory.setDataChangeLastModifiedTime(currentDateTime);
+                taskStatisticsHistoryService.updateByPrimaryKeySelective(executorTaskStatisticsHistory);
+            });
         });
 
         // 更新刷新任务

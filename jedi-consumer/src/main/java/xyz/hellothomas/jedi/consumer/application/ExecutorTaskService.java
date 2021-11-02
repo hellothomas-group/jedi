@@ -7,10 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
-import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage;
-import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessageExample;
-import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics;
-import xyz.hellothomas.jedi.consumer.domain.pojo.ExecutorTask;
+import xyz.hellothomas.jedi.consumer.domain.*;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMapper;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMessageMapper;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
@@ -114,9 +111,11 @@ public class ExecutorTaskService implements NotificationService<ExecutorTaskNoti
                 .build();
     }
 
-    // todo
-    public List<ExecutorTask> findTasksDistinct(LocalDateTime startTime, LocalDateTime endTime) {
-        return executorTaskMessageMapper.selectByRecordTimeAndGroupByTask(startTime, endTime);
+    public List<ExecutorTask> findTaskList(String namespaceName, String appId) {
+        ExecutorTaskExample executorTaskExample = new ExecutorTaskExample();
+        executorTaskExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
+                .andAppIdEqualTo(appId);
+        return executorTaskMapper.selectByExample(executorTaskExample);
     }
 
     public ExecutorTaskStatistics genTaskStatistics(String namespaceName, String appId, String executorName,
