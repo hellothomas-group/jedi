@@ -75,6 +75,7 @@
         <module>jedi-biz</module>
         <module>jedi-core</module>
         <module>jedi-client</module>
+        <module>jedi-demo</module>
     </modules>
 
     <dependencyManagement>
