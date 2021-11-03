@@ -2,6 +2,7 @@ package xyz.hellothomas.jedi.consumer.application;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import xyz.hellothomas.jedi.biz.domain.monitor.AlarmConfig;
@@ -76,6 +77,8 @@ public class AlarmConfigService {
         return alarmConfig;
     }
 
+    @CachePut(cacheNames = CAFFEINE_CACHE_NAME_ALARM, key = "#namespaceName + '+' + #appId + '+' + " +
+            "#executorName", cacheManager = "caffeineCacheManager", unless = "#result == null")
     public AlarmConfig save(String namespaceName, String appId, String executorName, String configuration,
                             String operator) {
         AlarmConfig alarmConfig = new AlarmConfig();
@@ -95,6 +98,8 @@ public class AlarmConfigService {
         return alarmConfig;
     }
 
+    @CachePut(cacheNames = CAFFEINE_CACHE_NAME_ALARM, key = "#namespaceName + '+' + #appId + '+' + " +
+            "#executorName + '+' + #taskName", cacheManager = "caffeineCacheManager", unless = "#result == null")
     public int update(AlarmConfig alarmConfig) {
         return alarmConfigMapper.updateByPrimaryKey(alarmConfig);
     }

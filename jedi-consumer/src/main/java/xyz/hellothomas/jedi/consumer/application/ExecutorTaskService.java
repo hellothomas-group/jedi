@@ -48,7 +48,7 @@ public class ExecutorTaskService {
     }
 
     @CachePut(cacheNames = CAFFEINE_CACHE_NAME_EXECUTOR_TASK, key = "#namespaceName + '+' + #appId + '+' + " +
-            "#executorName + '+' + #taskName", unless = "#result == null")
+            "#executorName + '+' + #taskName", cacheManager = "caffeineCacheManager", unless = "#result == null")
     public ExecutorTask saveTask(String namespaceName, String appId, String executorName, String taskName) {
         ExecutorTask executorTask = new ExecutorTask();
         executorTask.setNamespaceName(namespaceName);
