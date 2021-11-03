@@ -1,0 +1,26 @@
+server:
+  port: 8090
+
+swagger:
+  enable: true
+  base-package: xyz.hellothomas.jedi.demo.api
+  title: Jedi-Demo-Service
+  host: 127.0.0.1:8090
+  description: Jedi-Demo服务
+  version: 1.0.0
+  contact:
+    name: Thomas
+    url: https://www.hellothomas.xyz
+    email: tyty2017@qq.com
+
+logging:
+  level:
+    xyz:
+      hellothomas.jedi: debug
+
+jedi:
+  enable: true
+  mode: 0
+  url: http://127.0.0.1:8081 #mode为0/1/2时必配置 config的地址
+  namespace: dev #mode为0/1/2时必配置，环境
+  app-id: jedi-demo #mode为0/1/2时必配置时必配置，应用名

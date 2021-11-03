@@ -1,0 +1,11 @@
+logging:
+  level:
+    root: info
+  pattern:
+    console: 'logback: %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%thread] %class#%method@%line
+      : %msg %n'
+server:
+  port: 8090
+spring:
+  profiles:
+    active: local
