@@ -65,7 +65,7 @@ public class ExecutorTaskMsgService implements NotificationService<ExecutorTaskN
                     executorTaskMessage.getPoolName(), executorTaskMessage.getTaskName());
             if (executorTask == null || executorTask.getIsDeleted()) {
                 executorTaskService.saveTask(executorTaskMessage.getNamespace(), executorTaskMessage.getAppId(),
-                        executorTaskMessage.getPoolName(), executorTask.getTaskName());
+                        executorTaskMessage.getPoolName(), executorTaskMessage.getTaskName());
             }
         });
 
