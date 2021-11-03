@@ -1,6 +1,8 @@
 package xyz.hellothomas.jedi.consumer.application;
 
+import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import xyz.hellothomas.jedi.biz.domain.monitor.App;
 import xyz.hellothomas.jedi.biz.domain.monitor.AppExample;
@@ -23,5 +25,19 @@ public class AppService {
         appExample.createCriteria().andIsDeletedEqualTo(false);
 
         return appMapper.selectByExample(appExample);
+    }
+
+    public App findOne(String namespaceName, String appId) {
+        Preconditions
+                .checkArgument(!StringUtils.isAnyBlank(namespaceName, appId), "Namespace or appId must not" +
+                        " be null");
+        AppExample appExample = new AppExample();
+        appExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
+                .andAppIdEqualTo(appId)
+                .andIsDeletedEqualTo(false);
+
+        List<App> apps = appMapper.selectByExample(appExample);
+
+        return apps.isEmpty() ? null : apps.get(0);
     }
 }

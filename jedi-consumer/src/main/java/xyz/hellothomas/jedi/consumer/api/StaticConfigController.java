@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
+import xyz.hellothomas.jedi.consumer.application.AppService;
 import xyz.hellothomas.jedi.consumer.common.enums.ConsumerTypeEnum;
 import xyz.hellothomas.jedi.consumer.domain.pojo.ConsumerProperty;
 import xyz.hellothomas.jedi.consumer.infrastructure.config.ConsumerLocalProperties;
@@ -34,16 +36,23 @@ import static org.apache.kafka.clients.producer.ProducerConfig.*;
 @Slf4j
 public class StaticConfigController implements EnvironmentAware {
     private final ConsumerLocalProperties consumerLocalProperties;
+    private final AppService appService;
     private Environment environment;
 
-    public StaticConfigController(ConsumerLocalProperties consumerLocalProperties) {
+    public StaticConfigController(ConsumerLocalProperties consumerLocalProperties, AppService appService) {
         this.consumerLocalProperties = consumerLocalProperties;
+        this.appService = appService;
     }
 
     @GetMapping(value = "/consumer/{namespace}/{appId}")
     @ApiOperation("consumer")
     public ApiResponse<ConsumerProperty> consumer(@PathVariable String namespace, @PathVariable String appId) {
         log.info("namespace:{}, appId:{}", namespace, appId);
+
+        if (appService.findOne(namespace, appId) == null) {
+            throw new NotFoundException(String.format("app not found for namespace: %s, appId: %s", namespace, appId));
+        }
+
         Map<String, Object> configProperty = new HashMap<>();
         ConsumerProperty consumerProperty = new ConsumerProperty();
 
