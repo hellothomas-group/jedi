@@ -41,7 +41,8 @@ public class ExecutorTaskService {
         ExecutorTaskExample executorTaskExample = new ExecutorTaskExample();
         executorTaskExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
                 .andAppIdEqualTo(appId)
-                .andExecutorNameEqualTo(executorName);
+                .andExecutorNameEqualTo(executorName)
+                .andTaskNameEqualTo(taskName);
         List<ExecutorTask> executorTaskList = executorTaskMapper.selectByExample(executorTaskExample);
 
         return executorTaskList.isEmpty() ? null : executorTaskList.get(0);

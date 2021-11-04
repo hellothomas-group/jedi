@@ -300,10 +300,10 @@
       data_change_created_by, data_change_created_time,
       data_change_last_modified_by, data_change_last_modified_time
       )
-    values (#{id,jdbcType=BIGINT}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR},
-      #{executorName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, #{isDeleted,jdbcType=BIT},
-      #{dataChangeCreatedBy,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+    values (#{record.id,jdbcType=BIGINT}, #{record.namespaceName,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR},
+      #{record.executorName,jdbcType=VARCHAR}, #{record.taskName,jdbcType=VARCHAR}, #{record.isDeleted,jdbcType=BIT},
+      #{record.dataChangeCreatedBy,jdbcType=VARCHAR}, #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
       )
     on duplicate key
     update is_deleted = 0

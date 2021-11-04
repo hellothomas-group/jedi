@@ -20,6 +20,11 @@ public class ExecutorTaskDetailResponse {
     private String taskName;
 
     /**
+     * 等待时间
+     */
+    private Long waitTime;
+
+    /**
      * 执行时间
      */
     private Long executionTime;
