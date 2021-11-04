@@ -30,14 +30,16 @@ public class ExecutorStatusController {
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/status")
     public ApiResponse<PageResult<ExecutorStatusResponse>> find(@PathVariable("namespaceName") String namespaceName,
-                                                               @PathVariable("appId") String appId,
-                                                               @PathVariable("executorName") String executorName,
-                                                               @RequestParam("instanceIp") String instanceIp,
-                                                               @RequestParam("startTime") @DateTimeFormat(pattern = "yyyy-MM-dd " +
-                                                           "HH:mm:ss") LocalDateTime startTime,
-                                                               @RequestParam("endTime") @DateTimeFormat(pattern = "yyyy-MM-dd " +
-                                                           "HH:mm:ss") LocalDateTime endTime,
-                                                               PageHelperRequest pageHelperRequest) {
+                                                                @PathVariable("appId") String appId,
+                                                                @PathVariable("executorName") String executorName,
+                                                                @RequestParam("instanceIp") String instanceIp,
+                                                                @RequestParam("startTime") @DateTimeFormat(pattern =
+                                                                        "yyyy-MM-dd " +
+                                                                        "HH:mm:ss") LocalDateTime startTime,
+                                                                @RequestParam("endTime") @DateTimeFormat(pattern =
+                                                                        "yyyy-MM-dd " +
+                                                                        "HH:mm:ss") LocalDateTime endTime,
+                                                                PageHelperRequest pageHelperRequest) {
         PageResult<ExecutorTickerMessage> tickerMessagePageResult =
                 executorTickerMsgService.findByExecutorHostAndRecordTime(namespaceName
                         , appId, executorName, instanceIp, startTime, endTime, pageHelperRequest);
@@ -54,7 +56,7 @@ public class ExecutorStatusController {
             ExecutorStatusResponse executorStatusResponse = new ExecutorStatusResponse();
             executorStatusResponse.setQueueSize(tickerMessage.getQueueSize());
             executorStatusResponse.setRejectCount(tickerMessage.getRejectCount());
-            executorStatusResponse.setPoolActivation(new BigDecimal(tickerMessage.getActiveCount()).divide(new BigDecimal(tickerMessage.getMaximumPoolSize())));
+            executorStatusResponse.setPoolActivation(new BigDecimal(tickerMessage.getActiveCount()).divide(new BigDecimal(tickerMessage.getMaximumPoolSize()), 2, BigDecimal.ROUND_HALF_UP));
             executorStatusResponse.setRecordTime(tickerMessage.getRecordTime());
 
             executorStatusResponses.add(executorStatusResponse);

@@ -128,17 +128,17 @@ public class ExecutorTickerMsgService implements NotificationService<ExecutorTic
 
         String msg = EMPTY;
         if (configurationProperty.getQueueThreshold() > 0 && notification.getQueueSize() > configurationProperty.getQueueThreshold()) {
-            msg += String.format("queueSize:%d;", notification.getQueueSize());
+            msg += String.format("队列已使用容量:%d;", notification.getQueueSize());
         }
         BigDecimal poolActivation =
-                new BigDecimal(notification.getActiveCount()).divide(new BigDecimal(notification.getMaximumPoolSize()));
+                new BigDecimal(notification.getActiveCount()).divide(new BigDecimal(notification.getMaximumPoolSize()), 2, BigDecimal.ROUND_HALF_UP);
         if (configurationProperty.getPoolActivationThreshold() > 0
                 && poolActivation.compareTo(BigDecimal.valueOf(configurationProperty.getPoolActivationThreshold()).divide(new BigDecimal(100))) > 0) {
-            msg += String.format("poolActivation:%s;", poolActivation);
+            msg += String.format(" 线程池负载:%s;", poolActivation);
         }
 
         if (configurationProperty.getRejectCountThreshold() > 0 && notification.getRejectCount() > configurationProperty.getRejectCountThreshold() && notification.getRejectCount() != notification.getLastRejectCount()) {
-            msg += String.format("rejectCount:%d;", notification.getRejectCount());
+            msg += String.format(" 任务拒绝数:%d;", notification.getRejectCount());
         }
 
         if (StringUtils.isNotBlank(msg)) {

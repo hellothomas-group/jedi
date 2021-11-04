@@ -56,15 +56,25 @@ public class AutoUpdateConfigChangeToExecutorListener implements ConfigChangeLis
                     executor.setCorePoolSize(Integer.parseInt(configChange.getNewValue()));
                     break;
                 case "maxPoolSize":
-                    executor.setMaximumPoolSize(Integer.parseInt(configChange.getNewValue()));
+                    int newMaximumPoolSize = Integer.parseInt(configChange.getNewValue());
+                    int oldMaximumPoolSize = executor.getMaximumPoolSize();
+                    if (newMaximumPoolSize > oldMaximumPoolSize) {
+                        executor.setMaximumPoolSize(newMaximumPoolSize);
+                    } else if (newMaximumPoolSize < oldMaximumPoolSize) {
+                        logger.warn(String.format("maxPoolSize cannot decrease from %d to %d, this change will work " +
+                                "when restart", oldMaximumPoolSize, newMaximumPoolSize));
+                    }
                     break;
                 case "queueCapacity":
                     BlockingQueue queue = executor.getQueue();
                     if (queue instanceof ResizableCapacityLinkedBlockingQueue) {
+                        int newCapacity = Integer.parseInt(configChange.getNewValue());
+                        int oldCapacity = ((ResizableCapacityLinkedBlockingQueue) queue).getCapacity();
                         boolean result =
-                                ((ResizableCapacityLinkedBlockingQueue) queue).resizeCapacity(Integer.parseInt(configChange.getNewValue()));
+                                ((ResizableCapacityLinkedBlockingQueue) queue).resizeCapacity(newCapacity);
                         if (!result) {
-                            logger.info("queueCapacity can only increase unless restart");
+                            logger.warn(String.format("queueCapacity cannot decrease from %d to %d, this change will work " +
+                                    "when restart", oldCapacity, newCapacity));
                         }
                     } else {
                         logger.info("BlockingQueue not support resize queueCapacity");
