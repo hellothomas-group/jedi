@@ -137,7 +137,7 @@ public class ExecutorTickerMsgService implements NotificationService<ExecutorTic
             msg += String.format(" 线程池负载:%s;", poolActivation);
         }
 
-        if (configurationProperty.getRejectCountThreshold() > 0 && notification.getRejectCount() > configurationProperty.getRejectCountThreshold() && notification.getRejectCount() != notification.getLastRejectCount()) {
+        if (configurationProperty.getRejectCountThreshold() >= 0 && notification.getRejectCount() > configurationProperty.getRejectCountThreshold() && notification.getRejectCount() != notification.getLastRejectCount()) {
             msg += String.format(" 任务拒绝数:%d;", notification.getRejectCount());
         }
 
