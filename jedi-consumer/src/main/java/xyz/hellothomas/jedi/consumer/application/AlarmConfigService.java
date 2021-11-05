@@ -2,6 +2,7 @@ package xyz.hellothomas.jedi.consumer.application;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -98,8 +99,8 @@ public class AlarmConfigService {
         return alarmConfig;
     }
 
-    @CachePut(cacheNames = CAFFEINE_CACHE_NAME_ALARM, key = "#namespaceName + '+' + #appId + '+' + " +
-            "#executorName + '+' + #taskName", cacheManager = "caffeineCacheManager", unless = "#result == null")
+    @CacheEvict(cacheNames = CAFFEINE_CACHE_NAME_ALARM, key = "#alarmConfig.namespaceName + '+' + #alarmConfig.appId " +
+            "+" + "'+' + #alarmConfig.executorName", cacheManager = "caffeineCacheManager")
     public int update(AlarmConfig alarmConfig) {
         return alarmConfigMapper.updateByPrimaryKey(alarmConfig);
     }
