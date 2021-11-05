@@ -95,7 +95,7 @@ public class ExecutorTickerNotification extends AbstractNotification {
     }
 
     public void setIsShutdown(boolean isShutdown) {
-        isShutdown = isShutdown;
+        this.isShutdown = isShutdown;
     }
 
     public boolean getIsTerminated() {
@@ -103,7 +103,7 @@ public class ExecutorTickerNotification extends AbstractNotification {
     }
 
     public void setIsTerminated(boolean isTerminated) {
-        isTerminated = isTerminated;
+        this.isTerminated = isTerminated;
     }
 
     public String getPoolName() {
