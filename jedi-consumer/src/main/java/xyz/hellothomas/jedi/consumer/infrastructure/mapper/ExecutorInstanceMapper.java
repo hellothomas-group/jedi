@@ -1,9 +1,10 @@
 package xyz.hellothomas.jedi.consumer.infrastructure.mapper;
 
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorInstance;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorInstanceExample;
+
+import java.util.List;
 
 public interface ExecutorInstanceMapper {
     long countByExample(ExecutorInstanceExample example);
@@ -28,4 +29,6 @@ public interface ExecutorInstanceMapper {
     int updateByPrimaryKeySelective(ExecutorInstance record);
 
     int updateByPrimaryKey(ExecutorInstance record);
+
+    int insertOrUpdate(@Param("record") ExecutorInstance record);
 }

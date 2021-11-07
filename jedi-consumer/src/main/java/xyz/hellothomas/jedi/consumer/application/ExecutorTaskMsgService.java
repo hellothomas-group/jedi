@@ -125,7 +125,14 @@ public class ExecutorTaskMsgService implements NotificationService<ExecutorTaskN
 
     public ExecutorTaskStatistics genTaskStatistics(String namespaceName, String appId, String executorName,
                                                     String taskName, LocalDateTime startTime, LocalDateTime endTime) {
-        return executorTaskMessageMapper.selectStatisticsByTaskNameAndRecordTime(namespaceName, appId, executorName,
-                taskName, startTime, endTime);
+        ExecutorTaskStatistics executorTaskStatistics =
+                executorTaskMessageMapper.selectStatisticsByTaskNameAndRecordTime(namespaceName, appId, executorName,
+                        taskName, startTime, endTime);
+        executorTaskStatistics.setNamespaceName(namespaceName);
+        executorTaskStatistics.setAppId(appId);
+        executorTaskStatistics.setExecutorName(executorName);
+        executorTaskStatistics.setTaskName(taskName);
+
+        return executorTaskStatistics;
     }
 }

@@ -101,7 +101,8 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstance">
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstance" useGeneratedKeys="true"
+          keyProperty="id">
     insert into executor_instance (id, namespace_name, app_id, 
       executor_name, ip, data_change_created_time, 
       data_change_last_modified_time)
@@ -109,7 +110,8 @@
       #{executorName,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, 
       #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstance">
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstance" useGeneratedKeys="true"
+          keyProperty="id">
     insert into executor_instance
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -240,4 +242,15 @@
       data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <insert id="insertOrUpdate" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstance" useGeneratedKeys="true"
+          keyProperty="id">
+    insert into executor_instance (id, namespace_name, app_id,
+      executor_name, ip, data_change_created_time,
+      data_change_last_modified_time)
+    values (#{record.id,jdbcType=BIGINT}, #{record.namespaceName,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR},
+      #{record.executorName,jdbcType=VARCHAR}, #{record.ip,jdbcType=VARCHAR}, #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
+    on duplicate key
+    update data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+  </insert>
 </mapper>

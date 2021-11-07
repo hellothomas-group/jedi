@@ -13,7 +13,7 @@ import xyz.hellothomas.jedi.consumer.infrastructure.mapper.AlarmConfigMapper;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static xyz.hellothomas.jedi.consumer.common.constants.Constants.CAFFEINE_CACHE_NAME_ALARM;
+import static xyz.hellothomas.jedi.consumer.common.constants.Constants.CAFFEINE_CACHE_NAME_EXECUTOR_ALARM;
 
 @Slf4j
 @Service
@@ -52,7 +52,7 @@ public class AlarmConfigService {
         return alarmConfigMapper.updateByExampleSelective(alarmConfig, alarmConfigExample);
     }
 
-    @Cacheable(cacheNames = CAFFEINE_CACHE_NAME_ALARM, key = "#namespaceName + '+' + #appId + '+' + #executorName",
+    @Cacheable(cacheNames = CAFFEINE_CACHE_NAME_EXECUTOR_ALARM, key = "#namespaceName + '+' + #appId + '+' + #executorName",
             cacheManager = "caffeineCacheManager", unless = "#result == null")
     public AlarmConfig findOneCache(String namespaceName, String appId, String executorName) {
         return findOne(namespaceName, appId, executorName);
@@ -78,7 +78,7 @@ public class AlarmConfigService {
         return alarmConfig;
     }
 
-    @CachePut(cacheNames = CAFFEINE_CACHE_NAME_ALARM, key = "#namespaceName + '+' + #appId + '+' + " +
+    @CachePut(cacheNames = CAFFEINE_CACHE_NAME_EXECUTOR_ALARM, key = "#namespaceName + '+' + #appId + '+' + " +
             "#executorName", cacheManager = "caffeineCacheManager", unless = "#result == null")
     public AlarmConfig save(String namespaceName, String appId, String executorName, String configuration,
                             String operator) {
@@ -99,7 +99,7 @@ public class AlarmConfigService {
         return alarmConfig;
     }
 
-    @CacheEvict(cacheNames = CAFFEINE_CACHE_NAME_ALARM, key = "#alarmConfig.namespaceName + '+' + #alarmConfig.appId " +
+    @CacheEvict(cacheNames = CAFFEINE_CACHE_NAME_EXECUTOR_ALARM, key = "#alarmConfig.namespaceName + '+' + #alarmConfig.appId " +
             "+" + "'+' + #alarmConfig.executorName", cacheManager = "caffeineCacheManager")
     public int update(AlarmConfig alarmConfig) {
         return alarmConfigMapper.updateByPrimaryKey(alarmConfig);

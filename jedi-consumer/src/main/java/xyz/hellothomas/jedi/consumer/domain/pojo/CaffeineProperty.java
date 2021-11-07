@@ -26,5 +26,5 @@ public class CaffeineProperty {
     /**
      * 单位:s
      */
-    private long expireAfterWrite = 120;
+    private long expireAfterWrite = 3600;
 }

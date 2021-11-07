@@ -306,6 +306,6 @@
       #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
       )
     on duplicate key
-    update is_deleted = 0
+    update is_deleted = #{record.isDeleted,jdbcType=BIT}, data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
   </insert>
 </mapper>

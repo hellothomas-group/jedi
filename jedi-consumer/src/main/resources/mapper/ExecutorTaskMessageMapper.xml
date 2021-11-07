@@ -392,7 +392,6 @@
 
   <select id="selectStatisticsByTaskNameAndRecordTime" resultMap="ExecutorTaskStatisticsResultMap">
     select
-    app_id, namespace as namespace_name, pool_name as executor_name, task_name,
     count(id) as total,
     count(case when is_success = 0 then 1 else null end) as failure,
     max(wait_time + execution_time) as total_time_max,

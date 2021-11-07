@@ -36,12 +36,15 @@ public class ExecutorTickerMsgService implements NotificationService<ExecutorTic
     private final ExecutorTickerMessageMapper executorTickerMessageMapper;
     private final AlarmConfigService alarmConfigService;
     private final AlarmService alarmService;
+    private final ExecutorInstanceService executorInstanceService;
 
     public ExecutorTickerMsgService(ExecutorTickerMessageMapper executorTickerMessageMapper,
-                                    AlarmConfigService alarmConfigService, AlarmService alarmService) {
+                                    AlarmConfigService alarmConfigService, AlarmService alarmService,
+                                    ExecutorInstanceService executorInstanceService) {
         this.executorTickerMessageMapper = executorTickerMessageMapper;
         this.alarmConfigService = alarmConfigService;
         this.alarmService = alarmService;
+        this.executorInstanceService = executorInstanceService;
     }
 
     @Override
@@ -67,6 +70,8 @@ public class ExecutorTickerMsgService implements NotificationService<ExecutorTic
             executorTickerMessage.setCreateTime(LocalDateTime.now());
             executorTickerMessage.setUpdateTime(LocalDateTime.now());
             executorTickerMessages.add(executorTickerMessage);
+
+            recordInstance(executorTickerMessage);
         });
         try {
             executorTickerMessageMapper.insertBatch(executorTickerMessages);
@@ -144,6 +149,16 @@ public class ExecutorTickerMsgService implements NotificationService<ExecutorTic
         if (StringUtils.isNotBlank(msg)) {
             alarmService.notify(notification.getNamespace(), notification.getAppId(), notification.getPoolName(),
                     msg);
+        }
+    }
+
+    private void recordInstance(ExecutorTickerMessage executorTickerMessage) {
+        if (executorInstanceService.findInstance(executorTickerMessage.getNamespace(),
+                executorTickerMessage.getAppId(), executorTickerMessage.getPoolName(),
+                executorTickerMessage.getHost()) == null) {
+            executorInstanceService.saveInstance(executorTickerMessage.getNamespace(),
+                    executorTickerMessage.getAppId(), executorTickerMessage.getPoolName(),
+                    executorTickerMessage.getHost());
         }
     }
 }
