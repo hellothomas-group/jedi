@@ -11,7 +11,7 @@ public interface ExecutorTaskMapper {
 
     int deleteByExample(ExecutorTaskExample example);
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     int insert(ExecutorTask record);
 
@@ -19,7 +19,7 @@ public interface ExecutorTaskMapper {
 
     List<ExecutorTask> selectByExample(ExecutorTaskExample example);
 
-    ExecutorTask selectByPrimaryKey(Integer id);
+    ExecutorTask selectByPrimaryKey(Long id);
 
     int updateByExampleSelective(@Param("record") ExecutorTask record, @Param("example") ExecutorTaskExample example);
 

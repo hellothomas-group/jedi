@@ -202,3 +202,17 @@ CREATE TABLE IF NOT EXISTS `executor_task` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `IX_Namespace` (`namespace_name`,`app_id`,`executor_name`, `task_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务表';
+
+CREATE TABLE IF NOT EXISTS `executor_instance` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `namespace_name` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'namespaceName',
+  `app_id` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'appId',
+  `executor_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'executorName',
+  `ip` varchar(32) NOT NULL DEFAULT '' COMMENT 'instance ip',
+  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IX_UNIQUE_KEY` (`namespace_name`,`app_id`,`executor_name`,`ip`),
+  KEY `IX_ip` (`ip`),
+  KEY `IX_data_change_last_modified_time` (`data_change_last_modified_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池的应用实例';

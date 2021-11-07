@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorInstanceMapper">
+  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.consumer.domain.ExecutorInstance">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="namespace_name" jdbcType="VARCHAR" property="namespaceName" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="executor_name" jdbcType="VARCHAR" property="executorName" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
+    <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, namespace_name, app_id, executor_name, ip, data_change_created_time, data_change_last_modified_time
+  </sql>
+  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstanceExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from executor_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from executor_instance
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from executor_instance
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstanceExample">
+    delete from executor_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstance">
+    insert into executor_instance (id, namespace_name, app_id, 
+      executor_name, ip, data_change_created_time, 
+      data_change_last_modified_time)
+    values (#{id,jdbcType=BIGINT}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, 
+      #{executorName,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, 
+      #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstance">
+    insert into executor_instance
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="namespaceName != null">
+        namespace_name,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="executorName != null">
+        executor_name,
+      </if>
+      <if test="ip != null">
+        ip,
+      </if>
+      <if test="dataChangeCreatedTime != null">
+        data_change_created_time,
+      </if>
+      <if test="dataChangeLastModifiedTime != null">
+        data_change_last_modified_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="namespaceName != null">
+        #{namespaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="executorName != null">
+        #{executorName,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="dataChangeCreatedTime != null">
+        #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dataChangeLastModifiedTime != null">
+        #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstanceExample" resultType="java.lang.Long">
+    select count(*) from executor_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update executor_instance
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.namespaceName != null">
+        namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appId != null">
+        app_id = #{record.appId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.executorName != null">
+        executor_name = #{record.executorName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ip != null">
+        ip = #{record.ip,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataChangeCreatedTime != null">
+        data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.dataChangeLastModifiedTime != null">
+        data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update executor_instance
+    set id = #{record.id,jdbcType=BIGINT},
+      namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
+      app_id = #{record.appId,jdbcType=VARCHAR},
+      executor_name = #{record.executorName,jdbcType=VARCHAR},
+      ip = #{record.ip,jdbcType=VARCHAR},
+      data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstance">
+    update executor_instance
+    <set>
+      <if test="namespaceName != null">
+        namespace_name = #{namespaceName,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="executorName != null">
+        executor_name = #{executorName,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="dataChangeCreatedTime != null">
+        data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dataChangeLastModifiedTime != null">
+        data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstance">
+    update executor_instance
+    set namespace_name = #{namespaceName,jdbcType=VARCHAR},
+      app_id = #{appId,jdbcType=VARCHAR},
+      executor_name = #{executorName,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
