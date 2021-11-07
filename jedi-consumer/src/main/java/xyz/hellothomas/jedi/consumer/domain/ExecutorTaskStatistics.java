@@ -18,7 +18,7 @@ public class ExecutorTaskStatistics {
     /**
      * 自增Id
      */
-    private Integer id;
+    private Long id;
 
     /**
      * 统计日期

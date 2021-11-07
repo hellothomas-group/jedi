@@ -11,7 +11,7 @@ public interface ExecutorTaskStatisticsHistoryMapper {
 
     int deleteByExample(ExecutorTaskStatisticsHistoryExample example);
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     int insert(ExecutorTaskStatisticsHistory record);
 
@@ -19,7 +19,7 @@ public interface ExecutorTaskStatisticsHistoryMapper {
 
     List<ExecutorTaskStatisticsHistory> selectByExample(ExecutorTaskStatisticsHistoryExample example);
 
-    ExecutorTaskStatisticsHistory selectByPrimaryKey(Integer id);
+    ExecutorTaskStatisticsHistory selectByPrimaryKey(Long id);
 
     int updateByExampleSelective(@Param("record") ExecutorTaskStatisticsHistory record,
                                  @Param("example") ExecutorTaskStatisticsHistoryExample example);

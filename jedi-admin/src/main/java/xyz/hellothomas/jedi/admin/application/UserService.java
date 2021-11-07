@@ -27,7 +27,7 @@ public class UserService {
         return user;
     }
 
-    public User getUserById(int userId) {
+    public User getUserById(Long userId) {
         return userMapper.selectByPrimaryKey(userId);
     }
 }

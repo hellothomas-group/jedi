@@ -112,7 +112,7 @@ public class ExecutorTaskStatisticsService {
         return executorTaskStatisticsMapper.insertSelective(record);
     }
 
-    public int deleteByPrimaryKey(Integer id) {
+    public int deleteByPrimaryKey(Long id) {
         return executorTaskStatisticsMapper.deleteByPrimaryKey(id);
     }
 
@@ -135,7 +135,7 @@ public class ExecutorTaskStatisticsService {
             pageResult.getContent().stream().forEach(i -> {
                 executorTaskSummary.setTotal(executorTaskSummary.getTotal() + i.getTotal());
                 executorTaskSummary.setFailure(executorTaskSummary.getFailure() + i.getFailure());
-                if (i.getExecutionTimeMin() < executorTaskSummary.getExecutionTimeMin()  || executorTaskSummary.getExecutionTimeMin() == 0) {
+                if (i.getExecutionTimeMin() < executorTaskSummary.getExecutionTimeMin() || executorTaskSummary.getExecutionTimeMin() == 0) {
                     executorTaskSummary.setExecutionTimeMin(i.getExecutionTimeMin());
                 }
                 if (i.getExecutionTimeMax() > executorTaskSummary.getExecutionTimeMax()) {

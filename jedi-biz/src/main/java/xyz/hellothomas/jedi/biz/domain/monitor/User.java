@@ -17,7 +17,7 @@ public class User {
     /**
      * 自增Id
      */
-    private Integer id;
+    private Long id;
 
     /**
      * 用户名

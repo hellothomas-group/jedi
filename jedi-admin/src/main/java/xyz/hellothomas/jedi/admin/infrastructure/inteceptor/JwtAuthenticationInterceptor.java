@@ -6,9 +6,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import xyz.hellothomas.jedi.admin.application.UserService;
 import xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum;
 import xyz.hellothomas.jedi.admin.common.utils.JwtUtil;
-import xyz.hellothomas.jedi.biz.domain.monitor.User;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.PassToken;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
+import xyz.hellothomas.jedi.biz.domain.monitor.User;
 import xyz.hellothomas.jedi.core.exception.BusinessException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -104,7 +104,7 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
         String userId = JwtUtil.getAudience(token);
 
         //找找看是否有这个user   因为我们需要检查用户是否存在，读者可以自行修改逻辑
-        User user = userService.getUserById(Integer.parseInt(userId));
+        User user = userService.getUserById(Long.parseLong(userId));
 
         if (user == null) {
             //这个错误也是我自定义的

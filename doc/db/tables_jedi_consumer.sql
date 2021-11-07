@@ -177,7 +177,7 @@ CREATE TABLE IF NOT EXISTS `app` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='应用定义';
 
 CREATE TABLE IF NOT EXISTS `user` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `user_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
   `real_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户真实名',
   `password` varchar(64) NOT NULL DEFAULT 'default' COMMENT '密码',

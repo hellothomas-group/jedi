@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="xyz.hellothomas.jedi.biz.infrastructure.mapper.monitor.UserMapper">
   <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.biz.domain.monitor.User">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="real_name" jdbcType="VARCHAR" property="realName" />
     <result column="password" jdbcType="VARCHAR" property="password" />
@@ -85,15 +85,15 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from user
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from user
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.biz.domain.monitor.UserExample">
     delete from user
@@ -105,7 +105,7 @@
     insert into user (id, user_name, real_name,
       password, email, is_manual,
       enabled)
-    values (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR},
+    values (#{id,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR},
       #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{isManual,jdbcType=BIT},
       #{enabled,jdbcType=BIT})
   </insert>
@@ -136,7 +136,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="userName != null">
         #{userName,jdbcType=VARCHAR},
@@ -168,7 +168,7 @@
     update user
     <set>
       <if test="record.id != null">
-        id = #{record.id,jdbcType=INTEGER},
+        id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.userName != null">
         user_name = #{record.userName,jdbcType=VARCHAR},
@@ -195,7 +195,7 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update user
-    set id = #{record.id,jdbcType=INTEGER},
+    set id = #{record.id,jdbcType=BIGINT},
       user_name = #{record.userName,jdbcType=VARCHAR},
       real_name = #{record.realName,jdbcType=VARCHAR},
       password = #{record.password,jdbcType=VARCHAR},
@@ -228,7 +228,7 @@
         enabled = #{enabled,jdbcType=BIT},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.biz.domain.monitor.User">
     update user
@@ -238,7 +238,7 @@
       email = #{email,jdbcType=VARCHAR},
       is_manual = #{isManual,jdbcType=BIT},
       enabled = #{enabled,jdbcType=BIT}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 
   <select id="selectByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">

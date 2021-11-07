@@ -18,7 +18,7 @@ public class ExecutorTaskStatisticsHistory {
     /**
      * Id
      */
-    private Integer id;
+    private Long id;
 
     /**
      * 统计日期

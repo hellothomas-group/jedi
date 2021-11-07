@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.hellothomas.jedi.core.dto.ApiResponse;
 import xyz.hellothomas.jedi.admin.api.dto.UserRequest;
 import xyz.hellothomas.jedi.admin.application.UserService;
-import xyz.hellothomas.jedi.biz.domain.monitor.User;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
+import xyz.hellothomas.jedi.biz.domain.monitor.User;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
 /**
  * @author Thomas
@@ -30,7 +30,7 @@ public class UserController {
 
     @PostMapping(value = "/create")
     @ApiOperation("create")
-    public ApiResponse<Integer> create(@RequestBody UserRequest userRequest) {
+    public ApiResponse<Long> create(@RequestBody UserRequest userRequest) {
         User user = LocalBeanUtils.transform(User.class, userRequest);
         user.setIsManual(true);
         userService.saveUser(user);
