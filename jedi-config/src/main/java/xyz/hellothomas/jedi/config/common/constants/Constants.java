@@ -13,6 +13,6 @@ public class Constants {
     public static final int DEFAULT_RELEASE_MESSAGE_SCAN_INTERVAL_IN_MS = 1000;
 
     private Constants() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Constant class");
     }
 }

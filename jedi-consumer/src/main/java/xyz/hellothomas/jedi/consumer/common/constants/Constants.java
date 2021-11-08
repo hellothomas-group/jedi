@@ -10,6 +10,6 @@ public class Constants {
     public static final String CAFFEINE_CACHE_NAME_EXECUTOR_INSTANCE = "ExecutorInstance";
 
     private Constants() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Constant class");
     }
 }

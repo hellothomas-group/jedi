@@ -8,7 +8,7 @@ package xyz.hellothomas.jedi.admin.common.constants;
  */
 public class Constants {
     private Constants() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Constant class");
     }
 
     public static final String NAMESPACE_SEPARATOR = "+";

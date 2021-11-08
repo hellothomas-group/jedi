@@ -13,6 +13,6 @@ public class Constants {
     public static final String NAMESPACE_EXECUTOR_VALIDATOR = "[0-9a-zA-Z_.-]+";
 
     private Constants() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException("Constant class");
     }
 }
