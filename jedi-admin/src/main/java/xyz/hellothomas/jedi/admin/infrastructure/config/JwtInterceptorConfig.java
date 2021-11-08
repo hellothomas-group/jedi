@@ -9,7 +9,7 @@ import xyz.hellothomas.jedi.admin.application.UserService;
 import xyz.hellothomas.jedi.admin.infrastructure.inteceptor.JwtAuthenticationInterceptor;
 
 /**
- * @author 80234613 唐圆
+ * @author Thomas
  * @date 2021/7/8 11:33
  * @descripton
  * @version 1.0

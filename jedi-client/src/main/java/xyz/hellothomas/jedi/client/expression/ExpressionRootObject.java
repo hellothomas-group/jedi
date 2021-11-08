@@ -1,7 +1,7 @@
 package xyz.hellothomas.jedi.client.expression;
 
 /**
- * @author 80234613 唐圆
+ * @author Thomas
  * @date 2021/8/26 11:08
  * @descripton
  * @version 1.0

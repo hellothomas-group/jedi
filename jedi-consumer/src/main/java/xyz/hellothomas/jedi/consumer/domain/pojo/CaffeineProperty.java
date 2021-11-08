@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @className CaffeineProperty
- * @author 80234613 唐圆
+ * @author Thomas
  * @date 2021/1/7 11:18
  * @descripton
  * @version 1.0

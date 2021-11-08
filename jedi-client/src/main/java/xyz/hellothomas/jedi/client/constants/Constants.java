@@ -3,7 +3,7 @@ package xyz.hellothomas.jedi.client.constants;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author 80234613 唐圆
+ * @author Thomas
  * @date 2021/3/23 12:51
  * @descripton
  * @version 1.0

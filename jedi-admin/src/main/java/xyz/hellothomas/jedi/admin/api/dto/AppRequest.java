@@ -7,7 +7,7 @@ import lombok.ToString;
 import javax.validation.constraints.NotBlank;
 
 /**
- * @author 80234613
+ * @author Thomas
  */
 @Getter
 @Setter

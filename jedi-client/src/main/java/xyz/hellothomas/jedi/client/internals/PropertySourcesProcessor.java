@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationContextAware;
 import xyz.hellothomas.jedi.client.ConfigService;
 
 /**
- * @author 80234613 唐圆
+ * @author Thomas
  * @date 2021/4/30 16:37
  * @descripton
  * @version 1.0

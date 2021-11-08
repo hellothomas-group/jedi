@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 /**
- * @author 80234613 唐圆
+ * @author Thomas
  * @date 2021/6/16 11:34
  * @descripton 容量可调整 LinkedBlockingQueue
  * @version 1.0

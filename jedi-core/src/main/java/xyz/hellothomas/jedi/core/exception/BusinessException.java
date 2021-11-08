@@ -5,7 +5,7 @@ import xyz.hellothomas.jedi.core.enums.ICodeEnum;
 import java.text.MessageFormat;
 
 /**
- * @author 80234613 唐圆
+ * @author Thomas
  * @date 2021/7/8 16:53
  * @descripton
  * @version 1.0

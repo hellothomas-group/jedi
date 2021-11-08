@@ -21,7 +21,7 @@ import java.util.Objects;
 import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
 
 /**
- * @author 80234613
+ * @author Thomas
  */
 @UserLoginToken
 @Api(value = "app", tags = "app")

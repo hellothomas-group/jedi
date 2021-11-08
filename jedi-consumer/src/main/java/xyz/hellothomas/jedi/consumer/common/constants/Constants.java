@@ -1,7 +1,7 @@
 package xyz.hellothomas.jedi.consumer.common.constants;
 
 /**
- * @author 80234613
+ * @author Thomas
  */
 public class Constants {
     public static final int DEFAULT_PAGE_SIZE = 10;

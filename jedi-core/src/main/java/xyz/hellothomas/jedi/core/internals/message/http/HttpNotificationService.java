@@ -97,7 +97,7 @@ public class HttpNotificationService extends AbstractNotificationService {
     /**
      * 启动守护线程执行消息发送任务
      *
-     * @author 80234613 唐圆
+     * @author Thomas
      * @date 2019-11-14
      * @param
      * @return void
@@ -130,7 +130,7 @@ public class HttpNotificationService extends AbstractNotificationService {
     /**
      * 启动守护线程执行任务消息发送任务
      *
-     * @author 80234613 唐圆
+     * @author Thomas
      * @date 2019-11-14
      * @param
      * @return void
@@ -163,7 +163,7 @@ public class HttpNotificationService extends AbstractNotificationService {
     /**
      * 启动守护线程执行默认消息发送任务
      *
-     * @author 80234613 唐圆
+     * @author Thomas
      * @date 2019-11-14
      * @param
      * @return void

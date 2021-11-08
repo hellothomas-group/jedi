@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * @author 80234613
+ * @author Thomas
  */
 @Getter
 @Setter

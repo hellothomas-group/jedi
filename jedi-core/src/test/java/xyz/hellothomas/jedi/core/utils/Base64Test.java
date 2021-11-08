@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
 /**
- * @author 80234613 唐圆
+ * @author Thomas
  * @date 2021/7/9 16:21
  * @descripton
  * @version 1.0
