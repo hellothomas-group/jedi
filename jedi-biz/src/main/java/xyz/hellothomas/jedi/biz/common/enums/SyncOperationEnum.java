@@ -1,4 +1,4 @@
-package xyz.hellothomas.jedi.admin.common.enums;
+package xyz.hellothomas.jedi.biz.common.enums;
 
 /**
  * @author Thomas

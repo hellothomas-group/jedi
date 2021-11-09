@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
+import xyz.hellothomas.jedi.core.utils.JsonUtil;
 
 import static xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum.SUCCESS;
 
@@ -28,7 +29,7 @@ public class SyncListener {
     @EventListener
     public void onSyncEvent(SyncEvent event) {
         try {
-            HttpEntity requestEntity = new HttpEntity(event.getSource());
+            HttpEntity<String> requestEntity = new HttpEntity(JsonUtil.serialize(event.getSource()));
             ResponseEntity<ApiResponse<String>> responseEntity = restTemplate.exchange(consumerUrl +
                             "/sync/syncType/{syncType}/syncOperation/{syncOperation}", HttpMethod.POST, requestEntity,
                     new ParameterizedTypeReference<ApiResponse<String>>() {

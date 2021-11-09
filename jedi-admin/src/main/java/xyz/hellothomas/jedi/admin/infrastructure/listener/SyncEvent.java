@@ -3,8 +3,8 @@ package xyz.hellothomas.jedi.admin.infrastructure.listener;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
-import xyz.hellothomas.jedi.admin.common.enums.SyncOperationEnum;
-import xyz.hellothomas.jedi.admin.common.enums.SyncTypeEnum;
+import xyz.hellothomas.jedi.biz.common.enums.SyncOperationEnum;
+import xyz.hellothomas.jedi.biz.common.enums.SyncTypeEnum;
 
 @Getter
 @Setter

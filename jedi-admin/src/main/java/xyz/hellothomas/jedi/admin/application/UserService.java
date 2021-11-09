@@ -1,6 +1,10 @@
 package xyz.hellothomas.jedi.admin.application;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import xyz.hellothomas.jedi.admin.infrastructure.listener.SyncEvent;
+import xyz.hellothomas.jedi.biz.common.enums.SyncOperationEnum;
+import xyz.hellothomas.jedi.biz.common.enums.SyncTypeEnum;
 import xyz.hellothomas.jedi.biz.domain.monitor.User;
 import xyz.hellothomas.jedi.biz.infrastructure.mapper.monitor.UserMapper;
 
@@ -13,9 +17,11 @@ import xyz.hellothomas.jedi.biz.infrastructure.mapper.monitor.UserMapper;
 @Service
 public class UserService {
     private final UserMapper userMapper;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public UserService(UserMapper userMapper) {
+    public UserService(UserMapper userMapper, ApplicationEventPublisher applicationEventPublisher) {
         this.userMapper = userMapper;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     public User getUserByUserName(String userName) {
@@ -24,6 +30,8 @@ public class UserService {
 
     public User saveUser(User user) {
         userMapper.insertSelective(user);
+        applicationEventPublisher.publishEvent(new SyncEvent(user, SyncTypeEnum.USER, SyncOperationEnum.CREATION));
+
         return user;
     }
 

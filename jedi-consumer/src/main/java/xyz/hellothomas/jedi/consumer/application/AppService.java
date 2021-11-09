@@ -40,4 +40,12 @@ public class AppService {
 
         return apps.isEmpty() ? null : apps.get(0);
     }
+
+    public void save(App app) {
+        try {
+            appMapper.insertSelective(app);
+        } catch (Exception e) {
+            appMapper.updateByPrimaryKey(app);
+        }
+    }
 }
