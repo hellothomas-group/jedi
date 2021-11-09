@@ -32,7 +32,7 @@ public class ExecutorTaskService {
         ExecutorTaskExample executorTaskExample = new ExecutorTaskExample();
         executorTaskExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
                 .andAppIdEqualTo(appId)
-                .andDataChangeLastModifiedTimeGreaterThan(LocalDateTime.now().minusHours(1));
+                .andDataChangeLastModifiedTimeGreaterThan(LocalDateTime.now().minusDays(1));
         return executorTaskMapper.selectByExample(executorTaskExample);
     }
 
@@ -44,7 +44,7 @@ public class ExecutorTaskService {
                 .andAppIdEqualTo(appId)
                 .andExecutorNameEqualTo(executorName)
                 .andTaskNameEqualTo(taskName)
-                .andDataChangeLastModifiedTimeGreaterThan(LocalDateTime.now().minusDays(1));
+                .andDataChangeLastModifiedTimeGreaterThan(LocalDateTime.now().minusHours(1));
         List<ExecutorTask> executorTaskList = executorTaskMapper.selectByExample(executorTaskExample);
 
         return executorTaskList.isEmpty() ? null : executorTaskList.get(0);

@@ -142,7 +142,7 @@ public class ScheduledService {
     /**
      * 插入D日统计锁记录
      */
-    @Scheduled(cron = "0 4 8 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void insertRefreshTaskStatisticsLock() {
         LocalDate currentDate = LocalDate.now();
         // 创建D日刷新任务

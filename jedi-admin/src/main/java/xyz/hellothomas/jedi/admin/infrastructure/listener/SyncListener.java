@@ -9,7 +9,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import xyz.hellothomas.jedi.biz.infrastructure.exception.ServiceException;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
 import static xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum.SUCCESS;
@@ -37,9 +36,11 @@ public class SyncListener {
 
             ApiResponse<String> apiResponse = responseEntity.getBody();
             if (!SUCCESS.getCode().equals(apiResponse.getCode())) {
-                throw new ServiceException(String.format("%s-%s", apiResponse.getCode(), apiResponse.getMessage()));
+                log.error("Sync failed. syncType = {}, syncOperation = {}, object = {}, errorMessage:{})",
+                        event.getSyncTypeEnum(), event.getSyncOperationEnum(), event.getSource(),
+                        String.format("%s-%s", apiResponse.getCode(), apiResponse.getMessage()));
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             log.error("Sync failed. syncType = {}, syncOperation = {}, object = {})", event.getSyncTypeEnum(),
                     event.getSyncOperationEnum(), event.getSource(), e);
         }
