@@ -1,4 +1,4 @@
-CREATE database if NOT EXISTS `jedi_consumer` default character set utf8mb4 collate utf8mb4_unicode_ci;
+CREATE database if NOT EXISTS `jedi_consumer` default character set utf8mb4 collate utf8mb4_bin;
 use `jedi_consumer`;
 
 SET NAMES utf8mb4;
