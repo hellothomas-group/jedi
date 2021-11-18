@@ -1,7 +1,5 @@
 # Jedi(绝地)
-jedi is a dynamic thread pool executor
-
-note: base on https://github.com/ctripcorp/apollo
+![Jedi](https://img.shields.io/badge/Jedi-a%20reliable%20thread%20pool%20management%20system-brightgreen)
 
 # Screenshots
 
@@ -63,6 +61,8 @@ https://github.com/hellothomas-group/jedi/wiki#%E4%B8%89-%E6%9C%8D%E5%8A%A1%E7%A
 
 # Release Notes
 
+first release(0.0.10) will come soon
+
 # FAQ
 
 # Contribution
@@ -72,3 +72,6 @@ https://github.com/hellothomas-group/jedi/wiki#%E4%B8%89-%E6%9C%8D%E5%8A%A1%E7%A
 The project is licensed under the [Apache 2 license](https://github.com/hellothomas-group/jedi/blob/main/LICENSE).
 
 # Known Users
+
+# Thanks
+动态配置部分参考 [Apollo Config](https://github.com/ctripcorp/apollo)
