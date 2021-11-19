@@ -1,5 +1,8 @@
-# Jedi(绝地)
-![Jedi](https://img.shields.io/badge/Jedi-a%20reliable%20thread%20pool%20management%20system-brightgreen)
+# Jedi(绝地) - a reliable TPM(thread pool management) system
+
+[![Build Status](https://github.com/hellothomas-group/jedi/workflows/build/badge.svg)](https://github.com/hellothomas-group/jedi/actions)
+[![Maven Central](https://img.shields.io/maven-central/v/xyz.hellothomas/jedi-client?color=blue)](https://mvnrepository.com/artifact/xyz.hellothomas/jedi-client)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # Screenshots
 
@@ -51,7 +54,7 @@
 
 # Design
 
-https://github.com/hellothomas-group/jedi/wiki#%E4%BA%8C-%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84
+https://github.com/hellothomas-group/jedi/wiki#%E4%BA%8C-%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0
 
 # Development
 
