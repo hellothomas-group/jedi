@@ -1,0 +1,44 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+
+name: build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jdk: [8, 11, 17]
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: ${{ matrix.jdk }}
+
+    - name: Cache Maven packages
+      uses: actions/cache@v1
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+    - name: JDK 8
+      if: matrix.jdk == '8'
+      run: mvn clean compile
+    - name: JDK 11 
+      if: matrix.jdk == '11'
+      run: mvn clean compile
+    - name: JDK 17
+      if: matrix.jdk == '17'
+      run: mvn clean compile
