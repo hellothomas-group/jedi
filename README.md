@@ -76,4 +76,5 @@ first release(0.0.10) will come soon
 
 # Thanks
 线程池监控思路参考 [Java线程池实现原理及其在美团业务中的实践](https://tech.meituan.com/2020/04/02/java-pooling-pratice-in-meituan.html)
+
 动态配置部分参考 [Apollo Config](https://github.com/ctripcorp/apollo)
