@@ -2,6 +2,7 @@ package xyz.hellothomas.jedi.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @author Thomas
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @description
  * @version 1.0
  */
+@EnableScheduling
 @SpringBootApplication
 public class DemoApplication {
     public static void main(String[] args) {

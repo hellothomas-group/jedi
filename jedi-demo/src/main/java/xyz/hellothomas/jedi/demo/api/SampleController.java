@@ -31,8 +31,9 @@ public class SampleController {
     @ApiOperation("submit-default-task")
     @GetMapping("/submit-default-task")
     public String submitDefaultTask(@RequestParam int counts) {
-        for (int i = 0; i < counts; i++) {
-            taskService.runDefaultTask(i + 1);
+        long currentTime = System.currentTimeMillis();
+        for (int i = 1; i <= counts; i++) {
+            taskService.runDefaultTask(currentTime + "-" + i);
         }
         return "提交成功";
     }
@@ -40,8 +41,9 @@ public class SampleController {
     @ApiOperation("submit-custom-task")
     @GetMapping("/submit-custom-task")
     public String submitCustomTask(@RequestParam int counts) {
-        for (int i = 0; i < counts; i++) {
-            taskService.runCustomTask(i + 1);
+        long currentTime = System.currentTimeMillis();
+        for (int i = 1; i <= counts; i++) {
+            taskService.runCustomTask(currentTime + "-" + i);
         }
         return "提交成功";
     }

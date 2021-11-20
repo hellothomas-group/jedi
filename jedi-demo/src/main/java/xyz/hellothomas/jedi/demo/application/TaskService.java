@@ -20,18 +20,18 @@ public class TaskService {
     private final Random random = new Random();
 
     @JediAsync
-    public void runDefaultTask(int num) {
+    public void runDefaultTask(String taskExtraData) {
         long startTime = System.currentTimeMillis();
-        log.debug("开始执行任务<{}>", num);
+        log.debug("开始执行任务<{}>", taskExtraData);
         SleepUtil.sleepInSecond(10 + random.nextInt(2));
-        log.debug("完成任务<{}>, 耗时<{}>ms", num, System.currentTimeMillis() - startTime);
+        log.debug("完成任务<{}>, 耗时<{}>ms", taskExtraData, System.currentTimeMillis() - startTime);
     }
 
-    @JediAsync(executorName = Constants.JEDI_DEFAULT_EXECUTOR_NAME, taskName = "'Task1'", taskExtraData = "#num")
-    public void runCustomTask(int num) {
+    @JediAsync(executorName = Constants.JEDI_DEFAULT_EXECUTOR_NAME, taskName = "'Task1'", taskExtraData = "#taskExtraData")
+    public void runCustomTask(String taskExtraData) {
         long startTime = System.currentTimeMillis();
-        log.debug("开始执行任务<{}>", num);
+        log.debug("开始执行任务<{}>", taskExtraData);
         SleepUtil.sleepInSecond(10 + random.nextInt(2));
-        log.debug("完成任务<{}>, 耗时<{}>ms", num, System.currentTimeMillis() - startTime);
+        log.debug("完成任务<{}>, 耗时<{}>ms", taskExtraData, System.currentTimeMillis() - startTime);
     }
 }
