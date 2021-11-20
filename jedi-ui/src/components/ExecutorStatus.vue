@@ -7,7 +7,7 @@
           <el-form-item label="实例" prop="instance" style="width: 250px">
             <el-select v-model="selectInstanceForm.ip" placeholder="请选择下拉选择" clearable style="width:100%"
                        @change="resetMyChart()">
-              <el-option v-for="(item, index) in latestReleaseInstances" :key="index" :label="item.ip"
+              <el-option v-for="(item, index) in executorInstances" :key="index" :label="item.ip"
                          :value="item.ip"
                          :disabled="false" ></el-option>
             </el-select>
@@ -260,7 +260,7 @@ export default {
       selectInstanceForm: {
         ip: undefined
       },
-      latestReleaseInstances: [],
+      executorInstances: [],
       rules: {
         ip: [{
           required: true,
@@ -295,7 +295,7 @@ export default {
   },
   methods: {
     queryLatestReleaseInstances () {
-      this.asyncLatestRelease(this.namespaceName, this.appId, this.executorName)
+      this.asyncQueryInstance(this.namespaceName, this.appId, this.executorName)
     },
     // 变更查询时间
     changeQueryTime: function () {
@@ -402,36 +402,21 @@ export default {
       this.echartsOption.series[2].data = this.rejectCount
       this.myChart.setOption(this.echartsOption)
     },
-    asyncLatestRelease (namespaceName, appId, executorName) {
-      console.log('asyncLatestRelease')
+    asyncQueryInstance (namespaceName, appId, executorName) {
+      console.log('asyncQueryInstance')
       console.log(executorName)
 
-      this.axios.get('/admin/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
-        '/releases/latest').then(res => {
-        console.log(res)
-        if (res.data !== null) {
-          let latestRelease = res.data
-          this.asyncQueryInstance(latestRelease.id)
-        }
-      }).catch(function (error) {
-        console.log(error)
-      })
-    },
-    asyncQueryInstance (releaseId) {
-      console.log('asyncQueryInstance')
-      console.log(releaseId)
-
-      this.axios.get('/admin/instances/by-release', {
+      this.axios.get('/consumer/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
+        '/instances', {
         params: {
-          releaseId: releaseId,
           pageNum: 1,
           pageSize: 200
         }
       }).then(res => {
         console.log(res)
-        this.latestReleaseInstances = res.data.content
-        if (this.latestReleaseInstances.length > 0) {
-          this.selectInstanceForm.ip = this.latestReleaseInstances[0].ip
+        this.executorInstances = res.data.content
+        if (this.executorInstances.length > 0) {
+          this.selectInstanceForm.ip = this.executorInstances[0].ip
         }
       }).catch(function (error) {
         console.log(error)

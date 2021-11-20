@@ -1,9 +1,13 @@
 package xyz.hellothomas.jedi.consumer.application;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
+import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorInstance;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorInstanceExample;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorInstanceMapper;
@@ -11,6 +15,7 @@ import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorInstanceMappe
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static xyz.hellothomas.jedi.biz.common.constants.Constants.DEFAULT_PAGE_SIZE;
 import static xyz.hellothomas.jedi.consumer.common.constants.Constants.CAFFEINE_CACHE_NAME_EXECUTOR_INSTANCE;
 
 /**
@@ -64,5 +69,29 @@ public class ExecutorInstanceService {
 
         executorInstanceMapper.insertOrUpdate(executorInstance);
         return executorInstance;
+    }
+
+    public PageResult<ExecutorInstance> findInstances(String namespaceName, String appId, String executorName,
+                                                      PageHelperRequest pageHelperRequest) {
+        ExecutorInstanceExample executorInstanceExample = new ExecutorInstanceExample();
+        executorInstanceExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
+                .andAppIdEqualTo(appId)
+                .andExecutorNameEqualTo(executorName)
+                .andDataChangeLastModifiedTimeGreaterThan(LocalDateTime.now().minusHours(6));
+
+        int pageSize = pageHelperRequest.getPageSize();
+        int pageNum = pageHelperRequest.getPageNum();
+        pageSize = (pageSize <= 0) ? DEFAULT_PAGE_SIZE : pageSize;
+        PageHelper.startPage(pageNum, pageSize);
+
+        List<ExecutorInstance> executorInstanceList = executorInstanceMapper.selectByExample(executorInstanceExample);
+        PageInfo<ExecutorInstance> pageInfo = new PageInfo<>(executorInstanceList);
+
+        return PageResult.<ExecutorInstance>builder()
+                .content(pageInfo.getList())
+                .total(pageInfo.getTotal())
+                .pageNum(pageInfo.getPageNum())
+                .pageSize(pageInfo.getPageSize())
+                .build();
     }
 }
