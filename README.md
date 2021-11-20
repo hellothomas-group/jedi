@@ -6,10 +6,6 @@
 
 # Screenshots
 
-动态配置线程池参数
-
-![动态配置线程池参数](https://images.gitee.com/uploads/images/2021/0905/170010_6be8758e_5057838.png)
-
 线程池概览
 
 ![线程池概览](https://images.gitee.com/uploads/images/2021/0905/170437_924750df_5057838.png)
@@ -17,6 +13,10 @@
 线程池实时状态监控
 
 ![线程池实时状态监控](https://images.gitee.com/uploads/images/2021/0905/170551_292e2bc5_5057838.png)
+
+动态配置线程池参数
+
+![动态配置线程池参数](https://images.gitee.com/uploads/images/2021/0905/170010_6be8758e_5057838.png)
 
 线程池任务监控
 
@@ -40,27 +40,25 @@
 
 # Usage
 
-- 演示地址
+- 服务端演示地址
 
   http://jedi.hellothomas.xyz:8080
   username: admin
   password: 123456
 
-  创建应用→创建线程池→发布
-
 - Java客户端使用指南
 
-  https://github.com/hellothomas-group/jedi/wiki#%E4%B8%80-%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97
+  [客户端使用指南](https://github.com/hellothomas-group/jedi/wiki#%E4%B8%80-%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97)
 
 # Design
 
-https://github.com/hellothomas-group/jedi/wiki#%E4%BA%8C-%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0
+[设计与实现](https://github.com/hellothomas-group/jedi/wiki#%E4%BA%8C-%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0)
 
 # Development
 
 # Deployment
 
-https://github.com/hellothomas-group/jedi/wiki#%E4%B8%89-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97
+[服务端部署指南](https://github.com/hellothomas-group/jedi/wiki#%E4%B8%89-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97)
 
 # Release Notes
 
@@ -72,9 +70,10 @@ first release(0.0.10) will come soon
 
 # License
 
-The project is licensed under the [Apache 2 license](https://github.com/hellothomas-group/jedi/blob/main/LICENSE).
+[Apache 2 license](https://github.com/hellothomas-group/jedi/blob/main/LICENSE).
 
 # Known Users
 
 # Thanks
+线程池监控思路参考 [Java线程池实现原理及其在美团业务中的实践](https://tech.meituan.com/2020/04/02/java-pooling-pratice-in-meituan.html)
 动态配置部分参考 [Apollo Config](https://github.com/ctripcorp/apollo)
