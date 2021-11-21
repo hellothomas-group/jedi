@@ -215,3 +215,32 @@ CREATE TABLE IF NOT EXISTS `user_role` (
   KEY `IX_roleId` (`role_id`),
   KEY `IX_userId_roleId` (`user_id`,`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户和role的绑定表';
+
+CREATE TABLE IF NOT EXISTS `permission` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `permission_type` varchar(32) NOT NULL DEFAULT '' COMMENT '权限类型',
+  `target_id` varchar(256) NOT NULL DEFAULT '' COMMENT '权限对象类型',
+  `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
+  `data_change_created_by` varchar(32) DEFAULT '' COMMENT '创建人邮箱前缀',
+  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `data_change_last_modified_by` varchar(32) DEFAULT '' COMMENT '最后修改人邮箱前缀',
+  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  KEY `IX_targetId_permissionType` (`target_id`(191),`permission_type`),
+  KEY `IX_dataChange_lastTime` (`data_change_last_modified_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='permission表';
+
+CREATE TABLE IF NOT EXISTS  `role_permission` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  `role_id` int(10) unsigned DEFAULT NULL COMMENT 'Role Id',
+  `permission_id` int(10) unsigned DEFAULT NULL COMMENT 'Permission Id',
+  `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
+  `data_change_created_by` varchar(32) DEFAULT '' COMMENT '创建人邮箱前缀',
+  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `data_change_last_modified_by` varchar(32) DEFAULT '' COMMENT '最后修改人邮箱前缀',
+  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  PRIMARY KEY (`id`),
+  KEY `IX_dataChange_lastTime` (`data_change_last_modified_time`),
+  KEY `IX_roleId` (`role_id`),
+  KEY `IX_permissionId` (`permission_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色和权限的绑定表';
