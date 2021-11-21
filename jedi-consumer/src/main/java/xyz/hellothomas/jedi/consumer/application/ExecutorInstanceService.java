@@ -27,6 +27,7 @@ import static xyz.hellothomas.jedi.consumer.common.constants.Constants.CAFFEINE_
 @Slf4j
 @Service
 public class ExecutorInstanceService {
+    private static final int INSTANCE_EXPIRE_HOURS = 6;
     private final ExecutorInstanceMapper executorInstanceMapper;
 
     public ExecutorInstanceService(ExecutorInstanceMapper executorInstanceMapper) {
@@ -48,7 +49,7 @@ public class ExecutorInstanceService {
 
         ExecutorInstance executorInstance = executorInstanceList.get(0);
         // 6 hour expire
-        if (executorInstance.getDataChangeLastModifiedTime().isBefore(LocalDateTime.now().minusHours(6))) {
+        if (executorInstance.getDataChangeLastModifiedTime().isBefore(LocalDateTime.now().minusHours(INSTANCE_EXPIRE_HOURS))) {
             return null;
         } else {
             return executorInstance;
@@ -77,7 +78,7 @@ public class ExecutorInstanceService {
         executorInstanceExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
                 .andAppIdEqualTo(appId)
                 .andExecutorNameEqualTo(executorName)
-                .andDataChangeLastModifiedTimeGreaterThan(LocalDateTime.now().minusHours(6));
+                .andDataChangeLastModifiedTimeGreaterThan(LocalDateTime.now().minusHours(INSTANCE_EXPIRE_HOURS + 1));
 
         int pageSize = pageHelperRequest.getPageSize();
         int pageNum = pageHelperRequest.getPageNum();

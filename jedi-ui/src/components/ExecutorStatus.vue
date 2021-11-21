@@ -1,16 +1,19 @@
 <template>
   <div>
     <el-header>
-      <div class="block" style="margin-left: 60px">
+      <div class="block" style="margin-left: 60px;">
         <el-form :model="selectInstanceForm" :rules="rules" size="medium" label-width="100px"
                  style="display: inline-block;">
           <el-form-item label="实例" prop="instance" style="width: 250px">
-            <el-select v-model="selectInstanceForm.ip" placeholder="请选择下拉选择" clearable style="width:100%"
-                       @change="resetMyChart()">
-              <el-option v-for="(item, index) in executorInstances" :key="index" :label="item.ip"
-                         :value="item.ip"
-                         :disabled="false" ></el-option>
-            </el-select>
+            <el-autocomplete
+              class="inline-input"
+              v-model="selectInstanceForm.ip"
+              :fetch-suggestions="querySearchInstance"
+              placeholder="请输入IP"
+              value-key="ip"
+              clearable="true"
+              @select="handleSelect"
+            ></el-autocomplete>
           </el-form-item>
         </el-form>
         <span style="margin-left: 20px">时间</span>
@@ -287,16 +290,13 @@ export default {
       this.appId = this.$route.query.appId
       this.executorName = this.$route.query.executor
     }
-    this.queryLatestReleaseInstances()
+    this.asyncQueryInstance(this.namespaceName, this.appId, this.executorName)
   },
   mounted () {
     this.myChart = this.$echarts.init(document.getElementById('myChart'), 'light') // 初始化echarts, theme为light
     this.myChart.setOption(this.echartsOption) // echarts设置初始化选项
   },
   methods: {
-    queryLatestReleaseInstances () {
-      this.asyncQueryInstance(this.namespaceName, this.appId, this.executorName)
-    },
     // 变更查询时间
     changeQueryTime: function () {
       if (this.queryTime[1].getTime() - new Date().getTime() > 0) {
@@ -429,6 +429,20 @@ export default {
       this.echartsOption.series[1].data = []
       this.echartsOption.series[2].data = []
       this.myChart.setOption(this.echartsOption)
+    },
+    querySearchInstance (queryString, cb) {
+      var executorInstances = this.executorInstances
+      var results = queryString ? executorInstances.filter(this.createFilter(queryString)) : executorInstances
+      // 调用 callback 返回建议列表的数据
+      cb(results)
+    },
+    createFilter (queryString) {
+      return (executorInstance) => {
+        return (executorInstance.ip.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
+      }
+    },
+    handleSelect (item) {
+      console.log('选择实例ip: ' + item)
     }
   }
 }
