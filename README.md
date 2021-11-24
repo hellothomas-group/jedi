@@ -43,6 +43,7 @@
 - 服务端演示地址
 
   http://jedi.hellothomas.xyz:8080
+  
   username: admin
   password: 123456
 
@@ -67,12 +68,20 @@ first release(0.0.10) will come soon
 # FAQ
 
 # Contribution
+[![contributors](https://whnb.wang/contributors/hellothomas/jedi)](https://whnb.wang)
 
 # License
 
 [Apache 2 license](https://github.com/hellothomas-group/jedi/blob/main/LICENSE).
 
 # Known Users
+
+# Stars
+Gitee Stars
+[![Stargazers over time](https://whnb.wang/stars/hellothomas/jedi)](https://whnb.wang)
+
+Github Stars
+[![Stargazers over time](https://starchart.cc/hellothomas-group/jedi.svg)](https://starchart.cc/hellothomas-group/jedi)
 
 # Thanks
 线程池监控思路参考 [Java线程池实现原理及其在美团业务中的实践](https://tech.meituan.com/2020/04/02/java-pooling-pratice-in-meituan.html)
