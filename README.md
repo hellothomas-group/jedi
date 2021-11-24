@@ -68,7 +68,7 @@ first release(0.0.10) will come soon
 # FAQ
 
 # Contribution
-[![contributors](https://whnb.wang/contributors/hellothomas/jedi)](https://whnb.wang)
+[![contributors](https://whnb.wang/contributors/hellothomas/jedi)](https://whnb.wang/contributors/hellothomas/jedi)
 
 # License
 
@@ -78,7 +78,7 @@ first release(0.0.10) will come soon
 
 # Stars
 Gitee Stars
-[![Stargazers over time](https://whnb.wang/stars/hellothomas/jedi)](https://whnb.wang)
+[![Stargazers over time](https://whnb.wang/stars/hellothomas/jedi)](https://whnb.wang/stars/hellothomas/jedi)
 
 Github Stars
 [![Stargazers over time](https://starchart.cc/hellothomas-group/jedi.svg)](https://starchart.cc/hellothomas-group/jedi)
