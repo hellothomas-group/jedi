@@ -204,7 +204,7 @@ CREATE TABLE IF NOT EXISTS `role` (
 CREATE TABLE IF NOT EXISTS `user_role` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
   `user_id` varchar(128) DEFAULT '' COMMENT '用户身份标识',
-  `role_id` int(10) unsigned DEFAULT NULL COMMENT 'roleId',
+  `role_id` int(11) unsigned DEFAULT NULL COMMENT 'roleId',
   `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
   `data_change_created_by` varchar(32) DEFAULT '' COMMENT '创建人邮箱前缀',
   `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -232,8 +232,8 @@ CREATE TABLE IF NOT EXISTS `permission` (
 
 CREATE TABLE IF NOT EXISTS  `role_permission` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增Id',
-  `role_id` int(10) unsigned DEFAULT NULL COMMENT 'Role Id',
-  `permission_id` int(10) unsigned DEFAULT NULL COMMENT 'Permission Id',
+  `role_id` int(11) unsigned DEFAULT NULL COMMENT 'Role Id',
+  `permission_id` int(11) unsigned DEFAULT NULL COMMENT 'Permission Id',
   `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
   `data_change_created_by` varchar(32) DEFAULT '' COMMENT '创建人邮箱前缀',
   `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

@@ -67,9 +67,6 @@ first release(0.0.10) will come soon
 
 # FAQ
 
-# Contribution
-[![contributors](https://whnb.wang/contributors/hellothomas/jedi)](https://www.whnb.wang/hellothomas/jedi)
-
 # License
 
 [Apache 2 license](https://github.com/hellothomas-group/jedi/blob/main/LICENSE).
