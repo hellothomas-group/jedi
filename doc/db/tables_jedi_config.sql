@@ -165,6 +165,7 @@ CREATE TABLE IF NOT EXISTS `app` (
   `namespace_name` varchar(32) NOT NULL DEFAULT '' COMMENT 'namespace名字，注意，需要全局唯一',
   `app_id` varchar(32) NOT NULL DEFAULT '' COMMENT 'appId',
   `app_description` varchar(64) NOT NULL DEFAULT '' COMMENT 'app描述',
+  `owner_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'ownerName',
   `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
   `data_change_created_by` varchar(32) NOT NULL DEFAULT 'default' COMMENT '创建人邮箱前缀',
   `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

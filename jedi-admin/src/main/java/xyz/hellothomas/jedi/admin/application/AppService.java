@@ -11,12 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.api.dto.PageResult;
-import xyz.hellothomas.jedi.admin.domain.*;
-import xyz.hellothomas.jedi.biz.infrastructure.mapper.monitor.AppMapper;
+import xyz.hellothomas.jedi.admin.domain.Audit;
+import xyz.hellothomas.jedi.admin.domain.Executor;
+import xyz.hellothomas.jedi.admin.domain.Namespace;
 import xyz.hellothomas.jedi.biz.domain.monitor.App;
 import xyz.hellothomas.jedi.biz.domain.monitor.AppExample;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.ServiceException;
+import xyz.hellothomas.jedi.biz.infrastructure.mapper.monitor.AppMapper;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -30,15 +32,17 @@ import static xyz.hellothomas.jedi.biz.common.constants.Constants.DEFAULT_PAGE_S
 @Service
 public class AppService {
 
-
     private final AppMapper appMapper;
     private final AuditService auditService;
     private final ExecutorService executorService;
+    private final UserService userService;
 
-    public AppService(AppMapper appMapper, AuditService auditService, ExecutorService executorService) {
+    public AppService(AppMapper appMapper, AuditService auditService, ExecutorService executorService,
+                      UserService userService) {
         this.appMapper = appMapper;
         this.auditService = auditService;
         this.executorService = executorService;
+        this.userService = userService;
     }
 
     public boolean isNamespaceNameAppUnique(String namespaceName, String appId) {
@@ -114,6 +118,10 @@ public class AppService {
             throw new ServiceException("namespace app not unique");
         }
 
+        if (userService.getUserByUserName(app.getOwnerName()) == null) {
+            throw new ServiceException("owner not exists");
+        }
+
         LocalDateTime currentDateTime = LocalDateTime.now();
         app.setDataChangeCreatedTime(currentDateTime);
         app.setDataChangeCreatedBy(operator);
@@ -133,6 +141,10 @@ public class AppService {
         if (managedApp == null) {
             throw new BadRequestException(String.format("App not exists. namespaceName= %s appId= %s", namespaceName,
                     appId));
+        }
+
+        if (userService.getUserByUserName(app.getOwnerName()) == null) {
+            throw new ServiceException("owner not exists");
         }
 
         managedApp.setAppDescription(app.getAppDescription());

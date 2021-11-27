@@ -375,6 +375,76 @@ public class AppExample {
             return (Criteria) this;
         }
 
+        public Criteria andOwnerNameIsNull() {
+            addCriterion("owner_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNameIsNotNull() {
+            addCriterion("owner_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNameEqualTo(String value) {
+            addCriterion("owner_name =", value, "ownerName");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNameNotEqualTo(String value) {
+            addCriterion("owner_name <>", value, "ownerName");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNameGreaterThan(String value) {
+            addCriterion("owner_name >", value, "ownerName");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNameGreaterThanOrEqualTo(String value) {
+            addCriterion("owner_name >=", value, "ownerName");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNameLessThan(String value) {
+            addCriterion("owner_name <", value, "ownerName");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNameLessThanOrEqualTo(String value) {
+            addCriterion("owner_name <=", value, "ownerName");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNameLike(String value) {
+            addCriterion("owner_name like", value, "ownerName");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNameNotLike(String value) {
+            addCriterion("owner_name not like", value, "ownerName");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNameIn(List<String> values) {
+            addCriterion("owner_name in", values, "ownerName");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNameNotIn(List<String> values) {
+            addCriterion("owner_name not in", values, "ownerName");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNameBetween(String value1, String value2) {
+            addCriterion("owner_name between", value1, value2, "ownerName");
+            return (Criteria) this;
+        }
+
+        public Criteria andOwnerNameNotBetween(String value1, String value2) {
+            addCriterion("owner_name not between", value1, value2, "ownerName");
+            return (Criteria) this;
+        }
+
         public Criteria andIsDeletedIsNull() {
             addCriterion("is_deleted is null");
             return (Criteria) this;

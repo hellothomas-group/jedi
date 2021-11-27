@@ -24,6 +24,9 @@
           <el-form-item label="应用描述" :label-width="formLabelWidth" prop="description">
             <el-input v-model="newAppForm.description" autocomplete="off" placeholder="1-50位字符"></el-input>
           </el-form-item>
+          <el-form-item label="应用负责人" :label-width="formLabelWidth" prop="ownerName">
+            <el-input v-model="newAppForm.ownerName" autocomplete="off" placeholder="1-50位字符"></el-input>
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="createExecutorDialogFormVisible = false">取 消</el-button>
@@ -83,7 +86,8 @@ export default {
       newAppForm: {
         namespaceName: undefined,
         appId: undefined,
-        description: undefined
+        description: undefined,
+        ownerName: undefined
       },
       formLabelWidth: '120px',
       newAppRules: {
@@ -94,6 +98,10 @@ export default {
         description: [
           {required: true, message: '请输入应用描述', trigger: 'blur'},
           {min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur'}
+        ],
+        ownerName: [
+          {required: true, message: '请输入应用负责人', trigger: 'blur'},
+          {min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur'}
         ]
       }
     }
@@ -102,6 +110,7 @@ export default {
   watch: {},
   created () {
     this.asyncNamespaces()
+    this.newAppForm.ownerName = localStorage.getItem('UserName')
   },
   mounted () {
     let that = this
@@ -209,7 +218,8 @@ export default {
         form.appId, {
         'appDescription': form.description,
         'appId': form.appId,
-        'namespaceName': form.namespaceName
+        'namespaceName': form.namespaceName,
+        'ownerName': form.ownerName
       }).then(res => {
         console.log(form.appId + ' created')
         Utils.$emit('createAppSuccess', form.appId)
@@ -226,6 +236,8 @@ export default {
         message: h('i', {style: 'color: teal'}, '~~')
       })
 
+      this.newAppForm.appId = undefined
+      this.newAppForm.description = undefined
       this.asyncApps(this.selectNamespaceForm.namespaceId)
     },
     createAppFailNotification (exception) {
@@ -235,7 +247,7 @@ export default {
         message: h('i', {style: 'color: #FF0000'}, exception.toString())
       })
 
-      this.asyncExecutors(this.app)
+      this.asyncApps(this.selectNamespaceForm.namespaceId)
     }
   },
   beforeDestroy () {

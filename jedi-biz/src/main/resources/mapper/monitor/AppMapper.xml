@@ -6,6 +6,7 @@
     <result column="namespace_name" jdbcType="VARCHAR" property="namespaceName" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
     <result column="app_description" jdbcType="VARCHAR" property="appDescription" />
+    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
     <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
     <result column="data_change_created_by" jdbcType="VARCHAR" property="dataChangeCreatedBy" />
     <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
@@ -71,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, namespace_name, app_id, app_description, is_deleted, data_change_created_by, 
+    id, namespace_name, app_id, app_description, owner_name, is_deleted, data_change_created_by,
     data_change_created_time, data_change_last_modified_by, data_change_last_modified_time
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.biz.domain.monitor.AppExample" resultMap="BaseResultMap">
@@ -106,12 +107,12 @@
   </delete>
   <insert id="insert" parameterType="xyz.hellothomas.jedi.biz.domain.monitor.App" useGeneratedKeys="true" keyProperty="id">
     insert into app (id, namespace_name, app_id, 
-      app_description, is_deleted, data_change_created_by, 
-      data_change_created_time, data_change_last_modified_by, 
+      app_description, owner_name, is_deleted,
+      data_change_created_by, data_change_created_time, data_change_last_modified_by,
       data_change_last_modified_time)
     values (#{id,jdbcType=BIGINT}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, 
-      #{appDescription,jdbcType=VARCHAR}, #{isDeleted,jdbcType=BIT}, #{dataChangeCreatedBy,jdbcType=VARCHAR}, 
-      #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, 
+      #{appDescription,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR}, #{isDeleted,jdbcType=BIT},
+      #{dataChangeCreatedBy,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
       #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.biz.domain.monitor.App" useGeneratedKeys="true" keyProperty="id">
@@ -128,6 +129,9 @@
       </if>
       <if test="appDescription != null">
         app_description,
+      </if>
+      <if test="ownerName != null">
+        owner_name,
       </if>
       <if test="isDeleted != null">
         is_deleted,
@@ -157,6 +161,9 @@
       </if>
       <if test="appDescription != null">
         #{appDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerName != null">
+        #{ownerName,jdbcType=VARCHAR},
       </if>
       <if test="isDeleted != null">
         #{isDeleted,jdbcType=BIT},
@@ -196,6 +203,9 @@
       <if test="record.appDescription != null">
         app_description = #{record.appDescription,jdbcType=VARCHAR},
       </if>
+      <if test="record.ownerName != null">
+        owner_name = #{record.ownerName,jdbcType=VARCHAR},
+      </if>
       <if test="record.isDeleted != null">
         is_deleted = #{record.isDeleted,jdbcType=BIT},
       </if>
@@ -222,6 +232,7 @@
       namespace_name = #{record.namespaceName,jdbcType=VARCHAR},
       app_id = #{record.appId,jdbcType=VARCHAR},
       app_description = #{record.appDescription,jdbcType=VARCHAR},
+      owner_name = #{record.ownerName,jdbcType=VARCHAR},
       is_deleted = #{record.isDeleted,jdbcType=BIT},
       data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
       data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
@@ -242,6 +253,9 @@
       </if>
       <if test="appDescription != null">
         app_description = #{appDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerName != null">
+        owner_name = #{ownerName,jdbcType=VARCHAR},
       </if>
       <if test="isDeleted != null">
         is_deleted = #{isDeleted,jdbcType=BIT},
@@ -266,6 +280,7 @@
     set namespace_name = #{namespaceName,jdbcType=VARCHAR},
       app_id = #{appId,jdbcType=VARCHAR},
       app_description = #{appDescription,jdbcType=VARCHAR},
+      owner_name = #{ownerName,jdbcType=VARCHAR},
       is_deleted = #{isDeleted,jdbcType=BIT},
       data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
       data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},

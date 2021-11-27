@@ -27,4 +27,9 @@ public class App extends BaseEntity {
      * app描述
      */
     private String appDescription;
+
+    /**
+     * ownerName
+     */
+    private String ownerName;
 }

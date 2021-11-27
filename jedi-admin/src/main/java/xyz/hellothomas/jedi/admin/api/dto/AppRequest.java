@@ -20,5 +20,9 @@ public class AppRequest {
     @NotBlank
     private String appId;
 
+    @NotBlank
     private String appDescription;
+
+    @NotBlank
+    private String ownerName;
 }

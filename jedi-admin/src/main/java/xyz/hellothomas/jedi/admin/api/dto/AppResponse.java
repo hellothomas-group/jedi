@@ -16,4 +16,6 @@ public class AppResponse extends BaseResponse {
     private String appId;
 
     private String appDescription;
+
+    private String ownerName;
 }

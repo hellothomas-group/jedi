@@ -22,7 +22,7 @@
               <el-divider></el-divider>
               <li class="li">
                 <div class="title">应用负责人</div>
-                <div class="value">{{this.app.dataChangeCreatedBy}}</div>
+                <div class="value">{{this.app.ownerName}}</div>
               </li>
             </ul>
           </div>
@@ -188,6 +188,7 @@ export default {
         namespaceName: undefined,
         appId: undefined,
         appDescription: undefined,
+        ownerName: undefined,
         dataChangeCreatedBy: undefined,
         dataChangeLastModifiedBy: undefined,
         dataChangeCreatedTime: undefined,
