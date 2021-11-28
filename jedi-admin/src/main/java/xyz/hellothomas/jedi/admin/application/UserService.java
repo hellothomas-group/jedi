@@ -35,6 +35,7 @@ public class UserService {
         return user;
     }
 
+    // todo cache
     public User getUserById(Long userId) {
         return userMapper.selectByPrimaryKey(userId);
     }
