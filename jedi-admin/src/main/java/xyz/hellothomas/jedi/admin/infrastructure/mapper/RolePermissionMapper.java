@@ -29,4 +29,6 @@ public interface RolePermissionMapper {
     int updateByPrimaryKeySelective(RolePermission record);
 
     int updateByPrimaryKey(RolePermission record);
+
+    int insertBatch(@Param("records") List<RolePermission> records);
 }

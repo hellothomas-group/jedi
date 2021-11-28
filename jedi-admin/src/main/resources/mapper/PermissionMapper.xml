@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="xyz.hellothomas.jedi.admin.infrastructure.mapper.RolePermissionMapper">
-  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.admin.domain.RolePermission">
+<mapper namespace="xyz.hellothomas.jedi.admin.infrastructure.mapper.PermissionMapper">
+  <resultMap id="BaseResultMap" type="xyz.hellothomas.jedi.admin.domain.Permission">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="role_id" jdbcType="BIGINT" property="roleId" />
-    <result column="permission_id" jdbcType="BIGINT" property="permissionId" />
+    <result column="permission_type" jdbcType="VARCHAR" property="permissionType" />
+    <result column="target_id" jdbcType="VARCHAR" property="targetId" />
     <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
     <result column="data_change_created_by" jdbcType="VARCHAR" property="dataChangeCreatedBy" />
     <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
@@ -70,16 +70,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, role_id, permission_id, is_deleted, data_change_created_by, data_change_created_time, 
+    id, permission_type, target_id, is_deleted, data_change_created_by, data_change_created_time, 
     data_change_last_modified_by, data_change_last_modified_time
   </sql>
-  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.admin.domain.RolePermissionExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="xyz.hellothomas.jedi.admin.domain.PermissionExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from role_permission
+    from permission
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -90,40 +90,40 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from role_permission
+    from permission
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from role_permission
+    delete from permission
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.admin.domain.RolePermissionExample">
-    delete from role_permission
+  <delete id="deleteByExample" parameterType="xyz.hellothomas.jedi.admin.domain.PermissionExample">
+    delete from permission
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.hellothomas.jedi.admin.domain.RolePermission" useGeneratedKeys="true" keyProperty="id">
-    insert into role_permission (id, role_id, permission_id, 
+  <insert id="insert" parameterType="xyz.hellothomas.jedi.admin.domain.Permission" useGeneratedKeys="true" keyProperty="id">
+    insert into permission (id, permission_type, target_id, 
       is_deleted, data_change_created_by, data_change_created_time, 
       data_change_last_modified_by, data_change_last_modified_time
       )
-    values (#{id,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{permissionId,jdbcType=BIGINT},
+    values (#{id,jdbcType=BIGINT}, #{permissionType,jdbcType=VARCHAR}, #{targetId,jdbcType=VARCHAR},
       #{isDeleted,jdbcType=BIT}, #{dataChangeCreatedBy,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, 
       #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.admin.domain.RolePermission" useGeneratedKeys="true" keyProperty="id">
-    insert into role_permission
+  <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.admin.domain.Permission" useGeneratedKeys="true" keyProperty="id">
+    insert into permission
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="roleId != null">
-        role_id,
+      <if test="permissionType != null">
+        permission_type,
       </if>
-      <if test="permissionId != null">
-        permission_id,
+      <if test="targetId != null">
+        target_id,
       </if>
       <if test="isDeleted != null">
         is_deleted,
@@ -145,11 +145,11 @@
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="roleId != null">
-        #{roleId,jdbcType=BIGINT},
+      <if test="permissionType != null">
+        #{permissionType,jdbcType=VARCHAR},
       </if>
-      <if test="permissionId != null">
-        #{permissionId,jdbcType=BIGINT},
+      <if test="targetId != null">
+        #{targetId,jdbcType=VARCHAR},
       </if>
       <if test="isDeleted != null">
         #{isDeleted,jdbcType=BIT},
@@ -168,23 +168,23 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="xyz.hellothomas.jedi.admin.domain.RolePermissionExample" resultType="java.lang.Long">
-    select count(*) from role_permission
+  <select id="countByExample" parameterType="xyz.hellothomas.jedi.admin.domain.PermissionExample" resultType="java.lang.Long">
+    select count(*) from permission
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update role_permission
+    update permission
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.roleId != null">
-        role_id = #{record.roleId,jdbcType=BIGINT},
+      <if test="record.permissionType != null">
+        permission_type = #{record.permissionType,jdbcType=VARCHAR},
       </if>
-      <if test="record.permissionId != null">
-        permission_id = #{record.permissionId,jdbcType=BIGINT},
+      <if test="record.targetId != null">
+        target_id = #{record.targetId,jdbcType=VARCHAR},
       </if>
       <if test="record.isDeleted != null">
         is_deleted = #{record.isDeleted,jdbcType=BIT},
@@ -207,10 +207,10 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update role_permission
+    update permission
     set id = #{record.id,jdbcType=BIGINT},
-      role_id = #{record.roleId,jdbcType=BIGINT},
-      permission_id = #{record.permissionId,jdbcType=BIGINT},
+      permission_type = #{record.permissionType,jdbcType=VARCHAR},
+      target_id = #{record.targetId,jdbcType=VARCHAR},
       is_deleted = #{record.isDeleted,jdbcType=BIT},
       data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
       data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
@@ -220,14 +220,14 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.admin.domain.RolePermission">
-    update role_permission
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.hellothomas.jedi.admin.domain.Permission">
+    update permission
     <set>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=BIGINT},
+      <if test="permissionType != null">
+        permission_type = #{permissionType,jdbcType=VARCHAR},
       </if>
-      <if test="permissionId != null">
-        permission_id = #{permissionId,jdbcType=BIGINT},
+      <if test="targetId != null">
+        target_id = #{targetId,jdbcType=VARCHAR},
       </if>
       <if test="isDeleted != null">
         is_deleted = #{isDeleted,jdbcType=BIT},
@@ -247,10 +247,10 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.admin.domain.RolePermission">
-    update role_permission
-    set role_id = #{roleId,jdbcType=BIGINT},
-      permission_id = #{permissionId,jdbcType=BIGINT},
+  <update id="updateByPrimaryKey" parameterType="xyz.hellothomas.jedi.admin.domain.Permission">
+    update permission
+    set permission_type = #{permissionType,jdbcType=VARCHAR},
+      target_id = #{targetId,jdbcType=VARCHAR},
       is_deleted = #{isDeleted,jdbcType=BIT},
       data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
       data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
@@ -258,16 +258,4 @@
       data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-
-  <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
-    insert into role_permission (id, role_id, permission_id,
-    is_deleted, data_change_created_by, data_change_created_time,
-    data_change_last_modified_by, data_change_last_modified_time)
-    values
-    <foreach collection="records" item="record" separator=",">
-     (#{record.id,jdbcType=BIGINT}, #{record.roleId,jdbcType=BIGINT}, #{record.permissionId,jdbcType=BIGINT},
-     #{record.isDeleted,jdbcType=BIT}, #{record.dataChangeCreatedBy,jdbcType=VARCHAR}, #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
-     #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
-    </foreach>
-  </insert>
 </mapper>
