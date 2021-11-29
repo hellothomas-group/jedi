@@ -59,9 +59,7 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
     @Transactional
     @Override
     public void initAppRoles(App app) {
-        String appId = app.getAppId();
-
-        String appManagerRoleName = RoleUtil.buildAppManagerRoleName(app.getNamespaceName(), appId);
+        String appManagerRoleName = RoleUtil.buildAppManagerRoleName(app.getNamespaceName(), app.getAppId());
 
         //has created before
         if (rolePermissionService.findRoleByRoleName(appManagerRoleName) != null) {
@@ -86,7 +84,29 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
 
     @Override
     public void initExecutorRoles(Executor executor) {
+        String executorManagerRoleName = RoleUtil.buildExecutorManagerRoleName(executor.getNamespaceName(),
+                executor.getAppId(), executor.getExecutorName());
 
+        //has created before
+        if (rolePermissionService.findRoleByRoleName(executorManagerRoleName) != null) {
+            return;
+        }
+
+        String operator = executor.getDataChangeCreatedBy();
+        Set<Permission> executorManagerPermissions =
+                Stream.of(PermissonTypeEnum.GRANT_EXECUTOR, PermissonTypeEnum.MODIFY_EXECUTOR_CONFIG,
+                        PermissonTypeEnum.RELEASE_EXECUTOR_CONFIG, PermissonTypeEnum.MODIFY_EXECUTOR_ALARM_CONFIG)
+                        .map(permissionType -> createPermission(permissionType.getValue(),
+                                String.valueOf(executor.getId()), operator)).collect(Collectors.toSet());
+        Set<Permission> createdExecutorManagerPermissions =
+                rolePermissionService.createPermissions(executorManagerPermissions);
+        Set<Long> executorManagerPermissionIds =
+                createdExecutorManagerPermissions.stream().map(BaseEntity::getId).collect(Collectors.toSet());
+
+        //create app manager role
+        Role executorManagerRole = createRole(executorManagerRoleName, operator);
+
+        rolePermissionService.createRoleWithPermissions(executorManagerRole, executorManagerPermissionIds);
     }
 
     private Permission createPermission(String permissionType, String targetId, String operator) {

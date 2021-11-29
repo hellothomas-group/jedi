@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.application.message.MessageSender;
+import xyz.hellothomas.jedi.admin.application.permission.RoleInitializationService;
 import xyz.hellothomas.jedi.admin.domain.Audit;
 import xyz.hellothomas.jedi.admin.domain.Executor;
 import xyz.hellothomas.jedi.admin.domain.ExecutorExample;
@@ -39,6 +40,7 @@ public class ExecutorService {
     private final ExecutorLockService executorLockService;
     private final InstanceService instanceService;
     private final MessageSender messageSender;
+    private final RoleInitializationService roleInitializationService;
 
     public ExecutorService(
             final ReleaseHistoryService releaseHistoryService,
@@ -48,7 +50,7 @@ public class ExecutorService {
             final @Lazy ItemService itemService,
             final @Lazy ReleaseService releaseService,
             final ExecutorLockService executorLockService,
-            final InstanceService instanceService) {
+            final InstanceService instanceService, RoleInitializationService roleInitializationService) {
         this.releaseHistoryService = releaseHistoryService;
         this.executorMapper = executorMapper;
         this.auditService = auditService;
@@ -57,6 +59,7 @@ public class ExecutorService {
         this.releaseService = releaseService;
         this.executorLockService = executorLockService;
         this.instanceService = instanceService;
+        this.roleInitializationService = roleInitializationService;
     }
 
     public Executor findOne(Long executorId) {
@@ -195,6 +198,8 @@ public class ExecutorService {
 
         auditService.audit(Executor.class.getSimpleName(), executor.getId(), Audit.OP.INSERT,
                 executor.getDataChangeCreatedBy());
+
+        roleInitializationService.initExecutorRoles(executor);
 
         return executor;
     }

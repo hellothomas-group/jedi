@@ -28,4 +28,8 @@ public class RoleUtil {
     public static String buildAppManagerRoleName(String namespace, String appId) {
         return STRING_JOINER.join(RoleTypeEnum.APP_MANAGER.getValue(), namespace, appId);
     }
+
+    public static String buildExecutorManagerRoleName(String namespace, String appId, String executorName) {
+        return STRING_JOINER.join(RoleTypeEnum.EXECUTOR_MANAGER.getValue(), namespace, appId, executorName);
+    }
 }
