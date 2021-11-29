@@ -1,6 +1,8 @@
 package xyz.hellothomas.jedi.admin.application.permission;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +15,9 @@ import xyz.hellothomas.jedi.admin.infrastructure.mapper.UserRoleMapper;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * @author Thomas
@@ -109,22 +111,28 @@ public class DefaultRolePermissionService implements RolePermissionService {
 
     @Override
     public Set<Permission> createPermissions(Set<Permission> permissions) {
-//        Multimap<String, String> targetIdPermissionTypes = HashMultimap.create();
-//        for (Permission permission : permissions) {
-//            targetIdPermissionTypes.put(permission.getTargetId(), permission.getPermissionType());
-//        }
-//
-//        for (String targetId : targetIdPermissionTypes.keySet()) {
-//            Collection<String> permissionTypes = targetIdPermissionTypes.get(targetId);
-//            List<Permission> current =
-//                    permissionRepository.findByPermissionTypeInAndTargetId(permissionTypes, targetId);
-//            Preconditions.checkState(CollectionUtils.isEmpty(current),
-//                    "Permission with permissionType %s targetId %s already exists!", permissionTypes,
-//                    targetId);
-//        }
-//
-//        Iterable<Permission> results = permissionRepository.saveAll(permissions);
-//        return StreamSupport.stream(results.spliterator(), false).collect(Collectors.toSet());
-        return null;
+        Multimap<String, String> targetIdPermissionTypes = HashMultimap.create();
+        for (Permission permission : permissions) {
+            targetIdPermissionTypes.put(permission.getTargetId(), permission.getPermissionType());
+        }
+
+        for (String targetId : targetIdPermissionTypes.keySet()) {
+            Collection<String> permissionTypes = targetIdPermissionTypes.get(targetId);
+            List<Permission> current = findByPermissionTypeInAndTargetId(new ArrayList<>(permissionTypes), targetId);
+            Preconditions.checkState(CollectionUtils.isEmpty(current),
+                    "Permission with permissionType %s targetId %s already exists!", permissionTypes,
+                    targetId);
+        }
+
+        List<Permission> createdPermissions = new ArrayList<>(permissions);
+        permissionMapper.insertBatch(createdPermissions);
+        return new HashSet<>(createdPermissions);
+    }
+
+    private List<Permission> findByPermissionTypeInAndTargetId(List<String> permissionTypes, String targetId) {
+        PermissionExample permissionExample = new PermissionExample();
+        permissionExample.createCriteria().andTargetIdEqualTo(targetId)
+                .andPermissionTypeIn(permissionTypes);
+        return permissionMapper.selectByExample(permissionExample);
     }
 }

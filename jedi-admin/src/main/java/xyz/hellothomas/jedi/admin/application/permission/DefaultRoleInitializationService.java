@@ -71,7 +71,7 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
         String operator = app.getDataChangeCreatedBy();
         Set<Permission> appManagerPermissions =
                 Stream.of(PermissonTypeEnum.GRANT_APP, PermissonTypeEnum.MODIFY_APP,
-                        PermissonTypeEnum.CREATE_DELETE_APP)
+                        PermissonTypeEnum.CREATE_DELETE_EXECUTOR)
                         .map(permissionType -> createPermission(permissionType.getValue(),
                                 String.valueOf(app.getId()), operator)).collect(Collectors.toSet());
         Set<Permission> createdAppManagerPermissions = rolePermissionService.createPermissions(appManagerPermissions);

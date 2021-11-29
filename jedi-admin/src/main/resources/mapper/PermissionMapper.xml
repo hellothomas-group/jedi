@@ -70,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, permission_type, target_id, is_deleted, data_change_created_by, data_change_created_time, 
+    id, permission_type, target_id, is_deleted, data_change_created_by, data_change_created_time,
     data_change_last_modified_by, data_change_last_modified_time
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.admin.domain.PermissionExample" resultMap="BaseResultMap">
@@ -88,7 +88,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from permission
     where id = #{id,jdbcType=BIGINT}
@@ -104,12 +104,12 @@
     </if>
   </delete>
   <insert id="insert" parameterType="xyz.hellothomas.jedi.admin.domain.Permission" useGeneratedKeys="true" keyProperty="id">
-    insert into permission (id, permission_type, target_id, 
-      is_deleted, data_change_created_by, data_change_created_time, 
+    insert into permission (id, permission_type, target_id,
+      is_deleted, data_change_created_by, data_change_created_time,
       data_change_last_modified_by, data_change_last_modified_time
       )
     values (#{id,jdbcType=BIGINT}, #{permissionType,jdbcType=VARCHAR}, #{targetId,jdbcType=VARCHAR},
-      #{isDeleted,jdbcType=BIT}, #{dataChangeCreatedBy,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, 
+      #{isDeleted,jdbcType=BIT}, #{dataChangeCreatedBy,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
       #{dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -258,4 +258,16 @@
       data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    insert into permission (id, permission_type, target_id,
+    is_deleted, data_change_created_by, data_change_created_time,
+    data_change_last_modified_by, data_change_last_modified_time)
+    values
+    <foreach collection="records" item="record" separator=",">
+    (#{record.id,jdbcType=BIGINT}, #{record.permissionType,jdbcType=VARCHAR}, #{record.targetId,jdbcType=VARCHAR},
+    #{record.isDeleted,jdbcType=BIT}, #{record.dataChangeCreatedBy,jdbcType=VARCHAR}, #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+    #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR}, #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
 </mapper>

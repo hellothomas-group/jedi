@@ -28,4 +28,6 @@ public interface PermissionMapper {
     int updateByPrimaryKeySelective(Permission record);
 
     int updateByPrimaryKey(Permission record);
+
+    int insertBatch(@Param("records") List<Permission> records);
 }
