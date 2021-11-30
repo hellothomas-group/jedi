@@ -1,6 +1,7 @@
 package xyz.hellothomas.jedi.admin.api;
 
 import io.swagger.annotations.Api;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.admin.api.dto.ExecutorResponse;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
@@ -8,9 +9,11 @@ import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.application.ExecutorService;
 import xyz.hellothomas.jedi.admin.application.ItemService;
 import xyz.hellothomas.jedi.admin.application.ReleaseService;
+import xyz.hellothomas.jedi.admin.common.enums.RoleTypeEnum;
 import xyz.hellothomas.jedi.admin.domain.Executor;
 import xyz.hellothomas.jedi.admin.domain.Item;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
+import xyz.hellothomas.jedi.admin.infrastructure.listener.PermissionInitEvent;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.domain.config.Release;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
@@ -30,11 +33,14 @@ public class ExecutorController {
     private final ExecutorService executorService;
     private final ReleaseService releaseService;
     private final ItemService itemService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public ExecutorController(ExecutorService executorService, ReleaseService releaseService, ItemService itemService) {
+    public ExecutorController(ExecutorService executorService, ReleaseService releaseService, ItemService itemService
+            , ApplicationEventPublisher applicationEventPublisher) {
         this.executorService = executorService;
         this.releaseService = releaseService;
         this.itemService = itemService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}")
@@ -48,6 +54,8 @@ public class ExecutorController {
         }
 
         Executor executor = executorService.save(namespaceName, appId, executorName, operator);
+
+        applicationEventPublisher.publishEvent(new PermissionInitEvent(executor, RoleTypeEnum.EXECUTOR_MANAGER));
 
         ExecutorResponse executorResponse = LocalBeanUtils.transform(ExecutorResponse.class, executor);
         // 创建后 Item为默认修改状态，待发布
@@ -117,8 +125,8 @@ public class ExecutorController {
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}")
     public ApiResponse<ExecutorResponse> get(@PathVariable("namespaceName") String namespaceName,
-                                @PathVariable("appId") String appId,
-                                @PathVariable("executorName") String executorName) {
+                                             @PathVariable("appId") String appId,
+                                             @PathVariable("executorName") String executorName) {
         Executor executor = executorService.findOne(namespaceName, appId, executorName);
         if (executor == null) {
             throw new NotFoundException(

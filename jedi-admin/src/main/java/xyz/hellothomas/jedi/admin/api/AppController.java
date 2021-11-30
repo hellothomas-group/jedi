@@ -8,7 +8,9 @@ import xyz.hellothomas.jedi.admin.api.dto.AppResponse;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.application.AppService;
+import xyz.hellothomas.jedi.admin.common.enums.RoleTypeEnum;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
+import xyz.hellothomas.jedi.admin.infrastructure.listener.PermissionInitEvent;
 import xyz.hellothomas.jedi.admin.infrastructure.listener.SyncEvent;
 import xyz.hellothomas.jedi.biz.common.enums.SyncOperationEnum;
 import xyz.hellothomas.jedi.biz.common.enums.SyncTypeEnum;
@@ -55,6 +57,7 @@ public class AppController {
         entity = appService.save(entity, operator);
 
         applicationEventPublisher.publishEvent(new SyncEvent(entity, SyncTypeEnum.APP, SyncOperationEnum.CREATION));
+        applicationEventPublisher.publishEvent(new PermissionInitEvent(entity, RoleTypeEnum.APP_MANAGER));
 
         return ApiResponse.success(LocalBeanUtils.transform(AppResponse.class, entity));
     }

@@ -7,6 +7,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
@@ -26,6 +27,7 @@ public class SyncListener {
         this.restTemplate = restTemplate;
     }
 
+    @Async
     @EventListener
     public void onSyncEvent(SyncEvent event) {
         try {
@@ -40,6 +42,9 @@ public class SyncListener {
                 log.error("Sync failed. syncType = {}, syncOperation = {}, object = {}, errorMessage:{})",
                         event.getSyncTypeEnum(), event.getSyncOperationEnum(), event.getSource(),
                         String.format("%s-%s", apiResponse.getCode(), apiResponse.getMessage()));
+            } else {
+                log.info("Sync success. syncType = {}, syncOperation = {}, object = {})", event.getSyncTypeEnum(),
+                        event.getSyncOperationEnum(), event.getSource());
             }
         } catch (Exception e) {
             log.error("Sync failed. syncType = {}, syncOperation = {}, object = {})", event.getSyncTypeEnum(),

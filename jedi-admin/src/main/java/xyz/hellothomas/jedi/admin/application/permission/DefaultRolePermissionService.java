@@ -3,6 +3,7 @@ package xyz.hellothomas.jedi.admin.application.permission;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,6 @@ import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * @author Thomas
@@ -78,9 +78,32 @@ public class DefaultRolePermissionService implements RolePermissionService {
         return createdRole;
     }
 
+    @Transactional
     @Override
     public Set<String> assignRoleToUsers(String roleName, Set<String> userIds, String operatorUserId) {
-        return null;
+        Role role = findRoleByRoleName(roleName);
+        Preconditions.checkState(role != null, "Role %s doesn't exist!", roleName);
+
+        List<UserRole> existedUserRoles = findByUserIdInAndRoleId(new ArrayList<>(userIds), role.getId());
+        Set<String> existedUserIds =
+                existedUserRoles.stream().map(UserRole::getUserId).collect(Collectors.toSet());
+
+        Set<String> toAssignUserIds = Sets.difference(userIds, existedUserIds);
+
+        List<UserRole> toCreate = toAssignUserIds.stream().map(userId -> {
+            UserRole userRole = new UserRole();
+            userRole.setRoleId(role.getId());
+            userRole.setUserId(userId);
+            userRole.setDataChangeCreatedBy(operatorUserId);
+            userRole.setDataChangeLastModifiedBy(operatorUserId);
+            LocalDateTime currentTime = LocalDateTime.now();
+            userRole.setDataChangeCreatedTime(currentTime);
+            userRole.setDataChangeLastModifiedTime(currentTime);
+            return userRole;
+        }).collect(Collectors.toList());
+
+        userRoleMapper.insertBatch(toCreate);
+        return toAssignUserIds;
     }
 
     @Override
@@ -134,5 +157,12 @@ public class DefaultRolePermissionService implements RolePermissionService {
         permissionExample.createCriteria().andTargetIdEqualTo(targetId)
                 .andPermissionTypeIn(permissionTypes);
         return permissionMapper.selectByExample(permissionExample);
+    }
+
+    private List<UserRole> findByUserIdInAndRoleId(List<String> userIds, Long roleId) {
+        UserRoleExample userRoleExample = new UserRoleExample();
+        userRoleExample.createCriteria().andRoleIdEqualTo(roleId)
+                .andUserIdIn(userIds);
+        return userRoleMapper.selectByExample(userRoleExample);
     }
 }

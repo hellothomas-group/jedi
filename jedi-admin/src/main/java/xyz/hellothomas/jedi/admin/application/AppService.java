@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.api.dto.PageResult;
-import xyz.hellothomas.jedi.admin.application.permission.RoleInitializationService;
 import xyz.hellothomas.jedi.admin.domain.Audit;
 import xyz.hellothomas.jedi.admin.domain.Executor;
 import xyz.hellothomas.jedi.admin.domain.Namespace;
@@ -37,15 +36,13 @@ public class AppService {
     private final AuditService auditService;
     private final ExecutorService executorService;
     private final UserService userService;
-    private final RoleInitializationService roleInitializationService;
 
     public AppService(AppMapper appMapper, AuditService auditService, ExecutorService executorService,
-                      UserService userService, RoleInitializationService roleInitializationService) {
+                      UserService userService) {
         this.appMapper = appMapper;
         this.auditService = auditService;
         this.executorService = executorService;
         this.userService = userService;
-        this.roleInitializationService = roleInitializationService;
     }
 
     public boolean isNamespaceNameAppUnique(String namespaceName, String appId) {
@@ -135,7 +132,6 @@ public class AppService {
 
         auditService.audit(App.class.getSimpleName(), app.getId(), Audit.OP.INSERT, operator);
 
-        roleInitializationService.initAppRoles(app);
         return app;
     }
 

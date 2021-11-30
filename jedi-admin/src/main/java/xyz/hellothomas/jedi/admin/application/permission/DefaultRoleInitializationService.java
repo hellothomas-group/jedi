@@ -3,6 +3,7 @@ package xyz.hellothomas.jedi.admin.application.permission;
 import com.google.common.collect.Sets;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import xyz.hellothomas.jedi.admin.application.AppService;
 import xyz.hellothomas.jedi.admin.common.enums.PermissonTypeEnum;
 import xyz.hellothomas.jedi.admin.common.utils.RoleUtil;
 import xyz.hellothomas.jedi.admin.domain.Executor;
@@ -27,9 +28,11 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
     public static final String SYSTEM_MANAGER_ROLE_NAME =
             RoleUtil.buildSystemManagerRoleName();
     private final RolePermissionService rolePermissionService;
+    private final AppService appService;
 
-    public DefaultRoleInitializationService(RolePermissionService rolePermissionService) {
+    public DefaultRoleInitializationService(RolePermissionService rolePermissionService, AppService appService) {
         this.rolePermissionService = rolePermissionService;
+        this.appService = appService;
     }
 
     @Transactional
@@ -80,8 +83,13 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
         Role appManagerRole = createRole(appManagerRoleName, operator);
 
         rolePermissionService.createRoleWithPermissions(appManagerRole, appManagerPermissionIds);
+
+        //assign APP_MANAGER role to user
+        rolePermissionService
+                .assignRoleToUsers(appManagerRoleName, Sets.newHashSet(app.getOwnerName()), operator);
     }
 
+    @Transactional
     @Override
     public void initExecutorRoles(Executor executor) {
         String executorManagerRoleName = RoleUtil.buildExecutorManagerRoleName(executor.getNamespaceName(),
@@ -107,6 +115,11 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
         Role executorManagerRole = createRole(executorManagerRoleName, operator);
 
         rolePermissionService.createRoleWithPermissions(executorManagerRole, executorManagerPermissionIds);
+
+        //assign EXECUTOR_MANAGER role to user
+        App app = appService.findOne(executor.getNamespaceName(), executor.getAppId());
+        rolePermissionService
+                .assignRoleToUsers(executorManagerRoleName, Sets.newHashSet(app.getOwnerName()), operator);
     }
 
     private Permission createPermission(String permissionType, String targetId, String operator) {

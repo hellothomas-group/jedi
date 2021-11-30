@@ -3,6 +3,7 @@ package xyz.hellothomas.jedi.admin;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * @author Thomas
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @description
  * @version 1.0
  */
+@EnableAsync
 @SpringBootApplication(scanBasePackages = "xyz.hellothomas.jedi.*")
 @MapperScan(basePackages = {"xyz.hellothomas.jedi.*.infrastructure.mapper"})
 public class AdminApplication {
