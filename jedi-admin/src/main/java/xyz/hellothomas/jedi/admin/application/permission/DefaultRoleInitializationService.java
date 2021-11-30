@@ -25,8 +25,8 @@ import java.util.stream.Stream;
  */
 @Service
 public class DefaultRoleInitializationService implements RoleInitializationService {
-    public static final String SYSTEM_MANAGER_ROLE_NAME =
-            RoleUtil.buildSystemManagerRoleName();
+    public static final String SYSTEM_MANAGER_ROLE_NAME = RoleUtil.buildSystemManagerRoleName();
+    public static final String SYSTEM_MANAGER_TARGET_ID = "jedi";
     private final RolePermissionService rolePermissionService;
     private final AppService appService;
 
@@ -45,11 +45,11 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
         // permission
         Permission createOrDeleteAppPermission =
                 rolePermissionService.findByPermissionTypeAndTargetId(PermissonTypeEnum.CREATE_DELETE_APP.getValue(),
-                        "jedi");
+                        SYSTEM_MANAGER_TARGET_ID);
         if (createOrDeleteAppPermission == null) {
             // create or delete application permission init
             createOrDeleteAppPermission = createPermission(PermissonTypeEnum.CREATE_DELETE_APP.getValue(),
-                    "jedi", rolePermissionService.getSuperAdmin());
+                    SYSTEM_MANAGER_TARGET_ID, rolePermissionService.getSuperAdmin());
             rolePermissionService.createPermission(createOrDeleteAppPermission);
         }
 

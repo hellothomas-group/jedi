@@ -107,6 +107,38 @@ public class DefaultRolePermissionService implements RolePermissionService {
     }
 
     @Override
+    public boolean userHasPermission(String userId, String permissionType, String targetId) {
+        Permission permission = findByPermissionTypeAndTargetId(permissionType, targetId);
+        if (permission == null) {
+            return false;
+        }
+
+        if (isSuperAdmin(userId)) {
+            return true;
+        }
+
+        List<UserRole> userRoles = findByUserId(userId);
+        if (userRoles == null || userRoles.isEmpty()) {
+            return false;
+        }
+
+        Set<Long> roleIds =
+                userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toSet());
+        List<RolePermission> rolePermissions = findByRoleIdIn(new ArrayList<>(roleIds));
+        if (rolePermissions == null || rolePermissions.isEmpty()) {
+            return false;
+        }
+
+        for (RolePermission rolePermission : rolePermissions) {
+            if (rolePermission.getPermissionId().longValue() == permission.getId().longValue()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean isSuperAdmin(String userId) {
         return false;
     }
@@ -164,5 +196,17 @@ public class DefaultRolePermissionService implements RolePermissionService {
         userRoleExample.createCriteria().andRoleIdEqualTo(roleId)
                 .andUserIdIn(userIds);
         return userRoleMapper.selectByExample(userRoleExample);
+    }
+
+    private List<UserRole> findByUserId(String userId) {
+        UserRoleExample userRoleExample = new UserRoleExample();
+        userRoleExample.createCriteria().andUserIdEqualTo(userId);
+        return userRoleMapper.selectByExample(userRoleExample);
+    }
+
+    private List<RolePermission> findByRoleIdIn(List<Long> roleIds) {
+        RolePermissionExample rolePermissionExample = new RolePermissionExample();
+        rolePermissionExample.createCriteria().andRoleIdIn(roleIds);
+        return rolePermissionMapper.selectByExample(rolePermissionExample);
     }
 }

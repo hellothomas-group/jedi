@@ -31,6 +31,11 @@ public interface RolePermissionService {
     Set<String> assignRoleToUsers(String roleName, Set<String> userIds,
                                   String operatorUserId);
 
+    /**
+     * Check whether user has the permission
+     */
+    boolean userHasPermission(String userId, String permissionType, String targetId);
+
     boolean isSuperAdmin(String userId);
 
     String getSuperAdmin();
