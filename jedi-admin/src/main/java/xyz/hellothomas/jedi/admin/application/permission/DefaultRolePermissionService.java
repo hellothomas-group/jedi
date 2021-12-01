@@ -140,7 +140,7 @@ public class DefaultRolePermissionService implements RolePermissionService {
 
     @Override
     public boolean isSuperAdmin(String userId) {
-        return false;
+        return superAdmin.equals(userId);
     }
 
     @Override

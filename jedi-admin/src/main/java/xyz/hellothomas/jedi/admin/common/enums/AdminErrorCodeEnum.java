@@ -7,6 +7,7 @@ public enum AdminErrorCodeEnum implements ICodeEnum {
     PASSWORD_INVALID("ADM0002", "密码错误"),
     TOKEN_UNAVAILABLE("ADM0003", "token过期"),
     TOKEN_IS_NULL("ADM0004", "token为空"),
+    AUTHORIZATION_NOT_PASS("ADM0005", "无操作权限"),
     ;
 
     private String code;

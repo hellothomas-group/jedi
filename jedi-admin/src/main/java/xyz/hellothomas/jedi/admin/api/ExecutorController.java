@@ -12,6 +12,7 @@ import xyz.hellothomas.jedi.admin.application.ReleaseService;
 import xyz.hellothomas.jedi.admin.common.enums.RoleTypeEnum;
 import xyz.hellothomas.jedi.admin.domain.Executor;
 import xyz.hellothomas.jedi.admin.domain.Item;
+import xyz.hellothomas.jedi.admin.infrastructure.annotation.PreAuthorize;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.admin.infrastructure.listener.PermissionInitEvent;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
@@ -43,6 +44,7 @@ public class ExecutorController {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    @PreAuthorize(value = "@permissionValidator.hasCreateOrDeleteExecutorPermission(#namespaceName, #appId, #operator)")
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}")
     public ApiResponse<ExecutorResponse> create(@PathVariable("namespaceName") String namespaceName,
                                                 @PathVariable("appId") String appId,
@@ -64,6 +66,7 @@ public class ExecutorController {
         return ApiResponse.success(executorResponse);
     }
 
+    @PreAuthorize(value = "@permissionValidator.hasCreateOrDeleteExecutorPermission(#namespaceName, #appId, #operator)")
     @DeleteMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}")
     public ApiResponse<String> delete(@PathVariable("namespaceName") String namespaceName,
                                       @PathVariable("appId") String appId,

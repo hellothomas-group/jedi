@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.admin.api.dto.ItemResponse;
 import xyz.hellothomas.jedi.admin.application.ItemService;
 import xyz.hellothomas.jedi.admin.domain.Item;
+import xyz.hellothomas.jedi.admin.infrastructure.annotation.PreAuthorize;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
@@ -27,6 +28,8 @@ public class ItemController {
         this.itemService = itemService;
     }
 
+    @PreAuthorize(value = "@permissionValidator.hasModifyExecutorConfigPermission(#namespaceName, #appId, " +
+            "#executorName, #operator)")
     //    @PreAcquireNamespaceLock
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/items")
     public ApiResponse<ItemResponse> create(@PathVariable("namespaceName") String namespaceName,
@@ -43,6 +46,8 @@ public class ItemController {
         return ApiResponse.success(LocalBeanUtils.transform(ItemResponse.class, entity));
     }
 
+    @PreAuthorize(value = "@permissionValidator.hasModifyExecutorConfigPermission(#namespaceName, #appId, " +
+            "#executorName, #operator)")
     //    @PreAcquireNamespaceLock
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/items/{itemId}")
     public ApiResponse<ItemResponse> update(@PathVariable("namespaceName") String namespaceName,
@@ -66,6 +71,8 @@ public class ItemController {
         return ApiResponse.success(LocalBeanUtils.transform(ItemResponse.class, managedEntity));
     }
 
+    @PreAuthorize(value = "@permissionValidator.hasModifyExecutorConfigPermission(#namespaceName, #appId, " +
+            "#executorName, #operator)")
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/items")
     public ApiResponse<ItemResponse> update(@PathVariable("namespaceName") String namespaceName,
                                             @PathVariable("appId") String appId,
@@ -91,6 +98,8 @@ public class ItemController {
         return ApiResponse.success(LocalBeanUtils.transform(ItemResponse.class, managedEntity));
     }
 
+    @PreAuthorize(value = "@permissionValidator.hasModifyExecutorConfigPermission(#namespaceName, #appId, " +
+            "#executorName, #operator)")
     //    @PreAcquireNamespaceLock
     @DeleteMapping("/items/{itemId}")
     public ApiResponse<String> delete(@PathVariable("itemId") long itemId,

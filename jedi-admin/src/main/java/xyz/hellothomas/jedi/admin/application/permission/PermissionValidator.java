@@ -80,4 +80,8 @@ public class PermissionValidator {
                 PermissonTypeEnum.GRANT_EXECUTOR.getValue(),
                 String.valueOf(executor.getId()));
     }
+
+    public boolean test() {
+        return false;
+    }
 }

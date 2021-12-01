@@ -9,6 +9,7 @@ import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.application.AppService;
 import xyz.hellothomas.jedi.admin.common.enums.RoleTypeEnum;
+import xyz.hellothomas.jedi.admin.infrastructure.annotation.PreAuthorize;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.admin.infrastructure.listener.PermissionInitEvent;
 import xyz.hellothomas.jedi.admin.infrastructure.listener.SyncEvent;
@@ -42,6 +43,7 @@ public class AppController {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    @PreAuthorize(value = "@permissionValidator.hasCreateOrDeleteAppPermission(#operator)")
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}")
     public ApiResponse<AppResponse> create(@PathVariable("namespaceName") String namespaceName,
                                            @Valid @RequestBody AppRequest appRequest,
@@ -62,6 +64,7 @@ public class AppController {
         return ApiResponse.success(LocalBeanUtils.transform(AppResponse.class, entity));
     }
 
+    @PreAuthorize(value = "@permissionValidator.hasModifyAppPermission(#namespaceName, #appId, #operator)")
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}")
     public ApiResponse<String> update(@PathVariable String namespaceName, @PathVariable String appId,
                                       @RequestBody AppRequest request,

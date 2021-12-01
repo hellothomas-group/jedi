@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.admin.api.dto.AlarmConfigResponse;
 import xyz.hellothomas.jedi.admin.application.AlarmConfigService;
+import xyz.hellothomas.jedi.admin.infrastructure.annotation.PreAuthorize;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
@@ -26,6 +27,8 @@ public class AlarmConfigController {
         this.alarmConfigService = alarmConfigService;
     }
 
+    @PreAuthorize(value = "@permissionValidator.hasModifyExecutorAlarmConfigPermission(#namespaceName, #appId, " +
+            "#executorName, #operator)")
     @PostMapping(value = "/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
     @ApiOperation("create")
     public ApiResponse<AlarmConfigResponse> create(@PathVariable("namespaceName") String namespaceName,
@@ -38,6 +41,8 @@ public class AlarmConfigController {
                 operator));
     }
 
+    @PreAuthorize(value = "@permissionValidator.hasModifyExecutorAlarmConfigPermission(#namespaceName, #appId, " +
+            "#executorName, #operator)")
     @ApiOperation("update")
     @PutMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs")
     public ApiResponse<AlarmConfigResponse> update(@PathVariable("namespaceName") String namespaceName,

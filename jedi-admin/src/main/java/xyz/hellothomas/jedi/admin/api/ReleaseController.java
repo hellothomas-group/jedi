@@ -11,6 +11,7 @@ import xyz.hellothomas.jedi.admin.application.ExecutorService;
 import xyz.hellothomas.jedi.admin.application.ReleaseService;
 import xyz.hellothomas.jedi.admin.application.message.MessageSender;
 import xyz.hellothomas.jedi.admin.domain.Executor;
+import xyz.hellothomas.jedi.admin.infrastructure.annotation.PreAuthorize;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.common.utils.ReleaseMessageKeyGenerator;
@@ -98,6 +99,8 @@ public class ReleaseController {
         return ApiResponse.success(LocalBeanUtils.transform(ReleaseResponse.class, release));
     }
 
+    @PreAuthorize(value = "@permissionValidator.hasReleaseExecutorConfigPermission(#namespaceName, #appId, " +
+            "#executorName, #operator)")
     @Transactional
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/releases")
     public ApiResponse<ReleaseResponse> publish(@PathVariable("namespaceName") String namespaceName,
@@ -120,6 +123,8 @@ public class ReleaseController {
         return ApiResponse.success(LocalBeanUtils.transform(ReleaseResponse.class, release));
     }
 
+    @PreAuthorize(value = "@permissionValidator.hasReleaseExecutorConfigPermission(#namespaceName, #appId, " +
+            "#executorName, #operator)")
     @Transactional
     @PutMapping("/releases/{releaseId}/rollback")
     public ApiResponse<String> rollback(@PathVariable("releaseId") long releaseId,
