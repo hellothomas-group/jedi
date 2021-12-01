@@ -241,10 +241,11 @@ export default {
       this.asyncApps(this.selectNamespaceForm.namespaceId)
     },
     createAppFailNotification (exception) {
+      let messageText = exception.data.code === undefined ? exception.status + '-' + exception.statusText : exception.data.code + '-' + exception.data.message
       const h = this.$createElement
       this.$notify({
         title: this.newAppForm.appId + '创建失败!',
-        message: h('i', {style: 'color: #FF0000'}, exception.toString())
+        message: h('i', {style: 'color: #FF0000'}, messageText)
       })
 
       this.asyncApps(this.selectNamespaceForm.namespaceId)
