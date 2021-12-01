@@ -420,10 +420,11 @@ export default {
       this.asyncExecutors(this.app)
     },
     deleteExecutorFailNotification (exception) {
+      let messageText = exception.data.code === undefined ? exception.status + '-' + exception.statusText : exception.data.code + '-' + exception.data.message
       const h = this.$createElement
       this.$notify({
         title: this.selectedExecutor.executorName + '删除失败!',
-        message: h('i', {style: 'color: #FF0000'}, exception.toString())
+        message: h('i', {style: 'color: #FF0000'}, messageText)
       })
 
       this.asyncExecutors(this.app)
@@ -438,8 +439,13 @@ export default {
 
       this.asyncExecutors(this.app)
     },
-    createExecutorFailNotification (exeception) {
-      alert(this.newExecutorForm.newExecutor + ' createExecutorFail: ' + exeception.toString())
+    createExecutorFailNotification (exception) {
+      let messageText = exception.data.code === undefined ? exception.status + '-' + exception.statusText : exception.data.code + '-' + exception.data.message
+      const h = this.$createElement
+      this.$notify({
+        title: this.newExecutorForm.newExecutor + '创建失败!',
+        message: h('i', {style: 'color: #FF0000'}, messageText)
+      })
 
       this.asyncExecutors(this.app)
     },
@@ -571,11 +577,13 @@ export default {
           comment: form.comment
         }
       }).then(res => {
-        console.log(form.executorName + ' created')
+        console.log(form.executorName + ' released')
         Utils.$emit('releaseExecutorSuccess', this.selectedExecutor)
         this.asyncExecutors(this.app)
       }).catch(function (error) {
         console.log(error)
+        let messageText = error.data.code === undefined ? error.status + '-' + error.statusText : error.data.code + '-' + error.data.message
+        alert(form.executorName + '发布失败, ' + messageText)
         Utils.$emit('releaseExecutorFail', error)
       })
     },
@@ -593,9 +601,12 @@ export default {
     Utils.$off('deleteExecutorSuccess')
     Utils.$off('createExecutorSuccess')
     Utils.$off('updateExecutorItemSuccess')
+    Utils.$off('releaseExecutorSuccess')
     Utils.$off('deleteExecutorFail')
     Utils.$off('createExecutorFail')
     Utils.$off('updateExecutorItemFail')
+    Utils.$off('updateExecutorItemFail')
+    Utils.$off('releaseExecutorFail')
   }
 }
 
