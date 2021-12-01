@@ -28,8 +28,7 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    @PreAuthorize(value = "@permissionValidator.hasModifyExecutorConfigPermission(#namespaceName, #appId, " +
-            "#executorName, #operator)")
+    @PreAuthorize(value = "@permissionValidator.hasCreateOrDeleteExecutorPermission(#namespaceName, #appId, #operator)")
     //    @PreAcquireNamespaceLock
     @PostMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/items")
     public ApiResponse<ItemResponse> create(@PathVariable("namespaceName") String namespaceName,
@@ -98,8 +97,7 @@ public class ItemController {
         return ApiResponse.success(LocalBeanUtils.transform(ItemResponse.class, managedEntity));
     }
 
-    @PreAuthorize(value = "@permissionValidator.hasModifyExecutorConfigPermission(#namespaceName, #appId, " +
-            "#executorName, #operator)")
+    @PreAuthorize(value = "@permissionValidator.hasCreateOrDeleteExecutorPermission(#namespaceName, #appId, #operator)")
     //    @PreAcquireNamespaceLock
     @DeleteMapping("/items/{itemId}")
     public ApiResponse<String> delete(@PathVariable("itemId") long itemId,

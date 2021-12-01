@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.api.dto.PageResult;
+import xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum;
 import xyz.hellothomas.jedi.admin.domain.Audit;
 import xyz.hellothomas.jedi.admin.domain.Executor;
 import xyz.hellothomas.jedi.admin.domain.Namespace;
@@ -19,6 +20,7 @@ import xyz.hellothomas.jedi.biz.domain.monitor.AppExample;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.ServiceException;
 import xyz.hellothomas.jedi.biz.infrastructure.mapper.monitor.AppMapper;
+import xyz.hellothomas.jedi.core.exception.BusinessException;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -119,7 +121,7 @@ public class AppService {
         }
 
         if (userService.getUserByUserName(app.getOwnerName()) == null) {
-            throw new ServiceException("owner not exists");
+            throw new BusinessException(AdminErrorCodeEnum.USER_NOT_EXIST);
         }
 
         LocalDateTime currentDateTime = LocalDateTime.now();
