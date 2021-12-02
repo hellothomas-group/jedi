@@ -49,7 +49,7 @@ public class AuthorizeAspect implements BeanFactoryAware {
 
         boolean isPassAuth;
         try {
-            isPassAuth = (Boolean) ExpressionUtil.getKeyValue(joinPoint, preAuthorize.value(), beanFactory);
+            isPassAuth = (Boolean) ExpressionUtil.evaluateValue(joinPoint, preAuthorize.value(), beanFactory);
         } catch (EvaluationException e) {
             throw new IllegalArgumentException("Failed to evaluate expression '"
                     + preAuthorize.value() + "'", e);
