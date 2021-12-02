@@ -7,7 +7,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.expression.EvaluationException;
 import xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum;
@@ -23,10 +25,11 @@ import xyz.hellothomas.jedi.core.exception.BusinessException;
  */
 @Aspect
 @Slf4j
-public class AuthorizeAspect {
-    private final BeanFactory beanFactory;
+public class AuthorizeAspect implements BeanFactoryAware {
+    private BeanFactory beanFactory;
 
-    public AuthorizeAspect(BeanFactory beanFactory) {
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
 
