@@ -7,11 +7,16 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
 import xyz.hellothomas.jedi.client.annotation.JediAsync;
+import xyz.hellothomas.jedi.client.config.JediConfig;
 import xyz.hellothomas.jedi.client.exception.JediClientException;
-import xyz.hellothomas.jedi.client.util.AspectSupportUtil;
+import xyz.hellothomas.jedi.client.util.ExpressionUtil;
 import xyz.hellothomas.jedi.core.internals.executor.JediRunnable;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 
@@ -22,20 +27,11 @@ import static xyz.hellothomas.jedi.core.constants.Constants.JEDI_DEFAULT_TASK_NA
 
 @Aspect
 @Slf4j
-public class JediAsyncAspect implements Ordered {
-    private final Map<String, JediThreadPoolExecutor> executorMap;
-    private final JediThreadPoolExecutor uniqueExecutor;
-    private final int order;
-
-    public JediAsyncAspect(Map<String, JediThreadPoolExecutor> executorMap, int order) {
-        this.executorMap = executorMap;
-        this.order = order;
-        if (executorMap.size() == 1) {
-            uniqueExecutor = executorMap.values().stream().findFirst().get();
-        } else {
-            uniqueExecutor = null;
-        }
-    }
+public class JediAsyncAspect implements ApplicationContextAware, InitializingBean, Ordered {
+    private Map<String, JediThreadPoolExecutor> executorMap;
+    private JediThreadPoolExecutor uniqueExecutor;
+    private int order;
+    private ApplicationContext applicationContext;
 
     @Pointcut("@annotation(xyz.hellothomas.jedi.client.annotation.JediAsync)")
     public void annotationPointcut() {
@@ -89,7 +85,8 @@ public class JediAsyncAspect implements Ordered {
             taskName = JEDI_DEFAULT_TASK_NAME;
         } else {
             try {
-                Object taskNameObject = AspectSupportUtil.getKeyValue(joinPoint, jediAsync.taskName());
+                Object taskNameObject = ExpressionUtil.evaluateValue(joinPoint, jediAsync.taskName(),
+                        this.applicationContext);
                 if (taskNameObject == null) {
                     throw new JediClientException(String.format("@JediAsync taskName:%s, cannot be null",
                             jediAsync.taskName()));
@@ -112,7 +109,8 @@ public class JediAsyncAspect implements Ordered {
             taskExtraData = EMPTY;
         } else {
             try {
-                Object taskExtraDataObject = AspectSupportUtil.getKeyValue(joinPoint, jediAsync.taskExtraData());
+                Object taskExtraDataObject = ExpressionUtil.evaluateValue(joinPoint, jediAsync.taskExtraData(),
+                        this.applicationContext);
                 if (taskExtraDataObject == null) {
                     throw new JediClientException(String.format("@JediAsync taskExtraData:%s, cannot be null",
                             jediAsync.taskExtraData()));
@@ -132,5 +130,23 @@ public class JediAsyncAspect implements Ordered {
     @Override
     public int getOrder() {
         return order;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.executorMap =
+                this.applicationContext.getBeansOfType(JediThreadPoolExecutor.class);
+        JediConfig jediConfig = this.applicationContext.getBean(JediConfig.class);
+        this.order = jediConfig.getOrder();
+        if (executorMap.size() == 1) {
+            uniqueExecutor = executorMap.values().stream().findFirst().get();
+        } else {
+            uniqueExecutor = null;
+        }
     }
 }

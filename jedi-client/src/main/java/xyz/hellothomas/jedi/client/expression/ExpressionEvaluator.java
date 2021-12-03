@@ -1,13 +1,16 @@
 package xyz.hellothomas.jedi.client.expression;
 
 import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.expression.AnnotatedElementKey;
+import org.springframework.context.expression.BeanFactoryResolver;
 import org.springframework.context.expression.CachedExpressionEvaluator;
 import org.springframework.context.expression.MethodBasedEvaluationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.lang.Nullable;
 
 import java.lang.reflect.Method;
@@ -35,11 +38,16 @@ public class ExpressionEvaluator<T> extends CachedExpressionEvaluator {
      * on the specified method.
      */
     public EvaluationContext createEvaluationContext(Object object, Class<?> targetClass, Method method,
-                                                     Object[] args) {
+                                                     Object[] args, BeanFactory beanFactory) {
 
         Method targetMethod = getTargetMethod(targetClass, method);
         ExpressionRootObject root = new ExpressionRootObject(object, args);
-        return new MethodBasedEvaluationContext(root, targetMethod, args, this.paramNameDiscoverer);
+        StandardEvaluationContext evaluationContext = new MethodBasedEvaluationContext(root, targetMethod, args,
+                this.paramNameDiscoverer);
+        if (beanFactory != null) {
+            evaluationContext.setBeanResolver(new BeanFactoryResolver(beanFactory));
+        }
+        return evaluationContext;
     }
 
     @Nullable
