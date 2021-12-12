@@ -1,4 +1,4 @@
-package xyz.hellothomas.jedi.client.config;
+package xyz.hellothomas.jedi.client.model;
 
 import lombok.Getter;
 import lombok.Setter;

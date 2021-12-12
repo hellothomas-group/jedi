@@ -25,6 +25,7 @@ import xyz.hellothomas.jedi.client.constants.Constants;
 import xyz.hellothomas.jedi.client.enums.ConsumerTypeEnum;
 import xyz.hellothomas.jedi.client.enums.JediModeEnum;
 import xyz.hellothomas.jedi.client.model.ConsumerProperty;
+import xyz.hellothomas.jedi.client.model.JediConfig;
 import xyz.hellothomas.jedi.client.model.JediProperty;
 import xyz.hellothomas.jedi.client.util.ExceptionUtil;
 import xyz.hellothomas.jedi.client.util.HttpRequest;

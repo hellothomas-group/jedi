@@ -1,4 +1,4 @@
-package xyz.hellothomas.jedi.client.trace;
+package xyz.hellothomas.jedi.core.trace;
 
 import java.util.concurrent.Callable;
 

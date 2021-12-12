@@ -1,0 +1,126 @@
+{
+  "groups": [
+    {
+      "name": "jedi",
+      "type": "xyz.hellothomas.jedi.client.model.JediProperty",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty"
+    },
+    {
+      "name": "jedi-default-executor",
+      "type": "xyz.hellothomas.jedi.client.model.JediThreadPoolProperty",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediThreadPoolProperty"
+    }
+  ],
+  "properties": [
+    {
+      "name": "jedi-default-executor.allow-core-thread-time-out",
+      "type": "java.lang.Boolean",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediThreadPoolProperty",
+      "defaultValue": false
+    },
+    {
+      "name": "jedi-default-executor.core-pool-size",
+      "type": "java.lang.Integer",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediThreadPoolProperty",
+      "defaultValue": 10
+    },
+    {
+      "name": "jedi-default-executor.keep-alive-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediThreadPoolProperty",
+      "defaultValue": 60
+    },
+    {
+      "name": "jedi-default-executor.max-pool-size",
+      "type": "java.lang.Integer",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediThreadPoolProperty",
+      "defaultValue": 20
+    },
+    {
+      "name": "jedi-default-executor.queue-capacity",
+      "type": "java.lang.Integer",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediThreadPoolProperty",
+      "defaultValue": 1000
+    },
+    {
+      "name": "jedi-default-executor.rejected-execution-handler",
+      "type": "java.lang.String",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediThreadPoolProperty",
+      "defaultValue": "java.util.concurrent.ThreadPoolExecutor$AbortPolicy"
+    },
+    {
+      "name": "jedi-default-executor.ticker-cycle",
+      "type": "java.lang.Integer",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediThreadPoolProperty",
+      "defaultValue": 5000
+    },
+    {
+      "name": "jedi.app-id",
+      "type": "java.lang.String",
+      "description": "应用名",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty"
+    },
+    {
+      "name": "jedi.enable",
+      "type": "java.lang.Boolean",
+      "description": "开启 Jedi",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty",
+      "defaultValue": false
+    },
+    {
+      "name": "jedi.executors",
+      "type": "java.lang.String",
+      "description": "线程池名称集合",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty"
+    },
+    {
+      "name": "jedi.mode",
+      "type": "java.lang.Integer",
+      "description": "客户端模式",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty",
+      "defaultValue": 0
+    },
+    {
+      "name": "jedi.namespace",
+      "type": "java.lang.String",
+      "description": "环境",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty"
+    },
+    {
+      "name": "jedi.order",
+      "type": "java.lang.Integer",
+      "description": "JediAsyncAspect order",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty",
+      "defaultValue": 0
+    },
+    {
+      "name": "jedi.url",
+      "type": "java.lang.String",
+      "description": "config-service url",
+      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty"
+    }
+  ],
+  "hints": [
+    {
+      "name": "jedi.mode",
+      "values": [
+        {
+          "value": 0,
+          "description": "监控 + 服务端配置."
+        },
+        {
+          "value": 1,
+          "description": "仅监控."
+        },
+        {
+          "value": 2,
+          "description": "仅服务端配置."
+        },
+        {
+          "value": 3,
+          "description": "脱机模式(仅本地配置)."
+        }
+      ]
+    }
+  ]
+}

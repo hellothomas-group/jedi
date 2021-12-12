@@ -14,7 +14,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
 import xyz.hellothomas.jedi.client.annotation.JediAsync;
-import xyz.hellothomas.jedi.client.config.JediConfig;
+import xyz.hellothomas.jedi.client.model.JediConfig;
 import xyz.hellothomas.jedi.client.exception.JediClientException;
 import xyz.hellothomas.jedi.client.util.ExpressionUtil;
 import xyz.hellothomas.jedi.core.internals.executor.JediRunnable;

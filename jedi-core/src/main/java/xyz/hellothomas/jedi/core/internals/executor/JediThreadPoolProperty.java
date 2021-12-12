@@ -21,6 +21,7 @@ public class JediThreadPoolProperty {
     private static final int DEFAULT_TICKER_CYCLE = 5000;
     private static final boolean DEFAULT_ALLOW_CORE_THREAD_TIMEOUT = false;
     private static final String DEFAULT_POOL_NAME = "pool-";
+    private static final String DEFAULT_REJECTED_EXECUTION_HANDLER = "java.util.concurrent.ThreadPoolExecutor$AbortPolicy";
 
     private int corePoolSize = DEFAULT_CORE_POOL_SIZE;
     private int maxPoolSize = DEFAULT_MAX_POOL_SIZE;
@@ -30,7 +31,7 @@ public class JediThreadPoolProperty {
     private boolean allowCoreThreadTimeOut = DEFAULT_ALLOW_CORE_THREAD_TIMEOUT;
     private BlockingQueue<Runnable> workQueue = new ResizableCapacityLinkedBlockingQueue<>(queueCapacity);
     private ThreadFactory threadFactory = Executors.defaultThreadFactory();
-    private String rejectedExecutionHandler;
+    private String rejectedExecutionHandler = DEFAULT_REJECTED_EXECUTION_HANDLER;
     /**
      * not null
      */
@@ -161,7 +162,7 @@ public class JediThreadPoolProperty {
         private int queueCapacity = DEFAULT_QUEUE_CAPACITY;
         private boolean allowCoreThreadTimeOut = DEFAULT_ALLOW_CORE_THREAD_TIMEOUT;
         private String name = DEFAULT_POOL_NAME + System.currentTimeMillis();
-        private String rejectedExecutionHandler;
+        private String rejectedExecutionHandler = DEFAULT_REJECTED_EXECUTION_HANDLER;
         private AbstractNotificationService notificationService;
         private BlockingQueue<Runnable> workQueue = new ResizableCapacityLinkedBlockingQueue<>(queueCapacity);
         private ThreadFactory threadFactory = Executors.defaultThreadFactory();

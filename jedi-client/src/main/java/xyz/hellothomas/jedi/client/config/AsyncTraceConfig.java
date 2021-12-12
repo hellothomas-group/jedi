@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import xyz.hellothomas.jedi.client.constants.Constants;
-import xyz.hellothomas.jedi.client.trace.AsyncTraceFactory;
-import xyz.hellothomas.jedi.client.trace.DefaultAsyncTraceFactory;
+import xyz.hellothomas.jedi.core.trace.AsyncTraceFactory;
+import xyz.hellothomas.jedi.core.trace.DefaultAsyncTraceFactory;
 
 /**
  * @author Thomas
