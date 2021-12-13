@@ -70,8 +70,8 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
             }
         };
 
-        return doSubmit(asyncTraceFactory.get(new JediCallable<>(jediThreadPoolExecutor, taskName, taskExtraData,
-                task)), jediThreadPoolExecutor, methodSignature.getReturnType());
+        return doSubmit(asyncTraceFactory.getCallable(new JediCallable<>(jediThreadPoolExecutor, taskName,
+                taskExtraData, task)), jediThreadPoolExecutor, methodSignature.getReturnType());
     }
 
     /**

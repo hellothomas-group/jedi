@@ -10,7 +10,7 @@ import java.util.concurrent.Callable;
  */
 public interface AsyncTraceFactory<V> {
 
-    Runnable get(Runnable runnable);
+    Runnable getRunnable(Runnable runnable);
 
-    Callable<V> get(Callable<V> callable);
+    Callable<V> getCallable(Callable<V> callable);
 }
