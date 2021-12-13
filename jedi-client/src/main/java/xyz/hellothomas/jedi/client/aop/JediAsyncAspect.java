@@ -1,5 +1,6 @@
 package xyz.hellothomas.jedi.client.aop;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -13,14 +14,22 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.lang.Nullable;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureTask;
 import xyz.hellothomas.jedi.client.annotation.JediAsync;
-import xyz.hellothomas.jedi.client.model.JediConfig;
 import xyz.hellothomas.jedi.client.exception.JediClientException;
+import xyz.hellothomas.jedi.client.model.JediConfig;
 import xyz.hellothomas.jedi.client.util.ExpressionUtil;
-import xyz.hellothomas.jedi.core.internals.executor.JediRunnable;
+import xyz.hellothomas.jedi.core.internals.executor.JediCallable;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
+import xyz.hellothomas.jedi.core.trace.AsyncTraceFactory;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static xyz.hellothomas.jedi.core.constants.Constants.JEDI_DEFAULT_TASK_NAME;
@@ -28,10 +37,11 @@ import static xyz.hellothomas.jedi.core.constants.Constants.JEDI_DEFAULT_TASK_NA
 @Aspect
 @Slf4j
 public class JediAsyncAspect implements ApplicationContextAware, InitializingBean, Ordered {
+    private ApplicationContext applicationContext;
     private Map<String, JediThreadPoolExecutor> executorMap;
     private JediThreadPoolExecutor uniqueExecutor;
     private int order;
-    private ApplicationContext applicationContext;
+    private AsyncTraceFactory asyncTraceFactory;
 
     @Pointcut("@annotation(xyz.hellothomas.jedi.client.annotation.JediAsync)")
     public void annotationPointcut() {
@@ -39,7 +49,7 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
     }
 
     @Around("annotationPointcut()")
-    public void jediAsyncAround(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object jediAsyncAround(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         JediAsync jediAsync = AnnotationUtils.getAnnotation(methodSignature.getMethod(), JediAsync.class);
 
@@ -47,18 +57,50 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         String taskName = extractTaskName(joinPoint, jediAsync);
         String taskExtraData = extractTaskExtraData(joinPoint, jediAsync);
 
-        jediThreadPoolExecutor.execute(new JediRunnable(jediThreadPoolExecutor, taskName, taskExtraData,
-                () -> {
-                    try {
-                        joinPoint.proceed();
-                    } catch (Throwable throwable) {
-                        log.error("Exception in {}.{}() with cause = \'{}\' and exception = \'{}\'",
-                                joinPoint.getSignature().getDeclaringTypeName(),
-                                joinPoint.getSignature().getName(), null != throwable.getCause() ?
-                                        throwable.getCause() :
-                                        "NULL", throwable.getMessage(), throwable);
-                    }
-                }));
+        Callable<Object> task = new Callable<Object>() {
+            @SneakyThrows
+            @Override
+            public Object call() throws Exception {
+                Object result = joinPoint.proceed();
+                if (result instanceof Future) {
+                    return ((Future<?>) result).get();
+                }
+
+                return null;
+            }
+        };
+
+        return doSubmit(asyncTraceFactory.get(new JediCallable<>(jediThreadPoolExecutor, taskName, taskExtraData,
+                task)), jediThreadPoolExecutor, methodSignature.getReturnType());
+    }
+
+    /**
+     * Delegate for actually executing the given task with the chosen executor.
+     * @param task the task to execute
+     * @param executor the chosen executor
+     * @param returnType the declared return type (potentially a {@link Future} variant)
+     * @return the execution result (potentially a corresponding {@link Future} handle)
+     */
+    @Nullable
+    private Object doSubmit(Callable<Object> task, JediThreadPoolExecutor executor, Class<?> returnType) {
+        if (CompletableFuture.class.isAssignableFrom(returnType)) {
+            return CompletableFuture.supplyAsync(new Supplier() {
+                @SneakyThrows
+                @Override
+                public Object get() {
+                    return task.call();
+                }
+            }, executor);
+        } else if (ListenableFuture.class.isAssignableFrom(returnType)) {
+            ListenableFutureTask future = new ListenableFutureTask<>(task);
+            executor.execute(future);
+            return future;
+        } else if (Future.class.isAssignableFrom(returnType)) {
+            return executor.submit(task);
+        } else {
+            executor.submit(task);
+            return null;
+        }
     }
 
     private JediThreadPoolExecutor extractJediThreadPoolExecutor(JediAsync jediAsync) {
@@ -142,6 +184,7 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         this.executorMap =
                 this.applicationContext.getBeansOfType(JediThreadPoolExecutor.class);
         JediConfig jediConfig = this.applicationContext.getBean(JediConfig.class);
+        this.asyncTraceFactory = this.applicationContext.getBean(AsyncTraceFactory.class);
         this.order = jediConfig.getOrder();
         if (executorMap.size() == 1) {
             uniqueExecutor = executorMap.values().stream().findFirst().get();
