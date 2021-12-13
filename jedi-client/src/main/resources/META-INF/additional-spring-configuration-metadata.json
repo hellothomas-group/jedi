@@ -4,52 +4,47 @@
       "name": "jedi",
       "type": "xyz.hellothomas.jedi.client.model.JediProperty",
       "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty"
-    },
-    {
-      "name": "jedi-default-executor",
-      "type": "xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty",
-      "sourceType": "xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty"
     }
   ],
   "properties": [
     {
-      "name": "jedi-default-executor.allow-core-thread-time-out",
+      "name": "jedi.jedi-default-executor.allow-core-thread-time-out",
       "type": "java.lang.Boolean",
       "sourceType": "xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty",
       "defaultValue": false
     },
     {
-      "name": "jedi-default-executor.core-pool-size",
+      "name": "jedi.jedi-default-executor.core-pool-size",
       "type": "java.lang.Integer",
       "sourceType": "xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty",
       "defaultValue": 10
     },
     {
-      "name": "jedi-default-executor.keep-alive-seconds",
+      "name": "jedi.jedi-default-executor.keep-alive-seconds",
       "type": "java.lang.Integer",
       "sourceType": "xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty",
       "defaultValue": 60
     },
     {
-      "name": "jedi-default-executor.max-pool-size",
+      "name": "jedi.jedi-default-executor.max-pool-size",
       "type": "java.lang.Integer",
       "sourceType": "xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty",
       "defaultValue": 20
     },
     {
-      "name": "jedi-default-executor.queue-capacity",
+      "name": "jedi.jedi-default-executor.queue-capacity",
       "type": "java.lang.Integer",
       "sourceType": "xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty",
       "defaultValue": 1000
     },
     {
-      "name": "jedi-default-executor.rejected-execution-handler",
+      "name": "jedi.jedi-default-executor.rejected-execution-handler",
       "type": "java.lang.String",
       "sourceType": "xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty",
       "defaultValue": "java.util.concurrent.ThreadPoolExecutor$AbortPolicy"
     },
     {
-      "name": "jedi-default-executor.ticker-cycle",
+      "name": "jedi.jedi-default-executor.ticker-cycle",
       "type": "java.lang.Integer",
       "sourceType": "xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty",
       "defaultValue": 5000
