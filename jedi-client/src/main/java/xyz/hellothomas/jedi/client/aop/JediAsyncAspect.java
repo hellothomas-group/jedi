@@ -18,20 +18,26 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureTask;
 import xyz.hellothomas.jedi.client.annotation.JediAsync;
+import xyz.hellothomas.jedi.client.enums.TaskStatusEnum;
 import xyz.hellothomas.jedi.client.exception.JediClientException;
 import xyz.hellothomas.jedi.client.model.JediConfig;
+import xyz.hellothomas.jedi.client.persistence.JediPersistentCallable;
+import xyz.hellothomas.jedi.client.persistence.PersistenceService;
+import xyz.hellothomas.jedi.client.persistence.TaskPersistProperty;
 import xyz.hellothomas.jedi.client.util.ExpressionUtil;
 import xyz.hellothomas.jedi.core.internals.executor.JediCallable;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 import xyz.hellothomas.jedi.core.trace.AsyncTraceFactory;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static xyz.hellothomas.jedi.core.constants.Constants.EMPTY_STRING;
 import static xyz.hellothomas.jedi.core.constants.Constants.JEDI_DEFAULT_TASK_NAME;
 
 @Aspect
@@ -52,7 +58,6 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
     public Object jediAsyncAround(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         JediAsync jediAsync = AnnotationUtils.getAnnotation(methodSignature.getMethod(), JediAsync.class);
-
         JediThreadPoolExecutor jediThreadPoolExecutor = extractJediThreadPoolExecutor(jediAsync);
         String taskName = extractTaskName(joinPoint, jediAsync);
         String taskExtraData = extractTaskExtraData(joinPoint, jediAsync);
@@ -70,8 +75,43 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
             }
         };
 
-        return doSubmit(asyncTraceFactory.getCallable(new JediCallable<>(jediThreadPoolExecutor, taskName,
-                taskExtraData, task)), jediThreadPoolExecutor, methodSignature.getReturnType());
+        if (jediAsync.persistent()) {
+            TaskPersistProperty taskPersistProperty = buildTaskPersistProperty(jediAsync,
+                    jediThreadPoolExecutor.getPoolName(),
+                    taskName);
+            PersistenceService persistenceService = this.applicationContext.getBean(PersistenceService.class);
+            persistenceService.insertTaskExecution(taskPersistProperty);
+
+            return doSubmit(asyncTraceFactory.getCallable(
+                    new JediPersistentCallable<>(
+                            new JediCallable<>(jediThreadPoolExecutor, taskName, taskExtraData, task,
+                                    taskPersistProperty.getId()),
+                            taskPersistProperty, persistenceService)),
+                    jediThreadPoolExecutor, methodSignature.getReturnType());
+        } else {
+            return doSubmit(asyncTraceFactory.getCallable(
+                    new JediCallable<>(jediThreadPoolExecutor, taskName, taskExtraData, task)),
+                    jediThreadPoolExecutor, methodSignature.getReturnType());
+        }
+    }
+
+    private TaskPersistProperty buildTaskPersistProperty(JediAsync jediAsync, String executorName, String taskName) {
+        TaskPersistProperty taskPersistProperty = new TaskPersistProperty();
+        JediConfig jediConfig = this.applicationContext.getBean(JediConfig.class);
+        taskPersistProperty.setId(UUID.randomUUID().toString());
+        taskPersistProperty.setNamespaceName(jediConfig.getNamespace());
+        taskPersistProperty.setAppId(jediConfig.getAppId());
+        taskPersistProperty.setExecutorName(executorName);
+        taskPersistProperty.setTaskName(taskName);
+        taskPersistProperty.setBeanName("");
+        taskPersistProperty.setMethodName("");
+        taskPersistProperty.setArguments("");
+        taskPersistProperty.setProcessStatus(TaskStatusEnum.TODO.getProcessStatus());
+        taskPersistProperty.setTraceId(EMPTY_STRING);
+        taskPersistProperty.setLastId(EMPTY_STRING);
+        taskPersistProperty.setDataSourceName(jediAsync.dataSourceName());
+
+        return taskPersistProperty;
     }
 
     /**

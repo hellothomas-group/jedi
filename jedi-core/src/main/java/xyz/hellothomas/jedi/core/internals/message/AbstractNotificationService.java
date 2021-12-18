@@ -77,8 +77,11 @@ public abstract class AbstractNotificationService {
 
     public ExecutorTaskNotification buildExecutorTaskNotification(String taskName, String taskExtraData,
                                                                   String poolName, long waitTime, long executionTime,
-                                                                  Throwable t) {
+                                                                  String id, Throwable t) {
         ExecutorTaskNotification executorTaskNotification = new ExecutorTaskNotification();
+        if (StringUtils.isNotBlank(id)) {
+            executorTaskNotification.setId(id);
+        }
         if (StringUtils.isNotBlank(taskName)) {
             executorTaskNotification.setTaskName(taskName);
         }
@@ -138,7 +141,9 @@ public abstract class AbstractNotificationService {
     public abstract void send(Object notification, MessageType messageType);
 
     private void fillMessageCommonField(AbstractNotification notification) {
-        notification.setId(UUID.randomUUID().toString());
+        if (notification.getId() == null) {
+            notification.setId(UUID.randomUUID().toString());
+        }
         notification.setAppId(appId);
         notification.setNamespace(namespace);
         notification.setHost(host);

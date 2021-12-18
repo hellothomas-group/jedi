@@ -51,4 +51,16 @@ public @interface JediAsync {
      * @return
      */
     String taskExtraData() default "";
+
+    /**
+     * 需持久化
+     * @return
+     */
+    boolean persistent() default false;
+
+    /**
+     * 持久化数据源
+     * @return
+     */
+    String dataSourceName() default "";
 }

@@ -164,14 +164,25 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
 
     @Override
     protected void afterExecute(Runnable r, Throwable t) {
+        Throwable throwable = t;
         TaskProperty currentTaskProperty = this.taskProperty.get();
         long diff = System.currentTimeMillis() - currentTaskProperty.getStartTime();
+        if (r instanceof RunnableFuture) {
+            try {
+                ((RunnableFuture) r).get();
+            } catch (Exception e) {
+                LOGGER.error(String.format("taskId:%s, taskName：%s, 执行异常!", currentTaskProperty.getId(),
+                        currentTaskProperty.getTaskName()), e);
+                throwable = e;
+            }
+        }
 
         if (!(notificationService instanceof NullNotificationService)) {
             ExecutorTaskNotification executorTaskNotification =
                     this.notificationService.buildExecutorTaskNotification(currentTaskProperty.getTaskName(),
                             currentTaskProperty.getTaskExtraData(),
-                            this.poolName, currentTaskProperty.getWaitTime(), diff, t);
+                            this.poolName, currentTaskProperty.getWaitTime(), diff, currentTaskProperty.getId(),
+                            throwable);
             this.notificationService.pushNotification(executorTaskNotification);
         }
         this.taskProperty.remove();

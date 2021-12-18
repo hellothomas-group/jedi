@@ -11,11 +11,20 @@ public class TaskProperty {
     private final String taskExtraData;
     private final long waitTime;
     private long startTime;
+    private String id;
 
     public TaskProperty(String taskName, String taskExtraData, long waitTime) {
         this.taskName = taskName;
         this.taskExtraData = taskExtraData;
         this.waitTime = waitTime;
+        this.id = null;
+    }
+
+    public TaskProperty(String taskName, String taskExtraData, long waitTime, String id) {
+        this.taskName = taskName;
+        this.taskExtraData = taskExtraData;
+        this.waitTime = waitTime;
+        this.id = id;
     }
 
     public String getTaskName() {
@@ -36,5 +45,9 @@ public class TaskProperty {
 
     public void setStartTime(Long startTime) {
         this.startTime = startTime;
+    }
+
+    public String getId() {
+        return id;
     }
 }

@@ -12,6 +12,7 @@ public class JediRunnable implements Runnable {
     private final JediThreadPoolExecutor executor;
     private final Runnable runnable;
     private final long submitTime;
+    private final String id;
 
     public JediRunnable(JediThreadPoolExecutor executor, String taskName, Runnable runnable) {
         this.taskName = taskName;
@@ -19,6 +20,7 @@ public class JediRunnable implements Runnable {
         this.executor = executor;
         this.runnable = runnable;
         this.submitTime = System.currentTimeMillis();
+        this.id = null;
     }
 
     public JediRunnable(JediThreadPoolExecutor executor, String taskName, String taskExtraData, Runnable runnable) {
@@ -27,13 +29,24 @@ public class JediRunnable implements Runnable {
         this.executor = executor;
         this.runnable = runnable;
         this.submitTime = System.currentTimeMillis();
+        this.id = null;
+    }
+
+    public JediRunnable(JediThreadPoolExecutor executor, String taskName, String taskExtraData, Runnable runnable,
+                        String id) {
+        this.taskName = taskName;
+        this.taskExtraData = taskExtraData;
+        this.executor = executor;
+        this.runnable = runnable;
+        this.submitTime = System.currentTimeMillis();
+        this.id = id;
     }
 
     @Override
     public void run() {
         // 替换默认的taskProperty
         long startTime = System.currentTimeMillis();
-        TaskProperty taskProperty = new TaskProperty(taskName, taskExtraData, startTime - submitTime);
+        TaskProperty taskProperty = new TaskProperty(taskName, taskExtraData, startTime - submitTime, id);
         taskProperty.setStartTime(startTime);
         executor.setTaskProperty(taskProperty);
         runnable.run();

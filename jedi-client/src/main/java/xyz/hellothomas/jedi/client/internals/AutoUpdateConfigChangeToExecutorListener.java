@@ -73,8 +73,8 @@ public class AutoUpdateConfigChangeToExecutorListener implements ConfigChangeLis
                         boolean result =
                                 ((ResizableCapacityLinkedBlockingQueue) queue).resizeCapacity(newCapacity);
                         if (!result) {
-                            logger.warn(String.format("queueCapacity cannot decrease from %d to %d, this change will work " +
-                                    "when restart", oldCapacity, newCapacity));
+                            logger.warn(String.format("queueCapacity cannot decrease from %d to %d, this change will " +
+                                    "work when restart", oldCapacity, newCapacity));
                         }
                     } else {
                         logger.info("BlockingQueue not support resize queueCapacity");
