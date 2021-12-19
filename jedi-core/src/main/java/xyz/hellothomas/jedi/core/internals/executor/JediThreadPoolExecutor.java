@@ -164,6 +164,7 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         TaskProperty taskProperty =
                 (TaskProperty) AsyncContextHolder.getAsyncAttributes().getAttribute(TaskProperty.class.getName());
         if (taskProperty.getEndTime() == null) {
+            // support原生Callable/Runnable
             taskProperty.setEndTime(LocalDateTime.now());
             Throwable throwable = t;
             if (r instanceof RunnableFuture) {
@@ -200,36 +201,6 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
     public void execute(Runnable command) {
         try {
             super.execute(command);
-        } catch (RejectedExecutionException e) {
-            rejectCount.getAndIncrement();
-            throw e;
-        }
-    }
-
-    @Override
-    public Future<?> submit(Runnable task) {
-        try {
-            return super.submit(task);
-        } catch (RejectedExecutionException e) {
-            rejectCount.getAndIncrement();
-            throw e;
-        }
-    }
-
-    @Override
-    public <T> Future<T> submit(Runnable task, T result) {
-        try {
-            return super.submit(task, result);
-        } catch (RejectedExecutionException e) {
-            rejectCount.getAndIncrement();
-            throw e;
-        }
-    }
-
-    @Override
-    public <T> Future<T> submit(Callable<T> task) {
-        try {
-            return super.submit(task);
         } catch (RejectedExecutionException e) {
             rejectCount.getAndIncrement();
             throw e;

@@ -82,10 +82,14 @@ public abstract class AbstractNotificationService {
         executorTaskNotification.setId(taskProperty.getId());
         executorTaskNotification.setTaskName(taskProperty.getTaskName());
         executorTaskNotification.setTaskExtraData(taskProperty.getTaskExtraData());
-        Duration waitDuration = Duration.between(taskProperty.getCreateTime(), taskProperty.getStartTime());
-        executorTaskNotification.setWaitTime(waitDuration.toMillis());
-        Duration executionDuration = Duration.between(taskProperty.getStartTime(), taskProperty.getEndTime());
-        executorTaskNotification.setExecutionTime(executionDuration.toMillis());
+        if (taskProperty.getStartTime() != null) {
+            Duration waitDuration = Duration.between(taskProperty.getCreateTime(), taskProperty.getStartTime());
+            executorTaskNotification.setWaitTime(waitDuration.toMillis());
+            if (taskProperty.getEndTime() != null) {
+                Duration executionDuration = Duration.between(taskProperty.getStartTime(), taskProperty.getEndTime());
+                executorTaskNotification.setExecutionTime(executionDuration.toMillis());
+            }
+        }
         executorTaskNotification.setPoolName(taskProperty.getExecutorName());
         if (TaskStatusEnum.SUCCESS.getValue().equals(taskProperty.getStatus())) {
             executorTaskNotification.setIsSuccess(true);

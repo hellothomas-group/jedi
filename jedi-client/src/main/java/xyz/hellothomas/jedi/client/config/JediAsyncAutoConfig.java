@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import xyz.hellothomas.jedi.client.aop.JediAsyncAspect;
 import xyz.hellothomas.jedi.client.constants.Constants;
 import xyz.hellothomas.jedi.client.persistence.JdbcTemplatePersistenceService;
+import xyz.hellothomas.jedi.client.persistence.NullPersistentService;
 import xyz.hellothomas.jedi.client.persistence.PersistenceService;
 import xyz.hellothomas.jedi.core.trace.AsyncTraceFactory;
 import xyz.hellothomas.jedi.core.trace.DefaultAsyncTraceFactory;
@@ -32,5 +33,11 @@ public class JediAsyncAutoConfig {
     @ConditionalOnMissingBean
     public PersistenceService persistenceService() {
         return new JdbcTemplatePersistenceService();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public PersistenceService nullPersistentService() {
+        return new NullPersistentService();
     }
 }

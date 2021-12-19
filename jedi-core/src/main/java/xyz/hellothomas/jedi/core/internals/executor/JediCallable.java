@@ -1,5 +1,7 @@
 package xyz.hellothomas.jedi.core.internals.executor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
 import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
 
@@ -13,6 +15,7 @@ import java.util.concurrent.Callable;
  * @version 1.0
  */
 public class JediCallable<V> implements Callable<V> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JediCallable.class);
     private final Callable<V> callable;
     private final AsyncAttributes asyncAttributes;
     private final TaskProperty taskProperty;
@@ -35,6 +38,29 @@ public class JediCallable<V> implements Callable<V> {
             AsyncContextHolder.setAsyncAttributes(asyncAttributes);
         }
 
-        return (V) callable.call();
+        try {
+            V result = callable.call();
+            if (taskProperty.getEndTime() == null) {
+                // 任务成功
+                taskProperty.setEndTime(LocalDateTime.now());
+                taskProperty.setStatus(TaskStatusEnum.SUCCESS.getValue());
+            }
+            return result;
+        } catch (Exception e) {
+            if (taskProperty.getEndTime() == null) {
+                // 任务失败
+                taskProperty.setEndTime(LocalDateTime.now());
+                taskProperty.setStatus(TaskStatusEnum.FAIL.getValue());
+                LOGGER.error(String.format("taskId:%s, taskName：%s, 执行异常!", taskProperty.getId(),
+                        taskProperty.getTaskName()), e);
+                String exceptionString = e.getMessage();
+                if (exceptionString != null) {
+                    exceptionString = exceptionString.length() > 300 ? exceptionString.substring(0,
+                            300) : exceptionString;
+                    taskProperty.setExitMessage(exceptionString);
+                }
+            }
+            throw e;
+        }
     }
 }

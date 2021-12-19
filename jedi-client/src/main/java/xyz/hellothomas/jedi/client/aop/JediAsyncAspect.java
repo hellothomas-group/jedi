@@ -23,11 +23,14 @@ import xyz.hellothomas.jedi.client.model.JediConfig;
 import xyz.hellothomas.jedi.client.persistence.JediPersistentCallable;
 import xyz.hellothomas.jedi.client.persistence.PersistenceService;
 import xyz.hellothomas.jedi.client.util.ExpressionUtil;
+import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
 import xyz.hellothomas.jedi.core.internals.executor.AsyncAttributes;
 import xyz.hellothomas.jedi.core.internals.executor.JediCallable;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
+import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
+import xyz.hellothomas.jedi.core.internals.message.NullNotificationService;
 import xyz.hellothomas.jedi.core.trace.AsyncTraceFactory;
 import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
 
@@ -51,6 +54,9 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
     private JediThreadPoolExecutor uniqueExecutor;
     private int order;
     private AsyncTraceFactory asyncTraceFactory;
+    private PersistenceService persistenceService;
+    private AbstractNotificationService notificationService;
+    private JediConfig jediConfig;
 
     @Pointcut("@annotation(xyz.hellothomas.jedi.client.annotation.JediAsync)")
     public void annotationPointcut() {
@@ -108,11 +114,24 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
             }
         } catch (RejectedExecutionException e) {
             taskProperty.setStatus(TaskStatusEnum.REJECTED.getValue());
+            String exceptionString = e.getMessage();
+            if (exceptionString != null) {
+                exceptionString = exceptionString.length() > 300 ? exceptionString.substring(0,
+                        300) : exceptionString;
+                taskProperty.setExitMessage(exceptionString);
+            }
             if (jediAsync.persistent()) {
                 // 任务拒绝持久化
-                PersistenceService persistenceService = this.applicationContext.getBean(PersistenceService.class);
                 persistenceService.updateTaskExecution(taskProperty);
             }
+
+            // 任务拒绝消息
+            if (!(notificationService instanceof NullNotificationService)) {
+                ExecutorTaskNotification executorTaskNotification =
+                        notificationService.buildExecutorTaskNotification(taskProperty);
+                notificationService.pushNotification(executorTaskNotification);
+            }
+
             throw e;
         } finally {
             if (!isRetry) {
@@ -250,9 +269,11 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
     public void afterPropertiesSet() throws Exception {
         this.executorMap =
                 this.applicationContext.getBeansOfType(JediThreadPoolExecutor.class);
-        JediConfig jediConfig = this.applicationContext.getBean(JediConfig.class);
+        this.jediConfig = this.applicationContext.getBean(JediConfig.class);
         this.asyncTraceFactory = this.applicationContext.getBean(AsyncTraceFactory.class);
-        this.order = jediConfig.getOrder();
+        this.notificationService = this.applicationContext.getBean(AbstractNotificationService.class);
+        this.persistenceService = this.applicationContext.getBean(PersistenceService.class);
+        this.order = this.jediConfig.getOrder();
         if (executorMap.size() == 1) {
             uniqueExecutor = executorMap.values().stream().findFirst().get();
         } else {

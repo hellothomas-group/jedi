@@ -35,16 +35,22 @@ public class JediPersistentCallable<V> implements Callable<V> {
             asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
             AsyncContextHolder.setAsyncAttributes(asyncAttributes);
         }
+        // 任务开始持久化
+        persistenceService.updateTaskExecution(taskProperty);
 
         try {
-            // 任务开始持久化
-            persistenceService.updateTaskExecution(taskProperty);
             V result = callable.call();
+            if (taskProperty.getEndTime() == null) {
+                // 任务成功
+                taskProperty.setEndTime(LocalDateTime.now());
+                taskProperty.setStatus(TaskStatusEnum.SUCCESS.getValue());
+            }
             // 任务成功持久化
             persistenceService.deleteTaskExecution(taskProperty);
             return result;
         } catch (Exception e) {
             if (taskProperty.getEndTime() == null) {
+                // 任务失败
                 taskProperty.setEndTime(LocalDateTime.now());
                 taskProperty.setStatus(TaskStatusEnum.FAIL.getValue());
                 LOGGER.error(String.format("taskId:%s, taskName：%s, 执行异常!", taskProperty.getId(),
