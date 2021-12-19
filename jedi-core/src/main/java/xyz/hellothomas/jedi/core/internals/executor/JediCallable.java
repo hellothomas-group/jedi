@@ -1,5 +1,9 @@
 package xyz.hellothomas.jedi.core.internals.executor;
 
+import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
+import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
+
+import java.time.LocalDateTime;
 import java.util.concurrent.Callable;
 
 /**
@@ -9,56 +13,28 @@ import java.util.concurrent.Callable;
  * @version 1.0
  */
 public class JediCallable<V> implements Callable<V> {
-    private final String taskName;
-    private final String taskExtraData;
-    private final JediThreadPoolExecutor executor;
     private final Callable<V> callable;
-    private final long submitTime;
-    private final String id;
+    private final AsyncAttributes asyncAttributes;
+    private final TaskProperty taskProperty;
 
-    public JediCallable(JediThreadPoolExecutor executor, String taskName, Callable<V> callable) {
-        this.taskName = taskName;
-        this.taskExtraData = null;
-        this.executor = executor;
+    public JediCallable(Callable<V> callable) {
         this.callable = callable;
-        this.submitTime = System.currentTimeMillis();
-        this.id = null;
-    }
-
-    public JediCallable(JediThreadPoolExecutor executor, String taskName, String taskExtraData, Callable<V> callable) {
-        this.taskName = taskName;
-        this.taskExtraData = taskExtraData;
-        this.executor = executor;
-        this.callable = callable;
-        this.submitTime = System.currentTimeMillis();
-        this.id = null;
-    }
-
-    public JediCallable(JediThreadPoolExecutor executor, String taskName, String taskExtraData, Callable<V> callable,
-                        String id) {
-        this.taskName = taskName;
-        this.taskExtraData = taskExtraData;
-        this.executor = executor;
-        this.callable = callable;
-        this.submitTime = System.currentTimeMillis();
-        this.id = id;
+        this.asyncAttributes = AsyncContextHolder.getAsyncAttributes();
+        this.taskProperty = (TaskProperty) asyncAttributes.getAttribute(TaskProperty.class.getName());
     }
 
     @Override
     public V call() throws Exception {
-        // 替换默认的taskProperty
-        long startTime = System.currentTimeMillis();
-        TaskProperty taskProperty = new TaskProperty(taskName, taskExtraData, startTime - submitTime, id);
-        taskProperty.setStartTime(startTime);
-        executor.setTaskProperty(taskProperty);
+        if (taskProperty.getStartTime() == null) {
+            // 任务开始
+            taskProperty.setStartTime(LocalDateTime.now());
+            taskProperty.setStatus(TaskStatusEnum.DOING.getValue());
+
+            AsyncAttributes asyncAttributes = new AsyncAttributes();
+            asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
+            AsyncContextHolder.setAsyncAttributes(asyncAttributes);
+        }
+
         return (V) callable.call();
-    }
-
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public String getTaskExtraData() {
-        return taskExtraData;
     }
 }

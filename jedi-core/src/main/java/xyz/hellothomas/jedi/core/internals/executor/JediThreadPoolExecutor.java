@@ -6,11 +6,15 @@ import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorShutdownNotification;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTickerNotification;
+import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
 import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
 import xyz.hellothomas.jedi.core.internals.message.NullNotificationService;
+import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
 import xyz.hellothomas.jedi.core.utils.SleepUtil;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -34,15 +38,6 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
      * 拒绝计数器
      */
     private AtomicLong rejectCount = new AtomicLong();
-
-    /**
-     * 保存任务属性
-     *  任务名称
-     *  任务附加信息
-     *  等待执行时间
-     *  开始执行的时间，当任务结束时，用任务结束时间减去开始时间计算任务执行时间
-     */
-    private ThreadLocal<TaskProperty> taskProperty = new ThreadLocal<>();
 
     /**
      * 打点线程结束标志
@@ -156,36 +151,49 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
 
     @Override
     protected void beforeExecute(Thread t, Runnable r) {
-        TaskProperty defaultTaskProperty = new TaskProperty(JEDI_DEFAULT_TASK_NAME, null, 0L);
-        defaultTaskProperty.setStartTime(System.currentTimeMillis());
-        this.taskProperty.set(defaultTaskProperty);
+        // 任务开始
+        TaskProperty taskProperty = initDefaultTaskProperty();
+        AsyncAttributes asyncAttributes = new AsyncAttributes();
+        asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
+        AsyncContextHolder.setAsyncAttributes(asyncAttributes);
         super.beforeExecute(t, r);
     }
 
     @Override
     protected void afterExecute(Runnable r, Throwable t) {
-        Throwable throwable = t;
-        TaskProperty currentTaskProperty = this.taskProperty.get();
-        long diff = System.currentTimeMillis() - currentTaskProperty.getStartTime();
-        if (r instanceof RunnableFuture) {
-            try {
-                ((RunnableFuture) r).get();
-            } catch (Exception e) {
-                LOGGER.error(String.format("taskId:%s, taskName：%s, 执行异常!", currentTaskProperty.getId(),
-                        currentTaskProperty.getTaskName()), e);
-                throwable = e;
+        TaskProperty taskProperty =
+                (TaskProperty) AsyncContextHolder.getAsyncAttributes().getAttribute(TaskProperty.class.getName());
+        if (taskProperty.getEndTime() == null) {
+            taskProperty.setEndTime(LocalDateTime.now());
+            Throwable throwable = t;
+            if (r instanceof RunnableFuture) {
+                try {
+                    ((RunnableFuture) r).get();
+                } catch (Exception e) {
+                    LOGGER.error(String.format("taskId:%s, taskName：%s, 执行异常!", taskProperty.getId(),
+                            taskProperty.getTaskName()), e);
+                    throwable = e;
+                }
+            }
+            if (throwable == null) {
+                taskProperty.setStatus(TaskStatusEnum.SUCCESS.getValue());
+            } else {
+                taskProperty.setStatus(TaskStatusEnum.FAIL.getValue());
+                String exceptionString = throwable.getMessage();
+                if (exceptionString != null) {
+                    exceptionString = exceptionString.length() > 300 ? exceptionString.substring(0,
+                            300) : exceptionString;
+                    taskProperty.setExitMessage(exceptionString);
+                }
             }
         }
 
         if (!(notificationService instanceof NullNotificationService)) {
             ExecutorTaskNotification executorTaskNotification =
-                    this.notificationService.buildExecutorTaskNotification(currentTaskProperty.getTaskName(),
-                            currentTaskProperty.getTaskExtraData(),
-                            this.poolName, currentTaskProperty.getWaitTime(), diff, currentTaskProperty.getId(),
-                            throwable);
+                    this.notificationService.buildExecutorTaskNotification(taskProperty);
             this.notificationService.pushNotification(executorTaskNotification);
         }
-        this.taskProperty.remove();
+        AsyncContextHolder.resetAsyncAttributes();
     }
 
     @Override
@@ -252,6 +260,19 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         LOGGER.debug("{} started!", tickerThread.getName());
     }
 
+    private TaskProperty initDefaultTaskProperty() {
+        TaskProperty taskProperty = new TaskProperty();
+        taskProperty.setId(UUID.randomUUID().toString());
+        taskProperty.setExecutorName(this.poolName);
+        taskProperty.setTaskName(JEDI_DEFAULT_TASK_NAME);
+        LocalDateTime currentTime = LocalDateTime.now();
+        taskProperty.setCreateTime(currentTime);
+        taskProperty.setStartTime(currentTime);
+        taskProperty.setStatus(TaskStatusEnum.DOING.getValue());
+
+        return taskProperty;
+    }
+
     public boolean isToStop() {
         return toStop;
     }
@@ -286,13 +307,5 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
 
     public void setLastRejectCount(long lastRejectCount) {
         this.lastRejectCount = lastRejectCount;
-    }
-
-    public TaskProperty getTaskProperty() {
-        return this.taskProperty.get();
-    }
-
-    public void setTaskProperty(TaskProperty taskProperty) {
-        this.taskProperty.set(taskProperty);
     }
 }

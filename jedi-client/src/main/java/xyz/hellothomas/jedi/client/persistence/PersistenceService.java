@@ -1,11 +1,14 @@
 package xyz.hellothomas.jedi.client.persistence;
 
-import xyz.hellothomas.jedi.client.enums.TaskStatusEnum;
+import xyz.hellothomas.jedi.client.model.JediTaskExecution;
+import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
 
 public interface PersistenceService {
-    int insertTaskExecution(TaskPersistProperty taskPersistProperty);
+    int insertTaskExecution(TaskProperty taskProperty);
 
-    int updateTaskExecution(TaskPersistProperty taskPersistProperty, TaskStatusEnum taskStatusEnum, Exception e);
+    int updateTaskExecution(TaskProperty taskProperty);
 
-    int deleteTaskExecution(TaskPersistProperty taskPersistProperty);
+    int deleteTaskExecution(TaskProperty taskProperty);
+
+    JediTaskExecution queryTaskExecution(TaskProperty taskProperty);
 }

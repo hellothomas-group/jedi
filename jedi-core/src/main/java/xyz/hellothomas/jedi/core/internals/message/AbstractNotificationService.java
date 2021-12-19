@@ -1,14 +1,16 @@
 package xyz.hellothomas.jedi.core.internals.message;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.core.dto.consumer.*;
 import xyz.hellothomas.jedi.core.enums.MessageType;
+import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
+import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
 import xyz.hellothomas.jedi.core.utils.NetUtil;
 import xyz.hellothomas.jedi.core.utils.ResizableCapacityLinkedBlockingQueue;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -75,31 +77,22 @@ public abstract class AbstractNotificationService {
         return executorTickerNotification;
     }
 
-    public ExecutorTaskNotification buildExecutorTaskNotification(String taskName, String taskExtraData,
-                                                                  String poolName, long waitTime, long executionTime,
-                                                                  String id, Throwable t) {
+    public ExecutorTaskNotification buildExecutorTaskNotification(TaskProperty taskProperty) {
         ExecutorTaskNotification executorTaskNotification = new ExecutorTaskNotification();
-        if (StringUtils.isNotBlank(id)) {
-            executorTaskNotification.setId(id);
-        }
-        if (StringUtils.isNotBlank(taskName)) {
-            executorTaskNotification.setTaskName(taskName);
-        }
-        if (StringUtils.isNotBlank(taskExtraData)) {
-            executorTaskNotification.setTaskExtraData(taskExtraData);
-        }
-        executorTaskNotification.setWaitTime(waitTime);
-        executorTaskNotification.setExecutionTime(executionTime);
-        executorTaskNotification.setPoolName(poolName);
-        if (t == null) {
+        executorTaskNotification.setId(taskProperty.getId());
+        executorTaskNotification.setTaskName(taskProperty.getTaskName());
+        executorTaskNotification.setTaskExtraData(taskProperty.getTaskExtraData());
+        Duration waitDuration = Duration.between(taskProperty.getCreateTime(), taskProperty.getStartTime());
+        executorTaskNotification.setWaitTime(waitDuration.toMillis());
+        Duration executionDuration = Duration.between(taskProperty.getStartTime(), taskProperty.getEndTime());
+        executorTaskNotification.setExecutionTime(executionDuration.toMillis());
+        executorTaskNotification.setPoolName(taskProperty.getExecutorName());
+        if (TaskStatusEnum.SUCCESS.getValue().equals(taskProperty.getStatus())) {
             executorTaskNotification.setIsSuccess(true);
         } else {
             executorTaskNotification.setIsSuccess(false);
-            String exceptionString = t.toString();
-            executorTaskNotification.setFailureReason(exceptionString.length() > 300 ? exceptionString.substring(0,
-                    300) : exceptionString);
+            executorTaskNotification.setFailureReason(taskProperty.getExitMessage());
         }
-
         executorTaskNotification.setMessageType(MessageType.EXECUTOR_TASK.getTypeValue());
         fillMessageCommonField(executorTaskNotification);
 

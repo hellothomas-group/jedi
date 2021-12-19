@@ -3,6 +3,7 @@ package xyz.hellothomas.jedi.core.internals.message;
 import xyz.hellothomas.jedi.core.dto.consumer.*;
 import xyz.hellothomas.jedi.core.enums.MessageType;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
+import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
 
 /**
  * @author Thomas
@@ -31,9 +32,7 @@ public class NullNotificationService extends AbstractNotificationService {
     }
 
     @Override
-    public ExecutorTaskNotification buildExecutorTaskNotification(String taskName, String taskExtraData,
-                                                                  String poolName, long waitTime, long executionTime,
-                                                                  String id, Throwable t) {
+    public ExecutorTaskNotification buildExecutorTaskNotification(TaskProperty taskProperty) {
         return null;
     }
 

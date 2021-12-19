@@ -1,53 +1,191 @@
 package xyz.hellothomas.jedi.core.internals.executor;
 
-/**
- * @author Thomas
- * @date 2021/8/28 14:32
- * @description
- * @version 1.0
- */
-public class TaskProperty {
-    private final String taskName;
-    private final String taskExtraData;
-    private final long waitTime;
-    private long startTime;
-    private String id;
+import java.time.LocalDateTime;
 
-    public TaskProperty(String taskName, String taskExtraData, long waitTime) {
-        this.taskName = taskName;
-        this.taskExtraData = taskExtraData;
-        this.waitTime = waitTime;
-        this.id = null;
+public class TaskProperty {
+    private String id;
+    private String namespaceName;
+    private String appId;
+    private String executorName;
+    private String taskName;
+    private String taskExtraData;
+    private LocalDateTime createTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private String status;
+    private String exitCode;
+    private String exitMessage;
+    private String beanName;
+    private String beanTypeName;
+    private String methodName;
+    private String methodArguments;
+    private String traceId;
+    private String previousId;
+    private boolean persistent;
+    private String dataSourceName;
+
+    public String getId() {
+        return this.id;
     }
 
-    public TaskProperty(String taskName, String taskExtraData, long waitTime, String id) {
-        this.taskName = taskName;
-        this.taskExtraData = taskExtraData;
-        this.waitTime = waitTime;
-        this.id = id;
+    public String getNamespaceName() {
+        return this.namespaceName;
+    }
+
+    public String getAppId() {
+        return this.appId;
+    }
+
+    public String getExecutorName() {
+        return this.executorName;
     }
 
     public String getTaskName() {
-        return taskName;
+        return this.taskName;
     }
 
     public String getTaskExtraData() {
-        return taskExtraData;
+        return this.taskExtraData;
     }
 
-    public long getWaitTime() {
-        return waitTime;
+    public LocalDateTime getCreateTime() {
+        return this.createTime;
     }
 
-    public long getStartTime() {
-        return startTime;
+    public LocalDateTime getStartTime() {
+        return this.startTime;
     }
 
-    public void setStartTime(Long startTime) {
+    public LocalDateTime getEndTime() {
+        return this.endTime;
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public String getExitCode() {
+        return this.exitCode;
+    }
+
+    public String getExitMessage() {
+        return this.exitMessage;
+    }
+
+    public String getBeanName() {
+        return this.beanName;
+    }
+
+    public String getBeanTypeName() {
+        return this.beanTypeName;
+    }
+
+    public String getMethodName() {
+        return this.methodName;
+    }
+
+    public String getMethodArguments() {
+        return this.methodArguments;
+    }
+
+    public String getTraceId() {
+        return this.traceId;
+    }
+
+    public String getPreviousId() {
+        return this.previousId;
+    }
+
+    public boolean isPersistent() {
+        return this.persistent;
+    }
+
+    public String getDataSourceName() {
+        return this.dataSourceName;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setNamespaceName(String namespaceName) {
+        this.namespaceName = namespaceName;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public void setExecutorName(String executorName) {
+        this.executorName = executorName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public void setTaskExtraData(String taskExtraData) {
+        this.taskExtraData = taskExtraData;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public String getId() {
-        return id;
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setExitCode(String exitCode) {
+        this.exitCode = exitCode;
+    }
+
+    public void setExitMessage(String exitMessage) {
+        this.exitMessage = exitMessage;
+    }
+
+    public void setBeanName(String beanName) {
+        this.beanName = beanName;
+    }
+
+    public void setBeanTypeName(String beanTypeName) {
+        this.beanTypeName = beanTypeName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public void setMethodArguments(String methodArguments) {
+        this.methodArguments = methodArguments;
+    }
+
+    public void setTraceId(String traceId) {
+        this.traceId = traceId;
+    }
+
+    public void setPreviousId(String previousId) {
+        this.previousId = previousId;
+    }
+
+    public void setPersistent(boolean persistent) {
+        this.persistent = persistent;
+    }
+
+    public void setDataSourceName(String dataSourceName) {
+        this.dataSourceName = dataSourceName;
+    }
+
+    @Override
+    public String toString() {
+        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodArguments=" + this.getMethodArguments() + ", traceId=" + this.getTraceId() + ", previousId=" + this.getPreviousId() + ", persistent=" + this.isPersistent() + ", dataSourceName=" + this.getDataSourceName() + ")";
     }
 }

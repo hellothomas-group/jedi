@@ -5,13 +5,16 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.core.JdbcTemplate;
-import xyz.hellothomas.jedi.client.enums.TaskStatusEnum;
+import org.springframework.jdbc.core.RowMapper;
+import xyz.hellothomas.jedi.client.model.JediTaskExecution;
 import xyz.hellothomas.jedi.client.util.DateTimeUtil;
+import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static xyz.hellothomas.jedi.core.constants.Constants.EMPTY_STRING;
 
 /**
  * @author Thomas
@@ -24,41 +27,63 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
     private ApplicationContext applicationContext;
 
     @Override
-    public int insertTaskExecution(TaskPersistProperty taskPersistProperty) {
-        JdbcTemplate jdbcTemplate = getJdbcTemplate(taskPersistProperty);
-        String currentTime = DateTimeUtil.getDateTimePattern1();
-        return jdbcTemplate.update("INSERT INTO JEDI_TASK_EXECUTION (id,namespace_name,app_id,executor_name,task_name," +
-                        "process_status,fail_reason,bean_name,method_name,arguments,trace_id,last_id," +
-                        "data_change_created_time,data_change_last_modified_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-                        "?, ?, ?, ?, ?)",
-                taskPersistProperty.getId(), taskPersistProperty.getNamespaceName(), taskPersistProperty.getAppId(),
-                taskPersistProperty.getExecutorName(), taskPersistProperty.getTaskName(),
-                taskPersistProperty.getProcessStatus(), EMPTY_STRING, taskPersistProperty.getBeanName(),
-                taskPersistProperty.getMethodName(), taskPersistProperty.getArguments(),
-                taskPersistProperty.getTraceId(), taskPersistProperty.getLastId(), currentTime, currentTime);
+    public int insertTaskExecution(TaskProperty taskProperty) {
+        JdbcTemplate jdbcTemplate = getJdbcTemplate(taskProperty);
+        return jdbcTemplate.update("INSERT INTO JEDI_TASK_EXECUTION (" +
+                        "ID,NAMESPACE_NAME,APP_ID,EXECUTOR_NAME," +
+                        "TASK_NAME,CREATE_TIME,START_TIME,END_TIME," +
+                        "STATUS,EXIT_CODE,EXIT_MESSAGE,BEAN_NAME," +
+                        "BEAN_TYPE_NAME,METHOD_NAME,METHOD_ARGUMENTS,TRACE_ID," +
+                        "PREVIOUS_ID,DATA_SOURCE_NAME,LAST_UPDATED) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, " +
+                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                taskProperty.getId(), taskProperty.getNamespaceName(), taskProperty.getAppId(),
+                taskProperty.getExecutorName(), taskProperty.getTaskName(),
+                DateTimeUtil.localDateTimeToPattern2(taskProperty.getCreateTime()),
+                DateTimeUtil.localDateTimeToPattern2(taskProperty.getStartTime()),
+                DateTimeUtil.localDateTimeToPattern2(taskProperty.getEndTime()),
+                taskProperty.getStatus(), taskProperty.getExitCode(), taskProperty.getExitMessage(),
+                taskProperty.getBeanName(), taskProperty.getBeanTypeName(), taskProperty.getMethodName(),
+                taskProperty.getMethodArguments(), taskProperty.getTraceId(), taskProperty.getPreviousId(),
+                taskProperty.getDataSourceName(), DateTimeUtil.getDateTimePattern2());
     }
 
     @Override
-    public int updateTaskExecution(TaskPersistProperty taskPersistProperty, TaskStatusEnum taskStatusEnum,
-                                   Exception e) {
-        JdbcTemplate jdbcTemplate = getJdbcTemplate(taskPersistProperty);
-        String currentTime = DateTimeUtil.getDateTimePattern1();
-        String exceptionString;
-        if (e == null) {
-            exceptionString = EMPTY_STRING;
+    public int updateTaskExecution(TaskProperty taskProperty) {
+        JdbcTemplate jdbcTemplate = getJdbcTemplate(taskProperty);
+
+        return jdbcTemplate.update("UPDATE JEDI_TASK_EXECUTION SET START_TIME = ?, END_TIME = ?, status = ?, " +
+                        "EXIT_CODE = ?, EXIT_MESSAGE = ?, LAST_UPDATED = ? WHERE ID = ?",
+                DateTimeUtil.localDateTimeToPattern2(taskProperty.getStartTime()),
+                DateTimeUtil.localDateTimeToPattern2(taskProperty.getEndTime()),
+                taskProperty.getStatus(), taskProperty.getExitCode(), taskProperty.getExitMessage(),
+                DateTimeUtil.getDateTimePattern2(), taskProperty.getId());
+    }
+
+    @Override
+    public int deleteTaskExecution(TaskProperty taskProperty) {
+        JdbcTemplate jdbcTemplate = getJdbcTemplate(taskProperty);
+        return jdbcTemplate.update("DELETE FROM JEDI_TASK_EXECUTION WHERE ID = ?", taskProperty.getId());
+    }
+
+    @Override
+    public JediTaskExecution queryTaskExecution(TaskProperty taskProperty) {
+        JdbcTemplate jdbcTemplate = getJdbcTemplate(taskProperty);
+        List<JediTaskExecution> results = jdbcTemplate.query("select * from JEDI_TASK_EXECUTION",
+                new RowMapper<JediTaskExecution>() {
+                    @Override
+                    public JediTaskExecution mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        JediTaskExecution jediTaskExecution = new JediTaskExecution();
+                        jediTaskExecution.setId(rs.getString("ID"));
+                        jediTaskExecution.setCreateTime(DateTimeUtil.pattern2ToLocalDateTime(rs.getString(
+                                "CREATE_TIME")));
+                        return jediTaskExecution;
+                    }
+                });
+        if (results != null && !results.isEmpty()) {
+            return results.get(0);
         } else {
-            exceptionString = e.getMessage().length() > 300 ? e.getMessage().substring(0,
-                    300) : e.getMessage();
+            return null;
         }
-        return jdbcTemplate.update("UPDATE JEDI_TASK_EXECUTION SET process_status = ?, fail_reason = ?, " +
-                        "data_change_last_modified_time = ? WHERE id = ?", taskStatusEnum.getProcessStatus(),
-                exceptionString, currentTime, taskPersistProperty.getId());
-    }
-
-    @Override
-    public int deleteTaskExecution(TaskPersistProperty taskPersistProperty) {
-        JdbcTemplate jdbcTemplate = getJdbcTemplate(taskPersistProperty);
-        return jdbcTemplate.update("DELETE FROM JEDI_TASK_EXECUTION WHERE id = ?", taskPersistProperty.getId());
     }
 
     @Override
@@ -66,17 +91,17 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         this.applicationContext = applicationContext;
     }
 
-    private JdbcTemplate getJdbcTemplate(TaskPersistProperty taskPersistProperty) {
+    private JdbcTemplate getJdbcTemplate(TaskProperty taskProperty) {
         JdbcTemplate jdbcTemplate;
-        if (StringUtils.isBlank(taskPersistProperty.getDataSourceName())) {
+        if (StringUtils.isBlank(taskProperty.getDataSourceName())) {
             jdbcTemplate = this.applicationContext.getBean(JdbcTemplate.class);
         } else {
-            jdbcTemplate = jdbcTemplateMap.get(taskPersistProperty.getDataSourceName());
+            jdbcTemplate = jdbcTemplateMap.get(taskProperty.getDataSourceName());
             if (jdbcTemplate == null) {
-                DataSource dataSource = this.applicationContext.getBean(taskPersistProperty.getDataSourceName(),
+                DataSource dataSource = this.applicationContext.getBean(taskProperty.getDataSourceName(),
                         DataSource.class);
                 jdbcTemplate = new JdbcTemplate(dataSource);
-                jdbcTemplateMap.put(taskPersistProperty.getDataSourceName(), jdbcTemplate);
+                jdbcTemplateMap.put(taskProperty.getDataSourceName(), jdbcTemplate);
             }
         }
         return jdbcTemplate;

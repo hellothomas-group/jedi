@@ -1,18 +1,23 @@
 package xyz.hellothomas.jedi.core.internals;
 
-import xyz.hellothomas.jedi.core.dto.consumer.CustomNotification;
-import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
-import xyz.hellothomas.jedi.core.internals.executor.JediRunnable;
-import xyz.hellothomas.jedi.core.internals.message.kafka.KafkaNotificationService;
-import xyz.hellothomas.jedi.core.internals.message.kafka.KafkaProperty;
-import xyz.hellothomas.jedi.core.utils.SleepUtil;
 import org.apache.kafka.common.security.auth.SecurityProtocol;
 import org.apache.kafka.common.security.plain.PlainLoginModule;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.Test;
+import xyz.hellothomas.jedi.core.dto.consumer.CustomNotification;
+import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
+import xyz.hellothomas.jedi.core.internals.executor.AsyncAttributes;
+import xyz.hellothomas.jedi.core.internals.executor.JediRunnable;
+import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
+import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
+import xyz.hellothomas.jedi.core.internals.message.kafka.KafkaNotificationService;
+import xyz.hellothomas.jedi.core.internals.message.kafka.KafkaProperty;
+import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
+import xyz.hellothomas.jedi.core.utils.SleepUtil;
 
 import java.time.LocalDateTime;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -76,13 +81,18 @@ public class JediThreadPoolExecutorOnKafkaTest {
         JediThreadPoolExecutor executor = new JediThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(10), "testPool", kafkaNotificationService);
         SleepUtil.sleep(2000);
-        executor.submit(new JediRunnable(executor, "taskTest1",
-                () -> {
-                    System.out.println("run start " + LocalDateTime.now());
-                    System.out.println("execute job...");
-                    SleepUtil.sleep(1000);
-                    System.out.println("run finish " + LocalDateTime.now());
-                }));
+        TaskProperty taskProperty = initTaskProperty(executor.getPoolName(), "taskTest1", null,
+                null);
+        AsyncAttributes asyncAttributes = new AsyncAttributes();
+        asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
+        AsyncContextHolder.setAsyncAttributes(asyncAttributes);
+        executor.submit(new JediRunnable(() -> {
+            System.out.println("run start " + LocalDateTime.now());
+            System.out.println("execute job...");
+            SleepUtil.sleep(1000);
+            System.out.println("run finish " + LocalDateTime.now());
+        }));
+        AsyncContextHolder.resetAsyncAttributes();
         System.out.println("submit finish");
         SleepUtil.sleep(5000);
         System.out.println("main end");
@@ -98,11 +108,16 @@ public class JediThreadPoolExecutorOnKafkaTest {
         while (threadCount <= 3) {
             int threadIndex = threadCount++;
             try {
-                executor.execute(new JediRunnable(executor, "taskTest" + threadIndex,
-                        () -> {
-                            System.out.println("execute job" + threadIndex + "...");
-                            SleepUtil.sleep(1500);
-                        }));
+                TaskProperty taskProperty = initTaskProperty(executor.getPoolName(), "taskTest" + threadIndex, null,
+                        null);
+                AsyncAttributes asyncAttributes = new AsyncAttributes();
+                asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
+                AsyncContextHolder.setAsyncAttributes(asyncAttributes);
+                executor.execute(new JediRunnable(() -> {
+                    System.out.println("execute job" + threadIndex + "...");
+                    SleepUtil.sleep(1500);
+                }));
+                AsyncContextHolder.resetAsyncAttributes();
             } catch (Exception e) {
                 System.out.println(e);
             }
@@ -187,5 +202,24 @@ public class JediThreadPoolExecutorOnKafkaTest {
 
         loadKafkaProperty.setDefaultTopic("custom-message");
         return loadKafkaProperty;
+    }
+
+    private TaskProperty initTaskProperty(String executorName, String taskName, String taskExtraData,
+                                          String dataSource) {
+        TaskProperty taskProperty = new TaskProperty();
+        taskProperty.setDataSourceName(dataSource);
+        taskProperty.setId(UUID.randomUUID().toString());
+        taskProperty.setNamespaceName("dev");
+        taskProperty.setAppId("test");
+        taskProperty.setExecutorName(executorName);
+        taskProperty.setTaskName(taskName);
+        taskProperty.setTaskExtraData(taskExtraData);
+        taskProperty.setCreateTime(LocalDateTime.now());
+        taskProperty.setBeanName("");
+        taskProperty.setMethodName("");
+        taskProperty.setMethodArguments("");
+        taskProperty.setStatus(TaskStatusEnum.REGISTERED.getValue());
+
+        return taskProperty;
     }
 }
