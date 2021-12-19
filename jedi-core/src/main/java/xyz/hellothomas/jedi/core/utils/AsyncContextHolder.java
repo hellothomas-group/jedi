@@ -3,7 +3,7 @@ package xyz.hellothomas.jedi.core.utils;
 import xyz.hellothomas.jedi.core.internals.executor.AsyncAttributes;
 
 /**
- * @author 80234613 唐圆
+ * @author Thomas
  * @date 2021/12/16 9:52
  * @descripton
  * @version 1.0

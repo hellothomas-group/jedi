@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationEvent;
 import xyz.hellothomas.jedi.admin.common.enums.RoleTypeEnum;
 
 /**
- * @author 80234613 唐圆
+ * @author Thomas
  * @date 2021/11/30 14:09
  * @descripton
  * @version 1.0
