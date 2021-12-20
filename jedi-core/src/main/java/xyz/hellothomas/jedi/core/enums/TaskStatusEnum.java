@@ -7,11 +7,11 @@ package xyz.hellothomas.jedi.core.enums;
  * @version 1.0
  */
 public enum TaskStatusEnum {
-    REGISTERED("1"),
-    DOING("2"),
-    SUCCESS("3"),
-    FAIL("4"),
-    REJECTED("5"),
+    REGISTERED("0"),
+    DOING("1"),
+    SUCCESS("2"),
+    FAIL("3"),
+    REJECTED("4"),
     ;
 
     private String value;

@@ -31,7 +31,7 @@ public class JediAsyncAutoConfig {
     @Bean
     @ConditionalOnClass(name = "org.springframework.jdbc.core.JdbcTemplate")
     @ConditionalOnMissingBean
-    public PersistenceService persistenceService() {
+    public PersistenceService jdbcTemplatePersistenceService() {
         return new JdbcTemplatePersistenceService();
     }
 
