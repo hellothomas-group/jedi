@@ -18,6 +18,7 @@ public class TaskProperty {
     private String beanName;
     private String beanTypeName;
     private String methodName;
+    private String methodParamTypes;
     private String methodArguments;
     private String traceId;
     private String previousId;
@@ -82,6 +83,10 @@ public class TaskProperty {
 
     public String getMethodName() {
         return this.methodName;
+    }
+
+    public String getMethodParamTypes() {
+        return this.methodParamTypes;
     }
 
     public String getMethodArguments() {
@@ -164,6 +169,10 @@ public class TaskProperty {
         this.methodName = methodName;
     }
 
+    public void setMethodParamTypes(String methodParamTypes) {
+        this.methodParamTypes = methodParamTypes;
+    }
+
     public void setMethodArguments(String methodArguments) {
         this.methodArguments = methodArguments;
     }
@@ -186,6 +195,6 @@ public class TaskProperty {
 
     @Override
     public String toString() {
-        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodArguments=" + this.getMethodArguments() + ", traceId=" + this.getTraceId() + ", previousId=" + this.getPreviousId() + ", persistent=" + this.isPersistent() + ", dataSourceName=" + this.getDataSourceName() + ")";
+        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodParamTypes=" + this.getMethodParamTypes() + ", methodArguments=" + this.getMethodArguments() + ", traceId=" + this.getTraceId() + ", previousId=" + this.getPreviousId() + ", persistent=" + this.isPersistent() + ", dataSourceName=" + this.getDataSourceName() + ")";
     }
 }

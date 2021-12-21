@@ -35,6 +35,7 @@ import xyz.hellothomas.jedi.core.trace.AsyncTraceFactory;
 import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -90,7 +91,8 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         // support retry
         if (AsyncContextHolder.getAsyncAttributes() == null) {
             // 任务注册
-            taskProperty = initTaskProperty(jediThreadPoolExecutor.getPoolName(), taskName, taskExtraData, dataSource);
+            taskProperty = initTaskProperty(jediThreadPoolExecutor.getPoolName(), taskName, taskExtraData, dataSource
+                    , joinPoint, methodSignature);
             AsyncAttributes asyncAttributes = new AsyncAttributes();
             asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
             AsyncContextHolder.setAsyncAttributes(asyncAttributes);
@@ -141,7 +143,8 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
     }
 
     private TaskProperty initTaskProperty(String executorName, String taskName, String taskExtraData,
-                                          String dataSource) {
+                                          String dataSource, ProceedingJoinPoint joinPoint,
+                                          MethodSignature methodSignature) {
         TaskProperty taskProperty = new TaskProperty();
         JediConfig jediConfig = this.applicationContext.getBean(JediConfig.class);
         taskProperty.setDataSourceName(dataSource);
@@ -152,9 +155,17 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         taskProperty.setTaskName(taskName);
         taskProperty.setTaskExtraData(taskExtraData);
         taskProperty.setCreateTime(LocalDateTime.now());
-        taskProperty.setBeanName("");
-        taskProperty.setBeanTypeName("");
-        taskProperty.setMethodName("");
+        Class targetClazz = joinPoint.getTarget().getClass();
+        String beanName = this.applicationContext.getBeanNamesForType(targetClazz)[0];
+        String beanTypeName = targetClazz.getName();
+        String methodName = methodSignature.getName();
+        Class[] paramTypeClazzArray = methodSignature.getParameterTypes();
+        Object[] args = joinPoint.getArgs();
+        taskProperty.setBeanName(beanName);
+        taskProperty.setBeanTypeName(beanTypeName);
+        taskProperty.setMethodName(methodName);
+        taskProperty.setMethodParamTypes(Arrays.toString(paramTypeClazzArray));
+        taskProperty.setMethodArguments(Arrays.toString(args));
         taskProperty.setStatus(TaskStatusEnum.REGISTERED.getValue());
 
         return taskProperty;

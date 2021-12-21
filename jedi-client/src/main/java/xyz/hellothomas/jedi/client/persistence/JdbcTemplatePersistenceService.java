@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 1.0
  */
 public class JdbcTemplatePersistenceService implements PersistenceService, ApplicationContextAware {
+    private JdbcTemplate jdbcTemplate;
     private ConcurrentHashMap<String, JdbcTemplate> jdbcTemplateMap = new ConcurrentHashMap<>();
     private ApplicationContext applicationContext;
 
@@ -33,9 +34,9 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                         "ID,NAMESPACE_NAME,APP_ID,EXECUTOR_NAME," +
                         "TASK_NAME,CREATE_TIME,START_TIME,END_TIME," +
                         "STATUS,EXIT_CODE,EXIT_MESSAGE,BEAN_NAME," +
-                        "BEAN_TYPE_NAME,METHOD_NAME,METHOD_ARGUMENTS,TRACE_ID," +
-                        "PREVIOUS_ID,DATA_SOURCE_NAME,LAST_UPDATED) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES,METHOD_ARGUMENTS," +
+                        "TRACE_ID,PREVIOUS_ID,DATA_SOURCE_NAME,LAST_UPDATED) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 taskProperty.getId(), taskProperty.getNamespaceName(), taskProperty.getAppId(),
                 taskProperty.getExecutorName(), taskProperty.getTaskName(),
                 DateTimeUtil.localDateTimeToPattern2(taskProperty.getCreateTime()),
@@ -43,8 +44,8 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                 DateTimeUtil.localDateTimeToPattern2(taskProperty.getEndTime()),
                 taskProperty.getStatus(), taskProperty.getExitCode(), taskProperty.getExitMessage(),
                 taskProperty.getBeanName(), taskProperty.getBeanTypeName(), taskProperty.getMethodName(),
-                taskProperty.getMethodArguments(), taskProperty.getTraceId(), taskProperty.getPreviousId(),
-                taskProperty.getDataSourceName(), DateTimeUtil.getDateTimePattern2());
+                taskProperty.getMethodParamTypes(), taskProperty.getMethodArguments(), taskProperty.getTraceId(),
+                taskProperty.getPreviousId(), taskProperty.getDataSourceName(), DateTimeUtil.getDateTimePattern2());
     }
 
     @Override
@@ -94,7 +95,12 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
     private JdbcTemplate getJdbcTemplate(TaskProperty taskProperty) {
         JdbcTemplate jdbcTemplate;
         if (StringUtils.isBlank(taskProperty.getDataSourceName())) {
-            jdbcTemplate = this.applicationContext.getBean(JdbcTemplate.class);
+            if (this.jdbcTemplate == null) {
+                jdbcTemplate = this.applicationContext.getBean(JdbcTemplate.class);
+                this.jdbcTemplate = jdbcTemplate;
+            } else {
+                return this.jdbcTemplate;
+            }
         } else {
             jdbcTemplate = jdbcTemplateMap.get(taskProperty.getDataSourceName());
             if (jdbcTemplate == null) {

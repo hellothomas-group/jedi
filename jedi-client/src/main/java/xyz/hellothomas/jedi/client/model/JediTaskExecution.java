@@ -82,6 +82,11 @@ public class JediTaskExecution {
     private String methodName;
 
     /**
+     * methodParamTypes
+     */
+    private String methodParamTypes;
+
+    /**
      * methodArguments
      */
     private String methodArguments;
