@@ -1,5 +1,6 @@
 package xyz.hellothomas.jedi.client.persistence;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -22,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description
  * @version 1.0
  */
+@Slf4j
 public class JdbcTemplatePersistenceService implements PersistenceService, ApplicationContextAware {
     private JdbcTemplate jdbcTemplate;
     private ConcurrentHashMap<String, JdbcTemplate> jdbcTemplateMap = new ConcurrentHashMap<>();
@@ -30,7 +32,7 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
     @Override
     public int insertTaskExecution(TaskProperty taskProperty) {
         JdbcTemplate jdbcTemplate = getJdbcTemplate(taskProperty);
-        return jdbcTemplate.update("INSERT INTO JEDI_TASK_EXECUTION (" +
+        int row = jdbcTemplate.update("INSERT INTO JEDI_TASK_EXECUTION (" +
                         "ID,NAMESPACE_NAME,APP_ID,EXECUTOR_NAME," +
                         "TASK_NAME,CREATE_TIME,START_TIME,END_TIME," +
                         "STATUS,EXIT_CODE,EXIT_MESSAGE,BEAN_NAME," +
@@ -46,24 +48,30 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                 taskProperty.getBeanName(), taskProperty.getBeanTypeName(), taskProperty.getMethodName(),
                 taskProperty.getMethodParamTypes(), taskProperty.getMethodArguments(), taskProperty.getTraceId(),
                 taskProperty.getPreviousId(), taskProperty.getDataSourceName(), DateTimeUtil.getDateTimePattern2());
+        log.trace("insert {} row: {}", row, taskProperty);
+        return row;
     }
 
     @Override
     public int updateTaskExecution(TaskProperty taskProperty) {
         JdbcTemplate jdbcTemplate = getJdbcTemplate(taskProperty);
 
-        return jdbcTemplate.update("UPDATE JEDI_TASK_EXECUTION SET START_TIME = ?, END_TIME = ?, status = ?, " +
+        int row = jdbcTemplate.update("UPDATE JEDI_TASK_EXECUTION SET START_TIME = ?, END_TIME = ?, status = ?, " +
                         "EXIT_CODE = ?, EXIT_MESSAGE = ?, LAST_UPDATED = ? WHERE ID = ?",
                 DateTimeUtil.localDateTimeToPattern2(taskProperty.getStartTime()),
                 DateTimeUtil.localDateTimeToPattern2(taskProperty.getEndTime()),
                 taskProperty.getStatus(), taskProperty.getExitCode(), taskProperty.getExitMessage(),
                 DateTimeUtil.getDateTimePattern2(), taskProperty.getId());
+        log.trace("update {} row: {}", row, taskProperty);
+        return row;
     }
 
     @Override
     public int deleteTaskExecution(TaskProperty taskProperty) {
         JdbcTemplate jdbcTemplate = getJdbcTemplate(taskProperty);
-        return jdbcTemplate.update("DELETE FROM JEDI_TASK_EXECUTION WHERE ID = ?", taskProperty.getId());
+        int row = jdbcTemplate.update("DELETE FROM JEDI_TASK_EXECUTION WHERE ID = ?", taskProperty.getId());
+        log.trace("delete {} row: {}", row, taskProperty);
+        return row;
     }
 
     @Override
@@ -96,7 +104,8 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         JdbcTemplate jdbcTemplate;
         if (StringUtils.isBlank(taskProperty.getDataSourceName())) {
             if (this.jdbcTemplate == null) {
-                jdbcTemplate = this.applicationContext.getBean(JdbcTemplate.class);
+                DataSource dataSource = this.applicationContext.getBean(DataSource.class);
+                jdbcTemplate = new NoTxJdbcTemplate(dataSource);
                 this.jdbcTemplate = jdbcTemplate;
             } else {
                 return this.jdbcTemplate;
@@ -106,7 +115,7 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
             if (jdbcTemplate == null) {
                 DataSource dataSource = this.applicationContext.getBean(taskProperty.getDataSourceName(),
                         DataSource.class);
-                jdbcTemplate = new JdbcTemplate(dataSource);
+                jdbcTemplate = new NoTxJdbcTemplate(dataSource);
                 jdbcTemplateMap.put(taskProperty.getDataSourceName(), jdbcTemplate);
             }
         }

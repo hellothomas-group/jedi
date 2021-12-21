@@ -31,6 +31,7 @@ public class JediRunnable implements Runnable {
             // 任务开始
             taskProperty.setStartTime(LocalDateTime.now());
             taskProperty.setStatus(TaskStatusEnum.DOING.getValue());
+            LOGGER.trace("TaskProperty:{}", taskProperty);
 
             AsyncAttributes asyncAttributes = new AsyncAttributes();
             asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
@@ -43,6 +44,7 @@ public class JediRunnable implements Runnable {
                 // 任务成功
                 taskProperty.setEndTime(LocalDateTime.now());
                 taskProperty.setStatus(TaskStatusEnum.SUCCESS.getValue());
+                LOGGER.trace("TaskProperty:{}", taskProperty);
             }
         } catch (Exception e) {
             if (taskProperty.getEndTime() == null) {
@@ -57,6 +59,7 @@ public class JediRunnable implements Runnable {
                             300) : exceptionString;
                     taskProperty.setExitMessage(exceptionString);
                 }
+                LOGGER.trace("TaskProperty:{}", taskProperty);
             }
             throw e;
         }

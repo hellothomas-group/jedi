@@ -187,6 +187,7 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
                     taskProperty.setExitMessage(exceptionString);
                 }
             }
+            LOGGER.trace("TaskProperty:{}", taskProperty);
         }
 
         if (!(notificationService instanceof NullNotificationService)) {
@@ -240,6 +241,7 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         taskProperty.setCreateTime(currentTime);
         taskProperty.setStartTime(currentTime);
         taskProperty.setStatus(TaskStatusEnum.DOING.getValue());
+        LOGGER.trace("TaskProperty:{}", taskProperty);
 
         return taskProperty;
     }

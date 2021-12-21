@@ -1,5 +1,6 @@
 package xyz.hellothomas.jedi.client.persistence;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
@@ -10,6 +11,7 @@ import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
 import java.time.LocalDateTime;
 import java.util.concurrent.Callable;
 
+@Slf4j
 public class JediPersistentCallable<V> implements Callable<V> {
     private static final Logger LOGGER = LoggerFactory.getLogger(JediPersistentCallable.class);
     private final Callable<V> callable;
@@ -30,6 +32,7 @@ public class JediPersistentCallable<V> implements Callable<V> {
             // 任务开始
             taskProperty.setStartTime(LocalDateTime.now());
             taskProperty.setStatus(TaskStatusEnum.DOING.getValue());
+            log.trace("TaskProperty:{}", taskProperty);
 
             AsyncAttributes asyncAttributes = new AsyncAttributes();
             asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
@@ -44,6 +47,7 @@ public class JediPersistentCallable<V> implements Callable<V> {
                 // 任务成功
                 taskProperty.setEndTime(LocalDateTime.now());
                 taskProperty.setStatus(TaskStatusEnum.SUCCESS.getValue());
+                log.trace("TaskProperty:{}", taskProperty);
             }
             // 任务成功持久化
             persistenceService.deleteTaskExecution(taskProperty);
@@ -61,6 +65,7 @@ public class JediPersistentCallable<V> implements Callable<V> {
                             300) : exceptionString;
                     taskProperty.setExitMessage(exceptionString);
                 }
+                log.trace("TaskProperty:{}", taskProperty);
             }
             // 任务异常持久化
             persistenceService.updateTaskExecution(taskProperty);

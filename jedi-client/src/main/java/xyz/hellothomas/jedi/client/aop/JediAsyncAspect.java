@@ -167,6 +167,7 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         taskProperty.setMethodParamTypes(Arrays.toString(paramTypeClazzArray));
         taskProperty.setMethodArguments(Arrays.toString(args));
         taskProperty.setStatus(TaskStatusEnum.REGISTERED.getValue());
+        log.trace("TaskProperty:{}", taskProperty);
 
         return taskProperty;
     }
