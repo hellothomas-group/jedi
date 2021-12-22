@@ -77,17 +77,41 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
     @Override
     public JediTaskExecution queryTaskExecution(TaskProperty taskProperty) {
         JdbcTemplate jdbcTemplate = getJdbcTemplate(taskProperty);
-        List<JediTaskExecution> results = jdbcTemplate.query("select * from JEDI_TASK_EXECUTION",
+        List<JediTaskExecution> results = jdbcTemplate.query("SELECT * FROM JEDI_TASK_EXECUTION WHERE ID = ?",
                 new RowMapper<JediTaskExecution>() {
                     @Override
                     public JediTaskExecution mapRow(ResultSet rs, int rowNum) throws SQLException {
                         JediTaskExecution jediTaskExecution = new JediTaskExecution();
                         jediTaskExecution.setId(rs.getString("ID"));
-                        jediTaskExecution.setCreateTime(DateTimeUtil.pattern2ToLocalDateTime(rs.getString(
-                                "CREATE_TIME")));
+                        jediTaskExecution.setNamespaceName(rs.getString("NAMESPACE_NAME"));
+                        jediTaskExecution.setAppId(rs.getString("APP_ID"));
+                        jediTaskExecution.setExecutorName(rs.getString("EXECUTOR_NAME"));
+                        jediTaskExecution.setTaskName(rs.getString("TASK_NAME"));
+                        String createTime = rs.getString("CREATE_TIME");
+                        jediTaskExecution.setCreateTime(createTime == null ? null :
+                                DateTimeUtil.pattern2ToLocalDateTime(createTime));
+                        String startTime = rs.getString("START_TIME");
+                        jediTaskExecution.setStartTime(startTime == null ? null :
+                                DateTimeUtil.pattern2ToLocalDateTime(startTime));
+                        String endTime = rs.getString("END_TIME");
+                        jediTaskExecution.setEndTime(endTime == null ? null :
+                                DateTimeUtil.pattern2ToLocalDateTime(endTime));
+                        jediTaskExecution.setStatus(rs.getString("STATUS"));
+                        jediTaskExecution.setExitCode(rs.getString("EXIT_CODE"));
+                        jediTaskExecution.setExitMessage(rs.getString("EXIT_MESSAGE"));
+                        jediTaskExecution.setBeanName(rs.getString("BEAN_NAME"));
+                        jediTaskExecution.setBeanTypeName(rs.getString("BEAN_TYPE_NAME"));
+                        jediTaskExecution.setMethodName(rs.getString("METHOD_NAME"));
+                        jediTaskExecution.setMethodParamTypes(rs.getString("METHOD_PARAM_TYPES"));
+                        jediTaskExecution.setMethodArguments(rs.getString("METHOD_ARGUMENTS"));
+                        jediTaskExecution.setTraceId(rs.getString("TRACE_ID"));
+                        jediTaskExecution.setPreviousId(rs.getString("PREVIOUS_ID"));
+                        String lastUpdated = rs.getString("LAST_UPDATED");
+                        jediTaskExecution.setLastUpdated(lastUpdated == null ? null :
+                                DateTimeUtil.pattern2ToLocalDateTime(lastUpdated));
                         return jediTaskExecution;
                     }
-                });
+                }, taskProperty.getId());
         if (results != null && !results.isEmpty()) {
             return results.get(0);
         } else {

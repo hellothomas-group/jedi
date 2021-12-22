@@ -33,9 +33,9 @@ import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
 import xyz.hellothomas.jedi.core.internals.message.NullNotificationService;
 import xyz.hellothomas.jedi.core.trace.AsyncTraceFactory;
 import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
+import xyz.hellothomas.jedi.core.utils.JsonUtil;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -108,6 +108,14 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
                 PersistenceService persistenceService = this.applicationContext.getBean(PersistenceService.class);
                 persistenceService.insertTaskExecution(taskProperty);
 
+                if (isRetry) {
+                    // 删除重试前的任务
+                    TaskProperty previousTaskProperty = new TaskProperty();
+                    previousTaskProperty.setId(taskProperty.getPreviousId());
+                    previousTaskProperty.setDataSourceName(taskProperty.getDataSourceName());
+                    persistenceService.deleteTaskExecution(previousTaskProperty);
+                }
+
                 return doSubmit(asyncTraceFactory.getCallable(new JediPersistentCallable<>(task, persistenceService)),
                         jediThreadPoolExecutor, methodSignature.getReturnType());
             } else {
@@ -164,8 +172,16 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         taskProperty.setBeanName(beanName);
         taskProperty.setBeanTypeName(beanTypeName);
         taskProperty.setMethodName(methodName);
-        taskProperty.setMethodParamTypes(Arrays.toString(paramTypeClazzArray));
-        taskProperty.setMethodArguments(Arrays.toString(args));
+        String[] methodParamTypes = new String[paramTypeClazzArray.length];
+        for (int i = 0; i < paramTypeClazzArray.length; i++) {
+            methodParamTypes[i] = paramTypeClazzArray[i].getName();
+        }
+        taskProperty.setMethodParamTypes(JsonUtil.serialize(methodParamTypes));
+        String[] methodArguments = new String[args.length];
+        for (int i = 0; i < args.length; i++) {
+            methodArguments[i] = JsonUtil.serialize(args[i]);
+        }
+        taskProperty.setMethodArguments(JsonUtil.serialize(methodArguments));
         taskProperty.setStatus(TaskStatusEnum.REGISTERED.getValue());
         log.trace("TaskProperty:{}", taskProperty);
 

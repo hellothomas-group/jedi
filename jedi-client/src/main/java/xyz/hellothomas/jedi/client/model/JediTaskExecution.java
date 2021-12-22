@@ -109,5 +109,5 @@ public class JediTaskExecution {
     /**
      * lastUpdated
      */
-    private Date lastUpdated;
+    private LocalDateTime lastUpdated;
 }
