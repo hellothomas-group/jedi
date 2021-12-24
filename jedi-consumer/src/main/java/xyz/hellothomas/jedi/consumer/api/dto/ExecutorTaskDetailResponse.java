@@ -15,6 +15,11 @@ import java.time.LocalDateTime;
 @ToString
 public class ExecutorTaskDetailResponse {
     /**
+     * id
+     */
+    private String id;
+
+    /**
      * 任务名称
      */
     private String taskName;

@@ -11,7 +11,7 @@
               :fetch-suggestions="querySearchInstance"
               placeholder="请输入IP"
               value-key="ip"
-              clearable="true"
+              clearable
               @select="handleSelect"
             ></el-autocomplete>
           </el-form-item>

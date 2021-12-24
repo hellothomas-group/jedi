@@ -34,6 +34,12 @@
               @click="submitQueryTaskList('queryTaskDetailForm')" style="margin-left: 50px;">查询
             </el-button>
           </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              @click="retryTaskFormVisible = true" style="margin-left: 50px;">手工录入重试
+            </el-button>
+          </el-form-item>
           <div>
             <el-form-item label="任务附加信息" prop="inputTaskExtraData">
               <el-input v-model="queryTaskDetailForm.inputTaskExtraData" placeholder="请输入任务附加信息" clearable></el-input>
@@ -106,9 +112,33 @@
                   size="mini"
                   placeholder="输入任务附加信息搜索"/>
               </template>
+              <template slot-scope="scope">
+                <el-tag type="danger" v-if="!scope.row.isSuccess">{{scope.row.id}}</el-tag>
+                <el-button
+                  type="danger"
+                  size="mini"
+                  v-if="!scope.row.isSuccess"
+                  @click="toRetryTask(scope.$index, scope.row)" style="margin-right: 50%">重试</el-button>
+              </template>
             </el-table-column>
           </el-table>
         </div>
+        <el-dialog title="任务重试" :visible.sync="retryTaskFormVisible">
+          <el-form :model="retryTaskForm" :rules="retryTaskRules" ref="retryTaskForm">
+            <el-form-item label="任务ID" :label-width="formLabelWidth" prop="taskId" >
+              <el-input v-model="retryTaskForm.taskId" autocomplete="off" clearable
+                        style="width: 300px"></el-input>
+            </el-form-item>
+            <el-form-item label="客户端URL" :label-width="formLabelWidth" prop="url" >
+              <el-input v-model="retryTaskForm.url" autocomplete="off" clearable
+                        style="width: 300px"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="retryTaskFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="submitRetryTaskForm('retryTaskForm')">确 定</el-button>
+          </div>
+        </el-dialog>
       </el-main>
       <el-footer>
         <div style="margin-right: 25px;">
@@ -187,7 +217,18 @@ export default {
       }, {
         value: 'false',
         label: '失败'
-      }]
+      }],
+      formLabelWidth: '30%',
+      retryTaskFormVisible: false,
+      retryTaskForm: {
+        taskId: undefined,
+        url: undefined
+      },
+      retryTaskRules: {
+        taskId: [
+          {required: true, message: '请输入任务ID', trigger: 'blur'}
+        ]
+      }
     }
   },
   created () {
@@ -274,6 +315,38 @@ export default {
       } else {
         return '失败'
       }
+    },
+    toRetryTask (index, row) {
+      console.log(index, row)
+      this.retryTaskFormVisible = true
+      this.retryTaskForm.taskId = row.id
+    },
+    submitRetryTaskForm (formName) {
+      console.log(formName)
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.asyncRetryTask(this.retryTaskForm)
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    asyncRetryTask (form) {
+      console.log('asyncRetryTask')
+      console.log('retry...' + form.taskId)
+      this.retryTaskFormVisible = false
+
+      this.axios.post('/admin/namespaces/' + this.namespaceName + '/apps/' +
+        this.appId + '/executors/' + this.executorName + '/tasks/' + form.taskId + '/retry', null, {
+        params: {
+          url: form.url
+        }
+      }).then(res => {
+        console.log(form.executorName + ' released')
+      }).catch(function (error) {
+        console.log(error)
+      })
     }
   }
 }

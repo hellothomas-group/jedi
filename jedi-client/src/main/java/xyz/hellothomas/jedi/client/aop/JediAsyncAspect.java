@@ -84,7 +84,6 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         JediThreadPoolExecutor jediThreadPoolExecutor = extractJediThreadPoolExecutor(jediAsync);
         String taskName = extractTaskName(joinPoint, jediAsync);
         String taskExtraData = extractTaskExtraData(joinPoint, jediAsync);
-        String dataSource = jediAsync.dataSourceName();
 
         TaskProperty taskProperty;
         boolean isRetry = false;
@@ -104,7 +103,7 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         try {
             if (jediAsync.persistent()) {
                 // 补充TaskProperty
-                fillTaskProperty(joinPoint, methodSignature, taskProperty, dataSource);
+                fillTaskProperty(joinPoint, methodSignature, taskProperty, jediAsync.dataSourceName());
 
                 // 任务注册持久化
                 PersistenceService persistenceService = this.applicationContext.getBean(PersistenceService.class);
@@ -174,6 +173,7 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
             methodArguments[i] = JsonUtil.serialize(args[i]);
         }
         taskProperty.setMethodArguments(JsonUtil.serialize(methodArguments));
+        log.trace("TaskProperty:{}", taskProperty);
     }
 
     private TaskProperty initTaskProperty(String executorName, String taskName, String taskExtraData) {
