@@ -91,8 +91,7 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         // support retry
         if (AsyncContextHolder.getAsyncAttributes() == null) {
             // 任务注册
-            taskProperty = initTaskProperty(jediThreadPoolExecutor.getPoolName(), taskName, taskExtraData, dataSource
-                    , joinPoint, methodSignature);
+            taskProperty = initTaskProperty(jediThreadPoolExecutor.getPoolName(), taskName, taskExtraData);
             AsyncAttributes asyncAttributes = new AsyncAttributes();
             asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
             AsyncContextHolder.setAsyncAttributes(asyncAttributes);
@@ -104,6 +103,9 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
 
         try {
             if (jediAsync.persistent()) {
+                // 补充TaskProperty
+                fillTaskProperty(joinPoint, methodSignature, taskProperty, dataSource);
+
                 // 任务注册持久化
                 PersistenceService persistenceService = this.applicationContext.getBean(PersistenceService.class);
                 persistenceService.insertTaskExecution(taskProperty);
@@ -150,19 +152,9 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         }
     }
 
-    private TaskProperty initTaskProperty(String executorName, String taskName, String taskExtraData,
-                                          String dataSource, ProceedingJoinPoint joinPoint,
-                                          MethodSignature methodSignature) {
-        TaskProperty taskProperty = new TaskProperty();
-        JediConfig jediConfig = this.applicationContext.getBean(JediConfig.class);
+    private void fillTaskProperty(ProceedingJoinPoint joinPoint, MethodSignature methodSignature,
+                                  TaskProperty taskProperty, String dataSource) {
         taskProperty.setDataSourceName(dataSource);
-        taskProperty.setId(UUID.randomUUID().toString());
-        taskProperty.setNamespaceName(jediConfig.getNamespace());
-        taskProperty.setAppId(jediConfig.getAppId());
-        taskProperty.setExecutorName(executorName);
-        taskProperty.setTaskName(taskName);
-        taskProperty.setTaskExtraData(taskExtraData);
-        taskProperty.setCreateTime(LocalDateTime.now());
         Class targetClazz = joinPoint.getTarget().getClass();
         String beanName = this.applicationContext.getBeanNamesForType(targetClazz)[0];
         String beanTypeName = targetClazz.getName();
@@ -182,6 +174,18 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
             methodArguments[i] = JsonUtil.serialize(args[i]);
         }
         taskProperty.setMethodArguments(JsonUtil.serialize(methodArguments));
+    }
+
+    private TaskProperty initTaskProperty(String executorName, String taskName, String taskExtraData) {
+        TaskProperty taskProperty = new TaskProperty();
+        JediConfig jediConfig = this.applicationContext.getBean(JediConfig.class);
+        taskProperty.setId(UUID.randomUUID().toString());
+        taskProperty.setNamespaceName(jediConfig.getNamespace());
+        taskProperty.setAppId(jediConfig.getAppId());
+        taskProperty.setExecutorName(executorName);
+        taskProperty.setTaskName(taskName);
+        taskProperty.setTaskExtraData(taskExtraData);
+        taskProperty.setCreateTime(LocalDateTime.now());
         taskProperty.setStatus(TaskStatusEnum.REGISTERED.getValue());
         log.trace("TaskProperty:{}", taskProperty);
 
