@@ -34,6 +34,7 @@ import xyz.hellothomas.jedi.core.internals.message.NullNotificationService;
 import xyz.hellothomas.jedi.core.trace.AsyncTraceFactory;
 import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
 import xyz.hellothomas.jedi.core.utils.JsonUtil;
+import xyz.hellothomas.jedi.core.utils.NetUtil;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -50,6 +51,7 @@ import static xyz.hellothomas.jedi.core.constants.Constants.JEDI_DEFAULT_TASK_NA
 @Aspect
 @Slf4j
 public class JediAsyncAspect implements ApplicationContextAware, InitializingBean, Ordered {
+    private String host = NetUtil.getLocalHost();
     private ApplicationContext applicationContext;
     private Map<String, JediThreadPoolExecutor> executorMap;
     private JediThreadPoolExecutor uniqueExecutor;
@@ -103,7 +105,7 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         try {
             if (jediAsync.persistent()) {
                 // 补充TaskProperty
-                fillTaskProperty(joinPoint, methodSignature, taskProperty, jediAsync.dataSourceName());
+                fillTaskProperty(joinPoint, methodSignature, taskProperty, jediAsync);
 
                 // 任务注册持久化
                 PersistenceService persistenceService = this.applicationContext.getBean(PersistenceService.class);
@@ -152,8 +154,8 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
     }
 
     private void fillTaskProperty(ProceedingJoinPoint joinPoint, MethodSignature methodSignature,
-                                  TaskProperty taskProperty, String dataSource) {
-        taskProperty.setDataSourceName(dataSource);
+                                  TaskProperty taskProperty, JediAsync jediAsync) {
+        taskProperty.setDataSourceName(jediAsync.dataSourceName());
         Class targetClazz = joinPoint.getTarget().getClass();
         String beanName = this.applicationContext.getBeanNamesForType(targetClazz)[0];
         String beanTypeName = targetClazz.getName();
@@ -173,6 +175,8 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
             methodArguments[i] = JsonUtil.serialize(args[i]);
         }
         taskProperty.setMethodArguments(JsonUtil.serialize(methodArguments));
+        taskProperty.setRecoverable(jediAsync.recoverable());
+        taskProperty.setHost(host);
         log.trace("TaskProperty:{}", taskProperty);
     }
 

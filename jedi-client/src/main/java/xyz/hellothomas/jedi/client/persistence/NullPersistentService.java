@@ -26,7 +26,7 @@ public class NullPersistentService implements PersistenceService {
     }
 
     @Override
-    public JediTaskExecution queryTaskExecution(TaskProperty taskProperty) {
+    public JediTaskExecution queryTaskExecutionById(String taskId, String dataSourceName) {
         throw new NullPointerException("No Available PersistenceServiceImpl");
     }
 }

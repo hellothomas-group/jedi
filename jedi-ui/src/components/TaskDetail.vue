@@ -227,6 +227,9 @@ export default {
       retryTaskRules: {
         taskId: [
           {required: true, message: '请输入任务ID', trigger: 'blur'}
+        ],
+        url: [
+          {required: true, message: '请输入客户端URL', trigger: 'blur'}
         ]
       }
     }

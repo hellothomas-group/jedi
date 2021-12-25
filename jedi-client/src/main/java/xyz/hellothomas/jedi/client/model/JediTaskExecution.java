@@ -92,6 +92,16 @@ public class JediTaskExecution {
     private String methodArguments;
 
     /**
+     * recoverable
+     */
+    private boolean recoverable;
+
+    /**
+     * host
+     */
+    private String host;
+
+    /**
      * traceId
      */
     private String traceId;

@@ -62,4 +62,10 @@ public @interface JediAsync {
      * @return
      */
     String dataSourceName() default "";
+
+    /**
+     * 未处理的任务重启自恢复
+     * @return
+     */
+    boolean recoverable() default false;
 }

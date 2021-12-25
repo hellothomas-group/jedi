@@ -20,6 +20,8 @@ public class TaskProperty {
     private String methodName;
     private String methodParamTypes;
     private String methodArguments;
+    private boolean recoverable;
+    private String host;
     private String traceId;
     private String previousId;
     private boolean persistent;
@@ -91,6 +93,14 @@ public class TaskProperty {
 
     public String getMethodArguments() {
         return this.methodArguments;
+    }
+
+    public boolean isRecoverable() {
+        return recoverable;
+    }
+
+    public String getHost() {
+        return host;
     }
 
     public String getTraceId() {
@@ -177,6 +187,14 @@ public class TaskProperty {
         this.methodArguments = methodArguments;
     }
 
+    public void setRecoverable(boolean recoverable) {
+        this.recoverable = recoverable;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
     public void setTraceId(String traceId) {
         this.traceId = traceId;
     }
@@ -195,6 +213,6 @@ public class TaskProperty {
 
     @Override
     public String toString() {
-        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodParamTypes=" + this.getMethodParamTypes() + ", methodArguments=" + this.getMethodArguments() + ", traceId=" + this.getTraceId() + ", previousId=" + this.getPreviousId() + ", persistent=" + this.isPersistent() + ", dataSourceName=" + this.getDataSourceName() + ")";
+        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodParamTypes=" + this.getMethodParamTypes() + ", methodArguments=" + this.getMethodArguments() + ", recoverable=" + this.isRecoverable() + ", host=" + this.getHost() + ", traceId=" + this.getTraceId() + ", previousId=" + this.getPreviousId() + ", persistent=" + this.isPersistent() + ", dataSourceName=" + this.getDataSourceName() + ")";
     }
 }

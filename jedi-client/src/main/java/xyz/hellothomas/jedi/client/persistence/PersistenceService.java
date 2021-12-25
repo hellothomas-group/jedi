@@ -10,5 +10,5 @@ public interface PersistenceService {
 
     int deleteTaskExecution(TaskProperty taskProperty);
 
-    JediTaskExecution queryTaskExecution(TaskProperty taskProperty);
+    JediTaskExecution queryTaskExecutionById(String taskId, String dataSourceName);
 }
