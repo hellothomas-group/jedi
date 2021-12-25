@@ -113,7 +113,7 @@
                   placeholder="输入任务附加信息搜索"/>
               </template>
               <template slot-scope="scope">
-                <el-tag type="danger" v-if="!scope.row.isSuccess">{{scope.row.id}}</el-tag>
+                <el-tag type="warning" v-if="!scope.row.isSuccess">taskId: {{scope.row.id}}</el-tag>
                 <el-button
                   type="danger"
                   size="mini"
@@ -131,6 +131,10 @@
             </el-form-item>
             <el-form-item label="客户端URL" :label-width="formLabelWidth" prop="url" >
               <el-input v-model="retryTaskForm.url" autocomplete="off" clearable
+                        style="width: 300px"></el-input>
+            </el-form-item>
+            <el-form-item label="数据源名称" :label-width="formLabelWidth" prop="dataSourceName" >
+              <el-input v-model="retryTaskForm.dataSourceName" autocomplete="off" clearable
                         style="width: 300px"></el-input>
             </el-form-item>
           </el-form>
@@ -158,6 +162,7 @@
 </template>
 
 <script>
+import Utils from '../assets/js/util.js'
 import format from '../assets/js/dateFormat.js'
 export default {
   data () {
@@ -222,7 +227,8 @@ export default {
       retryTaskFormVisible: false,
       retryTaskForm: {
         taskId: undefined,
-        url: undefined
+        url: undefined,
+        dataSourceName: undefined
       },
       retryTaskRules: {
         taskId: [
@@ -250,6 +256,16 @@ export default {
         this.asyncQueryTaskList()
       }
     }
+  },
+  mounted () {
+    let that = this
+    Utils.$on('retryTaskSuccess', function (taskId) {
+      console.log(taskId)
+      that.retryTaskSuccessNotification(taskId)
+    })
+    Utils.$on('retryTaskFail', function (exception) {
+      that.retryTaskFailNotification(exception)
+    })
   },
   methods: {
     asyncQueryTaskList () {
@@ -323,6 +339,7 @@ export default {
       console.log(index, row)
       this.retryTaskFormVisible = true
       this.retryTaskForm.taskId = row.id
+      this.retryTaskForm.url = 'http://' + row.host + ':8080/submit-retry-task'
     },
     submitRetryTaskForm (formName) {
       console.log(formName)
@@ -343,14 +360,42 @@ export default {
       this.axios.post('/admin/namespaces/' + this.namespaceName + '/apps/' +
         this.appId + '/executors/' + this.executorName + '/tasks/' + form.taskId + '/retry', null, {
         params: {
-          url: form.url
+          url: form.url,
+          dataSourceName: form.dataSourceName
         }
       }).then(res => {
         console.log(form.executorName + ' released')
+        Utils.$emit('retryTaskSuccess', this.retryTaskForm.taskId)
       }).catch(function (error) {
         console.log(error)
+        let messageText = error.data.code === undefined ? error.status + '-' + error.statusText : error.data.code + '-' + error.data.message
+        Utils.$emit('retryTaskFail', error)
       })
+    },
+    retryTaskSuccessNotification (taskId) {
+      const h = this.$createElement
+
+      this.$notify({
+        title: taskId + '重试成功!',
+        message: h('i', {style: 'color: teal'}, '~~')
+      })
+
+      this.asyncQueryTaskList()
+    },
+    retryTaskFailNotification (exception) {
+      let messageText = exception.data.code === undefined ? exception.status + '-' + exception.statusText : exception.data.code + '-' + exception.data.message
+      const h = this.$createElement
+      this.$notify({
+        title: this.retryTaskForm.taskId + '重试失败!',
+        message: h('i', {style: 'color: #FF0000'}, messageText)
+      })
+
+      this.asyncQueryTaskList()
     }
+  },
+  beforeDestroy () {
+    Utils.$off('retryTaskSuccess')
+    Utils.$off('retryTaskFail')
   }
 }
 </script>

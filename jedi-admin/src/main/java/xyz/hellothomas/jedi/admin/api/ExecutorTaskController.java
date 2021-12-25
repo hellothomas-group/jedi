@@ -41,17 +41,19 @@ public class ExecutorTaskController {
                                      @PathVariable("executorName") String executorName,
                                      @PathVariable("taskId") String taskId,
                                      @RequestParam("url") String url,
+                                     @RequestParam(value = "dataSourceName", required = false) String dataSourceName,
                                      @RequestAttribute(CLAIM_USER_NAME) String operator) {
-        log.info("namespace:{}, appId:{}, executorName:{}, taskId:{}", namespaceName, appId, executorName, taskId);
+        log.info("namespace:{}, appId:{}, executorName:{}, taskId:{}, dataSourceName:{}", namespaceName, appId,
+                executorName, taskId, dataSourceName);
         ResponseEntity<ApiResponse<String>> responseEntity = restTemplate.exchange(url +
-                        "/{taskId}", HttpMethod.POST, null,
+                        "/{taskId}?dataSourceName={dataSourceName}", HttpMethod.POST, null,
                 new ParameterizedTypeReference<ApiResponse<String>>() {
-                }, taskId);
-
+                }, taskId, dataSourceName);
         ApiResponse<String> apiResponse = responseEntity.getBody();
         if (!SUCCESS.getCode().equals(apiResponse.getCode())) {
-            return ApiResponse.fail(String.format("%s-%s", apiResponse.getCode(), apiResponse.getMessage()));
+            log.warn("任务重试失败, code: {}, message: {}", apiResponse.getCode(), apiResponse.getMessage());
         }
-        return ApiResponse.success("提交成功");
+
+        return apiResponse;
     }
 }

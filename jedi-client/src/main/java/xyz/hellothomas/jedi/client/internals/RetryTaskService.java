@@ -7,6 +7,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.lang.Nullable;
+import xyz.hellothomas.jedi.client.exception.JediClientException;
 import xyz.hellothomas.jedi.client.model.JediTaskExecution;
 import xyz.hellothomas.jedi.client.persistence.PersistenceService;
 import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
@@ -43,7 +44,7 @@ public class RetryTaskService implements ApplicationContextAware {
     public void retry(String taskId, @Nullable String dataSourceName) {
         JediTaskExecution jediTaskExecution = persistenceService.queryTaskExecutionById(taskId, dataSourceName);
         if (jediTaskExecution == null) {
-            throw new RuntimeException(String.format("taskId<%s>不存在", taskId));
+            throw new JediClientException(String.format("taskId<%s>不存在", taskId));
         }
 
         Class beanClazz = Class.forName(jediTaskExecution.getBeanTypeName());
