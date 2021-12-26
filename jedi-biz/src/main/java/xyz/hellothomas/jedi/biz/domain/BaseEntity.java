@@ -22,31 +22,31 @@ public abstract class BaseEntity {
     protected Boolean isDeleted = false;
 
     /**
-     * 创建人邮箱前缀
+     * 创建人
      */
-    private String dataChangeCreatedBy;
+    private String createUser;
 
     /**
      * 创建时间
      */
-    private LocalDateTime dataChangeCreatedTime;
+    private LocalDateTime createTime;
 
     /**
-     * 最后修改人邮箱前缀
+     * 最后修改人
      */
-    private String dataChangeLastModifiedBy;
+    private String updateUser;
 
     /**
      * 最后修改时间
      */
-    private LocalDateTime dataChangeLastModifiedTime;
+    private LocalDateTime updateTime;
 
     protected ToStringHelper toStringHelper() {
         return MoreObjects.toStringHelper(this).omitNullValues().add("id", id)
-                .add("dataChangeCreatedBy", dataChangeCreatedBy)
-                .add("dataChangeCreatedTime", dataChangeCreatedTime)
-                .add("dataChangeLastModifiedBy", dataChangeLastModifiedBy)
-                .add("dataChangeLastModifiedTime", dataChangeLastModifiedTime);
+                .add("createUser", createUser)
+                .add("createTime", createTime)
+                .add("updateUser", updateUser)
+                .add("updateTime", updateTime);
     }
 
     @Override

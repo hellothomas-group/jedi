@@ -38,8 +38,8 @@ public class ItemService {
         }
 
         item.setIsDeleted(true);
-        item.setDataChangeLastModifiedBy(operator);
-        item.setDataChangeLastModifiedTime(LocalDateTime.now());
+        item.setUpdateUser(operator);
+        item.setUpdateTime(LocalDateTime.now());
         itemMapper.updateByPrimaryKey(item);
 
         auditService.audit(Item.class.getSimpleName(), id, Audit.OP.DELETE, operator);
@@ -53,8 +53,8 @@ public class ItemService {
 
         Item item = new Item();
         item.setIsDeleted(true);
-        item.setDataChangeLastModifiedBy(operator);
-        item.setDataChangeLastModifiedTime(LocalDateTime.now());
+        item.setUpdateUser(operator);
+        item.setUpdateTime(LocalDateTime.now());
         return itemMapper.updateByExampleSelective(item, itemExample);
     }
 
@@ -106,15 +106,15 @@ public class ItemService {
         item.setComment(comment);
 
         LocalDateTime currentDateTime = LocalDateTime.now();
-        item.setDataChangeCreatedBy(operator);
-        item.setDataChangeCreatedTime(currentDateTime);
-        item.setDataChangeLastModifiedBy(operator);
-        item.setDataChangeLastModifiedTime(currentDateTime);
+        item.setCreateUser(operator);
+        item.setCreateTime(currentDateTime);
+        item.setUpdateUser(operator);
+        item.setUpdateTime(currentDateTime);
 
         itemMapper.insertSelective(item);
 
         auditService.audit(Item.class.getSimpleName(), item.getId(), Audit.OP.INSERT,
-                item.getDataChangeCreatedBy());
+                item.getCreateUser());
 
         return item;
     }
@@ -127,10 +127,10 @@ public class ItemService {
         item.setComment(comment);
 
         LocalDateTime currentDateTime = LocalDateTime.now();
-        item.setDataChangeCreatedBy(operator);
-        item.setDataChangeCreatedTime(currentDateTime);
-        item.setDataChangeLastModifiedBy(operator);
-        item.setDataChangeLastModifiedTime(currentDateTime);
+        item.setCreateUser(operator);
+        item.setCreateTime(currentDateTime);
+        item.setUpdateUser(operator);
+        item.setUpdateTime(currentDateTime);
 
         itemMapper.insertSelective(item);
         return item;
@@ -141,7 +141,7 @@ public class ItemService {
         int updatedRows = itemMapper.updateByPrimaryKey(item);
 
         auditService.audit(Item.class.getSimpleName(), item.getId(), Audit.OP.UPDATE,
-                item.getDataChangeLastModifiedBy());
+                item.getUpdateUser());
 
         return updatedRows;
     }

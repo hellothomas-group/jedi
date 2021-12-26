@@ -32,7 +32,7 @@ public class ExecutorTaskService {
         ExecutorTaskExample executorTaskExample = new ExecutorTaskExample();
         executorTaskExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
                 .andAppIdEqualTo(appId)
-                .andDataChangeLastModifiedTimeGreaterThan(LocalDateTime.now().minusDays(1));
+                .andUpdateTimeGreaterThan(LocalDateTime.now().minusDays(1));
         return executorTaskMapper.selectByExample(executorTaskExample);
     }
 
@@ -45,7 +45,7 @@ public class ExecutorTaskService {
                 .andExecutorNameEqualTo(executorName)
                 .andTaskNameEqualTo(taskName)
                 // todo
-                .andDataChangeLastModifiedTimeGreaterThan(LocalDateTime.now().minusHours(1));
+                .andUpdateTimeGreaterThan(LocalDateTime.now().minusHours(1));
         List<ExecutorTask> executorTaskList = executorTaskMapper.selectByExample(executorTaskExample);
 
         return executorTaskList.isEmpty() ? null : executorTaskList.get(0);
@@ -60,11 +60,11 @@ public class ExecutorTaskService {
         executorTask.setExecutorName(executorName);
         executorTask.setTaskName(taskName);
         executorTask.setIsDeleted(false);
-        executorTask.setDataChangeCreatedBy("admin");
-        executorTask.setDataChangeLastModifiedBy("admin");
+        executorTask.setCreateUser("admin");
+        executorTask.setUpdateUser("admin");
         LocalDateTime currentDateTime = LocalDateTime.now();
-        executorTask.setDataChangeCreatedTime(currentDateTime);
-        executorTask.setDataChangeLastModifiedTime(currentDateTime);
+        executorTask.setCreateTime(currentDateTime);
+        executorTask.setUpdateTime(currentDateTime);
 
         executorTaskMapper.insertOrUpdate(executorTask);
         return executorTask;

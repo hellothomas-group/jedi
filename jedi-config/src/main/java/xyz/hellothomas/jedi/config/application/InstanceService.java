@@ -43,8 +43,8 @@ public class InstanceService {
         instance.setAppId(appId);
         instance.setIp(ip);
         LocalDateTime currentDateTime = LocalDateTime.now();
-        instance.setDataChangeCreatedTime(currentDateTime);
-        instance.setDataChangeLastModifiedTime(currentDateTime);
+        instance.setCreateTime(currentDateTime);
+        instance.setUpdateTime(currentDateTime);
 
         instanceMapper.insert(instance);
 
@@ -93,8 +93,8 @@ public class InstanceService {
 
         existedInstanceConfig.setReleaseKey(instanceConfig.getReleaseKey());
         existedInstanceConfig.setReleaseDeliveryTime(instanceConfig.getReleaseDeliveryTime());
-        existedInstanceConfig.setDataChangeLastModifiedTime(instanceConfig
-                .getDataChangeLastModifiedTime());
+        existedInstanceConfig.setUpdateTime(instanceConfig
+                .getUpdateTime());
 
         instanceConfigMapper.updateByPrimaryKeySelective(existedInstanceConfig);
 

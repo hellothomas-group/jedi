@@ -7,10 +7,10 @@
     <result column="configuration" jdbcType="VARCHAR" property="configuration" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
     <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
-    <result column="data_change_created_by" jdbcType="VARCHAR" property="dataChangeCreatedBy" />
-    <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
-    <result column="data_change_last_modified_by" jdbcType="VARCHAR" property="dataChangeLastModifiedBy" />
-    <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -71,8 +71,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, executor_id, configuration, comment, is_deleted, data_change_created_by, data_change_created_time,
-    data_change_last_modified_by, data_change_last_modified_time
+    id, executor_id, configuration, comment, is_deleted, create_user, create_time,
+    update_user, update_time
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.admin.domain.ItemExample" resultMap="BaseResultMap">
     select
@@ -106,13 +106,13 @@
   </delete>
   <insert id="insert" parameterType="xyz.hellothomas.jedi.admin.domain.Item" useGeneratedKeys="true" keyProperty="id">
     insert into item (id, executor_id, configuration,
-      comment, is_deleted, data_change_created_by,
-      data_change_created_time, data_change_last_modified_by,
-      data_change_last_modified_time)
+      comment, is_deleted, create_user,
+      create_time, update_user,
+      update_time)
     values (#{id,jdbcType=BIGINT}, #{executorId,jdbcType=BIGINT}, #{configuration,jdbcType=VARCHAR},
-      #{comment,jdbcType=VARCHAR}, #{isDeleted,jdbcType=BIT}, #{dataChangeCreatedBy,jdbcType=VARCHAR},
-      #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
-      #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
+      #{comment,jdbcType=VARCHAR}, #{isDeleted,jdbcType=BIT}, #{createUser,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR},
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.admin.domain.Item" useGeneratedKeys="true" keyProperty="id">
     insert into item
@@ -132,17 +132,17 @@
       <if test="isDeleted != null">
         is_deleted,
       </if>
-      <if test="dataChangeCreatedBy != null">
-        data_change_created_by,
+      <if test="createUser != null">
+        create_user,
       </if>
-      <if test="dataChangeCreatedTime != null">
-        data_change_created_time,
+      <if test="createTime != null">
+        create_time,
       </if>
-      <if test="dataChangeLastModifiedBy != null">
-        data_change_last_modified_by,
+      <if test="updateUser != null">
+        update_user,
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        data_change_last_modified_time,
+      <if test="updateTime != null">
+        update_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -161,17 +161,17 @@
       <if test="isDeleted != null">
         #{isDeleted,jdbcType=BIT},
       </if>
-      <if test="dataChangeCreatedBy != null">
-        #{dataChangeCreatedBy,jdbcType=VARCHAR},
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
       </if>
-      <if test="dataChangeCreatedTime != null">
-        #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeLastModifiedBy != null">
-        #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -199,17 +199,17 @@
       <if test="record.isDeleted != null">
         is_deleted = #{record.isDeleted,jdbcType=BIT},
       </if>
-      <if test="record.dataChangeCreatedBy != null">
-        data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
+      <if test="record.createUser != null">
+        create_user = #{record.createUser,jdbcType=VARCHAR},
       </if>
-      <if test="record.dataChangeCreatedTime != null">
-        data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.dataChangeLastModifiedBy != null">
-        data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      <if test="record.updateUser != null">
+        update_user = #{record.updateUser,jdbcType=VARCHAR},
       </if>
-      <if test="record.dataChangeLastModifiedTime != null">
-        data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -223,10 +223,10 @@
     configuration = #{record.configuration,jdbcType=VARCHAR},
     comment = #{record.comment,jdbcType=VARCHAR},
     is_deleted = #{record.isDeleted,jdbcType=BIT},
-    data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
-    data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
-    data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
-    data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+    create_user = #{record.createUser,jdbcType=VARCHAR},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    update_user = #{record.updateUser,jdbcType=VARCHAR},
+    update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -246,17 +246,17 @@
       <if test="isDeleted != null">
         is_deleted = #{isDeleted,jdbcType=BIT},
       </if>
-      <if test="dataChangeCreatedBy != null">
-        data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
       </if>
-      <if test="dataChangeCreatedTime != null">
-        data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeLastModifiedBy != null">
-        data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -267,10 +267,10 @@
       configuration = #{configuration,jdbcType=VARCHAR},
       comment = #{comment,jdbcType=VARCHAR},
       is_deleted = #{isDeleted,jdbcType=BIT},
-      data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
-      data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
-      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

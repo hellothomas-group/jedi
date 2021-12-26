@@ -235,63 +235,63 @@ public class ReleaseMessageExample {
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastTimeIsNull() {
-            addCriterion("data_change_last_time is null");
+        public Criteria andUpdateTimeIsNull() {
+            addCriterion("update_time is null");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastTimeIsNotNull() {
-            addCriterion("data_change_last_time is not null");
+        public Criteria andUpdateTimeIsNotNull() {
+            addCriterion("update_time is not null");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastTimeEqualTo(LocalDateTime value) {
-            addCriterion("data_change_last_time =", value, "dataChangeLastTime");
+        public Criteria andUpdateTimeEqualTo(LocalDateTime value) {
+            addCriterion("update_time =", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastTimeNotEqualTo(LocalDateTime value) {
-            addCriterion("data_change_last_time <>", value, "dataChangeLastTime");
+        public Criteria andUpdateTimeNotEqualTo(LocalDateTime value) {
+            addCriterion("update_time <>", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastTimeGreaterThan(LocalDateTime value) {
-            addCriterion("data_change_last_time >", value, "dataChangeLastTime");
+        public Criteria andUpdateTimeGreaterThan(LocalDateTime value) {
+            addCriterion("update_time >", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastTimeGreaterThanOrEqualTo(LocalDateTime value) {
-            addCriterion("data_change_last_time >=", value, "dataChangeLastTime");
+        public Criteria andUpdateTimeGreaterThanOrEqualTo(LocalDateTime value) {
+            addCriterion("update_time >=", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastTimeLessThan(LocalDateTime value) {
-            addCriterion("data_change_last_time <", value, "dataChangeLastTime");
+        public Criteria andUpdateTimeLessThan(LocalDateTime value) {
+            addCriterion("update_time <", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastTimeLessThanOrEqualTo(LocalDateTime value) {
-            addCriterion("data_change_last_time <=", value, "dataChangeLastTime");
+        public Criteria andUpdateTimeLessThanOrEqualTo(LocalDateTime value) {
+            addCriterion("update_time <=", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastTimeIn(List<LocalDateTime> values) {
-            addCriterion("data_change_last_time in", values, "dataChangeLastTime");
+        public Criteria andUpdateTimeIn(List<LocalDateTime> values) {
+            addCriterion("update_time in", values, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastTimeNotIn(List<LocalDateTime> values) {
-            addCriterion("data_change_last_time not in", values, "dataChangeLastTime");
+        public Criteria andUpdateTimeNotIn(List<LocalDateTime> values) {
+            addCriterion("update_time not in", values, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastTimeBetween(LocalDateTime value1, LocalDateTime value2) {
-            addCriterion("data_change_last_time between", value1, value2, "dataChangeLastTime");
+        public Criteria andUpdateTimeBetween(LocalDateTime value1, LocalDateTime value2) {
+            addCriterion("update_time between", value1, value2, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
-            addCriterion("data_change_last_time not between", value1, value2, "dataChangeLastTime");
+        public Criteria andUpdateTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
+            addCriterion("update_time not between", value1, value2, "updateTime");
             return (Criteria) this;
         }
     }

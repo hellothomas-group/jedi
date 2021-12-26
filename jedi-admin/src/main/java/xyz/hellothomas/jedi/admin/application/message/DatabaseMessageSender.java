@@ -49,7 +49,7 @@ public class DatabaseMessageSender implements MessageSender {
         log.info("Jedi.AdminService.ReleaseMessage {}", message);
         try {
             ReleaseMessage newMessage = new ReleaseMessage(message);
-            newMessage.setDataChangeLastTime(LocalDateTime.now());
+            newMessage.setUpdateTime(LocalDateTime.now());
             releaseMessageMapper.save(newMessage);
             toClean.offer(newMessage.getId());
         } catch (Exception ex) {

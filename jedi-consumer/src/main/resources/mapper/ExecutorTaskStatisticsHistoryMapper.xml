@@ -19,8 +19,8 @@
     <result column="execution_time_min" jdbcType="BIGINT" property="executionTimeMin" />
     <result column="execution_time_line_95" jdbcType="BIGINT" property="executionTimeLine95" />
     <result column="execution_time_line_99" jdbcType="BIGINT" property="executionTimeLine99" />
-    <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
-    <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="version" jdbcType="INTEGER" property="version" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -84,8 +84,8 @@
   <sql id="Base_Column_List">
     id, statistics_date, namespace_name, app_id, executor_name, task_name, total, failure,
     failure_ratio, total_time_max, total_time_min, wait_time_max, wait_time_min, execution_time_max,
-    execution_time_min, execution_time_line_95, execution_time_line_99,data_change_created_time,
-    data_change_last_modified_time, version
+    execution_time_min, execution_time_line_95, execution_time_line_99,create_time,
+    update_time, version
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistoryExample" resultMap="BaseResultMap">
     select
@@ -123,15 +123,15 @@
       total, failure, failure_ratio,
       total_time_max, total_time_min, wait_time_max,
       wait_time_min, execution_time_max, execution_time_min,
-      execution_time_line_95, execution_time_line_99, data_change_created_time,
-      data_change_last_modified_time, version)
+      execution_time_line_95, execution_time_line_99, create_time,
+      update_time, version)
     values (#{id,jdbcType=BIGINT}, #{statisticsDate,jdbcType=DATE}, #{namespaceName,jdbcType=VARCHAR},
       #{appId,jdbcType=VARCHAR}, #{executorName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR},
       #{total,jdbcType=BIGINT}, #{failure,jdbcType=BIGINT}, #{failureRatio,jdbcType=DECIMAL},
       #{totalTimeMax,jdbcType=BIGINT}, #{totalTimeMin,jdbcType=BIGINT}, #{waitTimeMax,jdbcType=BIGINT},
       #{waitTimeMin,jdbcType=BIGINT}, #{executionTimeMax,jdbcType=BIGINT}, #{executionTimeMin,jdbcType=BIGINT},
-      #{executionTimeLine95,jdbcType=BIGINT}, #{executionTimeLine99,jdbcType=BIGINT}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER})
+      #{executionTimeLine95,jdbcType=BIGINT}, #{executionTimeLine99,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatisticsHistory" useGeneratedKeys="true" keyProperty="id">
     insert into executor_task_statistics_history
@@ -187,11 +187,11 @@
       <if test="executionTimeLine99 != null">
         execution_time_line_99,
       </if>
-      <if test="dataChangeCreatedTime != null">
-        data_change_created_time,
+      <if test="createTime != null">
+        create_time,
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        data_change_last_modified_time,
+      <if test="updateTime != null">
+        update_time,
       </if>
       <if test="version != null">
         version,
@@ -249,11 +249,11 @@
       <if test="executionTimeLine99 != null">
         #{executionTimeLine99,jdbcType=BIGINT},
       </if>
-      <if test="dataChangeCreatedTime != null">
-        #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="version != null">
         #{version,jdbcType=INTEGER},
@@ -320,11 +320,11 @@
       <if test="record.executionTimeLine99 != null">
         execution_time_line_99 = #{record.executionTimeLine99,jdbcType=BIGINT},
       </if>
-      <if test="record.dataChangeCreatedTime != null">
-        data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.dataChangeLastModifiedTime != null">
-        data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.version != null">
         version = #{record.version,jdbcType=INTEGER},
@@ -353,8 +353,8 @@
       execution_time_min = #{record.executionTimeMin,jdbcType=BIGINT},
       execution_time_line_95 = #{record.executionTimeLine95,jdbcType=BIGINT},
       execution_time_line_99 = #{record.executionTimeLine99,jdbcType=BIGINT},
-      data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       version = #{record.version,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -411,11 +411,11 @@
       <if test="executionTimeLine99 != null">
         execution_time_line_99 = #{executionTimeLine99,jdbcType=BIGINT},
       </if>
-      <if test="dataChangeCreatedTime != null">
-        data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="version != null">
         version = #{version,jdbcType=INTEGER},
@@ -441,8 +441,8 @@
       execution_time_min = #{executionTimeMin,jdbcType=BIGINT},
       execution_time_line_95 = #{executionTimeLine95,jdbcType=BIGINT},
       execution_time_line_99 = #{executionTimeLine99,jdbcType=BIGINT},
-      data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
       version = #{version,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>

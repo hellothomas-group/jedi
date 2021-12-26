@@ -30,7 +30,7 @@ public class ReleaseMessage {
     /**
      * 最后修改时间
      */
-    private LocalDateTime dataChangeLastTime;
+    private LocalDateTime updateTime;
 
     public ReleaseMessage() {
     }

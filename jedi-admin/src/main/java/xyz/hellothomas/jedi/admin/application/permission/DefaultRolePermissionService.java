@@ -65,11 +65,11 @@ public class DefaultRolePermissionService implements RolePermissionService {
                 RolePermission rolePermission = new RolePermission();
                 rolePermission.setRoleId(createdRole.getId());
                 rolePermission.setPermissionId(permissionId);
-                rolePermission.setDataChangeCreatedBy(createdRole.getDataChangeCreatedBy());
-                rolePermission.setDataChangeLastModifiedBy(createdRole.getDataChangeLastModifiedBy());
+                rolePermission.setCreateUser(createdRole.getCreateUser());
+                rolePermission.setUpdateUser(createdRole.getUpdateUser());
                 LocalDateTime currentTime = LocalDateTime.now();
-                rolePermission.setDataChangeCreatedTime(currentTime);
-                rolePermission.setDataChangeLastModifiedTime(currentTime);
+                rolePermission.setCreateTime(currentTime);
+                rolePermission.setUpdateTime(currentTime);
                 return rolePermission;
             }).collect(Collectors.toList());
             rolePermissionMapper.insertBatch(rolePermissions);
@@ -94,11 +94,11 @@ public class DefaultRolePermissionService implements RolePermissionService {
             UserRole userRole = new UserRole();
             userRole.setRoleId(role.getId());
             userRole.setUserId(userId);
-            userRole.setDataChangeCreatedBy(operatorUserId);
-            userRole.setDataChangeLastModifiedBy(operatorUserId);
+            userRole.setCreateUser(operatorUserId);
+            userRole.setUpdateUser(operatorUserId);
             LocalDateTime currentTime = LocalDateTime.now();
-            userRole.setDataChangeCreatedTime(currentTime);
-            userRole.setDataChangeLastModifiedTime(currentTime);
+            userRole.setCreateTime(currentTime);
+            userRole.setUpdateTime(currentTime);
             return userRole;
         }).collect(Collectors.toList());
 

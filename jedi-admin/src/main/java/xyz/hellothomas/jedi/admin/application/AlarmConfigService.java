@@ -57,7 +57,7 @@ public class AlarmConfigService {
         }
 
         auditService.audit(AlarmConfig.class.getSimpleName(), apiResponse.getData().getId(), Audit.OP.INSERT,
-                apiResponse.getData().getDataChangeCreatedBy());
+                apiResponse.getData().getCreateUser());
 
         return apiResponse.getData();
     }
@@ -76,7 +76,7 @@ public class AlarmConfigService {
         }
 
         auditService.audit(AlarmConfig.class.getSimpleName(), apiResponse.getData().getId(), Audit.OP.UPDATE,
-                apiResponse.getData().getDataChangeCreatedBy());
+                apiResponse.getData().getCreateUser());
 
         return apiResponse.getData();
     }

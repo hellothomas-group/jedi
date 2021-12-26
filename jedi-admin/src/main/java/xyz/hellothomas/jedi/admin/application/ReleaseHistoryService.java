@@ -147,15 +147,15 @@ public class ReleaseHistoryService {
             releaseHistory.setOperationContext(gson.toJson(operationContext));
         }
         LocalDateTime currentDateTime = LocalDateTime.now();
-        releaseHistory.setDataChangeCreatedTime(currentDateTime);
-        releaseHistory.setDataChangeCreatedBy(operator);
-        releaseHistory.setDataChangeLastModifiedTime(currentDateTime);
-        releaseHistory.setDataChangeLastModifiedBy(operator);
+        releaseHistory.setCreateTime(currentDateTime);
+        releaseHistory.setCreateUser(operator);
+        releaseHistory.setUpdateTime(currentDateTime);
+        releaseHistory.setUpdateUser(operator);
 
         releaseHistoryMapper.insertSelective(releaseHistory);
 
         auditService.audit(ReleaseHistory.class.getSimpleName(), releaseHistory.getId(),
-                Audit.OP.INSERT, releaseHistory.getDataChangeCreatedBy());
+                Audit.OP.INSERT, releaseHistory.getCreateUser());
 
         return releaseHistory;
     }
@@ -169,8 +169,8 @@ public class ReleaseHistoryService {
                 .andIsDeletedEqualTo(false);
         ReleaseHistory releaseHistory = new ReleaseHistory();
         releaseHistory.setIsDeleted(true);
-        releaseHistory.setDataChangeLastModifiedTime(LocalDateTime.now());
-        releaseHistory.setDataChangeLastModifiedBy(operator);
+        releaseHistory.setUpdateTime(LocalDateTime.now());
+        releaseHistory.setUpdateUser(operator);
         return releaseHistoryMapper.updateByExampleSelective(releaseHistory, releaseHistoryExample);
     }
 }

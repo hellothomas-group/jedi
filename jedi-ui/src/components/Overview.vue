@@ -8,7 +8,7 @@
           <table border="1" style="margin: auto;line-height: 60px;table-layout:fixed;">
             <tr>
               <th>线程池负责人</th>
-              <td style="width: 60%;text-align: center">{{this.executor.dataChangeCreatedBy}}</td>
+              <td style="width: 60%;text-align: center">{{this.executor.createUser}}</td>
             </tr>
             <tr>
               <th>线程池配置</th>
@@ -17,7 +17,7 @@
             </tr>
             <tr>
               <th>配置最近更新时间</th>
-              <td style="width: 60%;text-align: center">{{this.release.dataChangeLastModifiedTime}}</td>
+              <td style="width: 60%;text-align: center">{{this.release.updateTime}}</td>
             </tr>
           </table>
         </el-card>
@@ -58,10 +58,10 @@ export default {
         namespaceName: undefined,
         appId: undefined,
         executorName: undefined,
-        dataChangeCreatedBy: undefined,
-        dataChangeLastModifiedBy: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: undefined
+        createUser: undefined,
+        updateUser: undefined,
+        createTime: undefined,
+        updateTime: undefined
       },
       release: {
         namespaceName: undefined,
@@ -69,10 +69,10 @@ export default {
         executorName: undefined,
         configurations: '未发布,客户端使用本地配置',
         comment: undefined,
-        dataChangeCreatedBy: undefined,
-        dataChangeLastModifiedBy: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: '无'
+        createUser: undefined,
+        updateUser: undefined,
+        createTime: undefined,
+        updateTime: '无'
       },
       taskSummary: {
         namespaceName: undefined,
@@ -86,8 +86,8 @@ export default {
         executionTimeMin: undefined,
         executionTimeLine95: undefined,
         executionTimeLine99: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: undefined
+        createTime: undefined,
+        updateTime: undefined
       }
     }
   },

@@ -37,12 +37,12 @@ public class TaskLock {
     /**
      * 创建时间
      */
-    private LocalDateTime dataChangeCreatedTime;
+    private LocalDateTime createTime;
 
     /**
      * 最后修改时间
      */
-    private LocalDateTime dataChangeLastModifiedTime;
+    private LocalDateTime updateTime;
 
     /**
      * 版本号

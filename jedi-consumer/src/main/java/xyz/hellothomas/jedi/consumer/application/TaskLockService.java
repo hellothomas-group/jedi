@@ -39,7 +39,7 @@ public class TaskLockService {
 
     public int updateModifiedTimeAndVersion(TaskLock lockedTask) {
         lockedTask.setVersion(lockedTask.getVersion() + 1);
-        lockedTask.setDataChangeLastModifiedTime(LocalDateTime.now());
+        lockedTask.setUpdateTime(LocalDateTime.now());
         return taskLockMapper.updateByPrimaryKey(lockedTask);
     }
 
@@ -63,8 +63,8 @@ public class TaskLockService {
         taskLock.setTaskDate(taskDate);
         taskLock.setTaskName(taskName);
         LocalDateTime currentDateTime = LocalDateTime.now();
-        taskLock.setDataChangeCreatedTime(currentDateTime);
-        taskLock.setDataChangeLastModifiedTime(currentDateTime);
+        taskLock.setCreateTime(currentDateTime);
+        taskLock.setUpdateTime(currentDateTime);
         taskLock.setVersion(1);
         taskLock.setIsLocked(false);
 

@@ -194,15 +194,15 @@ public class ReleaseService {
         release.setIsAbandoned(false);
 
         LocalDateTime currentDateTime = LocalDateTime.now();
-        release.setDataChangeCreatedTime(currentDateTime);
-        release.setDataChangeCreatedBy(operator);
-        release.setDataChangeLastModifiedTime(currentDateTime);
-        release.setDataChangeLastModifiedBy(operator);
+        release.setCreateTime(currentDateTime);
+        release.setCreateUser(operator);
+        release.setUpdateTime(currentDateTime);
+        release.setUpdateUser(operator);
         releaseMapper.insertSelective(release);
 
         executorLockService.unlock(executor.getId());
         auditService.audit(Release.class.getSimpleName(), release.getId(), Audit.OP.INSERT,
-                release.getDataChangeCreatedBy());
+                release.getCreateUser());
 
         return release;
     }
@@ -236,7 +236,7 @@ public class ReleaseService {
         }
 
         release.setIsAbandoned(true);
-        release.setDataChangeLastModifiedBy(operator);
+        release.setUpdateUser(operator);
 
         releaseMapper.insert(release);
 
@@ -272,7 +272,7 @@ public class ReleaseService {
 
         for (int i = 0; i < releases.size() - 1; i++) {
             releases.get(i).setIsAbandoned(true);
-            releases.get(i).setDataChangeLastModifiedBy(operator);
+            releases.get(i).setUpdateUser(operator);
 
             ReleaseExample releaseExample = new ReleaseExample();
             releaseExample.createCriteria().andIdEqualTo(releases.get(i).getId());
@@ -295,8 +295,8 @@ public class ReleaseService {
                 .andIsDeletedEqualTo(false);
         Release release = new Release();
         release.setIsDeleted(true);
-        release.setDataChangeLastModifiedTime(LocalDateTime.now());
-        release.setDataChangeLastModifiedBy(operator);
+        release.setUpdateTime(LocalDateTime.now());
+        release.setUpdateUser(operator);
         return releaseMapper.updateByExampleSelective(release, releaseExample);
     }
 

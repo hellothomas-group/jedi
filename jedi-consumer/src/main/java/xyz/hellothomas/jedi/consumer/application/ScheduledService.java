@@ -69,7 +69,7 @@ public class ScheduledService {
         LocalDate currentDate = LocalDate.now();
         TaskLock taskLock = taskLockService.selectByTaskDateAndTaskName(currentDate, REFRESH_TASK_STATISTICS_NAME);
         if (taskLock == null ||
-                taskLock.getDataChangeLastModifiedTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_CYCLE_SECONDS))) {
+                taskLock.getUpdateTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_CYCLE_SECONDS))) {
             return;
         }
 
@@ -82,7 +82,7 @@ public class ScheduledService {
             return;
         }
         if (taskLock == null ||
-                taskLock.getDataChangeLastModifiedTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_CYCLE_SECONDS))) {
+                taskLock.getUpdateTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_CYCLE_SECONDS))) {
             return;
         }
 
@@ -121,15 +121,15 @@ public class ScheduledService {
                 LocalDateTime currentDateTime = LocalDateTime.now();
                 if (executorTaskStatisticsOrigin == null) {
                     executorTaskStatistics.setStatisticsDate(currentDate);
-                    executorTaskStatistics.setDataChangeCreatedTime(currentDateTime);
-                    executorTaskStatistics.setDataChangeLastModifiedTime(currentDateTime);
+                    executorTaskStatistics.setCreateTime(currentDateTime);
+                    executorTaskStatistics.setUpdateTime(currentDateTime);
                     executorTaskStatistics.setVersion(1);
                     taskStatisticsService.insertSelective(executorTaskStatistics);
                 } else {
                     executorTaskStatistics.setId(executorTaskStatisticsOrigin.getId());
-                    executorTaskStatistics.setDataChangeCreatedTime(executorTaskStatisticsOrigin.getDataChangeCreatedTime());
+                    executorTaskStatistics.setCreateTime(executorTaskStatisticsOrigin.getCreateTime());
                     executorTaskStatistics.setVersion(executorTaskStatisticsOrigin.getVersion() + 1);
-                    executorTaskStatistics.setDataChangeLastModifiedTime(currentDateTime);
+                    executorTaskStatistics.setUpdateTime(currentDateTime);
                     taskStatisticsService.updateByPrimaryKeySelective(executorTaskStatistics);
                 }
             });
@@ -201,7 +201,7 @@ public class ScheduledService {
         TaskLock taskLock = taskLockService.selectByTaskDateAndTaskName(currentDate,
                 REFRESH_LAST_DAY_TASK_STATISTICS_NAME);
         if (taskLock == null ||
-                taskLock.getDataChangeLastModifiedTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_INTERVAL_SECONDS))) {
+                taskLock.getUpdateTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_INTERVAL_SECONDS))) {
             return;
         }
 
@@ -215,7 +215,7 @@ public class ScheduledService {
         }
 
         if (taskLock == null ||
-                taskLock.getDataChangeLastModifiedTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_INTERVAL_SECONDS))) {
+                taskLock.getUpdateTime().isAfter(LocalDateTime.now().minusSeconds(REFRESH_TASK_STATISTICS_INTERVAL_SECONDS))) {
             return;
         }
 
@@ -256,9 +256,9 @@ public class ScheduledService {
 
                 LocalDateTime currentDateTime = LocalDateTime.now();
                 executorTaskStatisticsHistory.setId(executorTaskStatisticsHistoryOrigin.getId());
-                executorTaskStatisticsHistory.setDataChangeCreatedTime(executorTaskStatisticsHistoryOrigin.getDataChangeCreatedTime());
+                executorTaskStatisticsHistory.setCreateTime(executorTaskStatisticsHistoryOrigin.getCreateTime());
                 executorTaskStatisticsHistory.setVersion(executorTaskStatisticsHistoryOrigin.getVersion() + 1);
-                executorTaskStatisticsHistory.setDataChangeLastModifiedTime(currentDateTime);
+                executorTaskStatisticsHistory.setUpdateTime(currentDateTime);
                 taskStatisticsHistoryService.updateByPrimaryKeySelective(executorTaskStatisticsHistory);
             });
         });

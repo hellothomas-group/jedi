@@ -31,10 +31,10 @@ public class ExecutorLockService {
         ExecutorLock entity = new ExecutorLock();
         entity.setExecutorId(executorId);
         LocalDateTime currentDateTime = LocalDateTime.now();
-        entity.setDataChangeCreatedTime(currentDateTime);
-        entity.setDataChangeCreatedBy(operator);
-        entity.setDataChangeLastModifiedTime(currentDateTime);
-        entity.setDataChangeLastModifiedBy(operator);
+        entity.setCreateTime(currentDateTime);
+        entity.setCreateUser(operator);
+        entity.setUpdateTime(currentDateTime);
+        entity.setUpdateUser(operator);
 
         executorLockMapper.insertSelective(entity);
 

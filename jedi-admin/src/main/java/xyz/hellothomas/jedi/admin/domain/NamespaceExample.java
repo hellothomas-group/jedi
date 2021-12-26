@@ -645,263 +645,263 @@ public class NamespaceExample {
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByIsNull() {
-            addCriterion("data_change_created_by is null");
+        public Criteria andCreateUserIsNull() {
+            addCriterion("create_user is null");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByIsNotNull() {
-            addCriterion("data_change_created_by is not null");
+        public Criteria andCreateUserIsNotNull() {
+            addCriterion("create_user is not null");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByEqualTo(String value) {
-            addCriterion("data_change_created_by =", value, "dataChangeCreatedBy");
+        public Criteria andCreateUserEqualTo(String value) {
+            addCriterion("create_user =", value, "createUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByNotEqualTo(String value) {
-            addCriterion("data_change_created_by <>", value, "dataChangeCreatedBy");
+        public Criteria andCreateUserNotEqualTo(String value) {
+            addCriterion("create_user <>", value, "createUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByGreaterThan(String value) {
-            addCriterion("data_change_created_by >", value, "dataChangeCreatedBy");
+        public Criteria andCreateUserGreaterThan(String value) {
+            addCriterion("create_user >", value, "createUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByGreaterThanOrEqualTo(String value) {
-            addCriterion("data_change_created_by >=", value, "dataChangeCreatedBy");
+        public Criteria andCreateUserGreaterThanOrEqualTo(String value) {
+            addCriterion("create_user >=", value, "createUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByLessThan(String value) {
-            addCriterion("data_change_created_by <", value, "dataChangeCreatedBy");
+        public Criteria andCreateUserLessThan(String value) {
+            addCriterion("create_user <", value, "createUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByLessThanOrEqualTo(String value) {
-            addCriterion("data_change_created_by <=", value, "dataChangeCreatedBy");
+        public Criteria andCreateUserLessThanOrEqualTo(String value) {
+            addCriterion("create_user <=", value, "createUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByLike(String value) {
-            addCriterion("data_change_created_by like", value, "dataChangeCreatedBy");
+        public Criteria andCreateUserLike(String value) {
+            addCriterion("create_user like", value, "createUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByNotLike(String value) {
-            addCriterion("data_change_created_by not like", value, "dataChangeCreatedBy");
+        public Criteria andCreateUserNotLike(String value) {
+            addCriterion("create_user not like", value, "createUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByIn(List<String> values) {
-            addCriterion("data_change_created_by in", values, "dataChangeCreatedBy");
+        public Criteria andCreateUserIn(List<String> values) {
+            addCriterion("create_user in", values, "createUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByNotIn(List<String> values) {
-            addCriterion("data_change_created_by not in", values, "dataChangeCreatedBy");
+        public Criteria andCreateUserNotIn(List<String> values) {
+            addCriterion("create_user not in", values, "createUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByBetween(String value1, String value2) {
-            addCriterion("data_change_created_by between", value1, value2, "dataChangeCreatedBy");
+        public Criteria andCreateUserBetween(String value1, String value2) {
+            addCriterion("create_user between", value1, value2, "createUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedByNotBetween(String value1, String value2) {
-            addCriterion("data_change_created_by not between", value1, value2, "dataChangeCreatedBy");
+        public Criteria andCreateUserNotBetween(String value1, String value2) {
+            addCriterion("create_user not between", value1, value2, "createUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeIsNull() {
-            addCriterion("data_change_created_time is null");
+        public Criteria andCreateTimeIsNull() {
+            addCriterion("create_time is null");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeIsNotNull() {
-            addCriterion("data_change_created_time is not null");
+        public Criteria andCreateTimeIsNotNull() {
+            addCriterion("create_time is not null");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeEqualTo(LocalDateTime value) {
-            addCriterion("data_change_created_time =", value, "dataChangeCreatedTime");
+        public Criteria andCreateTimeEqualTo(LocalDateTime value) {
+            addCriterion("create_time =", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeNotEqualTo(LocalDateTime value) {
-            addCriterion("data_change_created_time <>", value, "dataChangeCreatedTime");
+        public Criteria andCreateTimeNotEqualTo(LocalDateTime value) {
+            addCriterion("create_time <>", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeGreaterThan(LocalDateTime value) {
-            addCriterion("data_change_created_time >", value, "dataChangeCreatedTime");
+        public Criteria andCreateTimeGreaterThan(LocalDateTime value) {
+            addCriterion("create_time >", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeGreaterThanOrEqualTo(LocalDateTime value) {
-            addCriterion("data_change_created_time >=", value, "dataChangeCreatedTime");
+        public Criteria andCreateTimeGreaterThanOrEqualTo(LocalDateTime value) {
+            addCriterion("create_time >=", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeLessThan(LocalDateTime value) {
-            addCriterion("data_change_created_time <", value, "dataChangeCreatedTime");
+        public Criteria andCreateTimeLessThan(LocalDateTime value) {
+            addCriterion("create_time <", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeLessThanOrEqualTo(LocalDateTime value) {
-            addCriterion("data_change_created_time <=", value, "dataChangeCreatedTime");
+        public Criteria andCreateTimeLessThanOrEqualTo(LocalDateTime value) {
+            addCriterion("create_time <=", value, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeIn(List<LocalDateTime> values) {
-            addCriterion("data_change_created_time in", values, "dataChangeCreatedTime");
+        public Criteria andCreateTimeIn(List<LocalDateTime> values) {
+            addCriterion("create_time in", values, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeNotIn(List<LocalDateTime> values) {
-            addCriterion("data_change_created_time not in", values, "dataChangeCreatedTime");
+        public Criteria andCreateTimeNotIn(List<LocalDateTime> values) {
+            addCriterion("create_time not in", values, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeBetween(LocalDateTime value1, LocalDateTime value2) {
-            addCriterion("data_change_created_time between", value1, value2, "dataChangeCreatedTime");
+        public Criteria andCreateTimeBetween(LocalDateTime value1, LocalDateTime value2) {
+            addCriterion("create_time between", value1, value2, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeCreatedTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
-            addCriterion("data_change_created_time not between", value1, value2, "dataChangeCreatedTime");
+        public Criteria andCreateTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
+            addCriterion("create_time not between", value1, value2, "createTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByIsNull() {
-            addCriterion("data_change_last_modified_by is null");
+        public Criteria andUpdateUserIsNull() {
+            addCriterion("update_user is null");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByIsNotNull() {
-            addCriterion("data_change_last_modified_by is not null");
+        public Criteria andUpdateUserIsNotNull() {
+            addCriterion("update_user is not null");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByEqualTo(String value) {
-            addCriterion("data_change_last_modified_by =", value, "dataChangeLastModifiedBy");
+        public Criteria andUpdateUserEqualTo(String value) {
+            addCriterion("update_user =", value, "updateUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByNotEqualTo(String value) {
-            addCriterion("data_change_last_modified_by <>", value, "dataChangeLastModifiedBy");
+        public Criteria andUpdateUserNotEqualTo(String value) {
+            addCriterion("update_user <>", value, "updateUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByGreaterThan(String value) {
-            addCriterion("data_change_last_modified_by >", value, "dataChangeLastModifiedBy");
+        public Criteria andUpdateUserGreaterThan(String value) {
+            addCriterion("update_user >", value, "updateUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByGreaterThanOrEqualTo(String value) {
-            addCriterion("data_change_last_modified_by >=", value, "dataChangeLastModifiedBy");
+        public Criteria andUpdateUserGreaterThanOrEqualTo(String value) {
+            addCriterion("update_user >=", value, "updateUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByLessThan(String value) {
-            addCriterion("data_change_last_modified_by <", value, "dataChangeLastModifiedBy");
+        public Criteria andUpdateUserLessThan(String value) {
+            addCriterion("update_user <", value, "updateUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByLessThanOrEqualTo(String value) {
-            addCriterion("data_change_last_modified_by <=", value, "dataChangeLastModifiedBy");
+        public Criteria andUpdateUserLessThanOrEqualTo(String value) {
+            addCriterion("update_user <=", value, "updateUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByLike(String value) {
-            addCriterion("data_change_last_modified_by like", value, "dataChangeLastModifiedBy");
+        public Criteria andUpdateUserLike(String value) {
+            addCriterion("update_user like", value, "updateUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByNotLike(String value) {
-            addCriterion("data_change_last_modified_by not like", value, "dataChangeLastModifiedBy");
+        public Criteria andUpdateUserNotLike(String value) {
+            addCriterion("update_user not like", value, "updateUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByIn(List<String> values) {
-            addCriterion("data_change_last_modified_by in", values, "dataChangeLastModifiedBy");
+        public Criteria andUpdateUserIn(List<String> values) {
+            addCriterion("update_user in", values, "updateUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByNotIn(List<String> values) {
-            addCriterion("data_change_last_modified_by not in", values, "dataChangeLastModifiedBy");
+        public Criteria andUpdateUserNotIn(List<String> values) {
+            addCriterion("update_user not in", values, "updateUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByBetween(String value1, String value2) {
-            addCriterion("data_change_last_modified_by between", value1, value2, "dataChangeLastModifiedBy");
+        public Criteria andUpdateUserBetween(String value1, String value2) {
+            addCriterion("update_user between", value1, value2, "updateUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedByNotBetween(String value1, String value2) {
-            addCriterion("data_change_last_modified_by not between", value1, value2, "dataChangeLastModifiedBy");
+        public Criteria andUpdateUserNotBetween(String value1, String value2) {
+            addCriterion("update_user not between", value1, value2, "updateUser");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeIsNull() {
-            addCriterion("data_change_last_modified_time is null");
+        public Criteria andUpdateTimeIsNull() {
+            addCriterion("update_time is null");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeIsNotNull() {
-            addCriterion("data_change_last_modified_time is not null");
+        public Criteria andUpdateTimeIsNotNull() {
+            addCriterion("update_time is not null");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeEqualTo(LocalDateTime value) {
-            addCriterion("data_change_last_modified_time =", value, "dataChangeLastModifiedTime");
+        public Criteria andUpdateTimeEqualTo(LocalDateTime value) {
+            addCriterion("update_time =", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeNotEqualTo(LocalDateTime value) {
-            addCriterion("data_change_last_modified_time <>", value, "dataChangeLastModifiedTime");
+        public Criteria andUpdateTimeNotEqualTo(LocalDateTime value) {
+            addCriterion("update_time <>", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeGreaterThan(LocalDateTime value) {
-            addCriterion("data_change_last_modified_time >", value, "dataChangeLastModifiedTime");
+        public Criteria andUpdateTimeGreaterThan(LocalDateTime value) {
+            addCriterion("update_time >", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeGreaterThanOrEqualTo(LocalDateTime value) {
-            addCriterion("data_change_last_modified_time >=", value, "dataChangeLastModifiedTime");
+        public Criteria andUpdateTimeGreaterThanOrEqualTo(LocalDateTime value) {
+            addCriterion("update_time >=", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeLessThan(LocalDateTime value) {
-            addCriterion("data_change_last_modified_time <", value, "dataChangeLastModifiedTime");
+        public Criteria andUpdateTimeLessThan(LocalDateTime value) {
+            addCriterion("update_time <", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeLessThanOrEqualTo(LocalDateTime value) {
-            addCriterion("data_change_last_modified_time <=", value, "dataChangeLastModifiedTime");
+        public Criteria andUpdateTimeLessThanOrEqualTo(LocalDateTime value) {
+            addCriterion("update_time <=", value, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeIn(List<LocalDateTime> values) {
-            addCriterion("data_change_last_modified_time in", values, "dataChangeLastModifiedTime");
+        public Criteria andUpdateTimeIn(List<LocalDateTime> values) {
+            addCriterion("update_time in", values, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeNotIn(List<LocalDateTime> values) {
-            addCriterion("data_change_last_modified_time not in", values, "dataChangeLastModifiedTime");
+        public Criteria andUpdateTimeNotIn(List<LocalDateTime> values) {
+            addCriterion("update_time not in", values, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeBetween(LocalDateTime value1, LocalDateTime value2) {
-            addCriterion("data_change_last_modified_time between", value1, value2, "dataChangeLastModifiedTime");
+        public Criteria andUpdateTimeBetween(LocalDateTime value1, LocalDateTime value2) {
+            addCriterion("update_time between", value1, value2, "updateTime");
             return (Criteria) this;
         }
 
-        public Criteria andDataChangeLastModifiedTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
-            addCriterion("data_change_last_modified_time not between", value1, value2, "dataChangeLastModifiedTime");
+        public Criteria andUpdateTimeNotBetween(LocalDateTime value1, LocalDateTime value2) {
+            addCriterion("update_time not between", value1, value2, "updateTime");
             return (Criteria) this;
         }
     }

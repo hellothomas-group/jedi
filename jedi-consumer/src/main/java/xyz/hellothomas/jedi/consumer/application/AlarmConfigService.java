@@ -32,8 +32,8 @@ public class AlarmConfigService {
         }
 
         alarmConfig.setIsDeleted(true);
-        alarmConfig.setDataChangeLastModifiedBy(operator);
-        alarmConfig.setDataChangeLastModifiedTime(LocalDateTime.now());
+        alarmConfig.setUpdateUser(operator);
+        alarmConfig.setUpdateTime(LocalDateTime.now());
         alarmConfigMapper.updateByPrimaryKey(alarmConfig);
 
         return alarmConfig;
@@ -47,8 +47,8 @@ public class AlarmConfigService {
 
         AlarmConfig alarmConfig = new AlarmConfig();
         alarmConfig.setIsDeleted(true);
-        alarmConfig.setDataChangeLastModifiedBy(operator);
-        alarmConfig.setDataChangeLastModifiedTime(LocalDateTime.now());
+        alarmConfig.setUpdateUser(operator);
+        alarmConfig.setUpdateTime(LocalDateTime.now());
         return alarmConfigMapper.updateByExampleSelective(alarmConfig, alarmConfigExample);
     }
 
@@ -89,10 +89,10 @@ public class AlarmConfigService {
         alarmConfig.setConfiguration(configuration);
 
         LocalDateTime currentDateTime = LocalDateTime.now();
-        alarmConfig.setDataChangeCreatedBy(operator);
-        alarmConfig.setDataChangeCreatedTime(currentDateTime);
-        alarmConfig.setDataChangeLastModifiedBy(operator);
-        alarmConfig.setDataChangeLastModifiedTime(currentDateTime);
+        alarmConfig.setCreateUser(operator);
+        alarmConfig.setCreateTime(currentDateTime);
+        alarmConfig.setUpdateUser(operator);
+        alarmConfig.setUpdateTime(currentDateTime);
 
         alarmConfigMapper.insertSelective(alarmConfig);
 

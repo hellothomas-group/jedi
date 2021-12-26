@@ -42,8 +42,8 @@ public class NamespaceService {
         }
 
         namespace.setIsDeleted(true);
-        namespace.setDataChangeLastModifiedBy(operator);
-        namespace.setDataChangeLastModifiedTime(LocalDateTime.now());
+        namespace.setUpdateUser(operator);
+        namespace.setUpdateTime(LocalDateTime.now());
         namespaceMapper.updateByPrimaryKey(namespace);
 
         auditService.audit(Namespace.class.getSimpleName(), id, Audit.OP.DELETE, operator);
@@ -80,14 +80,14 @@ public class NamespaceService {
         }
 
         LocalDateTime currentDateTime = LocalDateTime.now();
-        entity.setDataChangeCreatedTime(currentDateTime);
-        entity.setDataChangeCreatedBy(operator);
-        entity.setDataChangeLastModifiedTime(currentDateTime);
-        entity.setDataChangeLastModifiedBy(operator);
+        entity.setCreateTime(currentDateTime);
+        entity.setCreateUser(operator);
+        entity.setUpdateTime(currentDateTime);
+        entity.setUpdateUser(operator);
         namespaceMapper.insertSelective(entity);
 
         auditService.audit(Namespace.class.getSimpleName(), entity.getId(), Audit.OP.INSERT,
-                entity.getDataChangeCreatedBy());
+                entity.getCreateUser());
 
         return entity;
     }
@@ -106,13 +106,13 @@ public class NamespaceService {
         managedNamespace.setOrgName(namespace.getOrgName());
         managedNamespace.setOwnerName(namespace.getOwnerName());
         managedNamespace.setOwnerEmail(namespace.getOwnerEmail());
-        managedNamespace.setDataChangeLastModifiedBy(operator);
-        managedNamespace.setDataChangeCreatedTime(LocalDateTime.now());
+        managedNamespace.setUpdateUser(operator);
+        managedNamespace.setCreateTime(LocalDateTime.now());
 
         namespaceMapper.updateByPrimaryKey(managedNamespace);
 
         auditService.audit(Namespace.class.getSimpleName(), managedNamespace.getId(), Audit.OP.UPDATE,
-                managedNamespace.getDataChangeLastModifiedBy());
+                managedNamespace.getUpdateUser());
     }
 
     @Transactional
@@ -124,8 +124,8 @@ public class NamespaceService {
         }
 
         namespace.setIsDeleted(true);
-        namespace.setDataChangeLastModifiedBy(operator);
-        namespace.setDataChangeLastModifiedTime(LocalDateTime.now());
+        namespace.setUpdateUser(operator);
+        namespace.setUpdateTime(LocalDateTime.now());
 
         auditService.audit(Namespace.class.getSimpleName(), namespace.getId(), Audit.OP.DELETE, operator);
 

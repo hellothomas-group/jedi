@@ -44,7 +44,7 @@ public class InstanceService {
                                                                             PageHelperRequest pageHelperRequest) {
         InstanceConfigExample instanceConfigExample = new InstanceConfigExample();
         instanceConfigExample.createCriteria().andReleaseKeyEqualTo(releaseKey)
-                .andDataChangeLastModifiedTimeGreaterThan(getValidInstanceConfigDate());
+                .andUpdateTimeGreaterThan(getValidInstanceConfigDate());
         instanceConfigExample.setOrderByClause("id");
 
         int pageSize = pageHelperRequest.getPageSize();
@@ -69,7 +69,7 @@ public class InstanceService {
         instanceConfigExample.createCriteria().andConfigNamespaceNameEqualTo(namespaceName)
                 .andConfigAppIdEqualTo(appId)
                 .andConfigExecutorNameEqualTo(executorName)
-                .andDataChangeLastModifiedTimeGreaterThan(getValidInstanceConfigDate());
+                .andUpdateTimeGreaterThan(getValidInstanceConfigDate());
         instanceConfigExample.setOrderByClause("id");
 
         int pageSize = pageHelperRequest.getPageSize();
@@ -100,7 +100,7 @@ public class InstanceService {
         instanceConfigExample.createCriteria().andConfigNamespaceNameEqualTo(namespaceName)
                 .andConfigAppIdEqualTo(appId)
                 .andConfigExecutorNameEqualTo(executorName)
-                .andDataChangeLastModifiedTimeGreaterThan(getValidInstanceConfigDate())
+                .andUpdateTimeGreaterThan(getValidInstanceConfigDate())
                 .andReleaseKeyNotIn(Lists.newArrayList(releaseKeysNotIn));
         return instanceConfigMapper.selectByExample(instanceConfigExample);
     }

@@ -17,11 +17,11 @@
             </el-table-column>
             <el-table-column
               label="发布者"
-              prop="dataChangeLastModifiedBy">
+              prop="updateUser">
             </el-table-column>
             <el-table-column
               label="发布时间"
-              prop="dataChangeLastModifiedTime">
+              prop="updateTime">
             </el-table-column>
             <el-table-column
               align="right">
@@ -81,10 +81,10 @@ export default {
         namespaceName: undefined,
         appId: undefined,
         executorName: undefined,
-        dataChangeCreatedBy: undefined,
-        dataChangeLastModifiedBy: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: undefined
+        createUser: undefined,
+        updateUser: undefined,
+        createTime: undefined,
+        updateTime: undefined
       },
       releases: [],
       search: '',
@@ -104,10 +104,10 @@ export default {
         configurations: undefined,
         comment: undefined,
         isAbandoned: undefined,
-        dataChangeCreatedBy: undefined,
-        dataChangeLastModifiedBy: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: undefined
+        createUser: undefined,
+        updateUser: undefined,
+        createTime: undefined,
+        updateTime: undefined
       }
     }
   },

@@ -108,13 +108,13 @@ public class InstanceConfigAuditUtil implements InitializingBean {
                 instanceConfig.setReleaseKey(auditModel.getReleaseKey());
                 instanceConfig.setReleaseDeliveryTime(auditModel.getOfferTime());
             } else if (offerTimeAndLastModifiedTimeCloseEnough(auditModel.getOfferTime(),
-                    instanceConfig.getDataChangeLastModifiedTime())) {
+                    instanceConfig.getUpdateTime())) {
                 //when releaseKey is the same, optimize to reduce writes if the record was updated not long ago
                 return;
             }
             //we need to update no matter the release key is the same or not, to ensure the
             //last modified time is updated each day
-            instanceConfig.setDataChangeLastModifiedTime(auditModel.getOfferTime());
+            instanceConfig.setUpdateTime(auditModel.getOfferTime());
             instanceService.updateInstanceConfig(instanceConfig);
             return;
         }
@@ -126,8 +126,8 @@ public class InstanceConfigAuditUtil implements InitializingBean {
         instanceConfig.setConfigExecutorName(auditModel.getConfigExecutorName());
         instanceConfig.setReleaseKey(auditModel.getReleaseKey());
         instanceConfig.setReleaseDeliveryTime(auditModel.getOfferTime());
-        instanceConfig.setDataChangeCreatedTime(auditModel.getOfferTime());
-        instanceConfig.setDataChangeLastModifiedTime(auditModel.getOfferTime());
+        instanceConfig.setCreateTime(auditModel.getOfferTime());
+        instanceConfig.setUpdateTime(auditModel.getOfferTime());
 
         try {
             instanceService.createInstanceConfig(instanceConfig);

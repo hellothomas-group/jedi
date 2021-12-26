@@ -125,10 +125,10 @@ public class AppService {
         }
 
         LocalDateTime currentDateTime = LocalDateTime.now();
-        app.setDataChangeCreatedTime(currentDateTime);
-        app.setDataChangeCreatedBy(operator);
-        app.setDataChangeLastModifiedTime(currentDateTime);
-        app.setDataChangeLastModifiedBy(operator);
+        app.setCreateTime(currentDateTime);
+        app.setCreateUser(operator);
+        app.setUpdateTime(currentDateTime);
+        app.setUpdateUser(operator);
 
         appMapper.insertSelective(app);
 
@@ -151,13 +151,13 @@ public class AppService {
         }
 
         managedApp.setAppDescription(app.getAppDescription());
-        managedApp.setDataChangeLastModifiedBy(operator);
-        managedApp.setDataChangeCreatedTime(LocalDateTime.now());
+        managedApp.setUpdateUser(operator);
+        managedApp.setCreateTime(LocalDateTime.now());
 
         appMapper.updateByPrimaryKey(managedApp);
 
         auditService.audit(App.class.getSimpleName(), managedApp.getId(), Audit.OP.UPDATE,
-                managedApp.getDataChangeLastModifiedBy());
+                managedApp.getUpdateUser());
 
         return managedApp;
     }
@@ -170,8 +170,8 @@ public class AppService {
                 .andIsDeletedEqualTo(false);
         App app = new App();
         app.setIsDeleted(true);
-        app.setDataChangeLastModifiedTime(LocalDateTime.now());
-        app.setDataChangeLastModifiedBy(operator);
+        app.setUpdateTime(LocalDateTime.now());
+        app.setUpdateUser(operator);
         return appMapper.updateByExampleSelective(app, AppExample);
     }
 
@@ -191,8 +191,8 @@ public class AppService {
 
         // 2. delete app namespace
         app.setIsDeleted(true);
-        app.setDataChangeLastModifiedBy(operator);
-        app.setDataChangeLastModifiedTime(LocalDateTime.now());
+        app.setUpdateUser(operator);
+        app.setUpdateTime(LocalDateTime.now());
 
         auditService.audit(Namespace.class.getSimpleName(), app.getId(), Audit.OP.DELETE, operator);
 

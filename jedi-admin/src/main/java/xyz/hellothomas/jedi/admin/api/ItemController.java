@@ -63,8 +63,8 @@ public class ItemController {
 
         managedEntity.setComment(comment);
         managedEntity.setConfiguration(configuration);
-        managedEntity.setDataChangeLastModifiedBy(operator);
-        managedEntity.setDataChangeLastModifiedTime(LocalDateTime.now());
+        managedEntity.setUpdateUser(operator);
+        managedEntity.setUpdateTime(LocalDateTime.now());
         itemService.update(managedEntity);
 
         return ApiResponse.success(LocalBeanUtils.transform(ItemResponse.class, managedEntity));
@@ -90,8 +90,8 @@ public class ItemController {
 
         managedEntity.setComment(comment);
         managedEntity.setConfiguration(configuration);
-        managedEntity.setDataChangeLastModifiedBy(operator);
-        managedEntity.setDataChangeLastModifiedTime(LocalDateTime.now());
+        managedEntity.setUpdateUser(operator);
+        managedEntity.setUpdateTime(LocalDateTime.now());
         itemService.update(managedEntity);
 
         return ApiResponse.success(LocalBeanUtils.transform(ItemResponse.class, managedEntity));

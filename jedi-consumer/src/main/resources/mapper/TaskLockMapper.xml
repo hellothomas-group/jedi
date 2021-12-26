@@ -6,8 +6,8 @@
     <result column="task_date" jdbcType="DATE" property="taskDate" />
     <result column="task_name" jdbcType="VARCHAR" property="taskName" />
     <result column="is_locked" jdbcType="BIT" property="isLocked" />
-    <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
-    <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="version" jdbcType="INTEGER" property="version" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -69,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, task_date, task_name, is_locked, data_change_created_time, data_change_last_modified_time,
+    id, task_date, task_name, is_locked, create_time, update_time,
     version
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.TaskLockExample" resultMap="BaseResultMap">
@@ -104,10 +104,10 @@
   </delete>
   <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.TaskLock" useGeneratedKeys="true" keyProperty="id">
     insert into task_lock (id, task_date, task_name,
-      is_locked, data_change_created_time, data_change_last_modified_time,
+      is_locked, create_time, update_time,
       version)
     values (#{id,jdbcType=INTEGER}, #{taskDate,jdbcType=DATE}, #{taskName,jdbcType=VARCHAR},
-      #{isLocked,jdbcType=BIT}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      #{isLocked,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
       #{version,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.TaskLock" useGeneratedKeys="true" keyProperty="id">
@@ -125,11 +125,11 @@
       <if test="isLocked != null">
         is_locked,
       </if>
-      <if test="dataChangeCreatedTime != null">
-        data_change_created_time,
+      <if test="createTime != null">
+        create_time,
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        data_change_last_modified_time,
+      <if test="updateTime != null">
+        update_time,
       </if>
       <if test="version != null">
         version,
@@ -148,11 +148,11 @@
       <if test="isLocked != null">
         #{isLocked,jdbcType=BIT},
       </if>
-      <if test="dataChangeCreatedTime != null">
-        #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="version != null">
         #{version,jdbcType=INTEGER},
@@ -180,11 +180,11 @@
       <if test="record.isLocked != null">
         is_locked = #{record.isLocked,jdbcType=BIT},
       </if>
-      <if test="record.dataChangeCreatedTime != null">
-        data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.dataChangeLastModifiedTime != null">
-        data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.version != null">
         version = #{record.version,jdbcType=INTEGER},
@@ -200,8 +200,8 @@
       task_date = #{record.taskDate,jdbcType=DATE},
       task_name = #{record.taskName,jdbcType=VARCHAR},
       is_locked = #{record.isLocked,jdbcType=BIT},
-      data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       version = #{record.version,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -219,11 +219,11 @@
       <if test="isLocked != null">
         is_locked = #{isLocked,jdbcType=BIT},
       </if>
-      <if test="dataChangeCreatedTime != null">
-        data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="version != null">
         version = #{version,jdbcType=INTEGER},
@@ -236,8 +236,8 @@
     set task_date = #{taskDate,jdbcType=DATE},
       task_name = #{taskName,jdbcType=VARCHAR},
       is_locked = #{isLocked,jdbcType=BIT},
-      data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
       version = #{version,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -259,7 +259,7 @@
   <update id="updateLockByUniqueKey">
     update task_lock
     set is_locked = #{isLocked,jdbcType=BIT},
-      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
       version = version + 1
     where task_date = #{taskDate,jdbcType=DATE} and task_name = #{taskName,jdbcType=VARCHAR}
   </update>

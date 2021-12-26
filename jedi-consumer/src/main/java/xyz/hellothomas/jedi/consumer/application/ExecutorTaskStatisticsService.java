@@ -155,8 +155,8 @@ public class ExecutorTaskStatisticsService {
             executorTaskSummary.setFailureRatio(new BigDecimal(executorTaskSummary.getFailure())
                     .divide(new BigDecimal(executorTaskSummary.getTotal()), 2, RoundingMode.HALF_UP));
         }
-        executorTaskSummary.setDataChangeCreatedTime(LocalDateTime.now());
-        executorTaskSummary.setDataChangeLastModifiedTime(LocalDateTime.now());
+        executorTaskSummary.setCreateTime(LocalDateTime.now());
+        executorTaskSummary.setUpdateTime(LocalDateTime.now());
         return executorTaskSummary;
     }
 }

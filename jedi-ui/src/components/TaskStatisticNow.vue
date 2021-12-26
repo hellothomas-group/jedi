@@ -47,7 +47,7 @@
               label="更新时间"
               width="160px"
               align="center"
-              prop="dataChangeLastModifiedTime">
+              prop="updateTime">
             </el-table-column>
             <el-table-column
               align="right">

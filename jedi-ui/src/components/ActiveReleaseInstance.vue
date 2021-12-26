@@ -14,7 +14,7 @@
         </el-table-column>
         <el-table-column
         label="配置获取时间"
-        prop="configs[0].dataChangeLastModifiedTime">
+        prop="configs[0].updateTime">
         </el-table-column>
         <el-table-column
         align="right">
@@ -67,23 +67,23 @@ export default {
         configurations: undefined,
         comment: undefined,
         isAbandoned: undefined,
-        dataChangeCreatedBy: undefined,
-        dataChangeLastModifiedBy: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: undefined
+        createUser: undefined,
+        updateUser: undefined,
+        createTime: undefined,
+        updateTime: undefined
       },
       instance: {
         id: undefined,
         namespaceName: undefined,
         appId: undefined,
         ip: undefined,
-        dataChangeCreatedTime: undefined,
+        createTime: undefined,
         configs: undefined
       },
       instanceConfig: {
         release: undefined,
         releaseDeliveryTime: undefined,
-        dataChangeLastModifiedTime: undefined
+        updateTime: undefined
       }
     }
   },

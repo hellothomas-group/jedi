@@ -26,5 +26,5 @@ public class InstanceResponse {
     private List<InstanceConfigResponse> configs;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime dataChangeCreatedTime;
+    private LocalDateTime createTime;
 }

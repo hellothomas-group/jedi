@@ -20,14 +20,14 @@ public class AuditService {
 
     public List<Audit> findByOwner(String owner) {
         AuditExample auditExample = new AuditExample();
-        auditExample.createCriteria().andDataChangeCreatedByEqualTo(owner);
+        auditExample.createCriteria().andCreateUserEqualTo(owner);
         auditExample.setOrderByClause("id");
         return auditMapper.selectByExample(auditExample);
     }
 
     public List<Audit> find(String owner, String entity, String op) {
         AuditExample auditExample = new AuditExample();
-        auditExample.createCriteria().andDataChangeCreatedByEqualTo(owner)
+        auditExample.createCriteria().andCreateUserEqualTo(owner)
                 .andEntityNameEqualTo(entity)
                 .andOperationNameEqualTo(op);
         auditExample.setOrderByClause("id");
@@ -40,10 +40,10 @@ public class AuditService {
         audit.setEntityName(entityName);
         audit.setEntityId(entityId);
         audit.setOperationName(op.name());
-        audit.setDataChangeCreatedBy(owner);
+        audit.setCreateUser(owner);
         LocalDateTime currentDateTime = LocalDateTime.now();
-        audit.setDataChangeCreatedTime(currentDateTime);
-        audit.setDataChangeLastModifiedTime(currentDateTime);
+        audit.setCreateTime(currentDateTime);
+        audit.setUpdateTime(currentDateTime);
         auditMapper.insertSelective(audit);
     }
 

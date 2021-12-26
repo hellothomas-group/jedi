@@ -368,7 +368,6 @@ export default {
         Utils.$emit('retryTaskSuccess', this.retryTaskForm.taskId)
       }).catch(function (error) {
         console.log(error)
-        let messageText = error.data.code === undefined ? error.status + '-' + error.statusText : error.data.code + '-' + error.data.message
         Utils.$emit('retryTaskFail', error)
       })
     },

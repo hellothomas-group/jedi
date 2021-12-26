@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS `monitor_message` (
   `record_time` timestamp NOT NULL comment '记录时间',
   `create_time` timestamp default CURRENT_TIMESTAMP NOT NULL comment '生成时间',
   `update_time` timestamp default CURRENT_TIMESTAMP NOT NULL on update CURRENT_TIMESTAMP comment '最后更新时间',
-
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='监控消息';
 
@@ -79,7 +78,6 @@ CREATE TABLE IF NOT EXISTS `executor_shutdown_message` (
   `record_time` timestamp NOT NULL comment '记录时间',
   `create_time` timestamp default CURRENT_TIMESTAMP NOT NULL comment '生成时间',
   `update_time` timestamp default CURRENT_TIMESTAMP NOT NULL on update CURRENT_TIMESTAMP comment '最后更新时间',
-
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池关闭消息';
 
@@ -90,10 +88,11 @@ CREATE TABLE IF NOT EXISTS `alarm_config` (
   `executor_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'executorName',
   `configuration` varchar(1024) NOT NULL COMMENT '配置项值',
   `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
-  `data_change_created_by` varchar(32) DEFAULT '' COMMENT '创建人邮箱前缀',
-  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `data_change_last_modified_by` varchar(32) DEFAULT '' COMMENT '最后修改人邮箱前缀',
-  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `create_user` varchar(32) DEFAULT '' COMMENT '创建人',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_user` varchar(32) DEFAULT '' COMMENT '最后修改人',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `version` int(11) unsigned NOT NULL DEFAULT 1 COMMENT '版本号',
   PRIMARY KEY (`id`),
   UNIQUE KEY `IX_UNIQUE_KEY` (`namespace_name`,`app_id`,`executor_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='报警配置';
@@ -116,8 +115,8 @@ CREATE TABLE IF NOT EXISTS `executor_task_statistics` (
   `execution_time_min` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '执行最短时间',
   `execution_time_line_95` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '执行时间95线',
   `execution_time_line_99` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '执行时间99线',
-  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `version` int(11) unsigned NOT NULL DEFAULT 1 COMMENT '版本号',
   PRIMARY KEY (`id`),
   UNIQUE KEY `IX_UNIQUE_KEY` (`namespace_name`,`app_id`,`executor_name`, `task_name`, `statistics_date`)
@@ -141,8 +140,8 @@ CREATE TABLE IF NOT EXISTS `executor_task_statistics_history` (
   `execution_time_min` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '执行最短时间',
   `execution_time_line_95` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '执行时间95线',
   `execution_time_line_99` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '执行时间99线',
-  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `version` int(11) unsigned NOT NULL DEFAULT 1 COMMENT '版本号',
   PRIMARY KEY (`id`),
   KEY `IX_KEY` (`namespace_name`,`app_id`,`executor_name`, `task_name`, `statistics_date`)
@@ -153,8 +152,8 @@ CREATE TABLE IF NOT EXISTS `task_lock` (
   `task_date` date NOT NULL COMMENT '任务日期',
   `task_name` varchar(32) NOT NULL COMMENT '任务名称',
   `is_locked` bit(1) NOT NULL COMMENT '1: locked, 0: unlocked',
-  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   `version` int(11) unsigned NOT NULL DEFAULT 1 COMMENT '版本号',
   PRIMARY KEY (`id`),
   UNIQUE KEY `IX_UNIQUE_KEY` (`task_date`,`task_name`)
@@ -167,14 +166,15 @@ CREATE TABLE IF NOT EXISTS `app` (
   `app_description` varchar(64) NOT NULL DEFAULT '' COMMENT 'app描述',
   `owner_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'ownerName',
   `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
-  `data_change_created_by` varchar(32) NOT NULL DEFAULT 'default' COMMENT '创建人邮箱前缀',
-  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `data_change_last_modified_by` varchar(32) DEFAULT '' COMMENT '最后修改人邮箱前缀',
-  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `create_user` varchar(32) NOT NULL DEFAULT 'default' COMMENT '创建人',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_user` varchar(32) DEFAULT '' COMMENT '最后修改人',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `version` int(11) unsigned NOT NULL DEFAULT 1 COMMENT '版本号',
   PRIMARY KEY (`id`),
   KEY `IX_app_id` (`app_id`),
-  KEY `nnamespaceName_AppId` (`namespace_name`,`app_id`),
-  KEY `data_change_last_modified_time` (`data_change_last_modified_time`)
+  KEY `namespaceName_AppId` (`namespace_name`,`app_id`),
+  KEY `updateTime` (`update_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='应用定义';
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -185,6 +185,11 @@ CREATE TABLE IF NOT EXISTS `user` (
   `email` varchar(64) NOT NULL DEFAULT 'default' COMMENT '邮箱地址',
   `is_manual` bit(1) NOT NULL DEFAULT b'0' COMMENT '0: 系统生成, 1: 手工生成 ',
   `enabled` bit(1) NOT NULL DEFAULT b'1' COMMENT '1: 有效, 0: 无效',
+  `create_user` varchar(32) NOT NULL DEFAULT 'default' COMMENT '创建人',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_user` varchar(32) DEFAULT '' COMMENT '最后修改人',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `version` int(11) unsigned NOT NULL DEFAULT 1 COMMENT '版本号',
   PRIMARY KEY (`id`),
   UNIQUE KEY `IX_user_name` (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
@@ -196,10 +201,11 @@ CREATE TABLE IF NOT EXISTS `executor_task` (
   `executor_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'executorName',
   `task_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'taskName',
   `is_deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '1: deleted, 0: normal',
-  `data_change_created_by` varchar(32) NOT NULL DEFAULT 'default' COMMENT '创建人邮箱前缀',
-  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `data_change_last_modified_by` varchar(32) DEFAULT '' COMMENT '最后修改人邮箱前缀',
-  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `create_user` varchar(32) NOT NULL DEFAULT 'default' COMMENT '创建人',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_user` varchar(32) DEFAULT '' COMMENT '最后修改人',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `version` int(11) unsigned NOT NULL DEFAULT 1 COMMENT '版本号',
   PRIMARY KEY (`id`),
   UNIQUE KEY `IX_Namespace` (`namespace_name`,`app_id`,`executor_name`, `task_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池任务表';
@@ -210,10 +216,10 @@ CREATE TABLE IF NOT EXISTS `executor_instance` (
   `app_id` varchar(32) NOT NULL DEFAULT 'default' COMMENT 'appId',
   `executor_name` varchar(64) NOT NULL DEFAULT 'default' COMMENT 'executorName',
   `ip` varchar(32) NOT NULL DEFAULT '' COMMENT 'instance ip',
-  `data_change_created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `data_change_last_modified_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `IX_UNIQUE_KEY` (`namespace_name`,`app_id`,`executor_name`,`ip`),
   KEY `IX_ip` (`ip`),
-  KEY `IX_data_change_last_modified_time` (`data_change_last_modified_time`)
+  KEY `IX_updateTime` (`update_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='线程池的应用实例';

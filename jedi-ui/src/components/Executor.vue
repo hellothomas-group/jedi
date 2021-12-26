@@ -81,10 +81,10 @@ export default {
         namespaceName: undefined,
         appId: undefined,
         executorName: undefined,
-        dataChangeCreatedBy: undefined,
-        dataChangeLastModifiedBy: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: undefined
+        createUser: undefined,
+        updateUser: undefined,
+        createTime: undefined,
+        updateTime: undefined
       },
       defaultView: '/overview'
     }

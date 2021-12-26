@@ -63,8 +63,8 @@ public class AlarmConfigController {
         }
 
         managedEntity.setConfiguration(configuration);
-        managedEntity.setDataChangeLastModifiedBy(operator);
-        managedEntity.setDataChangeLastModifiedTime(LocalDateTime.now());
+        managedEntity.setUpdateUser(operator);
+        managedEntity.setUpdateTime(LocalDateTime.now());
         alarmConfigService.update(managedEntity);
 
         AlarmConfigResponse alarmConfigResponse = LocalBeanUtils.transform(AlarmConfigResponse.class, managedEntity);

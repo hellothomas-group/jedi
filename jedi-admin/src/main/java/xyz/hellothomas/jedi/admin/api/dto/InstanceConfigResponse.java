@@ -17,5 +17,5 @@ public class InstanceConfigResponse {
     private LocalDateTime releaseDeliveryTime;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime dataChangeLastModifiedTime;
+    private LocalDateTime updateTime;
 }

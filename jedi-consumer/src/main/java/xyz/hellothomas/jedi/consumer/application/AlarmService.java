@@ -37,7 +37,7 @@ public class AlarmService {
             log.warn("环境: {} ,应用: {} 不存在", namespaceName, appId);
             return Lists.newArrayList();
         }
-        return Lists.newArrayList(apps.get(0).getDataChangeCreatedBy());
+        return Lists.newArrayList(apps.get(0).getCreateUser());
     }
 
     @Async

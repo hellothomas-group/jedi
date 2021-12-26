@@ -74,8 +74,8 @@ public class InstanceConfigController {
                     //to save some space
                     instanceConfigResponse.setRelease(null);
                     instanceConfigResponse.setReleaseDeliveryTime(instanceConfig.getReleaseDeliveryTime());
-                    instanceConfigResponse.setDataChangeLastModifiedTime(instanceConfig
-                            .getDataChangeLastModifiedTime());
+                    instanceConfigResponse.setUpdateTime(instanceConfig
+                            .getUpdateTime());
                     return instanceConfigResponse;
                 }).collect(Collectors.toList());
                 instanceResponse.setConfigs(configDTOs);
@@ -142,8 +142,8 @@ public class InstanceConfigController {
                 InstanceConfigResponse instanceConfigResponse = new InstanceConfigResponse();
                 instanceConfigResponse.setRelease(releaseMap.get(instanceConfig.getReleaseKey()));
                 instanceConfigResponse.setReleaseDeliveryTime(instanceConfig.getReleaseDeliveryTime());
-                instanceConfigResponse.setDataChangeLastModifiedTime(instanceConfig
-                        .getDataChangeLastModifiedTime());
+                instanceConfigResponse.setUpdateTime(instanceConfig
+                        .getUpdateTime());
                 return instanceConfigResponse;
             }).collect(Collectors.toList());
             instanceResponse.setConfigs(configResponses);

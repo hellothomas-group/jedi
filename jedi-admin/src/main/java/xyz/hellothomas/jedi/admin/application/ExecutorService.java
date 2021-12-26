@@ -156,8 +156,8 @@ public class ExecutorService {
         executorLockService.unlock(executor.getId());
 
         executor.setIsDeleted(true);
-        executor.setDataChangeLastModifiedBy(operator);
-        executor.setDataChangeLastModifiedTime(LocalDateTime.now());
+        executor.setUpdateUser(operator);
+        executor.setUpdateTime(LocalDateTime.now());
 
         auditService.audit(Executor.class.getSimpleName(), executor.getId(), Audit.OP.DELETE, operator);
 
@@ -182,10 +182,10 @@ public class ExecutorService {
         executor.setAppId(appId);
         executor.setExecutorName(executorName);
         executor.setIsDeleted(false);
-        executor.setDataChangeCreatedTime(currentDateTime);
-        executor.setDataChangeCreatedBy(operator);
-        executor.setDataChangeLastModifiedTime(currentDateTime);
-        executor.setDataChangeLastModifiedBy(operator);
+        executor.setCreateTime(currentDateTime);
+        executor.setCreateUser(operator);
+        executor.setUpdateTime(currentDateTime);
+        executor.setUpdateUser(operator);
 
         executorMapper.insertSelective(executor);
 
@@ -194,7 +194,7 @@ public class ExecutorService {
         itemService.saveByExecutor(executor, ITEM_DEFAULT_CONFIGURATION, ITEM_DEFAULT_COMMENT, operator);
 
         auditService.audit(Executor.class.getSimpleName(), executor.getId(), Audit.OP.INSERT,
-                executor.getDataChangeCreatedBy());
+                executor.getCreateUser());
 
         return executor;
     }
@@ -208,8 +208,8 @@ public class ExecutorService {
                 .andIsDeletedEqualTo(false);
         Executor executor = new Executor();
         executor.setIsDeleted(true);
-        executor.setDataChangeLastModifiedTime(LocalDateTime.now());
-        executor.setDataChangeLastModifiedBy(operator);
+        executor.setUpdateTime(LocalDateTime.now());
+        executor.setUpdateUser(operator);
         return executorMapper.updateByExampleSelective(executor, executorExample);
     }
 }

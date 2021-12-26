@@ -10,10 +10,10 @@
     <result column="previous_release_id" jdbcType="BIGINT" property="previousReleaseId" />
     <result column="operation" jdbcType="TINYINT" property="operation" />
     <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
-    <result column="data_change_created_by" jdbcType="VARCHAR" property="dataChangeCreatedBy" />
-    <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
-    <result column="data_change_last_modified_by" jdbcType="VARCHAR" property="dataChangeLastModifiedBy" />
-    <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="operation_context" jdbcType="VARCHAR" property="operationContext" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -76,8 +76,8 @@
   </sql>
   <sql id="Base_Column_List">
     id, namespace_name, app_id, executor_name, release_id, previous_release_id, operation,
-    is_deleted, data_change_created_by, data_change_created_time, data_change_last_modified_by,
-    data_change_last_modified_time
+    is_deleted, create_user, create_time, update_user,
+    update_time
   </sql>
   <sql id="Blob_Column_List">
     operation_context
@@ -115,15 +115,15 @@
   <insert id="insert" parameterType="xyz.hellothomas.jedi.admin.domain.ReleaseHistory" useGeneratedKeys="true" keyProperty="id">
     insert into release_history (id, namespace_name, app_id,
       executor_name, release_id, previous_release_id,
-      operation, is_deleted, data_change_created_by,
-      data_change_created_time, data_change_last_modified_by,
-      data_change_last_modified_time, operation_context
+      operation, is_deleted, create_user,
+      create_time, update_user,
+      update_time, operation_context
       )
     values (#{id,jdbcType=BIGINT}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR},
       #{executorName,jdbcType=VARCHAR}, #{releaseId,jdbcType=BIGINT}, #{previousReleaseId,jdbcType=BIGINT},
-      #{operation,jdbcType=TINYINT}, #{isDeleted,jdbcType=BIT}, #{dataChangeCreatedBy,jdbcType=VARCHAR},
-      #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
-      #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}, #{operationContext,jdbcType=VARCHAR}
+      #{operation,jdbcType=TINYINT}, #{isDeleted,jdbcType=BIT}, #{createUser,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR},
+      #{updateTime,jdbcType=TIMESTAMP}, #{operationContext,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.admin.domain.ReleaseHistory" useGeneratedKeys="true" keyProperty="id">
@@ -153,17 +153,17 @@
       <if test="isDeleted != null">
         is_deleted,
       </if>
-      <if test="dataChangeCreatedBy != null">
-        data_change_created_by,
+      <if test="createUser != null">
+        create_user,
       </if>
-      <if test="dataChangeCreatedTime != null">
-        data_change_created_time,
+      <if test="createTime != null">
+        create_time,
       </if>
-      <if test="dataChangeLastModifiedBy != null">
-        data_change_last_modified_by,
+      <if test="updateUser != null">
+        update_user,
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        data_change_last_modified_time,
+      <if test="updateTime != null">
+        update_time,
       </if>
       <if test="operationContext != null">
         operation_context,
@@ -194,17 +194,17 @@
       <if test="isDeleted != null">
         #{isDeleted,jdbcType=BIT},
       </if>
-      <if test="dataChangeCreatedBy != null">
-        #{dataChangeCreatedBy,jdbcType=VARCHAR},
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
       </if>
-      <if test="dataChangeCreatedTime != null">
-        #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeLastModifiedBy != null">
-        #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="operationContext != null">
         #{operationContext,jdbcType=VARCHAR},
@@ -244,17 +244,17 @@
       <if test="record.isDeleted != null">
         is_deleted = #{record.isDeleted,jdbcType=BIT},
       </if>
-      <if test="record.dataChangeCreatedBy != null">
-        data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
+      <if test="record.createUser != null">
+        create_user = #{record.createUser,jdbcType=VARCHAR},
       </if>
-      <if test="record.dataChangeCreatedTime != null">
-        data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.dataChangeLastModifiedBy != null">
-        data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      <if test="record.updateUser != null">
+        update_user = #{record.updateUser,jdbcType=VARCHAR},
       </if>
-      <if test="record.dataChangeLastModifiedTime != null">
-        data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.operationContext != null">
         operation_context = #{record.operationContext,jdbcType=VARCHAR},
@@ -274,10 +274,10 @@
       previous_release_id = #{record.previousReleaseId,jdbcType=BIGINT},
       operation = #{record.operation,jdbcType=TINYINT},
       is_deleted = #{record.isDeleted,jdbcType=BIT},
-      data_change_created_by = #{record.dataChangeCreatedBy,jdbcType=VARCHAR},
-      data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_by = #{record.dataChangeLastModifiedBy,jdbcType=VARCHAR},
-      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      create_user = #{record.createUser,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_user = #{record.updateUser,jdbcType=VARCHAR},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       operation_context = #{record.operationContext,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -307,17 +307,17 @@
       <if test="isDeleted != null">
         is_deleted = #{isDeleted,jdbcType=BIT},
       </if>
-      <if test="dataChangeCreatedBy != null">
-        data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
       </if>
-      <if test="dataChangeCreatedTime != null">
-        data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeLastModifiedBy != null">
-        data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="operationContext != null">
         operation_context = #{operationContext,jdbcType=VARCHAR},
@@ -334,10 +334,10 @@
       previous_release_id = #{previousReleaseId,jdbcType=BIGINT},
       operation = #{operation,jdbcType=TINYINT},
       is_deleted = #{isDeleted,jdbcType=BIT},
-      data_change_created_by = #{dataChangeCreatedBy,jdbcType=VARCHAR},
-      data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_by = #{dataChangeLastModifiedBy,jdbcType=VARCHAR},
-      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
       operation_context = #{operationContext,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

@@ -7,8 +7,8 @@
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
     <result column="executor_name" jdbcType="VARCHAR" property="executorName" />
     <result column="ip" jdbcType="VARCHAR" property="ip" />
-    <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
-    <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -69,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, namespace_name, app_id, executor_name, ip, data_change_created_time, data_change_last_modified_time
+    id, namespace_name, app_id, executor_name, ip, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstanceExample" resultMap="BaseResultMap">
     select
@@ -104,11 +104,11 @@
   <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstance" useGeneratedKeys="true"
           keyProperty="id">
     insert into executor_instance (id, namespace_name, app_id, 
-      executor_name, ip, data_change_created_time, 
-      data_change_last_modified_time)
+      executor_name, ip, create_time, 
+      update_time)
     values (#{id,jdbcType=BIGINT}, #{namespaceName,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, 
-      #{executorName,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, 
-      #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
+      #{executorName,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstance" useGeneratedKeys="true"
           keyProperty="id">
@@ -129,11 +129,11 @@
       <if test="ip != null">
         ip,
       </if>
-      <if test="dataChangeCreatedTime != null">
-        data_change_created_time,
+      <if test="createTime != null">
+        create_time,
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        data_change_last_modified_time,
+      <if test="updateTime != null">
+        update_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -152,11 +152,11 @@
       <if test="ip != null">
         #{ip,jdbcType=VARCHAR},
       </if>
-      <if test="dataChangeCreatedTime != null">
-        #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -184,11 +184,11 @@
       <if test="record.ip != null">
         ip = #{record.ip,jdbcType=VARCHAR},
       </if>
-      <if test="record.dataChangeCreatedTime != null">
-        data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.dataChangeLastModifiedTime != null">
-        data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -202,8 +202,8 @@
       app_id = #{record.appId,jdbcType=VARCHAR},
       executor_name = #{record.executorName,jdbcType=VARCHAR},
       ip = #{record.ip,jdbcType=VARCHAR},
-      data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -223,11 +223,11 @@
       <if test="ip != null">
         ip = #{ip,jdbcType=VARCHAR},
       </if>
-      <if test="dataChangeCreatedTime != null">
-        data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -238,19 +238,19 @@
       app_id = #{appId,jdbcType=VARCHAR},
       executor_name = #{executorName,jdbcType=VARCHAR},
       ip = #{ip,jdbcType=VARCHAR},
-      data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <insert id="insertOrUpdate" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorInstance" useGeneratedKeys="true"
           keyProperty="id">
     insert into executor_instance (id, namespace_name, app_id,
-      executor_name, ip, data_change_created_time,
-      data_change_last_modified_time)
+      executor_name, ip, create_time,
+      update_time)
     values (#{record.id,jdbcType=BIGINT}, #{record.namespaceName,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR},
-      #{record.executorName,jdbcType=VARCHAR}, #{record.ip,jdbcType=VARCHAR}, #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
+      #{record.executorName,jdbcType=VARCHAR}, #{record.ip,jdbcType=VARCHAR}, #{record.createTime,jdbcType=TIMESTAMP},
+      #{record.updateTime,jdbcType=TIMESTAMP})
     on duplicate key
-    update data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+    update update_time = #{record.updateTime,jdbcType=TIMESTAMP}
   </insert>
 </mapper>

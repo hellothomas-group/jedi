@@ -55,10 +55,10 @@ export default {
         appId: undefined,
         executorName: undefined,
         configuration: '{}',
-        dataChangeCreatedBy: undefined,
-        dataChangeLastModifiedBy: undefined,
-        dataChangeCreatedTime: undefined,
-        dataChangeLastModifiedTime: undefined
+        createUser: undefined,
+        updateUser: undefined,
+        createTime: undefined,
+        updateTime: undefined
       },
       alarmConfigEditable: false,
       updateAlarmConfigForm: {

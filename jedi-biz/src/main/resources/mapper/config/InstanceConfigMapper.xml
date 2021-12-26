@@ -9,8 +9,8 @@
     <result column="config_executor_name" jdbcType="VARCHAR" property="configExecutorName" />
     <result column="release_key" jdbcType="VARCHAR" property="releaseKey" />
     <result column="release_delivery_time" jdbcType="TIMESTAMP" property="releaseDeliveryTime" />
-    <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
-    <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -72,7 +72,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, instance_id, config_namespace_name, config_app_id, config_executor_name, release_key, 
-    release_delivery_time, data_change_created_time, data_change_last_modified_time
+    release_delivery_time, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.biz.domain.config.InstanceConfigExample" resultMap="BaseResultMap">
     select
@@ -107,12 +107,12 @@
   <insert id="insert" parameterType="xyz.hellothomas.jedi.biz.domain.config.InstanceConfig" useGeneratedKeys="true" keyProperty="id">
     insert into instance_config (id, instance_id, config_namespace_name, 
       config_app_id, config_executor_name, release_key, 
-      release_delivery_time, data_change_created_time, 
-      data_change_last_modified_time)
+      release_delivery_time, create_time, 
+      update_time)
     values (#{id,jdbcType=BIGINT}, #{instanceId,jdbcType=BIGINT}, #{configNamespaceName,jdbcType=VARCHAR}, 
       #{configAppId,jdbcType=VARCHAR}, #{configExecutorName,jdbcType=VARCHAR}, #{releaseKey,jdbcType=VARCHAR}, 
-      #{releaseDeliveryTime,jdbcType=TIMESTAMP}, #{dataChangeCreatedTime,jdbcType=TIMESTAMP}, 
-      #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP})
+      #{releaseDeliveryTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.biz.domain.config.InstanceConfig" useGeneratedKeys="true" keyProperty="id">
     insert into instance_config
@@ -138,11 +138,11 @@
       <if test="releaseDeliveryTime != null">
         release_delivery_time,
       </if>
-      <if test="dataChangeCreatedTime != null">
-        data_change_created_time,
+      <if test="createTime != null">
+        create_time,
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        data_change_last_modified_time,
+      <if test="updateTime != null">
+        update_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -167,11 +167,11 @@
       <if test="releaseDeliveryTime != null">
         #{releaseDeliveryTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeCreatedTime != null">
-        #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -205,11 +205,11 @@
       <if test="record.releaseDeliveryTime != null">
         release_delivery_time = #{record.releaseDeliveryTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.dataChangeCreatedTime != null">
-        data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.dataChangeLastModifiedTime != null">
-        data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -225,8 +225,8 @@
       config_executor_name = #{record.configExecutorName,jdbcType=VARCHAR},
       release_key = #{record.releaseKey,jdbcType=VARCHAR},
       release_delivery_time = #{record.releaseDeliveryTime,jdbcType=TIMESTAMP},
-      data_change_created_time = #{record.dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_time = #{record.dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -252,11 +252,11 @@
       <if test="releaseDeliveryTime != null">
         release_delivery_time = #{releaseDeliveryTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeCreatedTime != null">
-        data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="dataChangeLastModifiedTime != null">
-        data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP},
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -269,8 +269,8 @@
       config_executor_name = #{configExecutorName,jdbcType=VARCHAR},
       release_key = #{releaseKey,jdbcType=VARCHAR},
       release_delivery_time = #{releaseDeliveryTime,jdbcType=TIMESTAMP},
-      data_change_created_time = #{dataChangeCreatedTime,jdbcType=TIMESTAMP},
-      data_change_last_modified_time = #{dataChangeLastModifiedTime,jdbcType=TIMESTAMP}
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

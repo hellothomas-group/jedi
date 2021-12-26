@@ -49,7 +49,7 @@ public class ExecutorInstanceService {
 
         ExecutorInstance executorInstance = executorInstanceList.get(0);
         // 6 hour expire
-        if (executorInstance.getDataChangeLastModifiedTime().isBefore(LocalDateTime.now().minusHours(INSTANCE_EXPIRE_HOURS))) {
+        if (executorInstance.getUpdateTime().isBefore(LocalDateTime.now().minusHours(INSTANCE_EXPIRE_HOURS))) {
             return null;
         } else {
             return executorInstance;
@@ -65,8 +65,8 @@ public class ExecutorInstanceService {
         executorInstance.setExecutorName(executorName);
         executorInstance.setIp(ip);
         LocalDateTime currentDateTime = LocalDateTime.now();
-        executorInstance.setDataChangeCreatedTime(currentDateTime);
-        executorInstance.setDataChangeLastModifiedTime(currentDateTime);
+        executorInstance.setCreateTime(currentDateTime);
+        executorInstance.setUpdateTime(currentDateTime);
 
         executorInstanceMapper.insertOrUpdate(executorInstance);
         return executorInstance;
@@ -78,7 +78,7 @@ public class ExecutorInstanceService {
         executorInstanceExample.createCriteria().andNamespaceNameEqualTo(namespaceName)
                 .andAppIdEqualTo(appId)
                 .andExecutorNameEqualTo(executorName)
-                .andDataChangeLastModifiedTimeGreaterThan(LocalDateTime.now().minusHours(INSTANCE_EXPIRE_HOURS + 1));
+                .andUpdateTimeGreaterThan(LocalDateTime.now().minusHours(INSTANCE_EXPIRE_HOURS + 1));
 
         int pageSize = pageHelperRequest.getPageSize();
         int pageNum = pageHelperRequest.getPageNum();

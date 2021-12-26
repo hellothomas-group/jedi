@@ -69,7 +69,7 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
             return;
         }
 
-        String operator = app.getDataChangeCreatedBy();
+        String operator = app.getCreateUser();
         Set<Permission> appManagerPermissions =
                 Stream.of(PermissonTypeEnum.GRANT_APP, PermissonTypeEnum.MODIFY_APP,
                         PermissonTypeEnum.CREATE_DELETE_EXECUTOR)
@@ -100,7 +100,7 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
             return;
         }
 
-        String operator = executor.getDataChangeCreatedBy();
+        String operator = executor.getCreateUser();
         Set<Permission> executorManagerPermissions =
                 Stream.of(PermissonTypeEnum.GRANT_EXECUTOR, PermissonTypeEnum.MODIFY_EXECUTOR_CONFIG,
                         PermissonTypeEnum.RELEASE_EXECUTOR_CONFIG, PermissonTypeEnum.MODIFY_EXECUTOR_ALARM_CONFIG)
@@ -126,22 +126,22 @@ public class DefaultRoleInitializationService implements RoleInitializationServi
         Permission permission = new Permission();
         permission.setPermissionType(permissionType);
         permission.setTargetId(targetId);
-        permission.setDataChangeCreatedBy(operator);
-        permission.setDataChangeLastModifiedBy(operator);
+        permission.setCreateUser(operator);
+        permission.setUpdateUser(operator);
         LocalDateTime currentTime = LocalDateTime.now();
-        permission.setDataChangeCreatedTime(currentTime);
-        permission.setDataChangeLastModifiedTime(currentTime);
+        permission.setCreateTime(currentTime);
+        permission.setUpdateTime(currentTime);
         return permission;
     }
 
     private Role createRole(String roleName, String operator) {
         Role role = new Role();
         role.setRoleName(roleName);
-        role.setDataChangeCreatedBy(operator);
-        role.setDataChangeLastModifiedBy(operator);
+        role.setCreateUser(operator);
+        role.setUpdateUser(operator);
         LocalDateTime currentTime = LocalDateTime.now();
-        role.setDataChangeCreatedTime(currentTime);
-        role.setDataChangeLastModifiedTime(currentTime);
+        role.setCreateTime(currentTime);
+        role.setUpdateTime(currentTime);
         return role;
     }
 }

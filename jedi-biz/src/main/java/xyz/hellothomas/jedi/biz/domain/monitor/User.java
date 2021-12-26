@@ -3,6 +3,7 @@ package xyz.hellothomas.jedi.biz.domain.monitor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import xyz.hellothomas.jedi.biz.domain.BaseEntity;
 
 /**
  * @author Thomas
@@ -13,7 +14,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class User {
+public class User extends BaseEntity {
     /**
      * 自增Id
      */

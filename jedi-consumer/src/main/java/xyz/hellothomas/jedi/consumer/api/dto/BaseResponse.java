@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 @ToString
 public class BaseResponse {
 
-    protected String dataChangeCreatedBy;
+    protected String createUser;
 
-    protected String dataChangeLastModifiedBy;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    protected LocalDateTime dataChangeCreatedTime;
+    protected String updateUser;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    protected LocalDateTime dataChangeLastModifiedTime;
+    protected LocalDateTime createTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    protected LocalDateTime updateTime;
 }

@@ -385,8 +385,8 @@
     <result column="execution_time_min" jdbcType="INTEGER" property="executionTimeMin" />
     <result column="execution_time_line_95" jdbcType="INTEGER" property="executionTimeLine95" />
     <result column="execution_time_line_99" jdbcType="INTEGER" property="executionTimeLine99" />
-    <result column="data_change_created_time" jdbcType="TIMESTAMP" property="dataChangeCreatedTime" />
-    <result column="data_change_last_modified_time" jdbcType="TIMESTAMP" property="dataChangeLastModifiedTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="version" jdbcType="INTEGER" property="version" />
   </resultMap>
 
