@@ -84,6 +84,21 @@ ALTER TABLE jedi_config.user_role RENAME INDEX IX_dataChange_LastTime TO IX_upda
 ALTER TABLE jedi_config.permission RENAME INDEX IX_dataChange_LastTime TO IX_updateTime;
 ALTER TABLE jedi_config.role_permission RENAME INDEX IX_dataChange_LastTime TO IX_updateTime;
 
+ALTER TABLE jedi_config.release ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.release_history ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.executor ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.item ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.instance ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.instance_config ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.executor_lock ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.audit ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.namespace ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.app ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.user ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.role ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.user_role ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.permission ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_config.role_permission ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
 
 
 
@@ -128,3 +143,8 @@ ALTER TABLE jedi_consumer.`user` ADD update_time timestamp DEFAULT CURRENT_TIMES
 ALTER TABLE jedi_consumer.app RENAME INDEX data_change_last_modified_time TO updateTime;
 ALTER TABLE jedi_consumer.app RENAME INDEX nnamespaceName_AppId TO namespaceName_AppId;
 ALTER TABLE jedi_consumer.executor_instance RENAME INDEX IX_data_change_last_modified_time TO IX_updateTime;
+
+ALTER TABLE jedi_consumer.alarm_config ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_consumer.app ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_consumer.user ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+ALTER TABLE jedi_consumer.executor_task ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
