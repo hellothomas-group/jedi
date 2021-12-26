@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import xyz.hellothomas.jedi.client.aop.JediAsyncAspect;
 import xyz.hellothomas.jedi.client.constants.Constants;
+import xyz.hellothomas.jedi.client.internals.DefaultRetryTaskService;
 import xyz.hellothomas.jedi.client.internals.RetryTaskService;
 import xyz.hellothomas.jedi.client.persistence.JdbcTemplatePersistenceService;
 import xyz.hellothomas.jedi.client.persistence.NullPersistentService;
@@ -44,6 +45,6 @@ public class JediAsyncAutoConfig {
 
     @Bean
     public RetryTaskService retryTaskService(PersistenceService persistenceService) {
-        return new RetryTaskService(persistenceService);
+        return new DefaultRetryTaskService(persistenceService);
     }
 }

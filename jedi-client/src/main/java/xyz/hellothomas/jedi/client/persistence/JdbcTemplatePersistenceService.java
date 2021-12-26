@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 public class JdbcTemplatePersistenceService implements PersistenceService, ApplicationContextAware {
-    private JdbcTemplate jdbcTemplate;
+    private volatile JdbcTemplate jdbcTemplate;
     private ConcurrentHashMap<String, JdbcTemplate> jdbcTemplateMap = new ConcurrentHashMap<>();
     private ApplicationContext applicationContext;
 
@@ -93,24 +93,42 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
     }
 
     private JdbcTemplate getJdbcTemplate(String dataSourceName) {
-        JdbcTemplate jdbcTemplate;
         if (StringUtils.isBlank(dataSourceName)) {
             if (this.jdbcTemplate == null) {
-                DataSource dataSource = this.applicationContext.getBean(DataSource.class);
-                jdbcTemplate = new NoTxJdbcTemplate(dataSource);
-                this.jdbcTemplate = jdbcTemplate;
+                return buildDefaultJdbcTemplate();
             } else {
                 return this.jdbcTemplate;
             }
         } else {
-            jdbcTemplate = jdbcTemplateMap.get(dataSourceName);
+            JdbcTemplate jdbcTemplate = jdbcTemplateMap.get(dataSourceName);
             if (jdbcTemplate == null) {
-                DataSource dataSource = this.applicationContext.getBean(dataSourceName, DataSource.class);
-                jdbcTemplate = new NoTxJdbcTemplate(dataSource);
-                jdbcTemplateMap.putIfAbsent(dataSourceName, jdbcTemplate);
+                return buildJdbcTemplateByDb(dataSourceName);
+            } else {
+                return jdbcTemplate;
             }
         }
-        return jdbcTemplate;
+    }
+
+    private synchronized JdbcTemplate buildJdbcTemplateByDb(String dataSourceName) {
+        JdbcTemplate jdbcTemplate = jdbcTemplateMap.get(dataSourceName);
+        if (jdbcTemplate == null) {
+            DataSource dataSource = this.applicationContext.getBean(dataSourceName, DataSource.class);
+            jdbcTemplate = new NoTxJdbcTemplate(dataSource);
+            jdbcTemplateMap.put(dataSourceName, jdbcTemplate);
+            return jdbcTemplate;
+        } else {
+            return jdbcTemplate;
+        }
+    }
+
+    private synchronized JdbcTemplate buildDefaultJdbcTemplate() {
+        if (this.jdbcTemplate == null) {
+            DataSource dataSource = this.applicationContext.getBean(DataSource.class);
+            this.jdbcTemplate = new NoTxJdbcTemplate(dataSource);
+            return this.jdbcTemplate;
+        } else {
+            return this.jdbcTemplate;
+        }
     }
 
     private JediTaskExecution buildJediTaskExecution(ResultSet rs) throws SQLException {
