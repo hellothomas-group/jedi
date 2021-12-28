@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -50,7 +51,7 @@ import static xyz.hellothomas.jedi.core.constants.Constants.JEDI_DEFAULT_TASK_NA
 
 @Aspect
 @Slf4j
-public class JediAsyncAspect implements ApplicationContextAware, InitializingBean, Ordered {
+public class JediAsyncAspect implements ApplicationContextAware, InitializingBean, DisposableBean, Ordered {
     private String host = NetUtil.getLocalHost();
     private ApplicationContext applicationContext;
     private Map<String, JediThreadPoolExecutor> executorMap;
@@ -315,5 +316,14 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         } else {
             uniqueExecutor = null;
         }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        executorMap.forEach((key, value) -> {
+            log.info("JediThreadPoolExecutor:{} is shutting down", key);
+            value.shutdown();
+            log.info("JediThreadPoolExecutor:{} shutdown completed", key);
+        });
     }
 }

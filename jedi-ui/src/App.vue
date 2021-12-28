@@ -4,7 +4,7 @@
     <div style="font-size: 20px;padding: 20px;float: right" v-if="this.$route.path != '/login'">
       <el-dropdown @command="handleCommand">
         <span>
-          {{this.$store.state.RealName}}<i class="el-icon--right"></i>
+          {{this.$store.state.RealName}}/{{this.$store.state.UserName}}<i class="el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="loginOff">注销</el-dropdown-item>
