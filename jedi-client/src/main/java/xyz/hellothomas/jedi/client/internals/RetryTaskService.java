@@ -10,5 +10,5 @@ import org.springframework.lang.Nullable;
  */
 public interface RetryTaskService {
 
-    void retry(String taskId, @Nullable String dataSourceName);
+    void retry(String taskId, @Nullable String dataSourceName, String operator);
 }

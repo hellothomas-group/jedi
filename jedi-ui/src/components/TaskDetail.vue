@@ -339,7 +339,7 @@ export default {
       console.log(index, row)
       this.retryTaskFormVisible = true
       this.retryTaskForm.taskId = row.id
-      this.retryTaskForm.url = 'http://' + row.host + ':8080/submit-retry-task'
+      this.retryTaskForm.url = 'http://' + row.host + ':8080/jedi/tasks/retry'
     },
     submitRetryTaskForm (formName) {
       console.log(formName)
@@ -375,7 +375,7 @@ export default {
       const h = this.$createElement
 
       this.$notify({
-        title: taskId + '重试成功!',
+        title: taskId + '重试提交成功!',
         message: h('i', {style: 'color: teal'}, '~~')
       })
 
@@ -385,7 +385,7 @@ export default {
       let messageText = exception.data.code === undefined ? exception.status + '-' + exception.statusText : exception.data.code + '-' + exception.data.message
       const h = this.$createElement
       this.$notify({
-        title: this.retryTaskForm.taskId + '重试失败!',
+        title: this.retryTaskForm.taskId + '重试提交失败!',
         message: h('i', {style: 'color: #FF0000'}, messageText)
       })
 

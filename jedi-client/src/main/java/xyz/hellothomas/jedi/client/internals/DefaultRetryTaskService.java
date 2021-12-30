@@ -4,9 +4,19 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.lang.Nullable;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.condition.ParamsRequestCondition;
+import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
+import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import xyz.hellothomas.jedi.client.exception.JediClientException;
 import xyz.hellothomas.jedi.client.model.JediTaskExecution;
 import xyz.hellothomas.jedi.client.persistence.PersistenceService;
@@ -27,12 +37,19 @@ import java.util.UUID;
  * @version 1.0
  */
 @Slf4j
-public class DefaultRetryTaskService implements RetryTaskService, ApplicationContextAware {
+public class DefaultRetryTaskService implements RetryTaskService, ApplicationContextAware, InitializingBean {
+    private final PersistenceService persistenceService;
     private ApplicationContext applicationContext;
-    private PersistenceService persistenceService;
 
     public DefaultRetryTaskService(PersistenceService persistenceService) {
         this.persistenceService = persistenceService;
+    }
+
+    @ResponseBody
+    public void doRetry(@RequestParam("taskId") String taskId,
+                        @RequestParam(value = "dataSourceName", required = false) String dataSourceName,
+                        @RequestParam("operator") String operator) {
+        retry(taskId, dataSourceName, operator);
     }
 
     @Override
@@ -42,7 +59,7 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
 
     @Override
     @SneakyThrows
-    public void retry(String taskId, @Nullable String dataSourceName) {
+    public void retry(String taskId, @Nullable String dataSourceName, String operator) {
         JediTaskExecution jediTaskExecution = persistenceService.queryTaskExecutionById(taskId, dataSourceName);
         if (jediTaskExecution == null) {
             throw new JediClientException(String.format("taskId<%s>不存在", taskId));
@@ -63,12 +80,15 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
             methodArguments[i] = JsonUtil.deserialize(methodArgumentsString[i], methodParamClazzArray[i]);
         }
 
-        addAsyncAttributes(jediTaskExecution);
-        method.invoke(this.applicationContext.getBean(jediTaskExecution.getBeanName(), beanClazz), methodArguments);
-        removeAsyncAttributes();
+        try {
+            addAsyncAttributes(jediTaskExecution);
+            method.invoke(this.applicationContext.getBean(jediTaskExecution.getBeanName(), beanClazz), methodArguments);
+        } finally {
+            removeAsyncAttributes();
+        }
     }
 
-    public void addAsyncAttributes(JediTaskExecution jediTaskExecution) {
+    private void addAsyncAttributes(JediTaskExecution jediTaskExecution) {
         // 任务注册
         TaskProperty taskProperty = initTaskProperty(jediTaskExecution);
         AsyncAttributes asyncAttributes = new AsyncAttributes();
@@ -76,7 +96,7 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
         AsyncContextHolder.setAsyncAttributes(asyncAttributes);
     }
 
-    public void removeAsyncAttributes() {
+    private void removeAsyncAttributes() {
         AsyncContextHolder.resetAsyncAttributes();
     }
 
@@ -94,5 +114,18 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
         taskProperty.setPersistent(true);
         taskProperty.setDataSourceName(jediTaskExecution.getDataSourceName());
         return taskProperty;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        RequestMappingHandlerMapping requestMappingHandlerMapping =
+                this.applicationContext.getBean(RequestMappingHandlerMapping.class);
+        Class<?> entry = this.getClass();
+        Method methodName = ReflectionUtils.findMethod(entry, "doRetry", String.class, String.class, String.class);
+        PatternsRequestCondition patterns = new PatternsRequestCondition("jedi/tasks/retry");
+        RequestMethodsRequestCondition method = new RequestMethodsRequestCondition(RequestMethod.POST);
+        ParamsRequestCondition params = new ParamsRequestCondition("taskId", "dataSourceName", "operator");
+        RequestMappingInfo mappingInfo = new RequestMappingInfo(patterns, method, params, null, null, null, null);
+        requestMappingHandlerMapping.registerMapping(mappingInfo, this, methodName);
     }
 }

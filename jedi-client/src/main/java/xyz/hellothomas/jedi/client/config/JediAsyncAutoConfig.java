@@ -44,6 +44,7 @@ public class JediAsyncAutoConfig {
     }
 
     @Bean
+    @ConditionalOnClass(name = "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping")
     public RetryTaskService retryTaskService(PersistenceService persistenceService) {
         return new DefaultRetryTaskService(persistenceService);
     }
