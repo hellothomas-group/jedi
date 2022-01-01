@@ -1,6 +1,7 @@
 package xyz.hellothomas.jedi.client.internals;
 
 import org.springframework.lang.Nullable;
+import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
 
 /**
  * @author Thomas
@@ -10,5 +11,5 @@ import org.springframework.lang.Nullable;
  */
 public interface RetryTaskService {
 
-    void retry(String taskId, @Nullable String dataSourceName, String operator);
+    TaskProperty retry(String taskId, @Nullable String dataSourceName, String operator);
 }

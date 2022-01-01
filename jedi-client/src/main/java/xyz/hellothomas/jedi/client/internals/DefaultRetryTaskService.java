@@ -46,10 +46,11 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
     }
 
     @ResponseBody
-    public void doRetry(@RequestParam("taskId") String taskId,
-                        @RequestParam(value = "dataSourceName", required = false) String dataSourceName,
-                        @RequestParam("operator") String operator) {
-        retry(taskId, dataSourceName, operator);
+    public String doRetry(@RequestParam("taskId") String taskId,
+                          @RequestParam(value = "dataSourceName", required = false) String dataSourceName,
+                          @RequestParam("operator") String operator) {
+        TaskProperty taskProperty = retry(taskId, dataSourceName, operator);
+        return taskProperty.getId();
     }
 
     @Override
@@ -59,7 +60,7 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
 
     @Override
     @SneakyThrows
-    public void retry(String taskId, @Nullable String dataSourceName, String operator) {
+    public TaskProperty retry(String taskId, @Nullable String dataSourceName, String operator) {
         JediTaskExecution jediTaskExecution = persistenceService.queryTaskExecutionById(taskId, dataSourceName);
         if (jediTaskExecution == null) {
             throw new JediClientException(String.format("taskId<%s>不存在", taskId));
@@ -81,19 +82,21 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
         }
 
         try {
-            addAsyncAttributes(jediTaskExecution);
+            AsyncAttributes asyncAttributes = addAsyncAttributes(jediTaskExecution);
             method.invoke(this.applicationContext.getBean(jediTaskExecution.getBeanName(), beanClazz), methodArguments);
+            return (TaskProperty) asyncAttributes.getAttribute(TaskProperty.class.getName());
         } finally {
             removeAsyncAttributes();
         }
     }
 
-    private void addAsyncAttributes(JediTaskExecution jediTaskExecution) {
+    private AsyncAttributes addAsyncAttributes(JediTaskExecution jediTaskExecution) {
         // 任务注册
         TaskProperty taskProperty = initTaskProperty(jediTaskExecution);
         AsyncAttributes asyncAttributes = new AsyncAttributes();
         asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
         AsyncContextHolder.setAsyncAttributes(asyncAttributes);
+        return asyncAttributes;
     }
 
     private void removeAsyncAttributes() {
@@ -121,11 +124,18 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
         RequestMappingHandlerMapping requestMappingHandlerMapping =
                 this.applicationContext.getBean(RequestMappingHandlerMapping.class);
         Class<?> entry = this.getClass();
-        Method methodName = ReflectionUtils.findMethod(entry, "doRetry", String.class, String.class, String.class);
+        Method method = ReflectionUtils.findMethod(entry, "doRetry", String.class, String.class, String.class);
         PatternsRequestCondition patterns = new PatternsRequestCondition("jedi/tasks/retry");
-        RequestMethodsRequestCondition method = new RequestMethodsRequestCondition(RequestMethod.POST);
+        RequestMethodsRequestCondition methods = new RequestMethodsRequestCondition(RequestMethod.POST);
         ParamsRequestCondition params = new ParamsRequestCondition("taskId", "dataSourceName", "operator");
-        RequestMappingInfo mappingInfo = new RequestMappingInfo(patterns, method, params, null, null, null, null);
-        requestMappingHandlerMapping.registerMapping(mappingInfo, this, methodName);
+        RequestMappingInfo mapping = new RequestMappingInfo(patterns, methods, params, null, null, null, null);
+        // spring 5.2.X
+//        requestMappingHandlerMapping.registerMapping(mapping, this, method);
+        // spring 5.1.x
+        Method registerHandlerMethod =
+                requestMappingHandlerMapping.getClass().getSuperclass().getSuperclass().getDeclaredMethod(
+                        "registerHandlerMethod", Object.class, Method.class, Object.class);
+        registerHandlerMethod.setAccessible(true);
+        registerHandlerMethod.invoke(requestMappingHandlerMapping, this, method, mapping);
     }
 }
