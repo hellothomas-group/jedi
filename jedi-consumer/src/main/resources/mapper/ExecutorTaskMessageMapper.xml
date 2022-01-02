@@ -10,13 +10,23 @@
     <result column="task_name" jdbcType="VARCHAR" property="taskName" />
     <result column="wait_time" jdbcType="BIGINT" property="waitTime" />
     <result column="execution_time" jdbcType="BIGINT" property="executionTime" />
-    <result column="is_success" jdbcType="BIT" property="isSuccess" />
-    <result column="failure_reason" jdbcType="VARCHAR" property="failureReason" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="exit_code" jdbcType="VARCHAR" property="exitCode" />
+    <result column="exit_message" jdbcType="VARCHAR" property="exitMessage" />
     <result column="task_extra_data" jdbcType="VARCHAR" property="taskExtraData" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="is_recoverable" jdbcType="BIT" property="isRecoverable" />
     <result column="host" jdbcType="VARCHAR" property="host" />
+    <result column="trace_id" jdbcType="VARCHAR" property="traceId" />
+    <result column="previous_id" jdbcType="VARCHAR" property="previousId" />
+    <result column="data_source_name" jdbcType="VARCHAR" property="dataSourceName" />
     <result column="record_time" jdbcType="TIMESTAMP" property="recordTime" />
+    <result column="is_retried" jdbcType="BIT" property="isRetried" />
+    <result column="retried_id" jdbcType="VARCHAR" property="retriedId" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="version" jdbcType="INTEGER" property="version" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -77,8 +87,10 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, app_id, namespace, message_type, pool_name, task_name, wait_time, execution_time,
-    is_success, failure_reason, task_extra_data, host, record_time, create_time, update_time
+    id, app_id, namespace, message_type, pool_name, task_name, wait_time, execution_time, 
+    status, exit_code, exit_message, task_extra_data, end_time, is_recoverable, host, 
+    trace_id, previous_id, data_source_name, record_time, is_retried, retried_id, update_user,
+    create_time, update_time, version
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessageExample" resultMap="BaseResultMap">
     select
@@ -95,7 +107,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select
+    select 
     <include refid="Base_Column_List" />
     from executor_task_message
     where id = #{id,jdbcType=VARCHAR}
@@ -111,16 +123,26 @@
     </if>
   </delete>
   <insert id="insert" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage">
-    insert into executor_task_message (id, app_id, namespace,
-      message_type, pool_name, task_name,
-      wait_time, execution_time, is_success,
-      failure_reason, task_extra_data, host,
-      record_time, create_time, update_time)
-    values (#{id,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR},
-      #{messageType,jdbcType=VARCHAR}, #{poolName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR},
-      #{waitTime,jdbcType=BIGINT}, #{executionTime,jdbcType=BIGINT}, #{isSuccess,jdbcType=BIT},
-      #{failureReason,jdbcType=VARCHAR}, #{taskExtraData,jdbcType=VARCHAR}, #{host,jdbcType=VARCHAR},
-      #{recordTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    insert into executor_task_message (id, app_id, namespace, 
+      message_type, pool_name, task_name, 
+      wait_time, execution_time, status, 
+      exit_code, exit_message, task_extra_data, 
+      end_time, is_recoverable, host, 
+      trace_id, previous_id, data_source_name, 
+      record_time, is_retried, retried_id,
+      update_user, create_time, update_time,
+      version
+      )
+    values (#{id,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, 
+      #{messageType,jdbcType=VARCHAR}, #{poolName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, 
+      #{waitTime,jdbcType=BIGINT}, #{executionTime,jdbcType=BIGINT}, #{status,jdbcType=TINYINT}, 
+      #{exitCode,jdbcType=VARCHAR}, #{exitMessage,jdbcType=VARCHAR}, #{taskExtraData,jdbcType=VARCHAR}, 
+      #{endTime,jdbcType=TIMESTAMP}, #{isRecoverable,jdbcType=BIT}, #{host,jdbcType=VARCHAR}, 
+      #{traceId,jdbcType=VARCHAR}, #{previousId,jdbcType=VARCHAR}, #{dataSourceName,jdbcType=VARCHAR}, 
+      #{recordTime,jdbcType=TIMESTAMP}, #{isRetried,jdbcType=BIT}, #{retriedId,jdbcType=VARCHAR}
+      #{updateUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+      #{version,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage">
     insert into executor_task_message
@@ -149,26 +171,56 @@
       <if test="executionTime != null">
         execution_time,
       </if>
-      <if test="isSuccess != null">
-        is_success,
+      <if test="status != null">
+        status,
       </if>
-      <if test="failureReason != null">
-        failure_reason,
+      <if test="exitCode != null">
+        exit_code,
+      </if>
+      <if test="exitMessage != null">
+        exit_message,
       </if>
       <if test="taskExtraData != null">
         task_extra_data,
       </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="isRecoverable != null">
+        is_recoverable,
+      </if>
       <if test="host != null">
         host,
       </if>
+      <if test="traceId != null">
+        trace_id,
+      </if>
+      <if test="previousId != null">
+        previous_id,
+      </if>
+      <if test="dataSourceName != null">
+        data_source_name,
+      </if>
       <if test="recordTime != null">
         record_time,
+      </if>
+      <if test="isRetried != null">
+        is_retried,
+      </if>
+      <if test="retriedId != null">
+        retried_id,
+      </if>
+      <if test="updateUser != null">
+        update_user,
       </if>
       <if test="createTime != null">
         create_time,
       </if>
       <if test="updateTime != null">
         update_time,
+      </if>
+      <if test="version != null">
+        version,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -196,26 +248,56 @@
       <if test="executionTime != null">
         #{executionTime,jdbcType=BIGINT},
       </if>
-      <if test="isSuccess != null">
-        #{isSuccess,jdbcType=BIT},
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
       </if>
-      <if test="failureReason != null">
-        #{failureReason,jdbcType=VARCHAR},
+      <if test="exitCode != null">
+        #{exitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="exitMessage != null">
+        #{exitMessage,jdbcType=VARCHAR},
       </if>
       <if test="taskExtraData != null">
         #{taskExtraData,jdbcType=VARCHAR},
       </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isRecoverable != null">
+        #{isRecoverable,jdbcType=BIT},
+      </if>
       <if test="host != null">
         #{host,jdbcType=VARCHAR},
       </if>
+      <if test="traceId != null">
+        #{traceId,jdbcType=VARCHAR},
+      </if>
+      <if test="previousId != null">
+        #{previousId,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceName != null">
+        #{dataSourceName,jdbcType=VARCHAR},
+      </if>
       <if test="recordTime != null">
         #{recordTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isRetried != null">
+        #{isRetried,jdbcType=BIT},
+      </if>
+      <if test="retriedId != null">
+        #{retriedId,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -226,7 +308,6 @@
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update executor_task_message
     update executor_task_message
     <set>
       <if test="record.id != null">
@@ -253,26 +334,56 @@
       <if test="record.executionTime != null">
         execution_time = #{record.executionTime,jdbcType=BIGINT},
       </if>
-      <if test="record.isSuccess != null">
-        is_success = #{record.isSuccess,jdbcType=BIT},
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=TINYINT},
       </if>
-      <if test="record.failureReason != null">
-        failure_reason = #{record.failureReason,jdbcType=VARCHAR},
+      <if test="record.exitCode != null">
+        exit_code = #{record.exitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.exitMessage != null">
+        exit_message = #{record.exitMessage,jdbcType=VARCHAR},
       </if>
       <if test="record.taskExtraData != null">
         task_extra_data = #{record.taskExtraData,jdbcType=VARCHAR},
       </if>
+      <if test="record.endTime != null">
+        end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isRecoverable != null">
+        is_recoverable = #{record.isRecoverable,jdbcType=BIT},
+      </if>
       <if test="record.host != null">
         host = #{record.host,jdbcType=VARCHAR},
       </if>
+      <if test="record.traceId != null">
+        trace_id = #{record.traceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.previousId != null">
+        previous_id = #{record.previousId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataSourceName != null">
+        data_source_name = #{record.dataSourceName,jdbcType=VARCHAR},
+      </if>
       <if test="record.recordTime != null">
         record_time = #{record.recordTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isRetried != null">
+        is_retried = #{record.isRetried,jdbcType=BIT},
+      </if>
+      <if test="record.retriedId != null">
+        retried_id = #{record.retriedId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateUser != null">
+        update_user = #{record.updateUser,jdbcType=VARCHAR},
       </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.updateTime != null">
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.version != null">
+        version = #{record.version,jdbcType=INTEGER},
       </if>
     </set>
     <if test="_parameter != null">
@@ -289,13 +400,23 @@
       task_name = #{record.taskName,jdbcType=VARCHAR},
       wait_time = #{record.waitTime,jdbcType=BIGINT},
       execution_time = #{record.executionTime,jdbcType=BIGINT},
-      is_success = #{record.isSuccess,jdbcType=BIT},
-      failure_reason = #{record.failureReason,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=TINYINT},
+      exit_code = #{record.exitCode,jdbcType=VARCHAR},
+      exit_message = #{record.exitMessage,jdbcType=VARCHAR},
       task_extra_data = #{record.taskExtraData,jdbcType=VARCHAR},
+      end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      is_recoverable = #{record.isRecoverable,jdbcType=BIT},
       host = #{record.host,jdbcType=VARCHAR},
+      trace_id = #{record.traceId,jdbcType=VARCHAR},
+      previous_id = #{record.previousId,jdbcType=VARCHAR},
+      data_source_name = #{record.dataSourceName,jdbcType=VARCHAR},
       record_time = #{record.recordTime,jdbcType=TIMESTAMP},
+      is_retried = #{record.isRetried,jdbcType=BIT},
+      retried_id = #{record.retriedId,jdbcType=VARCHAR},
+      update_user = #{record.updateUser,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      version = #{record.version,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -324,26 +445,56 @@
       <if test="executionTime != null">
         execution_time = #{executionTime,jdbcType=BIGINT},
       </if>
-      <if test="isSuccess != null">
-        is_success = #{isSuccess,jdbcType=BIT},
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
       </if>
-      <if test="failureReason != null">
-        failure_reason = #{failureReason,jdbcType=VARCHAR},
+      <if test="exitCode != null">
+        exit_code = #{exitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="exitMessage != null">
+        exit_message = #{exitMessage,jdbcType=VARCHAR},
       </if>
       <if test="taskExtraData != null">
         task_extra_data = #{taskExtraData,jdbcType=VARCHAR},
       </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isRecoverable != null">
+        is_recoverable = #{isRecoverable,jdbcType=BIT},
+      </if>
       <if test="host != null">
         host = #{host,jdbcType=VARCHAR},
       </if>
+      <if test="traceId != null">
+        trace_id = #{traceId,jdbcType=VARCHAR},
+      </if>
+      <if test="previousId != null">
+        previous_id = #{previousId,jdbcType=VARCHAR},
+      </if>
+      <if test="dataSourceName != null">
+        data_source_name = #{dataSourceName,jdbcType=VARCHAR},
+      </if>
       <if test="recordTime != null">
         record_time = #{recordTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isRetried != null">
+        is_retried = #{isRetried,jdbcType=BIT},
+      </if>
+      <if test="retriedId != null">
+        retried_id = #{retriedId,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
@@ -357,13 +508,23 @@
       task_name = #{taskName,jdbcType=VARCHAR},
       wait_time = #{waitTime,jdbcType=BIGINT},
       execution_time = #{executionTime,jdbcType=BIGINT},
-      is_success = #{isSuccess,jdbcType=BIT},
-      failure_reason = #{failureReason,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      exit_code = #{exitCode,jdbcType=VARCHAR},
+      exit_message = #{exitMessage,jdbcType=VARCHAR},
       task_extra_data = #{taskExtraData,jdbcType=VARCHAR},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      is_recoverable = #{isRecoverable,jdbcType=BIT},
       host = #{host,jdbcType=VARCHAR},
+      trace_id = #{traceId,jdbcType=VARCHAR},
+      previous_id = #{previousId,jdbcType=VARCHAR},
+      data_source_name = #{dataSourceName,jdbcType=VARCHAR},
       record_time = #{recordTime,jdbcType=TIMESTAMP},
+      is_retried = #{isRetried,jdbcType=BIT},
+      retried_id = #{retriedId,jdbcType=VARCHAR},
+      update_user = #{updateUser,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      version = #{version,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
@@ -393,7 +554,7 @@
   <select id="selectStatisticsByTaskNameAndRecordTime" resultMap="ExecutorTaskStatisticsResultMap">
     select
     count(id) as total,
-    count(case when is_success = 0 then 1 else null end) as failure,
+    count(case when status = 3 then 1 else null end) as failure,
     max(wait_time + execution_time) as total_time_max,
     min(wait_time + execution_time) as total_time_min,
     max(wait_time) as wait_time_max,
@@ -410,51 +571,72 @@
       record_time >= #{startTime,jdbcType=TIMESTAMP} and record_time <![CDATA[<]]> #{endTime,jdbcType=TIMESTAMP}
   </select>
 
+  <!--no is_retried, retried_id, version-->
   <insert id="insertBatch" parameterType="java.util.List">
     insert into executor_task_message (id, app_id, namespace,
     message_type, pool_name, task_name,
-    wait_time, execution_time, is_success,
-    failure_reason, task_extra_data, host,
-    record_time, create_time, update_time)
+    wait_time, execution_time, status,
+    exit_code, exit_message, task_extra_data,
+    end_time, is_recoverable, host,
+    trace_id, previous_id, data_source_name,
+    record_time, update_user,
+    create_time, update_time)
     values
     <foreach collection="records" item="record" separator=",">
       (#{record.id,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR}, #{record.namespace,jdbcType=VARCHAR},
       #{record.messageType,jdbcType=VARCHAR}, #{record.poolName,jdbcType=VARCHAR}, #{record.taskName,jdbcType=VARCHAR},
-      #{record.waitTime,jdbcType=BIGINT}, #{record.executionTime,jdbcType=BIGINT}, #{record.isSuccess,jdbcType=BIT},
-      #{record.failureReason,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR}, #{record.host,jdbcType=VARCHAR},
-      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
+      #{record.waitTime,jdbcType=BIGINT}, #{record.executionTime,jdbcType=BIGINT}, #{record.status,jdbcType=TINYINT},
+      #{record.exitCode,jdbcType=VARCHAR}, #{record.exitMessage,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR},
+      #{record.endTime,jdbcType=TIMESTAMP}, #{record.isRecoverable,jdbcType=BIT}, #{record.host,jdbcType=VARCHAR},
+      #{record.traceId,jdbcType=VARCHAR}, #{record.previousId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR},
+      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR},
+      #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
     </foreach>
   </insert>
 
+  <!--no is_retried, retried_id, version-->
   <insert id="insertIgnoreBatch" parameterType="java.util.List">
     insert ignore into executor_task_message (id, app_id, namespace,
     message_type, pool_name, task_name,
-    wait_time, execution_time, is_success,
-    failure_reason, task_extra_data, host,
-    record_time, create_time, update_time)
+    wait_time, execution_time, status,
+    exit_code, exit_message, task_extra_data,
+    end_time, is_recoverable, host,
+    trace_id, previous_id, data_source_name,
+    record_time, update_user,
+    create_time, update_time)
     values
     <foreach collection="records" item="record" separator=",">
       (#{record.id,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR}, #{record.namespace,jdbcType=VARCHAR},
       #{record.messageType,jdbcType=VARCHAR}, #{record.poolName,jdbcType=VARCHAR}, #{record.taskName,jdbcType=VARCHAR},
-      #{record.waitTime,jdbcType=BIGINT}, #{record.executionTime,jdbcType=BIGINT}, #{record.isSuccess,jdbcType=BIT},
-      #{record.failureReason,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR}, #{record.host,jdbcType=VARCHAR},
-      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
+      #{record.waitTime,jdbcType=BIGINT}, #{record.executionTime,jdbcType=BIGINT}, #{record.status,jdbcType=TINYINT},
+      #{record.exitCode,jdbcType=VARCHAR}, #{record.exitMessage,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR},
+      #{record.endTime,jdbcType=TIMESTAMP}, #{record.isRecoverable,jdbcType=BIT}, #{record.host,jdbcType=VARCHAR},
+      #{record.traceId,jdbcType=VARCHAR}, #{record.previousId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR},
+      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR},
+      #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
     </foreach>
   </insert>
 
+  <!--no is_retried, retried_id, version-->
   <insert id="insertOrUpdateBatch" parameterType="java.util.List">
     insert into executor_task_message (id, app_id, namespace,
     message_type, pool_name, task_name,
-    wait_time, execution_time, is_success,
-    failure_reason, task_extra_data, host,
-    record_time, create_time, update_time)
+    wait_time, execution_time, status,
+    exit_code, exit_message, task_extra_data,
+    end_time, is_recoverable, host,
+    trace_id, previous_id, data_source_name,
+    record_time, update_user,
+    create_time, update_time)
     values
     <foreach collection="records" item="record" separator=",">
       (#{record.id,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR}, #{record.namespace,jdbcType=VARCHAR},
       #{record.messageType,jdbcType=VARCHAR}, #{record.poolName,jdbcType=VARCHAR}, #{record.taskName,jdbcType=VARCHAR},
-      #{record.waitTime,jdbcType=BIGINT}, #{record.executionTime,jdbcType=BIGINT}, #{record.isSuccess,jdbcType=BIT},
-      #{record.failureReason,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR}, #{record.host,jdbcType=VARCHAR},
-      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
+      #{record.waitTime,jdbcType=BIGINT}, #{record.executionTime,jdbcType=BIGINT}, #{record.status,jdbcType=TINYINT},
+      #{record.exitCode,jdbcType=VARCHAR}, #{record.exitMessage,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR},
+      #{record.endTime,jdbcType=TIMESTAMP}, #{record.isRecoverable,jdbcType=BIT}, #{record.host,jdbcType=VARCHAR},
+      #{record.traceId,jdbcType=VARCHAR}, #{record.previousId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR},
+      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR},
+      #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
     </foreach>
     on duplicate key
     update update_time = now()

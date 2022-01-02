@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import xyz.hellothomas.jedi.client.exception.JediClientException;
 import xyz.hellothomas.jedi.client.model.JediTaskExecution;
 import xyz.hellothomas.jedi.client.persistence.PersistenceService;
+import xyz.hellothomas.jedi.core.dto.ApiResponse;
 import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
 import xyz.hellothomas.jedi.core.internals.executor.AsyncAttributes;
 import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
@@ -46,11 +47,17 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
     }
 
     @ResponseBody
-    public String doRetry(@RequestParam("taskId") String taskId,
-                          @RequestParam(value = "dataSourceName", required = false) String dataSourceName,
-                          @RequestParam("operator") String operator) {
-        TaskProperty taskProperty = retry(taskId, dataSourceName, operator);
-        return taskProperty.getId();
+    public ApiResponse<String> doRetry(@RequestParam("taskId") String taskId,
+                                       @RequestParam(value = "dataSourceName", required = false) String dataSourceName,
+                                       @RequestParam("operator") String operator) {
+        TaskProperty taskProperty = null;
+        try {
+            taskProperty = retry(taskId, dataSourceName, operator);
+        } catch (Exception e) {
+            log.error("任务重试失败", e);
+            return ApiResponse.fail(e.getMessage());
+        }
+        return ApiResponse.success(taskProperty.getId());
     }
 
     @Override
@@ -82,7 +89,7 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
         }
 
         try {
-            AsyncAttributes asyncAttributes = addAsyncAttributes(jediTaskExecution);
+            AsyncAttributes asyncAttributes = addAsyncAttributes(jediTaskExecution, operator);
             method.invoke(this.applicationContext.getBean(jediTaskExecution.getBeanName(), beanClazz), methodArguments);
             return (TaskProperty) asyncAttributes.getAttribute(TaskProperty.class.getName());
         } finally {
@@ -90,9 +97,9 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
         }
     }
 
-    private AsyncAttributes addAsyncAttributes(JediTaskExecution jediTaskExecution) {
+    private AsyncAttributes addAsyncAttributes(JediTaskExecution jediTaskExecution, String operator) {
         // 任务注册
-        TaskProperty taskProperty = initTaskProperty(jediTaskExecution);
+        TaskProperty taskProperty = initTaskProperty(jediTaskExecution, operator);
         AsyncAttributes asyncAttributes = new AsyncAttributes();
         asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
         AsyncContextHolder.setAsyncAttributes(asyncAttributes);
@@ -103,7 +110,7 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
         AsyncContextHolder.resetAsyncAttributes();
     }
 
-    private TaskProperty initTaskProperty(JediTaskExecution jediTaskExecution) {
+    private TaskProperty initTaskProperty(JediTaskExecution jediTaskExecution, String operator) {
         TaskProperty taskProperty = new TaskProperty();
         BeanUtils.copyProperties(jediTaskExecution, taskProperty);
         taskProperty.setId(UUID.randomUUID().toString());
@@ -116,6 +123,7 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
         taskProperty.setPreviousId(jediTaskExecution.getId());
         taskProperty.setPersistent(true);
         taskProperty.setDataSourceName(jediTaskExecution.getDataSourceName());
+        taskProperty.setLastUpdatedUser(operator);
         return taskProperty;
     }
 

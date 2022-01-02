@@ -117,7 +117,12 @@ public class JediTaskExecution {
     private String dataSourceName;
 
     /**
-     * lastUpdated
+     * lastUpdatedUser
      */
-    private LocalDateTime lastUpdated;
+    private String lastUpdatedUser;
+
+    /**
+     * lastUpdatedTime
+     */
+    private LocalDateTime lastUpdatedTime;
 }

@@ -12,7 +12,8 @@ import InactiveReleaseInstance from '../components/InactiveReleaseInstance'
 import ExecutorStatus from '../components/ExecutorStatus'
 import Login from '../components/Login'
 import TaskStatisticHistory from '../components/TaskStatisticHistory'
-import TaskDetail from '../components/TaskDetail'
+import TaskListDetail from '../components/TaskListDetail'
+import TaskSingleDetail from '../components/TaskSingleDetail'
 
 Vue.use(Router)
 
@@ -85,9 +86,14 @@ const router = new Router({
           component: TaskStatisticHistory
         },
         {
-          path: '/task/detail',
-          name: 'TaskDetail',
-          component: TaskDetail
+          path: '/task/list-detail',
+          name: 'TaskListDetail',
+          component: TaskListDetail
+        },
+        {
+          path: '/task/single-detail',
+          name: 'TaskSingleDetail',
+          component: TaskSingleDetail
         },
         {
           path: '/alarm',

@@ -57,16 +57,22 @@
             style="width: 100%"
             :row-class-name="tableRowClassName">
             <el-table-column
+              label="任务ID"
+              min-width="130"
+              prop="id">
+            </el-table-column>
+            <el-table-column
               label="任务名称"
-              min-width="85"
+              min-width="80px"
+              align="center"
               prop="taskName">
             </el-table-column>
             <el-table-column
               label="执行结果"
               width="80px"
               align="center"
-              prop="isSuccess"
-              :formatter = "isSuccessFormatter">
+              prop="status"
+              :formatter = "taskStatusFormatter">
             </el-table-column>
             <el-table-column
               label="等待时间(ms)"
@@ -96,7 +102,7 @@
               label="失败原因"
               min-width="60px"
               align="center"
-              prop="failureReason">
+              prop="exitMessage">
             </el-table-column>
             <el-table-column
               label="任务附加信息"
@@ -113,11 +119,12 @@
                   placeholder="输入任务附加信息搜索"/>
               </template>
               <template slot-scope="scope">
-                <el-tag type="warning" v-if="!scope.row.isSuccess">taskId: {{scope.row.id}}</el-tag>
+                <el-tag type="warning" effect="dark" v-if="scope.row.status !== 2 && scope.row.isRetried">重试Id:
+                  {{scope.row.retriedId}}</el-tag>
                 <el-button
                   type="danger"
                   size="mini"
-                  v-if="!scope.row.isSuccess"
+                  v-if="scope.row.status !== 2 && !scope.row.isRetried"
                   @click="toRetryTask(scope.$index, scope.row)" style="margin-right: 50%">重试</el-button>
               </template>
             </el-table-column>
@@ -310,10 +317,10 @@ export default {
       })
     },
     tableRowClassName ({row, rowIndex}) {
-      if (rowIndex % 2 === 0) {
+      if (row.status === 2) {
         return 'success-row'
       } else {
-        return ''
+        return 'warning-row'
       }
     },
     nextPage (pageNum) {
@@ -328,9 +335,11 @@ export default {
       this.pagination.pageNum = pageNum
       this.asyncQueryTaskList()
     },
-    isSuccessFormatter (row, column, cellValue, index) {
-      if (row.isSuccess) {
+    taskStatusFormatter (row, column, cellValue, index) {
+      if (row.status === 2) {
         return '成功'
+      } else if (row.status === 4) {
+        return '拒绝'
       } else {
         return '失败'
       }
@@ -340,6 +349,7 @@ export default {
       this.retryTaskFormVisible = true
       this.retryTaskForm.taskId = row.id
       this.retryTaskForm.url = 'http://' + row.host + ':8080/jedi/tasks/retry'
+      this.retryTaskForm.dataSourceName = row.dataSourceName
     },
     submitRetryTaskForm (formName) {
       console.log(formName)
@@ -415,7 +425,7 @@ export default {
   }
 
   .el-table .warning-row {
-    background: oldlace;
+    background: #fdb5a8;
   }
 
   .el-table .success-row {

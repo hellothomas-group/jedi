@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.core.dto.consumer.*;
 import xyz.hellothomas.jedi.core.enums.MessageType;
-import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
 import xyz.hellothomas.jedi.core.utils.NetUtil;
@@ -91,12 +90,15 @@ public abstract class AbstractNotificationService {
             }
         }
         executorTaskNotification.setPoolName(taskProperty.getExecutorName());
-        if (TaskStatusEnum.SUCCESS.getValue().equals(taskProperty.getStatus())) {
-            executorTaskNotification.setIsSuccess(true);
-        } else {
-            executorTaskNotification.setIsSuccess(false);
-            executorTaskNotification.setFailureReason(taskProperty.getExitMessage());
-        }
+        executorTaskNotification.setStatus(taskProperty.getStatus());
+        executorTaskNotification.setExitCode(taskProperty.getExitCode());
+        executorTaskNotification.setExitMessage(taskProperty.getExitMessage());
+        executorTaskNotification.setEndTime(taskProperty.getEndTime());
+        executorTaskNotification.setIsRecoverable(taskProperty.isRecoverable());
+        executorTaskNotification.setTraceId(taskProperty.getTraceId());
+        executorTaskNotification.setPreviousId(taskProperty.getPreviousId());
+        executorTaskNotification.setDataSourceName(taskProperty.getDataSourceName());
+        executorTaskNotification.setUpdateUser(taskProperty.getLastUpdatedUser());
         executorTaskNotification.setMessageType(MessageType.EXECUTOR_TASK.getTypeValue());
         fillMessageCommonField(executorTaskNotification);
 

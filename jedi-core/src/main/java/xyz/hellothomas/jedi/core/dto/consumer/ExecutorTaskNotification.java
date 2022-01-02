@@ -1,6 +1,7 @@
 package xyz.hellothomas.jedi.core.dto.consumer;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 import static xyz.hellothomas.jedi.core.constants.Constants.JEDI_DEFAULT_TASK_NAME;
 
@@ -36,80 +37,168 @@ public class ExecutorTaskNotification extends AbstractNotification {
     /**
      * 执行结果
      */
-    private boolean isSuccess;
+    private int status;
+
+    /**
+     * exitCode
+     */
+    private String exitCode;
 
     /**
      * 执行失败原因
      */
-    private String failureReason;
+    private String exitMessage;
 
     /**
      * 任务附加信息
      */
     private String taskExtraData;
 
-    public String getPoolName() {
-        return poolName;
-    }
+    /**
+     * 结束时间
+     */
+    private LocalDateTime endTime;
 
-    public void setPoolName(String poolName) {
-        this.poolName = poolName;
-    }
+    /**
+     * 1: recoverable, 0: no recoverable
+     */
+    private boolean isRecoverable;
 
-    @Override
-    public String toString() {
-        return "ExecutorTaskMessage(id=" + this.getId() + ", appId=" + this.getAppId() + ", namespace" +
-                "=" + this.getNamespace() + ", messageType=" + this.getMessageType() + ", recordTime=" + this.getRecordTime() + ", host=" + this.getHost() +
-                ", taskName=" + this.taskName + ", poolName=" + this.poolName + ", waitTime=" +
-                this.waitTime + ", executionTime=" + this.executionTime + ", isSuccess=" + this.isSuccess + ", " +
-                "failureReason=" + this.failureReason + ", " + "taskExtraData=" + this.taskExtraData + ")";
-    }
+    /**
+     * traceId
+     */
+    private String traceId;
+
+    /**
+     * previousId
+     */
+    private String previousId;
+
+    /**
+     * dataSourceName
+     */
+    private String dataSourceName;
+
+    /**
+     * 最后修改人
+     */
+    private String updateUser;
 
     public String getTaskName() {
-        return taskName;
+        return this.taskName;
+    }
+
+    public String getPoolName() {
+        return this.poolName;
+    }
+
+    public long getWaitTime() {
+        return this.waitTime;
+    }
+
+    public long getExecutionTime() {
+        return this.executionTime;
+    }
+
+    public int getStatus() {
+        return this.status;
+    }
+
+    public String getExitCode() {
+        return this.exitCode;
+    }
+
+    public String getExitMessage() {
+        return this.exitMessage;
+    }
+
+    public String getTaskExtraData() {
+        return this.taskExtraData;
+    }
+
+    public LocalDateTime getEndTime() {
+        return this.endTime;
+    }
+
+    public boolean getIsRecoverable() {
+        return this.isRecoverable;
+    }
+
+    public String getTraceId() {
+        return this.traceId;
+    }
+
+    public String getPreviousId() {
+        return this.previousId;
+    }
+
+    public String getDataSourceName() {
+        return this.dataSourceName;
+    }
+
+    public String getUpdateUser() {
+        return updateUser;
     }
 
     public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
 
-    public long getWaitTime() {
-        return waitTime;
+    public void setPoolName(String poolName) {
+        this.poolName = poolName;
     }
 
     public void setWaitTime(long waitTime) {
         this.waitTime = waitTime;
     }
 
-    public long getExecutionTime() {
-        return executionTime;
-    }
-
     public void setExecutionTime(long executionTime) {
         this.executionTime = executionTime;
     }
 
-    public String getTaskExtraData() {
-        return taskExtraData;
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public void setExitCode(String exitCode) {
+        this.exitCode = exitCode;
+    }
+
+    public void setExitMessage(String exitMessage) {
+        this.exitMessage = exitMessage;
     }
 
     public void setTaskExtraData(String taskExtraData) {
         this.taskExtraData = taskExtraData;
     }
 
-    public boolean getIsSuccess() {
-        return isSuccess;
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
-    public void setIsSuccess(boolean success) {
-        this.isSuccess = success;
+    public void setIsRecoverable(boolean isRecoverable) {
+        this.isRecoverable = isRecoverable;
     }
 
-    public String getFailureReason() {
-        return failureReason;
+    public void setTraceId(String traceId) {
+        this.traceId = traceId;
     }
 
-    public void setFailureReason(String failureReason) {
-        this.failureReason = failureReason;
+    public void setPreviousId(String previousId) {
+        this.previousId = previousId;
+    }
+
+    public void setDataSourceName(String dataSourceName) {
+        this.dataSourceName = dataSourceName;
+    }
+
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser;
+    }
+
+    @Override
+    public String toString() {
+        return "ExecutorTaskNotification(taskName=" + this.getTaskName() + ", poolName=" + this.getPoolName() + ", " +
+                "waitTime=" + this.getWaitTime() + ", executionTime=" + this.getExecutionTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", taskExtraData=" + this.getTaskExtraData() + ", endTime=" + this.getEndTime() + ", isRecoverable=" + this.getIsRecoverable() + ", traceId=" + this.getTraceId() + ", previousId=" + this.getPreviousId() + ", dataSourceName=" + this.getDataSourceName() + ", updateUser=" + this.getUpdateUser() + ")";
     }
 }

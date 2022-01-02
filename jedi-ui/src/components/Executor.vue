@@ -52,8 +52,10 @@
                                 :route="{path:'/task/statistics-now',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">当天任务统计</el-menu-item>
                   <el-menu-item index="/task/statistics-history"
                                 :route="{path:'/task/statistics-history',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">历史任务统计</el-menu-item>
-                  <el-menu-item index="/task/detail"
-                                :route="{path:'/task/detail',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">任务明细查询</el-menu-item>
+                  <el-menu-item index="/task/list-detail"
+                                :route="{path:'/task/list-detail',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">任务列表查询</el-menu-item>
+                  <el-menu-item index="/task/single-detail"
+                                :route="{path:'/task/single-detail',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">任务明细查询</el-menu-item>
                 </el-submenu>
                 <el-menu-item index="/alarm"
                               :route="{path:'/alarm',query:{namespace:this.executor.namespaceName,appId:this.executor.appId,executor:this.executor.executorName}}">

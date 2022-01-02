@@ -12,7 +12,7 @@ public class TaskProperty {
     private LocalDateTime createTime;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private String status;
+    private int status;
     private String exitCode;
     private String exitMessage;
     private String beanName;
@@ -26,6 +26,7 @@ public class TaskProperty {
     private String previousId;
     private boolean persistent;
     private String dataSourceName;
+    private String lastUpdatedUser;
 
     public String getId() {
         return this.id;
@@ -63,7 +64,7 @@ public class TaskProperty {
         return this.endTime;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return this.status;
     }
 
@@ -119,6 +120,10 @@ public class TaskProperty {
         return this.dataSourceName;
     }
 
+    public String getLastUpdatedUser() {
+        return lastUpdatedUser;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -155,7 +160,7 @@ public class TaskProperty {
         this.endTime = endTime;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -211,8 +216,12 @@ public class TaskProperty {
         this.dataSourceName = dataSourceName;
     }
 
+    public void setLastUpdatedUser(String lastUpdatedUser) {
+        this.lastUpdatedUser = lastUpdatedUser;
+    }
+
     @Override
     public String toString() {
-        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodParamTypes=" + this.getMethodParamTypes() + ", methodArguments=" + this.getMethodArguments() + ", recoverable=" + this.isRecoverable() + ", host=" + this.getHost() + ", traceId=" + this.getTraceId() + ", previousId=" + this.getPreviousId() + ", persistent=" + this.isPersistent() + ", dataSourceName=" + this.getDataSourceName() + ")";
+        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodParamTypes=" + this.getMethodParamTypes() + ", methodArguments=" + this.getMethodArguments() + ", recoverable=" + this.isRecoverable() + ", host=" + this.getHost() + ", traceId=" + this.getTraceId() + ", previousId=" + this.getPreviousId() + ", persistent=" + this.isPersistent() + ", dataSourceName=" + this.getDataSourceName() + ", lastUpdatedUser=" + this.getLastUpdatedUser() + ")";
     }
 }

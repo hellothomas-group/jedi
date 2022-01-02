@@ -35,14 +35,19 @@ public class ExecutorTaskDetailResponse {
     private Long executionTime;
 
     /**
-     * 1: success, 0: fail
+     * 0:registered, 1:doing, 2:success, 3:fail, 4:rejected
      */
-    private Boolean isSuccess;
+    private Integer status;
 
     /**
-     * 失败原因
+     * exitCode
      */
-    private String failureReason;
+    private String exitCode;
+
+    /**
+     * exitMessage
+     */
+    private String exitMessage;
 
     /**
      * 任务附加信息
@@ -50,13 +55,54 @@ public class ExecutorTaskDetailResponse {
     private String taskExtraData;
 
     /**
+     * 结束时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime endTime;
+
+    /**
+     * 1: recoverable, 0: no recoverable
+     */
+    private Boolean isRecoverable;
+
+    /**
      * 主机
      */
     private String host;
+
+    /**
+     * traceId
+     */
+    private String traceId;
+
+    /**
+     * previousId
+     */
+    private String previousId;
+
+    /**
+     * dataSourceName
+     */
+    private String dataSourceName;
 
     /**
      * 记录时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime recordTime;
+
+    /**
+     * 1: retried, 0: no retried
+     */
+    private Boolean isRetried;
+
+    /**
+     * retriedId
+     */
+    private String retriedId;
+
+    /**
+     * 最后修改人
+     */
+    private String updateUser;
 }

@@ -60,7 +60,7 @@
               <template slot-scope="scope">
                 <el-button
                   size="mini"
-                  @click="handleTaskDetail(scope.$index, scope.row)" style="margin-right: 50%">明细</el-button>
+                  @click="handleTaskListDetail(scope.$index, scope.row)" style="margin-right: 50%">明细</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -135,15 +135,15 @@ export default {
         console.log(error)
       })
     },
-    handleTaskDetail (index, row) {
+    handleTaskListDetail (index, row) {
       console.log(index, row)
-      this.forwardTaskDetail(this.namespaceName, this.appId, this.executorName, format(this.currentDate,
+      this.forwardTaskListDetail(this.namespaceName, this.appId, this.executorName, format(this.currentDate,
         'yyyy-MM-dd'), row.taskName)
     },
-    forwardTaskDetail (namespace, appId, executor, taskDate, taskName) {
-      console.log('forwardTaskDetail')
+    forwardTaskListDetail (namespace, appId, executor, taskDate, taskName) {
+      console.log('forwardTaskListDetail')
       this.$router.push({
-        path: '/task/detail',
+        path: '/task/list-detail',
         query: {
           namespace: namespace,
           appId: appId,

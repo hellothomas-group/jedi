@@ -14,6 +14,7 @@ import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskStatistics;
 import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMessageMapper;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.enums.MessageType;
+import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,6 +44,13 @@ public class ExecutorTaskMsgService implements NotificationService<ExecutorTaskN
     public void process(ExecutorTaskNotification executorTaskNotification) {
         ExecutorTaskMessage executorTaskMessage = new ExecutorTaskMessage();
         BeanUtils.copyProperties(executorTaskNotification, executorTaskMessage);
+        // 兼容 0.0.9-version
+        if (executorTaskNotification.getStatus() == 0) {
+            executorTaskMessage.setStatus(TaskStatusEnum.SUCCESS.getValue());
+        }
+        if (executorTaskNotification.getEndTime() == null) {
+            executorTaskMessage.setEndTime(executorTaskNotification.getRecordTime());
+        }
         executorTaskMessage.setCreateTime(LocalDateTime.now());
         executorTaskMessage.setUpdateTime(LocalDateTime.now());
         log.debug("executorTaskMessage:{}", executorTaskMessage);
@@ -55,6 +63,13 @@ public class ExecutorTaskMsgService implements NotificationService<ExecutorTaskN
         notifications.stream().forEach(i -> {
             ExecutorTaskMessage executorTaskMessage = new ExecutorTaskMessage();
             BeanUtils.copyProperties(i, executorTaskMessage);
+            // 兼容 0.0.9-version
+            if (i.getStatus() == 0) {
+                executorTaskMessage.setStatus(TaskStatusEnum.SUCCESS.getValue());
+            }
+            if (i.getEndTime() == null) {
+                executorTaskMessage.setEndTime(i.getRecordTime());
+            }
             executorTaskMessage.setCreateTime(LocalDateTime.now());
             executorTaskMessage.setUpdateTime(LocalDateTime.now());
             executorTaskMessages.add(executorTaskMessage);
@@ -98,7 +113,11 @@ public class ExecutorTaskMsgService implements NotificationService<ExecutorTaskN
             criteria.andTaskExtraDataEqualTo(taskExtraData);
         }
         if (isSuccess != null) {
-            criteria.andIsSuccessEqualTo(isSuccess);
+            if (isSuccess) {
+                criteria.andStatusEqualTo(TaskStatusEnum.SUCCESS.getValue());
+            } else {
+                criteria.andStatusNotEqualTo(TaskStatusEnum.SUCCESS.getValue());
+            }
         }
         if (instanceIp != null) {
             criteria.andHostEqualTo(instanceIp);

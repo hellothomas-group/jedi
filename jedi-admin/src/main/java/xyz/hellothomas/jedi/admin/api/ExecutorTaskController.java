@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
 import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
+import static xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum.SUCCESS;
 
 /**
  * @author Thomas
@@ -47,12 +49,18 @@ public class ExecutorTaskController {
         log.info("namespace:{}, appId:{}, executorName:{}, taskId:{}, dataSourceName:{}", namespaceName, appId,
                 executorName, taskId, dataSourceName);
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(url +
+        ResponseEntity<ApiResponse<String>> responseEntity = restTemplate.exchange(url +
                         "?taskId={taskId}&&dataSourceName={dataSourceName}&&operator={operator}",
-                HttpMethod.POST, null, String.class, taskId, dataSourceName, operator);
+                HttpMethod.POST, null, new ParameterizedTypeReference<ApiResponse<String>>() {
+                }, taskId, dataSourceName, operator);
 
-        // 同步consumer task status
+        ApiResponse<String> apiResponse = responseEntity.getBody();
+        if (SUCCESS.getCode().equals(apiResponse.getCode())) {
+            // todo 同步consumer task status
+        } else {
+            log.warn("任务重试失败, code: {}, message: {}", apiResponse.getCode(), apiResponse.getMessage());
+        }
         
-        return ApiResponse.success("重试提交成功");
+        return apiResponse;
     }
 }

@@ -1,4 +1,4 @@
---0.0.10
+--0.0.9->0.0.10
 ALTER TABLE jedi_config.app ADD column owner_name varchar(64) NOT NULL DEFAULT 'default' COMMENT 'ownerName' after app_description;
 ALTER TABLE jedi_consumer.app ADD column owner_name varchar(64) NOT NULL DEFAULT 'default' COMMENT 'ownerName' after app_description;
 
@@ -148,3 +148,18 @@ ALTER TABLE jedi_consumer.alarm_config ADD version int unsigned DEFAULT 1 NOT NU
 ALTER TABLE jedi_consumer.app ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
 ALTER TABLE jedi_consumer.user ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
 ALTER TABLE jedi_consumer.executor_task ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+
+ALTER TABLE jedi_consumer.executor_task_message CHANGE is_success status tinyint(3) NOT NULL DEFAULT 0 COMMENT '0:registered, 1:doing, 2:success, 3:fail, 4:rejected';
+ALTER TABLE jedi_consumer.executor_task_message CHANGE failure_reason exit_message varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'exitMessage';
+
+ALTER TABLE jedi_consumer.executor_task_message ADD exit_code varchar(7) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'exitCode' AFTER status;
+ALTER TABLE jedi_consumer.executor_task_message ADD end_time timestamp NOT NULL COMMENT '结束时间' AFTER task_extra_data;
+update jedi_consumer.executor_task_message set end_time = record_time;
+ALTER TABLE jedi_consumer.executor_task_message ADD is_recoverable bit(1) DEFAULT b'0' NOT NULL comment '1: recoverable, 0: no recoverable' AFTER end_time;
+ALTER TABLE jedi_consumer.executor_task_message ADD trace_id varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'traceId' AFTER host;
+ALTER TABLE jedi_consumer.executor_task_message ADD previous_id varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bincomment 'previousId' AFTER trace_id;
+ALTER TABLE jedi_consumer.executor_task_message ADD data_source_name varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'dataSourceName' AFTER previous_id;
+ALTER TABLE jedi_consumer.executor_task_message ADD is_retried bit(1) DEFAULT b'0' NOT NULL comment '1: retried, 0: no retried' AFTER record_time;
+ALTER TABLE jedi_consumer.executor_task_message ADD retried_id varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'retriedId' AFTER is_retried;
+ALTER TABLE jedi_consumer.executor_task_message ADD update_user varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment '最后修改人' AFTER is_retried;
+ALTER TABLE jedi_consumer.executor_task_message ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
