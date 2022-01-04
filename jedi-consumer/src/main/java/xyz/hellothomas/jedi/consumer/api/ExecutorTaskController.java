@@ -2,10 +2,7 @@ package xyz.hellothomas.jedi.consumer.api;
 
 import io.swagger.annotations.Api;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.consumer.api.dto.*;
 import xyz.hellothomas.jedi.consumer.application.ExecutorTaskMsgService;
@@ -126,6 +123,14 @@ public class ExecutorTaskController {
 
         return ApiResponse.success(LocalBeanUtils.transform(ExecutorTaskSummaryResponse.class,
                 executorTaskSummary));
+    }
+
+    @PostMapping("/tasks/{taskId}/retried")
+    public ApiResponse<String> updateRetriedTask(@PathVariable("taskId") String taskId,
+                                                 @RequestParam("newTaskId") String newTaskId,
+                                                 @RequestParam("operator") String operator) {
+        executorTaskMsgService.updateRetriedTask(taskId, newTaskId, operator);
+        return ApiResponse.success("更新成功");
     }
 
     private PageResult<ExecutorTaskStatisticsResponse> transformStatistics2PageResult(

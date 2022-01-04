@@ -9,8 +9,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import xyz.hellothomas.jedi.admin.domain.model.RetriedTaskChange;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.PreAuthorize;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
+import xyz.hellothomas.jedi.admin.infrastructure.listener.TaskEvent;
+import xyz.hellothomas.jedi.biz.common.enums.TaskOperationEnum;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
 import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
@@ -50,17 +53,22 @@ public class ExecutorTaskController {
                 executorName, taskId, dataSourceName);
 
         ResponseEntity<ApiResponse<String>> responseEntity = restTemplate.exchange(url +
-                        "?taskId={taskId}&&dataSourceName={dataSourceName}&&operator={operator}",
+                        "?taskId={taskId}&dataSourceName={dataSourceName}&operator={operator}",
                 HttpMethod.POST, null, new ParameterizedTypeReference<ApiResponse<String>>() {
                 }, taskId, dataSourceName, operator);
 
         ApiResponse<String> apiResponse = responseEntity.getBody();
         if (SUCCESS.getCode().equals(apiResponse.getCode())) {
-            // todo 同步consumer task status
+            RetriedTaskChange retriedTaskChange = new RetriedTaskChange();
+            retriedTaskChange.setTaskId(taskId);
+            retriedTaskChange.setNewTaskId(apiResponse.getData());
+            retriedTaskChange.setOperator(operator);
+            applicationEventPublisher.publishEvent(new TaskEvent(retriedTaskChange, TaskOperationEnum.RETRY) {
+            });
         } else {
             log.warn("任务重试失败, code: {}, message: {}", apiResponse.getCode(), apiResponse.getMessage());
         }
-        
+
         return apiResponse;
     }
 }

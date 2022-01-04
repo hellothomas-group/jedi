@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,4 +34,6 @@ public class JediConfig {
 
     @NestedConfigurationProperty
     private List<JediThreadPoolProperty> executors = new ArrayList<>();
+
+    private LocalDateTime appInitTime = LocalDateTime.now();
 }

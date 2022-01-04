@@ -48,51 +48,6 @@
       "type": "java.lang.Integer",
       "sourceType": "xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolProperty",
       "defaultValue": 5000
-    },
-    {
-      "name": "jedi.app-id",
-      "type": "java.lang.String",
-      "description": "应用名",
-      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty"
-    },
-    {
-      "name": "jedi.enable",
-      "type": "java.lang.Boolean",
-      "description": "开启 Jedi",
-      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty",
-      "defaultValue": false
-    },
-    {
-      "name": "jedi.executors",
-      "type": "java.lang.String",
-      "description": "线程池名称集合",
-      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty"
-    },
-    {
-      "name": "jedi.mode",
-      "type": "java.lang.Integer",
-      "description": "客户端模式",
-      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty",
-      "defaultValue": 0
-    },
-    {
-      "name": "jedi.namespace",
-      "type": "java.lang.String",
-      "description": "环境",
-      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty"
-    },
-    {
-      "name": "jedi.order",
-      "type": "java.lang.Integer",
-      "description": "JediAsyncAspect order",
-      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty",
-      "defaultValue": 0
-    },
-    {
-      "name": "jedi.url",
-      "type": "java.lang.String",
-      "description": "config-service url",
-      "sourceType": "xyz.hellothomas.jedi.client.model.JediProperty"
     }
   ],
   "hints": [

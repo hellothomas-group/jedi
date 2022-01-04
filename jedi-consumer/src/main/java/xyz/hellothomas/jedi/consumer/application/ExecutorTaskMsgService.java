@@ -154,4 +154,15 @@ public class ExecutorTaskMsgService implements NotificationService<ExecutorTaskN
 
         return executorTaskStatistics;
     }
+
+    public int updateRetriedTask(String taskId, String newTaskId, String operator) {
+        ExecutorTaskMessage executorTaskMessage = new ExecutorTaskMessage();
+        executorTaskMessage.setId(taskId);
+        executorTaskMessage.setIsRetried(true);
+        executorTaskMessage.setRetryId(newTaskId);
+        executorTaskMessage.setUpdateTime(LocalDateTime.now());
+        executorTaskMessage.setUpdateUser(operator);
+        executorTaskMessage.setVersion(2);
+        return executorTaskMessageMapper.updateByPrimaryKeySelective(executorTaskMessage);
+    }
 }

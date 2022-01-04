@@ -84,6 +84,11 @@ public class ExecutorTaskMessage {
     private Boolean isRecoverable;
 
     /**
+     * 1: recovered, 0: no recovered
+     */
+    private Boolean isRecovered;
+
+    /**
      * 主机
      */
     private String host;
@@ -92,6 +97,11 @@ public class ExecutorTaskMessage {
      * traceId
      */
     private String traceId;
+
+    /**
+     * 1: byRetryer, 0: no byRetryer
+     */
+    private Boolean isByRetryer;
 
     /**
      * previousId
@@ -104,6 +114,11 @@ public class ExecutorTaskMessage {
     private String dataSourceName;
 
     /**
+     * 1: byPersistent, 0: no byPersistent
+     */
+    private Boolean isPersistent;
+
+    /**
      * 记录时间
      */
     private LocalDateTime recordTime;
@@ -114,9 +129,9 @@ public class ExecutorTaskMessage {
     private Boolean isRetried;
 
     /**
-     * retriedId
+     * retryId
      */
-    private String retriedId;
+    private String retryId;
 
     /**
      * 最后修改人

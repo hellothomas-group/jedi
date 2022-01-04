@@ -171,14 +171,14 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
                 try {
                     ((RunnableFuture) r).get();
                 } catch (Exception e) {
-                    LOGGER.error(String.format("taskId:%s, taskName：%s, 执行异常!", taskProperty.getId(),
-                            taskProperty.getTaskName()), e);
                     throwable = e;
                 }
             }
             if (throwable == null) {
                 taskProperty.setStatus(TaskStatusEnum.SUCCESS.getValue());
             } else {
+                LOGGER.error(String.format("taskId:%s, taskName：%s, 执行异常!", taskProperty.getId(),
+                        taskProperty.getTaskName()), throwable);
                 taskProperty.setStatus(TaskStatusEnum.FAIL.getValue());
                 String exceptionString = throwable.getMessage();
                 if (exceptionString != null) {

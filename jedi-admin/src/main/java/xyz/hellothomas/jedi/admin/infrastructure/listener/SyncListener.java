@@ -39,15 +39,15 @@ public class SyncListener {
 
             ApiResponse<String> apiResponse = responseEntity.getBody();
             if (!SUCCESS.getCode().equals(apiResponse.getCode())) {
-                log.error("Sync failed. syncType = {}, syncOperation = {}, object = {}, errorMessage:{})",
+                log.error("Sync failed. syncType = {}, syncOperation = {}, object = {}, errorMessage:{}",
                         event.getSyncTypeEnum(), event.getSyncOperationEnum(), event.getSource(),
                         String.format("%s-%s", apiResponse.getCode(), apiResponse.getMessage()));
             } else {
-                log.info("Sync success. syncType = {}, syncOperation = {}, object = {})", event.getSyncTypeEnum(),
+                log.info("Sync success. syncType = {}, syncOperation = {}, object = {}", event.getSyncTypeEnum(),
                         event.getSyncOperationEnum(), event.getSource());
             }
         } catch (Exception e) {
-            log.error("Sync failed. syncType = {}, syncOperation = {}, object = {})", event.getSyncTypeEnum(),
+            log.error("Sync failed. syncType = {}, syncOperation = {}, object = {}", event.getSyncTypeEnum(),
                     event.getSyncOperationEnum(), event.getSource(), e);
         }
     }

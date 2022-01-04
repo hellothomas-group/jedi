@@ -120,12 +120,19 @@
               </template>
               <template slot-scope="scope">
                 <el-tag type="warning" effect="dark" v-if="scope.row.status !== 2 && scope.row.isRetried">重试Id:
-                  {{scope.row.retriedId}}</el-tag>
+                  {{scope.row.retryId}}</el-tag>
                 <el-button
                   type="danger"
                   size="mini"
-                  v-if="scope.row.status !== 2 && !scope.row.isRetried"
+                  v-if="!scope.row.isByRetryer && scope.row.isPersistent && scope.row.status !== 2 &&
+                  !scope.row.isRetried"
                   @click="toRetryTask(scope.$index, scope.row)" style="margin-right: 50%">重试</el-button>
+                <el-button
+                  type="danger"
+                  size="mini"
+                  v-if="scope.row.isByRetryer && scope.row.isPersistent && scope.row.status !== 2 &&
+                  !scope.row.isRetried"
+                  @click="toRetryTask(scope.$index, scope.row)" style="margin-right: 50%">再次重试</el-button>
               </template>
             </el-table-column>
           </el-table>

@@ -1035,6 +1035,66 @@ public class ExecutorTaskMessageExample {
             return (Criteria) this;
         }
 
+        public Criteria andIsRecoveredIsNull() {
+            addCriterion("is_recovered is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRecoveredIsNotNull() {
+            addCriterion("is_recovered is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRecoveredEqualTo(Boolean value) {
+            addCriterion("is_recovered =", value, "isRecovered");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRecoveredNotEqualTo(Boolean value) {
+            addCriterion("is_recovered <>", value, "isRecovered");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRecoveredGreaterThan(Boolean value) {
+            addCriterion("is_recovered >", value, "isRecovered");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRecoveredGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("is_recovered >=", value, "isRecovered");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRecoveredLessThan(Boolean value) {
+            addCriterion("is_recovered <", value, "isRecovered");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRecoveredLessThanOrEqualTo(Boolean value) {
+            addCriterion("is_recovered <=", value, "isRecovered");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRecoveredIn(List<Boolean> values) {
+            addCriterion("is_recovered in", values, "isRecovered");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRecoveredNotIn(List<Boolean> values) {
+            addCriterion("is_recovered not in", values, "isRecovered");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRecoveredBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_recovered between", value1, value2, "isRecovered");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsRecoveredNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_recovered not between", value1, value2, "isRecovered");
+            return (Criteria) this;
+        }
+
         public Criteria andHostIsNull() {
             addCriterion("host is null");
             return (Criteria) this;
@@ -1172,6 +1232,66 @@ public class ExecutorTaskMessageExample {
 
         public Criteria andTraceIdNotBetween(String value1, String value2) {
             addCriterion("trace_id not between", value1, value2, "traceId");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsByRetryerIsNull() {
+            addCriterion("is_by_retryer is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsByRetryerIsNotNull() {
+            addCriterion("is_by_retryer is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsByRetryerEqualTo(Boolean value) {
+            addCriterion("is_by_retryer =", value, "isByRetryer");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsByRetryerNotEqualTo(Boolean value) {
+            addCriterion("is_by_retryer <>", value, "isByRetryer");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsByRetryerGreaterThan(Boolean value) {
+            addCriterion("is_by_retryer >", value, "isByRetryer");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsByRetryerGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("is_by_retryer >=", value, "isByRetryer");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsByRetryerLessThan(Boolean value) {
+            addCriterion("is_by_retryer <", value, "isByRetryer");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsByRetryerLessThanOrEqualTo(Boolean value) {
+            addCriterion("is_by_retryer <=", value, "isByRetryer");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsByRetryerIn(List<Boolean> values) {
+            addCriterion("is_by_retryer in", values, "isByRetryer");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsByRetryerNotIn(List<Boolean> values) {
+            addCriterion("is_by_retryer not in", values, "isByRetryer");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsByRetryerBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_by_retryer between", value1, value2, "isByRetryer");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsByRetryerNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_by_retryer not between", value1, value2, "isByRetryer");
             return (Criteria) this;
         }
 
@@ -1315,6 +1435,66 @@ public class ExecutorTaskMessageExample {
             return (Criteria) this;
         }
 
+        public Criteria andIsPersistentIsNull() {
+            addCriterion("is_persistent is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPersistentIsNotNull() {
+            addCriterion("is_persistent is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPersistentEqualTo(Boolean value) {
+            addCriterion("is_persistent =", value, "isPersistent");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPersistentNotEqualTo(Boolean value) {
+            addCriterion("is_persistent <>", value, "isPersistent");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPersistentGreaterThan(Boolean value) {
+            addCriterion("is_persistent >", value, "isPersistent");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPersistentGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("is_persistent >=", value, "isPersistent");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPersistentLessThan(Boolean value) {
+            addCriterion("is_persistent <", value, "isPersistent");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPersistentLessThanOrEqualTo(Boolean value) {
+            addCriterion("is_persistent <=", value, "isPersistent");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPersistentIn(List<Boolean> values) {
+            addCriterion("is_persistent in", values, "isPersistent");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPersistentNotIn(List<Boolean> values) {
+            addCriterion("is_persistent not in", values, "isPersistent");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPersistentBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_persistent between", value1, value2, "isPersistent");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsPersistentNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_persistent not between", value1, value2, "isPersistent");
+            return (Criteria) this;
+        }
+
         public Criteria andRecordTimeIsNull() {
             addCriterion("record_time is null");
             return (Criteria) this;
@@ -1435,73 +1615,73 @@ public class ExecutorTaskMessageExample {
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdIsNull() {
-            addCriterion("retried_id is null");
+        public Criteria andRetryIdIsNull() {
+            addCriterion("retry_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdIsNotNull() {
-            addCriterion("retried_id is not null");
+        public Criteria andRetryIdIsNotNull() {
+            addCriterion("retry_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdEqualTo(String value) {
-            addCriterion("retried_id =", value, "retriedId");
+        public Criteria andRetryIdEqualTo(String value) {
+            addCriterion("retry_id =", value, "retryId");
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdNotEqualTo(String value) {
-            addCriterion("retried_id <>", value, "retriedId");
+        public Criteria andRetryIdNotEqualTo(String value) {
+            addCriterion("retry_id <>", value, "retryId");
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdGreaterThan(String value) {
-            addCriterion("retried_id >", value, "retriedId");
+        public Criteria andRetryIdGreaterThan(String value) {
+            addCriterion("retry_id >", value, "retryId");
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdGreaterThanOrEqualTo(String value) {
-            addCriterion("retried_id >=", value, "retriedId");
+        public Criteria andRetryIdGreaterThanOrEqualTo(String value) {
+            addCriterion("retry_id >=", value, "retryId");
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdLessThan(String value) {
-            addCriterion("retried_id <", value, "retriedId");
+        public Criteria andRetryIdLessThan(String value) {
+            addCriterion("retry_id <", value, "retryId");
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdLessThanOrEqualTo(String value) {
-            addCriterion("retried_id <=", value, "retriedId");
+        public Criteria andRetryIdLessThanOrEqualTo(String value) {
+            addCriterion("retry_id <=", value, "retryId");
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdLike(String value) {
-            addCriterion("retried_id like", value, "retriedId");
+        public Criteria andRetryIdLike(String value) {
+            addCriterion("retry_id like", value, "retryId");
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdNotLike(String value) {
-            addCriterion("retried_id not like", value, "retriedId");
+        public Criteria andRetryIdNotLike(String value) {
+            addCriterion("retry_id not like", value, "retryId");
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdIn(List<String> values) {
-            addCriterion("retried_id in", values, "retriedId");
+        public Criteria andRetryIdIn(List<String> values) {
+            addCriterion("retry_id in", values, "retryId");
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdNotIn(List<String> values) {
-            addCriterion("retried_id not in", values, "retriedId");
+        public Criteria andRetryIdNotIn(List<String> values) {
+            addCriterion("retry_id not in", values, "retryId");
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdBetween(String value1, String value2) {
-            addCriterion("retried_id between", value1, value2, "retriedId");
+        public Criteria andRetryIdBetween(String value1, String value2) {
+            addCriterion("retry_id between", value1, value2, "retryId");
             return (Criteria) this;
         }
 
-        public Criteria andRetriedIdNotBetween(String value1, String value2) {
-            addCriterion("retried_id not between", value1, value2, "retriedId");
+        public Criteria andRetryIdNotBetween(String value1, String value2) {
+            addCriterion("retry_id not between", value1, value2, "retryId");
             return (Criteria) this;
         }
 

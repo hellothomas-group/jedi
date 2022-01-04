@@ -65,9 +65,19 @@ public class ExecutorTaskNotification extends AbstractNotification {
     private boolean isRecoverable;
 
     /**
+     * 1: recovered, 0: no recovered
+     */
+    private boolean isRecovered;
+
+    /**
      * traceId
      */
     private String traceId;
+
+    /**
+     * 1: byRetryer, 0: no byRetryer
+     */
+    private boolean isByRetryer;
 
     /**
      * previousId
@@ -78,6 +88,11 @@ public class ExecutorTaskNotification extends AbstractNotification {
      * dataSourceName
      */
     private String dataSourceName;
+
+    /**
+     * 1: byPersistent, 0: no byPersistent
+     */
+    private boolean isPersistent;
 
     /**
      * 最后修改人
@@ -124,8 +139,16 @@ public class ExecutorTaskNotification extends AbstractNotification {
         return this.isRecoverable;
     }
 
+    public boolean getIsRecovered() {
+        return this.isRecovered;
+    }
+
     public String getTraceId() {
         return this.traceId;
+    }
+
+    public boolean getIsByRetryer() {
+        return this.isByRetryer;
     }
 
     public String getPreviousId() {
@@ -134,6 +157,10 @@ public class ExecutorTaskNotification extends AbstractNotification {
 
     public String getDataSourceName() {
         return this.dataSourceName;
+    }
+
+    public boolean getIsPersistent() {
+        return this.isPersistent;
     }
 
     public String getUpdateUser() {
@@ -180,8 +207,16 @@ public class ExecutorTaskNotification extends AbstractNotification {
         this.isRecoverable = isRecoverable;
     }
 
+    public void setIsRecovered(boolean isRecovered) {
+        this.isRecovered = isRecovered;
+    }
+
     public void setTraceId(String traceId) {
         this.traceId = traceId;
+    }
+
+    public void setIsByRetryer(boolean isByRetryer) {
+        this.isByRetryer = isByRetryer;
     }
 
     public void setPreviousId(String previousId) {
@@ -192,6 +227,10 @@ public class ExecutorTaskNotification extends AbstractNotification {
         this.dataSourceName = dataSourceName;
     }
 
+    public void setIsPersistent(boolean isPersistent) {
+        this.isPersistent = isPersistent;
+    }
+
     public void setUpdateUser(String updateUser) {
         this.updateUser = updateUser;
     }
@@ -199,6 +238,6 @@ public class ExecutorTaskNotification extends AbstractNotification {
     @Override
     public String toString() {
         return "ExecutorTaskNotification(taskName=" + this.getTaskName() + ", poolName=" + this.getPoolName() + ", " +
-                "waitTime=" + this.getWaitTime() + ", executionTime=" + this.getExecutionTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", taskExtraData=" + this.getTaskExtraData() + ", endTime=" + this.getEndTime() + ", isRecoverable=" + this.getIsRecoverable() + ", traceId=" + this.getTraceId() + ", previousId=" + this.getPreviousId() + ", dataSourceName=" + this.getDataSourceName() + ", updateUser=" + this.getUpdateUser() + ")";
+                "waitTime=" + this.getWaitTime() + ", executionTime=" + this.getExecutionTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", taskExtraData=" + this.getTaskExtraData() + ", endTime=" + this.getEndTime() + ", isRecoverable=" + this.getIsRecoverable() + ", isRecovered=" + this.getIsRecovered() + ", traceId=" + this.getTraceId() + ", isByRetryer=" + this.getIsByRetryer() + ", previousId=" + this.getPreviousId() + ", dataSourceName=" + this.getDataSourceName() + ", isPersistent=" + this.getIsPersistent() + ", updateUser=" + this.getUpdateUser() + ")";
     }
 }

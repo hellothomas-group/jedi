@@ -89,7 +89,6 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         String taskExtraData = extractTaskExtraData(joinPoint, jediAsync);
 
         TaskProperty taskProperty;
-        boolean isRetry = false;
         // support retry
         if (AsyncContextHolder.getAsyncAttributes() == null) {
             // 任务注册
@@ -98,21 +97,28 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
             asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
             AsyncContextHolder.setAsyncAttributes(asyncAttributes);
         } else {
-            isRetry = true;
             taskProperty =
                     (TaskProperty) AsyncContextHolder.getAsyncAttributes().getAttribute(TaskProperty.class.getName());
         }
 
         try {
+            // 自恢复的直接提交
+            if (taskProperty.isRecovered()) {
+                return doSubmit(asyncTraceFactory.getCallable(new JediPersistentCallable<>(task, persistenceService)),
+                        jediThreadPoolExecutor, methodSignature.getReturnType());
+            }
+
             if (jediAsync.persistent()) {
-                // 补充TaskProperty
-                fillTaskProperty(joinPoint, methodSignature, taskProperty, jediAsync);
+                if (!taskProperty.isByRetryer()) {
+                    // 补充TaskProperty
+                    fillTaskProperty(joinPoint, methodSignature, taskProperty, jediAsync);
+                }
 
                 // 任务注册持久化
                 PersistenceService persistenceService = this.applicationContext.getBean(PersistenceService.class);
                 persistenceService.insertTaskExecution(taskProperty);
 
-                if (isRetry) {
+                if (taskProperty.isByRetryer()) {
                     // 删除重试前的任务
                     TaskProperty previousTaskProperty = new TaskProperty();
                     previousTaskProperty.setId(taskProperty.getPreviousId());
@@ -148,7 +154,7 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
 
             throw e;
         } finally {
-            if (!isRetry) {
+            if (!taskProperty.isByRetryer() && !taskProperty.isRecovered()) {
                 AsyncContextHolder.resetAsyncAttributes();
             }
         }
@@ -178,6 +184,7 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         taskProperty.setMethodArguments(JsonUtil.serialize(methodArguments));
         taskProperty.setRecoverable(jediAsync.recoverable());
         taskProperty.setHost(host);
+        taskProperty.setPersistent(true);
         log.trace("TaskProperty:{}", taskProperty);
     }
 

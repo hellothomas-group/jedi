@@ -2,6 +2,7 @@ package xyz.hellothomas.jedi.client.internals;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondit
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import xyz.hellothomas.jedi.client.exception.JediClientException;
+import xyz.hellothomas.jedi.client.model.JediProperty;
 import xyz.hellothomas.jedi.client.model.JediTaskExecution;
 import xyz.hellothomas.jedi.client.persistence.PersistenceService;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
@@ -26,6 +28,7 @@ import xyz.hellothomas.jedi.core.internals.executor.AsyncAttributes;
 import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
 import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
 import xyz.hellothomas.jedi.core.utils.JsonUtil;
+import xyz.hellothomas.jedi.core.utils.NetUtil;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
@@ -40,17 +43,20 @@ import java.util.UUID;
 @Slf4j
 public class DefaultRetryTaskService implements RetryTaskService, ApplicationContextAware, InitializingBean {
     private final PersistenceService persistenceService;
+    private final JediProperty jediProperty;
     private ApplicationContext applicationContext;
+    private String host = NetUtil.getLocalHost();
 
-    public DefaultRetryTaskService(PersistenceService persistenceService) {
+    public DefaultRetryTaskService(PersistenceService persistenceService, JediProperty jediProperty) {
         this.persistenceService = persistenceService;
+        this.jediProperty = jediProperty;
     }
 
     @ResponseBody
     public ApiResponse<String> doRetry(@RequestParam("taskId") String taskId,
                                        @RequestParam(value = "dataSourceName", required = false) String dataSourceName,
                                        @RequestParam("operator") String operator) {
-        TaskProperty taskProperty = null;
+        TaskProperty taskProperty;
         try {
             taskProperty = retry(taskId, dataSourceName, operator);
         } catch (Exception e) {
@@ -120,20 +126,29 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
         taskProperty.setStatus(TaskStatusEnum.REGISTERED.getValue());
         taskProperty.setExitCode(null);
         taskProperty.setExitMessage(null);
+        taskProperty.setByRetryer(true);
         taskProperty.setPreviousId(jediTaskExecution.getId());
-        taskProperty.setPersistent(true);
-        taskProperty.setDataSourceName(jediTaskExecution.getDataSourceName());
         taskProperty.setLastUpdatedUser(operator);
+        taskProperty.setHost(host);
+        taskProperty.setPersistent(true);
         return taskProperty;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        String path = this.jediProperty.getPersistence().getRetryer().getPath();
+        // todo 健壮性
+        if (StringUtils.isBlank(path)) {
+            path = "jedi/tasks/retry";
+        } else if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+
         RequestMappingHandlerMapping requestMappingHandlerMapping =
                 this.applicationContext.getBean(RequestMappingHandlerMapping.class);
         Class<?> entry = this.getClass();
         Method method = ReflectionUtils.findMethod(entry, "doRetry", String.class, String.class, String.class);
-        PatternsRequestCondition patterns = new PatternsRequestCondition("jedi/tasks/retry");
+        PatternsRequestCondition patterns = new PatternsRequestCondition(path);
         RequestMethodsRequestCondition methods = new RequestMethodsRequestCondition(RequestMethod.POST);
         ParamsRequestCondition params = new ParamsRequestCondition("taskId", "dataSourceName", "operator");
         RequestMappingInfo mapping = new RequestMappingInfo(patterns, methods, params, null, null, null, null);

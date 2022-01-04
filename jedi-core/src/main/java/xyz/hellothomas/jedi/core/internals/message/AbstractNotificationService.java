@@ -95,9 +95,12 @@ public abstract class AbstractNotificationService {
         executorTaskNotification.setExitMessage(taskProperty.getExitMessage());
         executorTaskNotification.setEndTime(taskProperty.getEndTime());
         executorTaskNotification.setIsRecoverable(taskProperty.isRecoverable());
+        executorTaskNotification.setIsRecovered(taskProperty.isRecovered());
         executorTaskNotification.setTraceId(taskProperty.getTraceId());
+        executorTaskNotification.setIsByRetryer(taskProperty.isByRetryer());
         executorTaskNotification.setPreviousId(taskProperty.getPreviousId());
         executorTaskNotification.setDataSourceName(taskProperty.getDataSourceName());
+        executorTaskNotification.setIsPersistent(taskProperty.isPersistent());
         executorTaskNotification.setUpdateUser(taskProperty.getLastUpdatedUser());
         executorTaskNotification.setMessageType(MessageType.EXECUTOR_TASK.getTypeValue());
         fillMessageCommonField(executorTaskNotification);

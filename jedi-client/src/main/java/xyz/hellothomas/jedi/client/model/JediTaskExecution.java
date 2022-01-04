@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -37,6 +36,11 @@ public class JediTaskExecution {
     private String taskName;
 
     /**
+     * taskExtraData
+     */
+    private String taskExtraData;
+
+    /**
      * createTime
      */
     private LocalDateTime createTime;
@@ -54,7 +58,7 @@ public class JediTaskExecution {
     /**
      * 0: created, 1: success, 2: fail
      */
-    private String status;
+    private int status;
 
     /**
      * exitCode
@@ -97,6 +101,11 @@ public class JediTaskExecution {
     private boolean recoverable;
 
     /**
+     * recovered
+     */
+    private boolean recovered;
+
+    /**
      * host
      */
     private String host;
@@ -105,6 +114,11 @@ public class JediTaskExecution {
      * traceId
      */
     private String traceId;
+
+    /**
+     * byRetryer
+     */
+    private boolean byRetryer;
 
     /**
      * previousId

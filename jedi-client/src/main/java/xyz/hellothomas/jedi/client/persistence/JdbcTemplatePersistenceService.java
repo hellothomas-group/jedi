@@ -13,6 +13,7 @@ import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,22 +34,23 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         JdbcTemplate jdbcTemplate = getJdbcTemplate(taskProperty.getDataSourceName());
         int row = jdbcTemplate.update("INSERT INTO JEDI_TASK_EXECUTION (" +
                         "ID,NAMESPACE_NAME,APP_ID,EXECUTOR_NAME," +
-                        "TASK_NAME,CREATE_TIME,START_TIME,END_TIME," +
-                        "STATUS,EXIT_CODE,EXIT_MESSAGE,BEAN_NAME," +
-                        "BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES,METHOD_ARGUMENTS," +
-                        "RECOVERABLE,HOST,TRACE_ID,PREVIOUS_ID," +
-                        "DATA_SOURCE_NAME,LAST_UPDATED_USER," +
-                        "LAST_UPDATED_TIME) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "TASK_NAME,TASK_EXTRA_DATA,CREATE_TIME,START_TIME," +
+                        "END_TIME,STATUS,EXIT_CODE,EXIT_MESSAGE," +
+                        "BEAN_NAME,BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES," +
+                        "METHOD_ARGUMENTS,RECOVERABLE,RECOVERED,HOST," +
+                        "TRACE_ID,BY_RETRYER,PREVIOUS_ID,DATA_SOURCE_NAME," +
+                        "LAST_UPDATED_USER,LAST_UPDATED_TIME) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 taskProperty.getId(), taskProperty.getNamespaceName(), taskProperty.getAppId(),
-                taskProperty.getExecutorName(), taskProperty.getTaskName(),
+                taskProperty.getExecutorName(), taskProperty.getTaskName(), taskProperty.getTaskExtraData(),
                 DateTimeUtil.localDateTimeToPattern2(taskProperty.getCreateTime()),
                 DateTimeUtil.localDateTimeToPattern2(taskProperty.getStartTime()),
                 DateTimeUtil.localDateTimeToPattern2(taskProperty.getEndTime()),
                 taskProperty.getStatus(), taskProperty.getExitCode(), taskProperty.getExitMessage(),
                 taskProperty.getBeanName(), taskProperty.getBeanTypeName(), taskProperty.getMethodName(),
                 taskProperty.getMethodParamTypes(), taskProperty.getMethodArguments(), taskProperty.isRecoverable(),
-                taskProperty.getHost(), taskProperty.getTraceId(), taskProperty.getPreviousId(),
+                taskProperty.isRecovered(), taskProperty.getHost(), taskProperty.getTraceId(),
+                taskProperty.isByRetryer(), taskProperty.getPreviousId(),
                 taskProperty.getDataSourceName(), taskProperty.getLastUpdatedUser(),
                 DateTimeUtil.getDateTimePattern2());
         log.trace("insert {} row: {}", row, taskProperty);
@@ -81,12 +83,12 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
     public JediTaskExecution queryTaskExecutionById(String taskId, String dataSourceName) {
         JdbcTemplate jdbcTemplate = getJdbcTemplate(dataSourceName);
         List<JediTaskExecution> results = jdbcTemplate.query("SELECT ID,NAMESPACE_NAME,APP_ID,EXECUTOR_NAME," +
-                        "TASK_NAME,CREATE_TIME,START_TIME,END_TIME," +
-                        "STATUS,EXIT_CODE,EXIT_MESSAGE,BEAN_NAME," +
-                        "BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES,METHOD_ARGUMENTS," +
-                        "RECOVERABLE,HOST,TRACE_ID,PREVIOUS_ID," +
-                        "DATA_SOURCE_NAME,LAST_UPDATED_USER," +
-                        "LAST_UPDATED_TIME" +
+                        "TASK_NAME,TASK_EXTRA_DATA,CREATE_TIME,START_TIME," +
+                        "END_TIME,STATUS,EXIT_CODE,EXIT_MESSAGE," +
+                        "BEAN_NAME,BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES," +
+                        "METHOD_ARGUMENTS,RECOVERABLE,RECOVERED,HOST," +
+                        "TRACE_ID,BY_RETRYER,PREVIOUS_ID,DATA_SOURCE_NAME," +
+                        "LAST_UPDATED_USER,LAST_UPDATED_TIME" +
                         " FROM JEDI_TASK_EXECUTION WHERE ID = ?",
                 (rs, rowNum) -> buildJediTaskExecution(rs), taskId);
         if (results != null && !results.isEmpty()) {
@@ -94,6 +96,35 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         } else {
             return null;
         }
+    }
+
+    @Override
+    public long queryCountByStatusAndRecoverable(String host, int status, boolean recoverable,
+                                                 LocalDateTime appInitTime, String dataSourceName) {
+        JdbcTemplate jdbcTemplate = getJdbcTemplate(dataSourceName);
+        return jdbcTemplate.queryForObject("SELECT COUNT(1) FROM JEDI_TASK_EXECUTION " +
+                        "WHERE HOST = ? AND STATUS = ? AND RECOVERABLE = ? AND CREATE_TIME <= ?",
+                Long.class, host, status, recoverable, DateTimeUtil.localDateTimeToPattern2(appInitTime));
+    }
+
+    @Override
+    public List<JediTaskExecution> queryPageByStatusAndRecoverable(String host, int status, boolean recoverable,
+                                                                   LocalDateTime appInitTime, int pageNum,
+                                                                   int pageSize, String dataSourceName) {
+        JdbcTemplate jdbcTemplate = getJdbcTemplate(dataSourceName);
+        int offset = (pageNum - 1) * pageSize;
+        return jdbcTemplate.query("SELECT ID,NAMESPACE_NAME,APP_ID,EXECUTOR_NAME," +
+                        "TASK_NAME,TASK_EXTRA_DATA,CREATE_TIME,START_TIME," +
+                        "END_TIME,STATUS,EXIT_CODE,EXIT_MESSAGE," +
+                        "BEAN_NAME,BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES," +
+                        "METHOD_ARGUMENTS,RECOVERABLE,RECOVERED,HOST," +
+                        "TRACE_ID,BY_RETRYER,PREVIOUS_ID,DATA_SOURCE_NAME," +
+                        "LAST_UPDATED_USER,LAST_UPDATED_TIME" +
+                        " FROM JEDI_TASK_EXECUTION " +
+                        "WHERE HOST = ? AND STATUS = ? AND RECOVERABLE = ? AND CREATE_TIME <= ? " +
+                        "ORDER BY CREATE_TIME DESC LIMIT ?, ?",
+                (rs, rowNum) -> buildJediTaskExecution(rs), host, status, recoverable,
+                DateTimeUtil.localDateTimeToPattern2(appInitTime), offset, pageSize);
     }
 
     @Override
@@ -147,6 +178,7 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         jediTaskExecution.setAppId(rs.getString("APP_ID"));
         jediTaskExecution.setExecutorName(rs.getString("EXECUTOR_NAME"));
         jediTaskExecution.setTaskName(rs.getString("TASK_NAME"));
+        jediTaskExecution.setTaskExtraData(rs.getString("TASK_EXTRA_DATA"));
         String createTime = rs.getString("CREATE_TIME");
         jediTaskExecution.setCreateTime(createTime == null ? null :
                 DateTimeUtil.pattern2ToLocalDateTime(createTime));
@@ -156,7 +188,7 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         String endTime = rs.getString("END_TIME");
         jediTaskExecution.setEndTime(endTime == null ? null :
                 DateTimeUtil.pattern2ToLocalDateTime(endTime));
-        jediTaskExecution.setStatus(rs.getString("STATUS"));
+        jediTaskExecution.setStatus(rs.getInt("STATUS"));
         jediTaskExecution.setExitCode(rs.getString("EXIT_CODE"));
         jediTaskExecution.setExitMessage(rs.getString("EXIT_MESSAGE"));
         jediTaskExecution.setBeanName(rs.getString("BEAN_NAME"));
@@ -165,9 +197,12 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         jediTaskExecution.setMethodParamTypes(rs.getString("METHOD_PARAM_TYPES"));
         jediTaskExecution.setMethodArguments(rs.getString("METHOD_ARGUMENTS"));
         jediTaskExecution.setRecoverable(rs.getBoolean("RECOVERABLE"));
+        jediTaskExecution.setRecovered(rs.getBoolean("RECOVERED"));
         jediTaskExecution.setHost(rs.getString("HOST"));
         jediTaskExecution.setTraceId(rs.getString("TRACE_ID"));
+        jediTaskExecution.setByRetryer(rs.getBoolean("BY_RETRYER"));
         jediTaskExecution.setPreviousId(rs.getString("PREVIOUS_ID"));
+        jediTaskExecution.setDataSourceName(rs.getString("DATA_SOURCE_NAME"));
         jediTaskExecution.setLastUpdatedUser(rs.getString("LAST_UPDATED_USER"));
         String lastUpdated = rs.getString("LAST_UPDATED_TIME");
         jediTaskExecution.setLastUpdatedTime(lastUpdated == null ? null :

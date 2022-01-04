@@ -3,6 +3,8 @@ package xyz.hellothomas.jedi.client.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import static xyz.hellothomas.jedi.client.constants.Constants.JEDI_ASYNC_DEFAULT_ORDER;
 
@@ -15,6 +17,7 @@ import static xyz.hellothomas.jedi.client.constants.Constants.JEDI_ASYNC_DEFAULT
 @Getter
 @Setter
 @ToString
+@ConfigurationProperties(prefix = "jedi")
 public class JediProperty {
     /**
      * 开启 Jedi
@@ -47,6 +50,9 @@ public class JediProperty {
 
     /**
      * 线程池名称集合
+     * <p>
+     * Use the dashed notation to specify each executor, that is all lower case with a "-"
+     * to separate words (e.g. {@code jedi-default-executor}).
      */
     private String executors;
 
@@ -54,4 +60,10 @@ public class JediProperty {
      * {@link xyz.hellothomas.jedi.client.aop.JediAsyncAspect} order
      */
     private int order = JEDI_ASYNC_DEFAULT_ORDER;
+
+    /**
+     * 持久化配置
+     */
+    @NestedConfigurationProperty
+    private JediPersistenceProperty persistence;
 }

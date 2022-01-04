@@ -21,12 +21,15 @@ public class TaskProperty {
     private String methodParamTypes;
     private String methodArguments;
     private boolean recoverable;
+    private boolean recovered;
     private String host;
     private String traceId;
+    private boolean byRetryer;
     private String previousId;
-    private boolean persistent;
     private String dataSourceName;
     private String lastUpdatedUser;
+
+    private boolean persistent;
 
     public String getId() {
         return this.id;
@@ -100,6 +103,10 @@ public class TaskProperty {
         return recoverable;
     }
 
+    public boolean isRecovered() {
+        return recovered;
+    }
+
     public String getHost() {
         return host;
     }
@@ -108,12 +115,12 @@ public class TaskProperty {
         return this.traceId;
     }
 
-    public String getPreviousId() {
-        return this.previousId;
+    public boolean isByRetryer() {
+        return byRetryer;
     }
 
-    public boolean isPersistent() {
-        return this.persistent;
+    public String getPreviousId() {
+        return this.previousId;
     }
 
     public String getDataSourceName() {
@@ -122,6 +129,10 @@ public class TaskProperty {
 
     public String getLastUpdatedUser() {
         return lastUpdatedUser;
+    }
+
+    public boolean isPersistent() {
+        return this.persistent;
     }
 
     public void setId(String id) {
@@ -196,6 +207,10 @@ public class TaskProperty {
         this.recoverable = recoverable;
     }
 
+    public void setRecovered(boolean recovered) {
+        this.recovered = recovered;
+    }
+
     public void setHost(String host) {
         this.host = host;
     }
@@ -204,12 +219,12 @@ public class TaskProperty {
         this.traceId = traceId;
     }
 
-    public void setPreviousId(String previousId) {
-        this.previousId = previousId;
+    public void setByRetryer(boolean byRetryer) {
+        this.byRetryer = byRetryer;
     }
 
-    public void setPersistent(boolean persistent) {
-        this.persistent = persistent;
+    public void setPreviousId(String previousId) {
+        this.previousId = previousId;
     }
 
     public void setDataSourceName(String dataSourceName) {
@@ -220,8 +235,12 @@ public class TaskProperty {
         this.lastUpdatedUser = lastUpdatedUser;
     }
 
+    public void setPersistent(boolean persistent) {
+        this.persistent = persistent;
+    }
+
     @Override
     public String toString() {
-        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodParamTypes=" + this.getMethodParamTypes() + ", methodArguments=" + this.getMethodArguments() + ", recoverable=" + this.isRecoverable() + ", host=" + this.getHost() + ", traceId=" + this.getTraceId() + ", previousId=" + this.getPreviousId() + ", persistent=" + this.isPersistent() + ", dataSourceName=" + this.getDataSourceName() + ", lastUpdatedUser=" + this.getLastUpdatedUser() + ")";
+        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodParamTypes=" + this.getMethodParamTypes() + ", methodArguments=" + this.getMethodArguments() + ", recoverable=" + this.isRecoverable() + ", isRecovered=" + this.isRecovered() + ", host=" + this.getHost() + ", traceId=" + this.getTraceId() + ", byReteyer=" + this.isByRetryer() + ", previousId=" + this.getPreviousId() + ", dataSourceName=" + this.getDataSourceName() + ", lastUpdatedUser=" + this.getLastUpdatedUser() + ", persistent=" + this.isPersistent() + ")";
     }
 }

@@ -2,7 +2,8 @@ package xyz.hellothomas.jedi.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.context.ConfigurableApplicationContext;
+import xyz.hellothomas.jedi.client.model.JediProperty;
 
 /**
  * @author Thomas
@@ -10,10 +11,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @description
  * @version 1.0
  */
-@EnableScheduling
+//@EnableScheduling
 @SpringBootApplication
 public class DemoApplication {
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(DemoApplication.class, args);
+        System.out.println(context.getBean(JediProperty.class));
     }
 }

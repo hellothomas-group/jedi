@@ -16,13 +16,16 @@
     <result column="task_extra_data" jdbcType="VARCHAR" property="taskExtraData" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="is_recoverable" jdbcType="BIT" property="isRecoverable" />
+    <result column="is_recovered" jdbcType="BIT" property="isRecovered" />
     <result column="host" jdbcType="VARCHAR" property="host" />
     <result column="trace_id" jdbcType="VARCHAR" property="traceId" />
+    <result column="is_by_retryer" jdbcType="BIT" property="isByRetryer" />
     <result column="previous_id" jdbcType="VARCHAR" property="previousId" />
     <result column="data_source_name" jdbcType="VARCHAR" property="dataSourceName" />
+    <result column="is_persistent" jdbcType="BIT" property="isPersistent" />
     <result column="record_time" jdbcType="TIMESTAMP" property="recordTime" />
     <result column="is_retried" jdbcType="BIT" property="isRetried" />
-    <result column="retried_id" jdbcType="VARCHAR" property="retriedId" />
+    <result column="retry_id" jdbcType="VARCHAR" property="retryId" />
     <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -88,9 +91,9 @@
   </sql>
   <sql id="Base_Column_List">
     id, app_id, namespace, message_type, pool_name, task_name, wait_time, execution_time, 
-    status, exit_code, exit_message, task_extra_data, end_time, is_recoverable, host, 
-    trace_id, previous_id, data_source_name, record_time, is_retried, retried_id, update_user,
-    create_time, update_time, version
+    status, exit_code, exit_message, task_extra_data, end_time, is_recoverable, is_recovered, 
+    host, trace_id, is_by_retryer, previous_id, data_source_name, is_persistent, record_time, 
+    is_retried, retry_id, update_user, create_time, update_time, version
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessageExample" resultMap="BaseResultMap">
     select
@@ -127,22 +130,22 @@
       message_type, pool_name, task_name, 
       wait_time, execution_time, status, 
       exit_code, exit_message, task_extra_data, 
-      end_time, is_recoverable, host, 
-      trace_id, previous_id, data_source_name, 
-      record_time, is_retried, retried_id,
-      update_user, create_time, update_time,
-      version
-      )
+      end_time, is_recoverable, is_recovered, 
+      host, trace_id, is_by_retryer, 
+      previous_id, data_source_name, is_persistent, 
+      record_time, is_retried, retry_id, 
+      update_user, create_time, update_time, 
+      version)
     values (#{id,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, 
       #{messageType,jdbcType=VARCHAR}, #{poolName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, 
       #{waitTime,jdbcType=BIGINT}, #{executionTime,jdbcType=BIGINT}, #{status,jdbcType=TINYINT}, 
       #{exitCode,jdbcType=VARCHAR}, #{exitMessage,jdbcType=VARCHAR}, #{taskExtraData,jdbcType=VARCHAR}, 
-      #{endTime,jdbcType=TIMESTAMP}, #{isRecoverable,jdbcType=BIT}, #{host,jdbcType=VARCHAR}, 
-      #{traceId,jdbcType=VARCHAR}, #{previousId,jdbcType=VARCHAR}, #{dataSourceName,jdbcType=VARCHAR}, 
-      #{recordTime,jdbcType=TIMESTAMP}, #{isRetried,jdbcType=BIT}, #{retriedId,jdbcType=VARCHAR}
-      #{updateUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
-      #{version,jdbcType=INTEGER}
-      )
+      #{endTime,jdbcType=TIMESTAMP}, #{isRecoverable,jdbcType=BIT}, #{isRecovered,jdbcType=BIT}, 
+      #{host,jdbcType=VARCHAR}, #{traceId,jdbcType=VARCHAR}, #{isByRetryer,jdbcType=BIT}, 
+      #{previousId,jdbcType=VARCHAR}, #{dataSourceName,jdbcType=VARCHAR}, #{isPersistent,jdbcType=BIT}, 
+      #{recordTime,jdbcType=TIMESTAMP}, #{isRetried,jdbcType=BIT}, #{retryId,jdbcType=VARCHAR}, 
+      #{updateUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{version,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage">
     insert into executor_task_message
@@ -189,11 +192,17 @@
       <if test="isRecoverable != null">
         is_recoverable,
       </if>
+      <if test="isRecovered != null">
+        is_recovered,
+      </if>
       <if test="host != null">
         host,
       </if>
       <if test="traceId != null">
         trace_id,
+      </if>
+      <if test="isByRetryer != null">
+        is_by_retryer,
       </if>
       <if test="previousId != null">
         previous_id,
@@ -201,14 +210,17 @@
       <if test="dataSourceName != null">
         data_source_name,
       </if>
+      <if test="isPersistent != null">
+        is_persistent,
+      </if>
       <if test="recordTime != null">
         record_time,
       </if>
       <if test="isRetried != null">
         is_retried,
       </if>
-      <if test="retriedId != null">
-        retried_id,
+      <if test="retryId != null">
+        retry_id,
       </if>
       <if test="updateUser != null">
         update_user,
@@ -266,11 +278,17 @@
       <if test="isRecoverable != null">
         #{isRecoverable,jdbcType=BIT},
       </if>
+      <if test="isRecovered != null">
+        #{isRecovered,jdbcType=BIT},
+      </if>
       <if test="host != null">
         #{host,jdbcType=VARCHAR},
       </if>
       <if test="traceId != null">
         #{traceId,jdbcType=VARCHAR},
+      </if>
+      <if test="isByRetryer != null">
+        #{isByRetryer,jdbcType=BIT},
       </if>
       <if test="previousId != null">
         #{previousId,jdbcType=VARCHAR},
@@ -278,14 +296,17 @@
       <if test="dataSourceName != null">
         #{dataSourceName,jdbcType=VARCHAR},
       </if>
+      <if test="isPersistent != null">
+        #{isPersistent,jdbcType=BIT},
+      </if>
       <if test="recordTime != null">
         #{recordTime,jdbcType=TIMESTAMP},
       </if>
       <if test="isRetried != null">
         #{isRetried,jdbcType=BIT},
       </if>
-      <if test="retriedId != null">
-        #{retriedId,jdbcType=VARCHAR},
+      <if test="retryId != null">
+        #{retryId,jdbcType=VARCHAR},
       </if>
       <if test="updateUser != null">
         #{updateUser,jdbcType=VARCHAR},
@@ -352,11 +373,17 @@
       <if test="record.isRecoverable != null">
         is_recoverable = #{record.isRecoverable,jdbcType=BIT},
       </if>
+      <if test="record.isRecovered != null">
+        is_recovered = #{record.isRecovered,jdbcType=BIT},
+      </if>
       <if test="record.host != null">
         host = #{record.host,jdbcType=VARCHAR},
       </if>
       <if test="record.traceId != null">
         trace_id = #{record.traceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isByRetryer != null">
+        is_by_retryer = #{record.isByRetryer,jdbcType=BIT},
       </if>
       <if test="record.previousId != null">
         previous_id = #{record.previousId,jdbcType=VARCHAR},
@@ -364,14 +391,17 @@
       <if test="record.dataSourceName != null">
         data_source_name = #{record.dataSourceName,jdbcType=VARCHAR},
       </if>
+      <if test="record.isPersistent != null">
+        is_persistent = #{record.isPersistent,jdbcType=BIT},
+      </if>
       <if test="record.recordTime != null">
         record_time = #{record.recordTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.isRetried != null">
         is_retried = #{record.isRetried,jdbcType=BIT},
       </if>
-      <if test="record.retriedId != null">
-        retried_id = #{record.retriedId,jdbcType=VARCHAR},
+      <if test="record.retryId != null">
+        retry_id = #{record.retryId,jdbcType=VARCHAR},
       </if>
       <if test="record.updateUser != null">
         update_user = #{record.updateUser,jdbcType=VARCHAR},
@@ -406,13 +436,16 @@
       task_extra_data = #{record.taskExtraData,jdbcType=VARCHAR},
       end_time = #{record.endTime,jdbcType=TIMESTAMP},
       is_recoverable = #{record.isRecoverable,jdbcType=BIT},
+      is_recovered = #{record.isRecovered,jdbcType=BIT},
       host = #{record.host,jdbcType=VARCHAR},
       trace_id = #{record.traceId,jdbcType=VARCHAR},
+      is_by_retryer = #{record.isByRetryer,jdbcType=BIT},
       previous_id = #{record.previousId,jdbcType=VARCHAR},
       data_source_name = #{record.dataSourceName,jdbcType=VARCHAR},
+      is_persistent = #{record.isPersistent,jdbcType=BIT},
       record_time = #{record.recordTime,jdbcType=TIMESTAMP},
       is_retried = #{record.isRetried,jdbcType=BIT},
-      retried_id = #{record.retriedId,jdbcType=VARCHAR},
+      retry_id = #{record.retryId,jdbcType=VARCHAR},
       update_user = #{record.updateUser,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
@@ -463,11 +496,17 @@
       <if test="isRecoverable != null">
         is_recoverable = #{isRecoverable,jdbcType=BIT},
       </if>
+      <if test="isRecovered != null">
+        is_recovered = #{isRecovered,jdbcType=BIT},
+      </if>
       <if test="host != null">
         host = #{host,jdbcType=VARCHAR},
       </if>
       <if test="traceId != null">
         trace_id = #{traceId,jdbcType=VARCHAR},
+      </if>
+      <if test="isByRetryer != null">
+        is_by_retryer = #{isByRetryer,jdbcType=BIT},
       </if>
       <if test="previousId != null">
         previous_id = #{previousId,jdbcType=VARCHAR},
@@ -475,14 +514,17 @@
       <if test="dataSourceName != null">
         data_source_name = #{dataSourceName,jdbcType=VARCHAR},
       </if>
+      <if test="isPersistent != null">
+        is_persistent = #{isPersistent,jdbcType=BIT},
+      </if>
       <if test="recordTime != null">
         record_time = #{recordTime,jdbcType=TIMESTAMP},
       </if>
       <if test="isRetried != null">
         is_retried = #{isRetried,jdbcType=BIT},
       </if>
-      <if test="retriedId != null">
-        retried_id = #{retriedId,jdbcType=VARCHAR},
+      <if test="retryId != null">
+        retry_id = #{retryId,jdbcType=VARCHAR},
       </if>
       <if test="updateUser != null">
         update_user = #{updateUser,jdbcType=VARCHAR},
@@ -514,13 +556,16 @@
       task_extra_data = #{taskExtraData,jdbcType=VARCHAR},
       end_time = #{endTime,jdbcType=TIMESTAMP},
       is_recoverable = #{isRecoverable,jdbcType=BIT},
+      is_recovered = #{isRecovered,jdbcType=BIT},
       host = #{host,jdbcType=VARCHAR},
       trace_id = #{traceId,jdbcType=VARCHAR},
+      is_by_retryer = #{isByRetryer,jdbcType=BIT},
       previous_id = #{previousId,jdbcType=VARCHAR},
       data_source_name = #{dataSourceName,jdbcType=VARCHAR},
+      is_persistent = #{isPersistent,jdbcType=BIT},
       record_time = #{recordTime,jdbcType=TIMESTAMP},
       is_retried = #{isRetried,jdbcType=BIT},
-      retried_id = #{retriedId,jdbcType=VARCHAR},
+      retry_id = #{retryId,jdbcType=VARCHAR},
       update_user = #{updateUser,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -571,72 +616,78 @@
       record_time >= #{startTime,jdbcType=TIMESTAMP} and record_time <![CDATA[<]]> #{endTime,jdbcType=TIMESTAMP}
   </select>
 
-  <!--no is_retried, retried_id, version-->
+  <!--no is_retried, retry_id, version-->
   <insert id="insertBatch" parameterType="java.util.List">
     insert into executor_task_message (id, app_id, namespace,
-    message_type, pool_name, task_name,
-    wait_time, execution_time, status,
-    exit_code, exit_message, task_extra_data,
-    end_time, is_recoverable, host,
-    trace_id, previous_id, data_source_name,
-    record_time, update_user,
-    create_time, update_time)
+      message_type, pool_name, task_name,
+      wait_time, execution_time, status,
+      exit_code, exit_message, task_extra_data,
+      end_time, is_recoverable, is_recovered,
+      host, trace_id, is_by_retryer,
+      previous_id, data_source_name, is_persistent,
+      record_time, update_user, create_time,
+      update_time)
     values
     <foreach collection="records" item="record" separator=",">
       (#{record.id,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR}, #{record.namespace,jdbcType=VARCHAR},
       #{record.messageType,jdbcType=VARCHAR}, #{record.poolName,jdbcType=VARCHAR}, #{record.taskName,jdbcType=VARCHAR},
       #{record.waitTime,jdbcType=BIGINT}, #{record.executionTime,jdbcType=BIGINT}, #{record.status,jdbcType=TINYINT},
       #{record.exitCode,jdbcType=VARCHAR}, #{record.exitMessage,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR},
-      #{record.endTime,jdbcType=TIMESTAMP}, #{record.isRecoverable,jdbcType=BIT}, #{record.host,jdbcType=VARCHAR},
-      #{record.traceId,jdbcType=VARCHAR}, #{record.previousId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR},
-      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR},
-      #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
+      #{record.endTime,jdbcType=TIMESTAMP}, #{record.isRecoverable,jdbcType=BIT}, #{record.isRecovered,jdbcType=BIT},
+      #{record.host,jdbcType=VARCHAR}, #{record.traceId,jdbcType=VARCHAR}, #{record.isByRetryer,jdbcType=BIT},
+      #{record.previousId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR}, #{record.isPersistent,jdbcType=BIT},
+      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR}, #{record.createTime,jdbcType=TIMESTAMP},
+      #{record.updateTime,jdbcType=TIMESTAMP})
     </foreach>
   </insert>
 
-  <!--no is_retried, retried_id, version-->
+  <!--no is_retried, retry_id, version-->
   <insert id="insertIgnoreBatch" parameterType="java.util.List">
     insert ignore into executor_task_message (id, app_id, namespace,
-    message_type, pool_name, task_name,
-    wait_time, execution_time, status,
-    exit_code, exit_message, task_extra_data,
-    end_time, is_recoverable, host,
-    trace_id, previous_id, data_source_name,
-    record_time, update_user,
-    create_time, update_time)
+      message_type, pool_name, task_name,
+      wait_time, execution_time, status,
+      exit_code, exit_message, task_extra_data,
+      end_time, is_recoverable, is_recovered,
+      host, trace_id, is_by_retryer,
+      previous_id, data_source_name, is_persistent,
+      record_time, update_user, create_time,
+      update_time)
     values
     <foreach collection="records" item="record" separator=",">
       (#{record.id,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR}, #{record.namespace,jdbcType=VARCHAR},
       #{record.messageType,jdbcType=VARCHAR}, #{record.poolName,jdbcType=VARCHAR}, #{record.taskName,jdbcType=VARCHAR},
       #{record.waitTime,jdbcType=BIGINT}, #{record.executionTime,jdbcType=BIGINT}, #{record.status,jdbcType=TINYINT},
       #{record.exitCode,jdbcType=VARCHAR}, #{record.exitMessage,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR},
-      #{record.endTime,jdbcType=TIMESTAMP}, #{record.isRecoverable,jdbcType=BIT}, #{record.host,jdbcType=VARCHAR},
-      #{record.traceId,jdbcType=VARCHAR}, #{record.previousId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR},
-      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR},
-      #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
+      #{record.endTime,jdbcType=TIMESTAMP}, #{record.isRecoverable,jdbcType=BIT}, #{record.isRecovered,jdbcType=BIT},
+      #{record.host,jdbcType=VARCHAR}, #{record.traceId,jdbcType=VARCHAR}, #{record.isByRetryer,jdbcType=BIT},
+      #{record.previousId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR}, #{record.isPersistent,jdbcType=BIT},
+      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR}, #{record.createTime,jdbcType=TIMESTAMP},
+      #{record.updateTime,jdbcType=TIMESTAMP})
     </foreach>
   </insert>
 
-  <!--no is_retried, retried_id, version-->
+  <!--no is_retried, retry_id, version-->
   <insert id="insertOrUpdateBatch" parameterType="java.util.List">
     insert into executor_task_message (id, app_id, namespace,
     message_type, pool_name, task_name,
     wait_time, execution_time, status,
     exit_code, exit_message, task_extra_data,
-    end_time, is_recoverable, host,
-    trace_id, previous_id, data_source_name,
-    record_time, update_user,
-    create_time, update_time)
+    end_time, is_recoverable, is_recovered,
+    host, trace_id, is_by_retryer,
+    previous_id, data_source_name, is_persistent,
+    record_time, update_user, create_time,
+    update_time)
     values
     <foreach collection="records" item="record" separator=",">
       (#{record.id,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR}, #{record.namespace,jdbcType=VARCHAR},
       #{record.messageType,jdbcType=VARCHAR}, #{record.poolName,jdbcType=VARCHAR}, #{record.taskName,jdbcType=VARCHAR},
       #{record.waitTime,jdbcType=BIGINT}, #{record.executionTime,jdbcType=BIGINT}, #{record.status,jdbcType=TINYINT},
       #{record.exitCode,jdbcType=VARCHAR}, #{record.exitMessage,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR},
-      #{record.endTime,jdbcType=TIMESTAMP}, #{record.isRecoverable,jdbcType=BIT}, #{record.host,jdbcType=VARCHAR},
-      #{record.traceId,jdbcType=VARCHAR}, #{record.previousId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR},
-      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR},
-      #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
+      #{record.endTime,jdbcType=TIMESTAMP}, #{record.isRecoverable,jdbcType=BIT}, #{record.isRecovered,jdbcType=BIT},
+      #{record.host,jdbcType=VARCHAR}, #{record.traceId,jdbcType=VARCHAR}, #{record.isByRetryer,jdbcType=BIT},
+      #{record.previousId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR}, #{record.isPersistent,jdbcType=BIT},
+      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR}, #{record.createTime,jdbcType=TIMESTAMP},
+      #{record.updateTime,jdbcType=TIMESTAMP})
     </foreach>
     on duplicate key
     update update_time = now()
