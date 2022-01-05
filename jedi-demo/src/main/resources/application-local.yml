@@ -24,3 +24,10 @@ jedi:
   url: http://127.0.0.1:8081 #mode为0/1/2时必配置 config的地址
   namespace: dev #mode为0/1/2时必配置，环境
   app-id: jedi-demo #mode为0/1/2时必配置时必配置，应用名
+  persistence:
+    enable: false
+    retryer:
+      enable: true
+      path: /jedi/test
+    recover:
+      enable: true

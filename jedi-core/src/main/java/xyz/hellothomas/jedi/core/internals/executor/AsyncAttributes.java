@@ -13,7 +13,7 @@ import java.util.Map;
  * @version 1.0
  */
 public class AsyncAttributes {
-    private static final Logger logger = LoggerFactory.getLogger(AsyncAttributes.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AsyncAttributes.class);
     private static final String[] EMPTY_STRING_ARRAY = {};
     private final Map<String, Object> map = new HashMap<>();
 
@@ -22,7 +22,7 @@ public class AsyncAttributes {
     }
 
     public void setAttribute(String name, Object value) {
-        logger.trace("setAttribute: name=[{0}], value=[{1}]]", name, value);
+        LOGGER.trace("setAttribute: name=[{}], value=[{}]]", name, value);
         map.put(name, value);
     }
 

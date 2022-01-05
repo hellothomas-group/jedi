@@ -87,7 +87,7 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                         "END_TIME,STATUS,EXIT_CODE,EXIT_MESSAGE," +
                         "BEAN_NAME,BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES," +
                         "METHOD_ARGUMENTS,RECOVERABLE,RECOVERED,HOST," +
-                        "TRACE_ID,BY_RETRYER,PREVIOUS_ID,PARENT_ID" +
+                        "TRACE_ID,BY_RETRYER,PREVIOUS_ID,PARENT_ID," +
                         "DATA_SOURCE_NAME,LAST_UPDATED_USER,LAST_UPDATED_TIME" +
                         " FROM JEDI_TASK_EXECUTION WHERE ID = ?",
                 (rs, rowNum) -> buildJediTaskExecution(rs), taskId);
@@ -118,8 +118,8 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                         "END_TIME,STATUS,EXIT_CODE,EXIT_MESSAGE," +
                         "BEAN_NAME,BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES," +
                         "METHOD_ARGUMENTS,RECOVERABLE,RECOVERED,HOST," +
-                        "TRACE_ID,BY_RETRYER,PREVIOUS_ID,DATA_SOURCE_NAME," +
-                        "LAST_UPDATED_USER,LAST_UPDATED_TIME" +
+                        "TRACE_ID,BY_RETRYER,PREVIOUS_ID,PARENT_ID," +
+                        "DATA_SOURCE_NAME,LAST_UPDATED_USER,LAST_UPDATED_TIME" +
                         " FROM JEDI_TASK_EXECUTION " +
                         "WHERE HOST = ? AND STATUS = ? AND RECOVERABLE = ? AND CREATE_TIME <= ? " +
                         "ORDER BY CREATE_TIME DESC LIMIT ?, ?",
