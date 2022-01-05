@@ -160,6 +160,7 @@ ALTER TABLE jedi_consumer.executor_task_message ADD is_recovered bit(1) DEFAULT 
 ALTER TABLE jedi_consumer.executor_task_message ADD trace_id varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'traceId' AFTER host;
 ALTER TABLE jedi_consumer.executor_task_message ADD is_by_retryer bit(1) DEFAULT b'0' NOT NULL comment '1: byRetryer, 0: no byRetryer' AFTER trace_id;
 ALTER TABLE jedi_consumer.executor_task_message ADD previous_id varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'previousId' AFTER trace_id;
+ALTER TABLE jedi_consumer.executor_task_message ADD parent_id varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'parentId' AFTER previous_id;
 ALTER TABLE jedi_consumer.executor_task_message ADD data_source_name varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'dataSourceName' AFTER previous_id;
 ALTER TABLE jedi_consumer.executor_task_message ADD is_persistent bit(1) DEFAULT b'0' NOT NULL comment '1: persistent, 0: no persistent' AFTER data_source_name;
 ALTER TABLE jedi_consumer.executor_task_message ADD is_retried bit(1) DEFAULT b'0' NOT NULL comment '1: retried, 0: no retried' AFTER record_time;

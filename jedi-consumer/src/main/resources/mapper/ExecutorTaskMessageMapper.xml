@@ -21,6 +21,7 @@
     <result column="trace_id" jdbcType="VARCHAR" property="traceId" />
     <result column="is_by_retryer" jdbcType="BIT" property="isByRetryer" />
     <result column="previous_id" jdbcType="VARCHAR" property="previousId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
     <result column="data_source_name" jdbcType="VARCHAR" property="dataSourceName" />
     <result column="is_persistent" jdbcType="BIT" property="isPersistent" />
     <result column="record_time" jdbcType="TIMESTAMP" property="recordTime" />
@@ -92,8 +93,8 @@
   <sql id="Base_Column_List">
     id, app_id, namespace, message_type, pool_name, task_name, wait_time, execution_time, 
     status, exit_code, exit_message, task_extra_data, end_time, is_recoverable, is_recovered, 
-    host, trace_id, is_by_retryer, previous_id, data_source_name, is_persistent, record_time, 
-    is_retried, retry_id, update_user, create_time, update_time, version
+    host, trace_id, is_by_retryer, previous_id, parent_id, data_source_name, is_persistent, 
+    record_time, is_retried, retry_id, update_user, create_time, update_time, version
   </sql>
   <select id="selectByExample" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessageExample" resultMap="BaseResultMap">
     select
@@ -132,20 +133,20 @@
       exit_code, exit_message, task_extra_data, 
       end_time, is_recoverable, is_recovered, 
       host, trace_id, is_by_retryer, 
-      previous_id, data_source_name, is_persistent, 
-      record_time, is_retried, retry_id, 
-      update_user, create_time, update_time, 
-      version)
+      previous_id, parent_id, data_source_name, 
+      is_persistent, record_time, is_retried, 
+      retry_id, update_user, create_time, 
+      update_time, version)
     values (#{id,jdbcType=VARCHAR}, #{appId,jdbcType=VARCHAR}, #{namespace,jdbcType=VARCHAR}, 
       #{messageType,jdbcType=VARCHAR}, #{poolName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, 
       #{waitTime,jdbcType=BIGINT}, #{executionTime,jdbcType=BIGINT}, #{status,jdbcType=TINYINT}, 
       #{exitCode,jdbcType=VARCHAR}, #{exitMessage,jdbcType=VARCHAR}, #{taskExtraData,jdbcType=VARCHAR}, 
       #{endTime,jdbcType=TIMESTAMP}, #{isRecoverable,jdbcType=BIT}, #{isRecovered,jdbcType=BIT}, 
       #{host,jdbcType=VARCHAR}, #{traceId,jdbcType=VARCHAR}, #{isByRetryer,jdbcType=BIT}, 
-      #{previousId,jdbcType=VARCHAR}, #{dataSourceName,jdbcType=VARCHAR}, #{isPersistent,jdbcType=BIT}, 
-      #{recordTime,jdbcType=TIMESTAMP}, #{isRetried,jdbcType=BIT}, #{retryId,jdbcType=VARCHAR}, 
-      #{updateUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{version,jdbcType=INTEGER})
+      #{previousId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, #{dataSourceName,jdbcType=VARCHAR}, 
+      #{isPersistent,jdbcType=BIT}, #{recordTime,jdbcType=TIMESTAMP}, #{isRetried,jdbcType=BIT}, 
+      #{retryId,jdbcType=VARCHAR}, #{updateUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{version,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage">
     insert into executor_task_message
@@ -206,6 +207,9 @@
       </if>
       <if test="previousId != null">
         previous_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
       </if>
       <if test="dataSourceName != null">
         data_source_name,
@@ -292,6 +296,9 @@
       </if>
       <if test="previousId != null">
         #{previousId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
       </if>
       <if test="dataSourceName != null">
         #{dataSourceName,jdbcType=VARCHAR},
@@ -388,6 +395,9 @@
       <if test="record.previousId != null">
         previous_id = #{record.previousId,jdbcType=VARCHAR},
       </if>
+      <if test="record.parentId != null">
+        parent_id = #{record.parentId,jdbcType=VARCHAR},
+      </if>
       <if test="record.dataSourceName != null">
         data_source_name = #{record.dataSourceName,jdbcType=VARCHAR},
       </if>
@@ -441,6 +451,7 @@
       trace_id = #{record.traceId,jdbcType=VARCHAR},
       is_by_retryer = #{record.isByRetryer,jdbcType=BIT},
       previous_id = #{record.previousId,jdbcType=VARCHAR},
+      parent_id = #{record.parentId,jdbcType=VARCHAR},
       data_source_name = #{record.dataSourceName,jdbcType=VARCHAR},
       is_persistent = #{record.isPersistent,jdbcType=BIT},
       record_time = #{record.recordTime,jdbcType=TIMESTAMP},
@@ -511,6 +522,9 @@
       <if test="previousId != null">
         previous_id = #{previousId,jdbcType=VARCHAR},
       </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
       <if test="dataSourceName != null">
         data_source_name = #{dataSourceName,jdbcType=VARCHAR},
       </if>
@@ -561,6 +575,7 @@
       trace_id = #{traceId,jdbcType=VARCHAR},
       is_by_retryer = #{isByRetryer,jdbcType=BIT},
       previous_id = #{previousId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
       data_source_name = #{dataSourceName,jdbcType=VARCHAR},
       is_persistent = #{isPersistent,jdbcType=BIT},
       record_time = #{recordTime,jdbcType=TIMESTAMP},
@@ -624,9 +639,9 @@
       exit_code, exit_message, task_extra_data,
       end_time, is_recoverable, is_recovered,
       host, trace_id, is_by_retryer,
-      previous_id, data_source_name, is_persistent,
-      record_time, update_user, create_time,
-      update_time)
+      previous_id, parent_id, data_source_name,
+      is_persistent, record_time, update_user,
+      create_time, update_time)
     values
     <foreach collection="records" item="record" separator=",">
       (#{record.id,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR}, #{record.namespace,jdbcType=VARCHAR},
@@ -635,9 +650,9 @@
       #{record.exitCode,jdbcType=VARCHAR}, #{record.exitMessage,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR},
       #{record.endTime,jdbcType=TIMESTAMP}, #{record.isRecoverable,jdbcType=BIT}, #{record.isRecovered,jdbcType=BIT},
       #{record.host,jdbcType=VARCHAR}, #{record.traceId,jdbcType=VARCHAR}, #{record.isByRetryer,jdbcType=BIT},
-      #{record.previousId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR}, #{record.isPersistent,jdbcType=BIT},
-      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR}, #{record.createTime,jdbcType=TIMESTAMP},
-      #{record.updateTime,jdbcType=TIMESTAMP})
+      #{record.previousId,jdbcType=VARCHAR}, #{record.parentId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR},
+      #{record.isPersistent,jdbcType=BIT}, #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR},
+      #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
     </foreach>
   </insert>
 
@@ -649,9 +664,9 @@
       exit_code, exit_message, task_extra_data,
       end_time, is_recoverable, is_recovered,
       host, trace_id, is_by_retryer,
-      previous_id, data_source_name, is_persistent,
-      record_time, update_user, create_time,
-      update_time)
+      previous_id, parent_id, data_source_name,
+      is_persistent, record_time, update_user,
+      create_time, update_time)
     values
     <foreach collection="records" item="record" separator=",">
       (#{record.id,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR}, #{record.namespace,jdbcType=VARCHAR},
@@ -660,9 +675,9 @@
       #{record.exitCode,jdbcType=VARCHAR}, #{record.exitMessage,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR},
       #{record.endTime,jdbcType=TIMESTAMP}, #{record.isRecoverable,jdbcType=BIT}, #{record.isRecovered,jdbcType=BIT},
       #{record.host,jdbcType=VARCHAR}, #{record.traceId,jdbcType=VARCHAR}, #{record.isByRetryer,jdbcType=BIT},
-      #{record.previousId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR}, #{record.isPersistent,jdbcType=BIT},
-      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR}, #{record.createTime,jdbcType=TIMESTAMP},
-      #{record.updateTime,jdbcType=TIMESTAMP})
+      #{record.previousId,jdbcType=VARCHAR}, #{record.parentId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR},
+      #{record.isPersistent,jdbcType=BIT}, #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR},
+      #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
     </foreach>
   </insert>
 
@@ -674,9 +689,9 @@
     exit_code, exit_message, task_extra_data,
     end_time, is_recoverable, is_recovered,
     host, trace_id, is_by_retryer,
-    previous_id, data_source_name, is_persistent,
-    record_time, update_user, create_time,
-    update_time)
+    previous_id, parent_id, data_source_name,
+    is_persistent, record_time, update_user,
+    create_time, update_time)
     values
     <foreach collection="records" item="record" separator=",">
       (#{record.id,jdbcType=VARCHAR}, #{record.appId,jdbcType=VARCHAR}, #{record.namespace,jdbcType=VARCHAR},
@@ -685,9 +700,9 @@
       #{record.exitCode,jdbcType=VARCHAR}, #{record.exitMessage,jdbcType=VARCHAR}, #{record.taskExtraData,jdbcType=VARCHAR},
       #{record.endTime,jdbcType=TIMESTAMP}, #{record.isRecoverable,jdbcType=BIT}, #{record.isRecovered,jdbcType=BIT},
       #{record.host,jdbcType=VARCHAR}, #{record.traceId,jdbcType=VARCHAR}, #{record.isByRetryer,jdbcType=BIT},
-      #{record.previousId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR}, #{record.isPersistent,jdbcType=BIT},
-      #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR}, #{record.createTime,jdbcType=TIMESTAMP},
-      #{record.updateTime,jdbcType=TIMESTAMP})
+      #{record.previousId,jdbcType=VARCHAR}, #{record.parentId,jdbcType=VARCHAR}, #{record.dataSourceName,jdbcType=VARCHAR},
+      #{record.isPersistent,jdbcType=BIT}, #{record.recordTime,jdbcType=TIMESTAMP}, #{record.updateUser,jdbcType=VARCHAR},
+      #{record.createTime,jdbcType=TIMESTAMP}, #{record.updateTime,jdbcType=TIMESTAMP})
     </foreach>
     on duplicate key
     update update_time = now()

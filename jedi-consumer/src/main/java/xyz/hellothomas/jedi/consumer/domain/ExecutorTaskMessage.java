@@ -109,6 +109,11 @@ public class ExecutorTaskMessage {
     private String previousId;
 
     /**
+     * parentId
+     */
+    private String parentId;
+
+    /**
      * dataSourceName
      */
     private String dataSourceName;

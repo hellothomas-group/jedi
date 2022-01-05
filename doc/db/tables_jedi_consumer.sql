@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS `executor_task_message` (
   `trace_id` varchar(32) comment 'traceId',
   `is_by_retryer` bit(1) NOT NULL DEFAULT b'0' comment '1: byRetryer, 0: no byRetryer',
   `previous_id` varchar(36) comment 'previousId',
+  `parent_id` varchar(36) comment 'parentId',
   `data_source_name` varchar(64) comment 'dataSourceName',
   `is_persistent` bit(1) NOT NULL DEFAULT b'0' comment '1: persistent, 0: no persistent',
   `record_time` timestamp NOT NULL comment '记录时间',
