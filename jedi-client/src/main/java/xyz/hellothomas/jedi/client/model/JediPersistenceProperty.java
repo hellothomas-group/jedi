@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import java.util.List;
+import static xyz.hellothomas.jedi.client.constants.Constants.JEDI_DEFAULT_RETRYER_PATH;
 
 /**
  * @author Thomas
@@ -45,9 +45,9 @@ public class JediPersistenceProperty {
         private boolean enable;
 
         /**
-         * retry path (for instance, `/jedi/tasks/retry`).
+         * retry path (default: `/jedi/tasks/retry`).
          */
-        private String path;
+        private String path = JEDI_DEFAULT_RETRYER_PATH;
     }
 
     @Getter

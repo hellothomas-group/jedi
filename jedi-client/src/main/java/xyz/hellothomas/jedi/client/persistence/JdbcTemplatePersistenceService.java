@@ -38,9 +38,9 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                         "END_TIME,STATUS,EXIT_CODE,EXIT_MESSAGE," +
                         "BEAN_NAME,BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES," +
                         "METHOD_ARGUMENTS,RECOVERABLE,RECOVERED,HOST," +
-                        "TRACE_ID,BY_RETRYER,PREVIOUS_ID,DATA_SOURCE_NAME," +
-                        "LAST_UPDATED_USER,LAST_UPDATED_TIME) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "TRACE_ID,BY_RETRYER,PREVIOUS_ID,PARENT_ID," +
+                        "DATA_SOURCE_NAME,LAST_UPDATED_USER,LAST_UPDATED_TIME) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 taskProperty.getId(), taskProperty.getNamespaceName(), taskProperty.getAppId(),
                 taskProperty.getExecutorName(), taskProperty.getTaskName(), taskProperty.getTaskExtraData(),
                 DateTimeUtil.localDateTimeToPattern2(taskProperty.getCreateTime()),
@@ -50,7 +50,7 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                 taskProperty.getBeanName(), taskProperty.getBeanTypeName(), taskProperty.getMethodName(),
                 taskProperty.getMethodParamTypes(), taskProperty.getMethodArguments(), taskProperty.isRecoverable(),
                 taskProperty.isRecovered(), taskProperty.getHost(), taskProperty.getTraceId(),
-                taskProperty.isByRetryer(), taskProperty.getPreviousId(),
+                taskProperty.isByRetryer(), taskProperty.getPreviousId(), taskProperty.getParentId(),
                 taskProperty.getDataSourceName(), taskProperty.getLastUpdatedUser(),
                 DateTimeUtil.getDateTimePattern2());
         log.trace("insert {} row: {}", row, taskProperty);
@@ -87,8 +87,8 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                         "END_TIME,STATUS,EXIT_CODE,EXIT_MESSAGE," +
                         "BEAN_NAME,BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES," +
                         "METHOD_ARGUMENTS,RECOVERABLE,RECOVERED,HOST," +
-                        "TRACE_ID,BY_RETRYER,PREVIOUS_ID,DATA_SOURCE_NAME," +
-                        "LAST_UPDATED_USER,LAST_UPDATED_TIME" +
+                        "TRACE_ID,BY_RETRYER,PREVIOUS_ID,PARENT_ID" +
+                        "DATA_SOURCE_NAME,LAST_UPDATED_USER,LAST_UPDATED_TIME" +
                         " FROM JEDI_TASK_EXECUTION WHERE ID = ?",
                 (rs, rowNum) -> buildJediTaskExecution(rs), taskId);
         if (results != null && !results.isEmpty()) {
@@ -202,6 +202,7 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         jediTaskExecution.setTraceId(rs.getString("TRACE_ID"));
         jediTaskExecution.setByRetryer(rs.getBoolean("BY_RETRYER"));
         jediTaskExecution.setPreviousId(rs.getString("PREVIOUS_ID"));
+        jediTaskExecution.setParentId(rs.getString("PARENT_ID"));
         jediTaskExecution.setDataSourceName(rs.getString("DATA_SOURCE_NAME"));
         jediTaskExecution.setLastUpdatedUser(rs.getString("LAST_UPDATED_USER"));
         String lastUpdated = rs.getString("LAST_UPDATED_TIME");

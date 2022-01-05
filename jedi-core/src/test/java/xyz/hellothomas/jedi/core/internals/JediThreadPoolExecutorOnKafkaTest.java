@@ -6,13 +6,11 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.Test;
 import xyz.hellothomas.jedi.core.dto.consumer.CustomNotification;
 import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
-import xyz.hellothomas.jedi.core.internals.executor.AsyncAttributes;
 import xyz.hellothomas.jedi.core.internals.executor.JediRunnable;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
 import xyz.hellothomas.jedi.core.internals.message.kafka.KafkaNotificationService;
 import xyz.hellothomas.jedi.core.internals.message.kafka.KafkaProperty;
-import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
 import xyz.hellothomas.jedi.core.utils.SleepUtil;
 
 import java.time.LocalDateTime;
@@ -83,16 +81,12 @@ public class JediThreadPoolExecutorOnKafkaTest {
         SleepUtil.sleep(2000);
         TaskProperty taskProperty = initTaskProperty(executor.getPoolName(), "taskTest1", null,
                 null);
-        AsyncAttributes asyncAttributes = new AsyncAttributes();
-        asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
-        AsyncContextHolder.setAsyncAttributes(asyncAttributes);
         executor.submit(new JediRunnable(() -> {
             System.out.println("run start " + LocalDateTime.now());
             System.out.println("execute job...");
             SleepUtil.sleep(1000);
             System.out.println("run finish " + LocalDateTime.now());
-        }));
-        AsyncContextHolder.resetAsyncAttributes();
+        }, taskProperty));
         System.out.println("submit finish");
         SleepUtil.sleep(5000);
         System.out.println("main end");
@@ -110,14 +104,10 @@ public class JediThreadPoolExecutorOnKafkaTest {
             try {
                 TaskProperty taskProperty = initTaskProperty(executor.getPoolName(), "taskTest" + threadIndex, null,
                         null);
-                AsyncAttributes asyncAttributes = new AsyncAttributes();
-                asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
-                AsyncContextHolder.setAsyncAttributes(asyncAttributes);
                 executor.execute(new JediRunnable(() -> {
                     System.out.println("execute job" + threadIndex + "...");
                     SleepUtil.sleep(1500);
-                }));
-                AsyncContextHolder.resetAsyncAttributes();
+                }, taskProperty));
             } catch (Exception e) {
                 System.out.println(e);
             }

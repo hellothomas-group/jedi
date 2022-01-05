@@ -16,13 +16,11 @@ import java.time.LocalDateTime;
 public class JediRunnable implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(JediRunnable.class);
     private final Runnable runnable;
-    private final AsyncAttributes asyncAttributes;
     private final TaskProperty taskProperty;
 
-    public JediRunnable(Runnable runnable) {
+    public JediRunnable(Runnable runnable, TaskProperty taskProperty) {
         this.runnable = runnable;
-        this.asyncAttributes = AsyncContextHolder.getAsyncAttributes();
-        this.taskProperty = (TaskProperty) asyncAttributes.getAttribute(TaskProperty.class.getName());
+        this.taskProperty = taskProperty.copy();
     }
 
     @Override

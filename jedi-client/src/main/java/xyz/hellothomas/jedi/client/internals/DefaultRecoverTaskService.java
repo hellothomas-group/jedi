@@ -9,13 +9,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import xyz.hellothomas.jedi.client.model.JediConfig;
 import xyz.hellothomas.jedi.client.model.JediProperty;
 import xyz.hellothomas.jedi.client.model.JediTaskExecution;
 import xyz.hellothomas.jedi.client.persistence.PersistenceService;
 import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
 import xyz.hellothomas.jedi.core.internals.executor.AsyncAttributes;
+import xyz.hellothomas.jedi.core.internals.executor.JediRunnable;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
 import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static xyz.hellothomas.jedi.core.constants.Constants.EMPTY_STRING;
 
@@ -61,8 +62,7 @@ public class DefaultRecoverTaskService implements RecoverTaskService, Applicatio
                 event.getApplicationContext().getBeansOfType(JediThreadPoolExecutor.class);
         String[] executorNames = jediThreadPoolExecutorMap.keySet().toArray(new String[0]);
         // 选第一个线程池
-//        JediThreadPoolExecutor jediThreadPoolExecutor = jediThreadPoolExecutorMap.get(executorNames[0]);
-        SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor();
+        JediThreadPoolExecutor jediThreadPoolExecutor = jediThreadPoolExecutorMap.get(executorNames[0]);
 
         List<String> dataSourceNameList;
         String dataSourceNames = jediProperty.getPersistence().getRecover().getDataSourceNames();
@@ -71,8 +71,9 @@ public class DefaultRecoverTaskService implements RecoverTaskService, Applicatio
         } else {
             dataSourceNameList = DATA_SOURCE_SPLITTER.splitToList(dataSourceNames);
         }
-        // todo taskName
-        dataSourceNameList.stream().forEach(i -> executor.submit(() -> recover(i)));
+        TaskProperty parentTaskProperty = initParentTaskProperty(jediThreadPoolExecutor.getPoolName());
+        dataSourceNameList.stream().forEach(i -> jediThreadPoolExecutor.submit(new JediRunnable(() -> recover(i),
+                parentTaskProperty)));
         log.info("tasks end recover");
     }
 
@@ -96,14 +97,23 @@ public class DefaultRecoverTaskService implements RecoverTaskService, Applicatio
                     persistenceService.queryPageByStatusAndRecoverable(host, TaskStatusEnum.REGISTERED.getValue(),
                             true, this.appInitTime, num, DEFAULT_PAGE_SIZE, dataSourceName);
             // 某个任务提交失败，整个任务失败
-            jediTaskExecutionList.stream().forEach(i -> doRecover(i));
+            jediTaskExecutionList.stream().forEach(i -> {
+                // recover taskProperty
+                TaskProperty parentTaskProperty =
+                        (TaskProperty) AsyncContextHolder.getAsyncAttributes().getAttribute(TaskProperty.class.getName());
+                try {
+                    doRecover(i, parentTaskProperty);
+                } finally {
+                    resumeAsyncAttributes(parentTaskProperty);
+                }
+            });
             count--;
         }
         log.info("dataSourceName: {}, tasks end recover", dataSourceName);
     }
 
     @SneakyThrows
-    public void doRecover(JediTaskExecution jediTaskExecution) {
+    public void doRecover(JediTaskExecution jediTaskExecution, TaskProperty parentTaskProperty) {
         log.debug("taskId: {} is recovering", jediTaskExecution.getId());
         Class beanClazz = Class.forName(jediTaskExecution.getBeanTypeName());
 
@@ -120,34 +130,48 @@ public class DefaultRecoverTaskService implements RecoverTaskService, Applicatio
             methodArguments[i] = JsonUtil.deserialize(methodArgumentsString[i], methodParamClazzArray[i]);
         }
 
-        try {
-            addAsyncAttributes(jediTaskExecution);
-            method.invoke(this.applicationContext.getBean(jediTaskExecution.getBeanName(), beanClazz), methodArguments);
-            log.debug("taskId: {} is recovered", jediTaskExecution.getId());
-        } finally {
-            removeAsyncAttributes();
-        }
+        updateAttributes(jediTaskExecution, parentTaskProperty);
+        method.invoke(this.applicationContext.getBean(jediTaskExecution.getBeanName(), beanClazz), methodArguments);
+        log.debug("taskId: {} is recovered", jediTaskExecution.getId());
     }
 
-    private AsyncAttributes addAsyncAttributes(JediTaskExecution jediTaskExecution) {
+    private AsyncAttributes updateAttributes(JediTaskExecution jediTaskExecution, TaskProperty parentTaskProperty) {
         // 任务注册
-        TaskProperty taskProperty = initTaskProperty(jediTaskExecution);
-        AsyncAttributes asyncAttributes = new AsyncAttributes();
+        TaskProperty taskProperty = initTaskProperty(jediTaskExecution, parentTaskProperty);
+        AsyncAttributes asyncAttributes = AsyncContextHolder.getAsyncAttributes();
         asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
-        AsyncContextHolder.setAsyncAttributes(asyncAttributes);
         return asyncAttributes;
     }
 
-    private void removeAsyncAttributes() {
-        AsyncContextHolder.resetAsyncAttributes();
+    private AsyncAttributes resumeAsyncAttributes(TaskProperty parentTaskProperty) {
+        AsyncAttributes asyncAttributes = AsyncContextHolder.getAsyncAttributes();
+        asyncAttributes.setAttribute(TaskProperty.class.getName(), parentTaskProperty);
+        return asyncAttributes;
     }
 
-    private TaskProperty initTaskProperty(JediTaskExecution jediTaskExecution) {
+    private TaskProperty initParentTaskProperty(String executorName) {
+        TaskProperty taskProperty = new TaskProperty();
+        JediConfig jediConfig = this.applicationContext.getBean(JediConfig.class);
+        taskProperty.setId(UUID.randomUUID().toString());
+        taskProperty.setNamespaceName(jediConfig.getNamespace());
+        taskProperty.setAppId(jediConfig.getAppId());
+        taskProperty.setExecutorName(executorName);
+        taskProperty.setTaskName("Jedi-Recover");
+        taskProperty.setCreateTime(LocalDateTime.now());
+        taskProperty.setStatus(TaskStatusEnum.REGISTERED.getValue());
+        log.trace("TaskProperty:{}", taskProperty);
+
+        return taskProperty;
+    }
+
+    private TaskProperty initTaskProperty(JediTaskExecution jediTaskExecution, TaskProperty parentTaskProperty) {
         TaskProperty taskProperty = new TaskProperty();
         BeanUtils.copyProperties(jediTaskExecution, taskProperty);
         taskProperty.setStatus(TaskStatusEnum.REGISTERED.getValue());
+        taskProperty.setParentId(parentTaskProperty.getParentId());
         taskProperty.setRecovered(true);
         taskProperty.setPersistent(true);
+        taskProperty.setInitialized(true);
         return taskProperty;
     }
 }

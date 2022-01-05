@@ -3,7 +3,6 @@ package xyz.hellothomas.jedi.client.persistence;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
 import xyz.hellothomas.jedi.core.internals.executor.AsyncAttributes;
 import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
@@ -17,14 +16,13 @@ public class JediPersistentCallable<V> implements Callable<V> {
     private static final Logger LOGGER = LoggerFactory.getLogger(JediPersistentCallable.class);
     private final Callable<V> callable;
     private final PersistenceService persistenceService;
-    private final TaskProperty taskProperty = new TaskProperty();
+    private final TaskProperty taskProperty;
 
-    public JediPersistentCallable(Callable<V> callable, PersistenceService persistenceService) {
+    public JediPersistentCallable(Callable<V> callable, TaskProperty taskProperty,
+                                  PersistenceService persistenceService) {
         this.callable = callable;
+        this.taskProperty = taskProperty.copy();
         this.persistenceService = persistenceService;
-        TaskProperty originTaskProperty =
-                (TaskProperty) AsyncContextHolder.getAsyncAttributes().getAttribute(TaskProperty.class.getName());
-        BeanUtils.copyProperties(originTaskProperty, taskProperty);
     }
 
     @Override

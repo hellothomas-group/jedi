@@ -26,7 +26,6 @@ import xyz.hellothomas.jedi.client.persistence.PersistenceService;
 import xyz.hellothomas.jedi.client.util.ExpressionUtil;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
-import xyz.hellothomas.jedi.core.internals.executor.AsyncAttributes;
 import xyz.hellothomas.jedi.core.internals.executor.JediCallable;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;
 import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
@@ -88,27 +87,36 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         String taskName = extractTaskName(joinPoint, jediAsync);
         String taskExtraData = extractTaskExtraData(joinPoint, jediAsync);
 
+        TaskProperty contextTaskProperty;
         TaskProperty taskProperty;
-        // support retry
+        // support retry and recover
         if (AsyncContextHolder.getAsyncAttributes() == null) {
             // 任务注册
             taskProperty = initTaskProperty(jediThreadPoolExecutor.getPoolName(), taskName, taskExtraData);
-            AsyncAttributes asyncAttributes = new AsyncAttributes();
-            asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
-            AsyncContextHolder.setAsyncAttributes(asyncAttributes);
         } else {
-            taskProperty =
+            contextTaskProperty =
                     (TaskProperty) AsyncContextHolder.getAsyncAttributes().getAttribute(TaskProperty.class.getName());
+            // recover or retry
+            if (contextTaskProperty.isInitialized()) {
+                taskProperty = contextTaskProperty.copy();
+                taskProperty.setInitialized(false);
+            } else {
+                // parent
+                taskProperty = initTaskProperty(jediThreadPoolExecutor.getPoolName(), taskName, taskExtraData);
+                taskProperty.setParentId(contextTaskProperty.getId());
+            }
         }
 
         try {
             // 自恢复的直接提交
             if (taskProperty.isRecovered()) {
-                return doSubmit(asyncTraceFactory.getCallable(new JediPersistentCallable<>(task, persistenceService)),
+                return doSubmit(asyncTraceFactory.getCallable(new JediPersistentCallable<>(task, taskProperty,
+                                persistenceService)),
                         jediThreadPoolExecutor, methodSignature.getReturnType());
             }
 
             if (jediAsync.persistent()) {
+                // 重试无需补充TaskProperty
                 if (!taskProperty.isByRetryer()) {
                     // 补充TaskProperty
                     fillTaskProperty(joinPoint, methodSignature, taskProperty, jediAsync);
@@ -118,18 +126,19 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
                 PersistenceService persistenceService = this.applicationContext.getBean(PersistenceService.class);
                 persistenceService.insertTaskExecution(taskProperty);
 
+                // 删除重试前的任务
                 if (taskProperty.isByRetryer()) {
-                    // 删除重试前的任务
                     TaskProperty previousTaskProperty = new TaskProperty();
                     previousTaskProperty.setId(taskProperty.getPreviousId());
                     previousTaskProperty.setDataSourceName(taskProperty.getDataSourceName());
                     persistenceService.deleteTaskExecution(previousTaskProperty);
                 }
 
-                return doSubmit(asyncTraceFactory.getCallable(new JediPersistentCallable<>(task, persistenceService)),
+                return doSubmit(asyncTraceFactory.getCallable(new JediPersistentCallable<>(task, taskProperty,
+                                persistenceService)),
                         jediThreadPoolExecutor, methodSignature.getReturnType());
             } else {
-                return doSubmit(asyncTraceFactory.getCallable(new JediCallable<>(task)),
+                return doSubmit(asyncTraceFactory.getCallable(new JediCallable<>(task, taskProperty)),
                         jediThreadPoolExecutor, methodSignature.getReturnType());
             }
         } catch (RejectedExecutionException e) {
@@ -153,10 +162,6 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
             }
 
             throw e;
-        } finally {
-            if (!taskProperty.isByRetryer() && !taskProperty.isRecovered()) {
-                AsyncContextHolder.resetAsyncAttributes();
-            }
         }
     }
 

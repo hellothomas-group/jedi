@@ -126,6 +126,11 @@ public class JediTaskExecution {
     private String previousId;
 
     /**
+     * parentId
+     */
+    private String parentId;
+
+    /**
      * dataSourceName
      */
     private String dataSourceName;

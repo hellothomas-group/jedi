@@ -26,10 +26,12 @@ public class TaskProperty {
     private String traceId;
     private boolean byRetryer;
     private String previousId;
+    private String parentId;
     private String dataSourceName;
     private String lastUpdatedUser;
 
     private boolean persistent;
+    private boolean initialized;
 
     public String getId() {
         return this.id;
@@ -123,6 +125,10 @@ public class TaskProperty {
         return this.previousId;
     }
 
+    public String getParentId() {
+        return parentId;
+    }
+
     public String getDataSourceName() {
         return this.dataSourceName;
     }
@@ -133,6 +139,10 @@ public class TaskProperty {
 
     public boolean isPersistent() {
         return this.persistent;
+    }
+
+    public boolean isInitialized() {
+        return initialized;
     }
 
     public void setId(String id) {
@@ -227,6 +237,10 @@ public class TaskProperty {
         this.previousId = previousId;
     }
 
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
     public void setDataSourceName(String dataSourceName) {
         this.dataSourceName = dataSourceName;
     }
@@ -239,8 +253,46 @@ public class TaskProperty {
         this.persistent = persistent;
     }
 
+    public void setInitialized(boolean initialized) {
+        this.initialized = initialized;
+    }
+
     @Override
     public String toString() {
-        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodParamTypes=" + this.getMethodParamTypes() + ", methodArguments=" + this.getMethodArguments() + ", recoverable=" + this.isRecoverable() + ", isRecovered=" + this.isRecovered() + ", host=" + this.getHost() + ", traceId=" + this.getTraceId() + ", byReteyer=" + this.isByRetryer() + ", previousId=" + this.getPreviousId() + ", dataSourceName=" + this.getDataSourceName() + ", lastUpdatedUser=" + this.getLastUpdatedUser() + ", persistent=" + this.isPersistent() + ")";
+        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodParamTypes=" + this.getMethodParamTypes() + ", methodArguments=" + this.getMethodArguments() + ", recoverable=" + this.isRecoverable() + ", isRecovered=" + this.isRecovered() + ", host=" + this.getHost() + ", traceId=" + this.getTraceId() + ", byRetryer=" + this.isByRetryer() + ", previousId=" + this.getPreviousId() + ", parentId=" + this.getParentId() + ", dataSourceName=" + this.getDataSourceName() + ", lastUpdatedUser=" + this.getLastUpdatedUser() + ", persistent=" + this.isPersistent() + ", initialized=" + this.isInitialized() + ")";
+    }
+
+    public TaskProperty copy() {
+        TaskProperty taskProperty = new TaskProperty();
+        taskProperty.setId(this.id);
+        taskProperty.setNamespaceName(this.namespaceName);
+        taskProperty.setAppId(this.appId);
+        taskProperty.setExecutorName(this.executorName);
+        taskProperty.setTaskName(this.taskName);
+        taskProperty.setTaskExtraData(this.taskExtraData);
+        taskProperty.setCreateTime(this.createTime);
+        taskProperty.setStartTime(this.startTime);
+        taskProperty.setEndTime(this.endTime);
+        taskProperty.setStatus(this.status);
+        taskProperty.setExitCode(this.exitCode);
+        taskProperty.setExitMessage(this.exitMessage);
+        taskProperty.setBeanName(this.beanName);
+        taskProperty.setBeanTypeName(this.beanTypeName);
+        taskProperty.setMethodName(this.methodName);
+        taskProperty.setMethodParamTypes(this.methodParamTypes);
+        taskProperty.setMethodArguments(this.methodArguments);
+        taskProperty.setRecoverable(this.recoverable);
+        taskProperty.setRecovered(this.recovered);
+        taskProperty.setHost(this.host);
+        taskProperty.setTraceId(this.traceId);
+        taskProperty.setByRetryer(this.byRetryer);
+        taskProperty.setPreviousId(this.previousId);
+        taskProperty.setParentId(this.parentId);
+        taskProperty.setDataSourceName(this.dataSourceName);
+        taskProperty.setLastUpdatedUser(this.lastUpdatedUser);
+        taskProperty.setPersistent(this.persistent);
+        taskProperty.setInitialized(this.initialized);
+
+        return taskProperty;
     }
 }

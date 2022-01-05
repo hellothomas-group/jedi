@@ -32,6 +32,7 @@ public class Constants {
     public static final String JEDI_DEFAULT_EXECUTOR_NAME = "jedi-default-executor";
     public static final int JEDI_ASYNC_DEFAULT_ORDER = 0;
     public static final String JEDI_BOOTSTRAP_PROPERTY_SOURCE_NAME = "JediBootstrapPropertySources";
+    public static final String JEDI_DEFAULT_RETRYER_PATH = "/jedi/tasks/retry";
 
 
     private Constants() {

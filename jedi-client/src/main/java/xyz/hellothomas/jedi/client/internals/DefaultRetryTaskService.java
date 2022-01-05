@@ -34,6 +34,8 @@ import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static xyz.hellothomas.jedi.client.constants.Constants.JEDI_DEFAULT_RETRYER_PATH;
+
 /**
  * @author 80234613 唐圆
  * @date 2021/12/22 14:36
@@ -131,6 +133,7 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
         taskProperty.setLastUpdatedUser(operator);
         taskProperty.setHost(host);
         taskProperty.setPersistent(true);
+        taskProperty.setInitialized(true);
         return taskProperty;
     }
 
@@ -139,7 +142,7 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
         String path = this.jediProperty.getPersistence().getRetryer().getPath();
         // todo 健壮性
         if (StringUtils.isBlank(path)) {
-            path = "jedi/tasks/retry";
+            path = JEDI_DEFAULT_RETRYER_PATH.substring(1);
         } else if (path.startsWith("/")) {
             path = path.substring(1);
         }

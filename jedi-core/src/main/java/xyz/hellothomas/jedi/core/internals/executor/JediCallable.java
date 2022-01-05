@@ -17,13 +17,11 @@ import java.util.concurrent.Callable;
 public class JediCallable<V> implements Callable<V> {
     private static final Logger LOGGER = LoggerFactory.getLogger(JediCallable.class);
     private final Callable<V> callable;
-    private final AsyncAttributes asyncAttributes;
     private final TaskProperty taskProperty;
 
-    public JediCallable(Callable<V> callable) {
+    public JediCallable(Callable<V> callable, TaskProperty taskProperty) {
         this.callable = callable;
-        this.asyncAttributes = AsyncContextHolder.getAsyncAttributes();
-        this.taskProperty = (TaskProperty) asyncAttributes.getAttribute(TaskProperty.class.getName());
+        this.taskProperty = taskProperty.copy();
     }
 
     @Override
