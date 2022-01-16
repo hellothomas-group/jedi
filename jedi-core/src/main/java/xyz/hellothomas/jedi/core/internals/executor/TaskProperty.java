@@ -23,6 +23,7 @@ public class TaskProperty {
     private boolean recoverable;
     private boolean recovered;
     private String host;
+    private String machineId;
     private String traceId;
     private boolean byRetryer;
     private String previousId;
@@ -111,6 +112,10 @@ public class TaskProperty {
 
     public String getHost() {
         return host;
+    }
+
+    public String getMachineId() {
+        return machineId;
     }
 
     public String getTraceId() {
@@ -225,6 +230,10 @@ public class TaskProperty {
         this.host = host;
     }
 
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
+    }
+
     public void setTraceId(String traceId) {
         this.traceId = traceId;
     }
@@ -284,6 +293,7 @@ public class TaskProperty {
         taskProperty.setRecoverable(this.recoverable);
         taskProperty.setRecovered(this.recovered);
         taskProperty.setHost(this.host);
+        taskProperty.setMachineId(this.machineId);
         taskProperty.setTraceId(this.traceId);
         taskProperty.setByRetryer(this.byRetryer);
         taskProperty.setPreviousId(this.previousId);

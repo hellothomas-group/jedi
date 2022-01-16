@@ -34,12 +34,12 @@ public class NullPersistentService implements PersistenceService {
     }
 
     @Override
-    public long queryCountByStatusAndRecoverable(String host, int status, boolean recoverable, LocalDateTime appInitTime, String dataSourceName) {
+    public long queryCountByStatusAndRecoverable(String machineId, int status, boolean recoverable, LocalDateTime appInitTime, String dataSourceName) {
         throw new NullPointerException("No Available PersistenceServiceImpl");
     }
 
     @Override
-    public List<JediTaskExecution> queryPageByStatusAndRecoverable(String host, int status, boolean recoverable, LocalDateTime appInitTime, int pageNum,
+    public List<JediTaskExecution> queryPageByStatusAndRecoverable(String machineId, int status, boolean recoverable, LocalDateTime appInitTime, int pageNum,
                                                                    int pageSize,
                                                                    String dataSourceName) {
         throw new NullPointerException("No Available PersistenceServiceImpl");

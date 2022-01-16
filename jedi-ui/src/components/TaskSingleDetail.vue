@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-header>
+    <el-header style="line-height: 40px">
       <div class="block" style="text-align: left;margin-left: 20px">
         <el-form :inline="true" :model="queryTaskDetailForm" class="demo-form-inline" :rules="queryTaskDetailRules" ref="queryTaskDetailForm">
           <el-form-item label="任务ID" prop="inputTaskId">
@@ -156,12 +156,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.el-header {
-  color: #333;
-  text-align: center;
-  line-height: 40px;
-}
-
 .my-label {
   width: 12%;
 }

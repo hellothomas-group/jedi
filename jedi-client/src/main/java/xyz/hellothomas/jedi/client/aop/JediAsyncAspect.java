@@ -189,6 +189,7 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         taskProperty.setMethodArguments(JsonUtil.serialize(methodArguments));
         taskProperty.setRecoverable(jediAsync.recoverable());
         taskProperty.setHost(host);
+        taskProperty.setMachineId(host);
         taskProperty.setPersistent(true);
         log.trace("TaskProperty:{}", taskProperty);
     }

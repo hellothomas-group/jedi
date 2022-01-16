@@ -49,6 +49,11 @@ public class JediProperty {
     private String appId;
 
     /**
+     * 应用密钥
+     */
+    private String appKey;
+
+    /**
      * 线程池名称集合
      * <p>
      * Use the dashed notation to specify each executor, that is all lower case with a "-"

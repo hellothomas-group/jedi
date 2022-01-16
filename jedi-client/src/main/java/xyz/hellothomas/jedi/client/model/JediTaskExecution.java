@@ -98,17 +98,22 @@ public class JediTaskExecution {
     /**
      * recoverable
      */
-    private boolean recoverable;
+    private boolean isRecoverable;
 
     /**
      * recovered
      */
-    private boolean recovered;
+    private boolean isRecovered;
 
     /**
      * host
      */
     private String host;
+
+    /**
+     * machineId
+     */
+    private String machineId;
 
     /**
      * traceId
@@ -118,7 +123,7 @@ public class JediTaskExecution {
     /**
      * byRetryer
      */
-    private boolean byRetryer;
+    private boolean isByRetryer;
 
     /**
      * previousId

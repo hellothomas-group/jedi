@@ -58,11 +58,17 @@ public class DefaultRecoverTaskService implements RecoverTaskService, Applicatio
         this.applicationContext = event.getApplicationContext();
         this.appInitTime = this.applicationContext.getBean(JediConfig.class).getAppInitTime();
 
-        Map<String, JediThreadPoolExecutor> jediThreadPoolExecutorMap =
-                event.getApplicationContext().getBeansOfType(JediThreadPoolExecutor.class);
-        String[] executorNames = jediThreadPoolExecutorMap.keySet().toArray(new String[0]);
-        // 选第一个线程池
-        JediThreadPoolExecutor jediThreadPoolExecutor = jediThreadPoolExecutorMap.get(executorNames[0]);
+        String recoverExecutor = jediProperty.getPersistence().getRecover().getExecutor();
+        JediThreadPoolExecutor jediThreadPoolExecutor;
+        if (StringUtils.isBlank(recoverExecutor)) {
+            Map<String, JediThreadPoolExecutor> jediThreadPoolExecutorMap =
+                    event.getApplicationContext().getBeansOfType(JediThreadPoolExecutor.class);
+            String[] executorNames = jediThreadPoolExecutorMap.keySet().toArray(new String[0]);
+            // 选第一个线程池
+            jediThreadPoolExecutor = jediThreadPoolExecutorMap.get(executorNames[0]);
+        } else {
+            jediThreadPoolExecutor = applicationContext.getBean(recoverExecutor, JediThreadPoolExecutor.class);
+        }
 
         List<String> dataSourceNameList;
         String dataSourceNames = jediProperty.getPersistence().getRecover().getDataSourceNames();

@@ -57,6 +57,13 @@ public abstract class AbstractNotification {
     @Length(max = 15)
     private String host;
 
+    /**
+     * 消息生成机器ID
+     */
+    @NotBlank
+    @Length(max = 15)
+    private String machineId;
+
     public String getId() {
         return id;
     }
@@ -97,6 +104,14 @@ public abstract class AbstractNotification {
         this.host = host;
     }
 
+    public String getMachineId() {
+        return machineId;
+    }
+
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
+    }
+
     public LocalDateTime getRecordTime() {
         return recordTime;
     }
@@ -109,6 +124,6 @@ public abstract class AbstractNotification {
     public String toString() {
         return "AbstractNotification(id=" + this.getId() + ", appId=" + this.getAppId() + ", namespace" +
                 "=" + this.getNamespace() + ", messageType=" + this.getMessageType() + ", recordTime=" + this.getRecordTime() +
-                ", host=" + this.getHost() + ")";
+                ", host=" + this.getHost() + ", machineId=" + this.getMachineId() + ")";
     }
 }

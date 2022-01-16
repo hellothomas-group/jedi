@@ -60,6 +60,11 @@ public class JediPersistenceProperty {
         private boolean enable;
 
         /**
+         * 执行自恢复任务的线程池
+         */
+        private String executor;
+
+        /**
          * 需自恢复的数据源名称集合
          */
         private String dataSourceNames;
