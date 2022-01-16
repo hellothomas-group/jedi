@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import xyz.hellothomas.jedi.consumer.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.consumer.api.dto.PageResult;
+import xyz.hellothomas.jedi.consumer.common.enums.ConsumerErrorCodeEnum;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTask;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessage;
 import xyz.hellothomas.jedi.consumer.domain.ExecutorTaskMessageExample;
@@ -15,6 +16,7 @@ import xyz.hellothomas.jedi.consumer.infrastructure.mapper.ExecutorTaskMessageMa
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.enums.MessageType;
 import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
+import xyz.hellothomas.jedi.core.exception.BusinessException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -140,6 +142,14 @@ public class ExecutorTaskMsgService implements NotificationService<ExecutorTaskN
                 .pageNum(pageInfo.getPageNum())
                 .pageSize(pageInfo.getPageSize())
                 .build();
+    }
+
+    public ExecutorTaskMessage findById(String taskId) {
+        ExecutorTaskMessage executorTaskMessage = executorTaskMessageMapper.selectByPrimaryKey(taskId);
+        if (executorTaskMessage == null) {
+            throw new BusinessException(ConsumerErrorCodeEnum.TASK_NOT_EXIST);
+        }
+        return executorTaskMessage;
     }
 
     public ExecutorTaskStatistics genTaskStatistics(String namespaceName, String appId, String executorName,

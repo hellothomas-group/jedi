@@ -15,7 +15,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "echarts": "^4.9.0",
-    "element-ui": "^2.15.2",
+    "element-ui": "^2.15.6",
     "prettier": "^1.12.1",
     "vue": "^2.5.2",
     "vue-axios": "^3.2.4",

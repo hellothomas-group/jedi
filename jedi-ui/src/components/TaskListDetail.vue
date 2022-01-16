@@ -2,10 +2,10 @@
   <div>
     <el-header>
       <div class="block" style="text-align: left;margin-left: 20px">
-        <el-form :inline="true" :model="queryTaskDetailForm" class="demo-form-inline" :rules="queryTaskDetailRules" ref="queryTaskDetailForm">
+        <el-form :inline="true" :model="queryTaskDetailsForm" class="demo-form-inline" :rules="queryTaskDetailRules" ref="queryTaskDetailsForm">
           <el-form-item label="日期" prop="queryDate">
             <el-date-picker
-              v-model="queryTaskDetailForm.queryDate"
+              v-model="queryTaskDetailsForm.queryDate"
               type="daterange"
               align="right"
               unlink-panels
@@ -16,10 +16,10 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="任务名称" prop="inputTaskName">
-            <el-input v-model="queryTaskDetailForm.inputTaskName" placeholder="请输入任务名称" clearable></el-input>
+            <el-input v-model="queryTaskDetailsForm.inputTaskName" placeholder="请输入任务名称" clearable></el-input>
           </el-form-item>
           <el-form-item label="执行结果" prop="executeResult">
-            <el-select v-model="queryTaskDetailForm.executeResult" placeholder="执行结果" clearable="">
+            <el-select v-model="queryTaskDetailsForm.executeResult" placeholder="执行结果" clearable="">
               <el-option
                 v-for="item in executeResultOptions"
                 :key="item.value"
@@ -31,7 +31,7 @@
           <el-form-item>
             <el-button
               type="primary"
-              @click="submitQueryTaskList('queryTaskDetailForm')" style="margin-left: 50px;">查询
+              @click="submitQueryTaskList('queryTaskDetailsForm')" style="margin-left: 50px;">查询
             </el-button>
           </el-form-item>
           <el-form-item>
@@ -42,7 +42,7 @@
           </el-form-item>
           <div>
             <el-form-item label="任务附加信息" prop="inputTaskExtraData">
-              <el-input v-model="queryTaskDetailForm.inputTaskExtraData" placeholder="请输入任务附加信息" clearable></el-input>
+              <el-input v-model="queryTaskDetailsForm.inputTaskExtraData" placeholder="请输入任务附加信息" clearable></el-input>
             </el-form-item>
           </div>
         </el-form>
@@ -60,6 +60,9 @@
               label="任务ID"
               min-width="130"
               prop="id">
+              <template slot-scope="scope">
+                <router-link :to="{path:'/task/single-detail', query:{namespace:namespaceName,appId:appId,executor:executorName,taskId:scope.row.id}}">{{scope.row.id}}</router-link>
+              </template>
             </el-table-column>
             <el-table-column
               label="任务名称"
@@ -119,20 +122,27 @@
                   placeholder="输入任务附加信息搜索"/>
               </template>
               <template slot-scope="scope">
-                <el-tag type="warning" effect="dark" v-if="scope.row.status !== 2 && scope.row.isRetried">重试Id:
-                  {{scope.row.retryId}}</el-tag>
+                <el-popover trigger="hover" placement="top" style="text-align: center;margin-right: 30%">
+                  <p>
+                    新任务ID: <router-link :to="{path:'/task/single-detail', query:{namespace:namespaceName,appId:appId,executor:executorName,taskId:scope.row.retryId}}">{{scope.row.retryId}}</router-link>
+                  </p>
+                  <div slot="reference" class="name-wrapper">
+                    <el-tag size="medium"
+                            v-if="scope.row.status !== 2 && scope.row.isRetried">已重试</el-tag>
+                  </div>
+                </el-popover>
                 <el-button
                   type="danger"
                   size="mini"
                   v-if="!scope.row.isByRetryer && scope.row.isPersistent && scope.row.status !== 2 &&
                   !scope.row.isRetried"
-                  @click="toRetryTask(scope.$index, scope.row)" style="margin-right: 50%">重试</el-button>
+                  @click="toRetryTask(scope.$index, scope.row)" style="margin-left: 10%">重试</el-button>
                 <el-button
                   type="danger"
                   size="mini"
                   v-if="scope.row.isByRetryer && scope.row.isPersistent && scope.row.status !== 2 &&
                   !scope.row.isRetried"
-                  @click="toRetryTask(scope.$index, scope.row)" style="margin-right: 50%">再次重试</el-button>
+                  @click="toRetryTask(scope.$index, scope.row)" style="margin-left: 10%">再次重试</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -212,7 +222,7 @@ export default {
           }
         }]
       },
-      queryTaskDetailForm: {
+      queryTaskDetailsForm: {
         queryDate: [new Date(format(new Date(), 'yyyy/MM/dd')), new Date()],
         inputTaskName: '',
         inputTaskExtraData: '',
@@ -261,12 +271,12 @@ export default {
       this.appId = this.$route.query.appId
       this.executorName = this.$route.query.executor
       if (this.$route.query.taskDate) {
-        this.queryTaskDetailForm.queryDate[0] = new Date(this.$route.query.taskDate.replace(/-/g, '/'))
-        this.queryTaskDetailForm.queryDate[1] = new Date(this.queryTaskDetailForm.queryDate[0].getTime() + 3600 *
+        this.queryTaskDetailsForm.queryDate[0] = new Date(this.$route.query.taskDate.replace(/-/g, '/'))
+        this.queryTaskDetailsForm.queryDate[1] = new Date(this.queryTaskDetailsForm.queryDate[0].getTime() + 3600 *
           1000 * 24 - 1)
       }
       if (this.$route.query.taskName) {
-        this.queryTaskDetailForm.inputTaskName = this.$route.query.taskName
+        this.queryTaskDetailsForm.inputTaskName = this.$route.query.taskName
         this.asyncQueryTaskList()
       }
     }
@@ -284,17 +294,17 @@ export default {
   methods: {
     asyncQueryTaskList () {
       console.log('asyncQueryTaskList')
-      console.log(this.queryTaskDetailForm.inputTaskName)
+      console.log(this.queryTaskDetailsForm.inputTaskName)
 
       this.axios.get('/consumer/namespaces/' + this.namespaceName + '/apps/' + this.appId + '/executors/' +
         this.executorName + '/task-details', {
         params: {
-          taskName: this.queryTaskDetailForm.inputTaskName,
-          taskExtraData: (this.queryTaskDetailForm.inputTaskExtraData === undefined ||
-            this.queryTaskDetailForm.inputTaskExtraData.trim() === '') ? undefined : this.queryTaskDetailForm.inputTaskExtraData.trim(),
-          isSuccess: this.queryTaskDetailForm.executeResult === undefined ? undefined : this.queryTaskDetailForm.executeResult,
-          startTime: format(this.queryTaskDetailForm.queryDate[0], 'yyyy-MM-dd HH:mm:ss'),
-          endTime: format(this.queryTaskDetailForm.queryDate[1], 'yyyy-MM-dd HH:mm:ss'),
+          taskName: this.queryTaskDetailsForm.inputTaskName,
+          taskExtraData: (this.queryTaskDetailsForm.inputTaskExtraData === undefined ||
+            this.queryTaskDetailsForm.inputTaskExtraData.trim() === '') ? undefined : this.queryTaskDetailsForm.inputTaskExtraData.trim(),
+          isSuccess: this.queryTaskDetailsForm.executeResult === undefined ? undefined : this.queryTaskDetailsForm.executeResult,
+          startTime: format(this.queryTaskDetailsForm.queryDate[0], 'yyyy-MM-dd HH:mm:ss'),
+          endTime: format(this.queryTaskDetailsForm.queryDate[1], 'yyyy-MM-dd HH:mm:ss'),
           pageNum: this.pagination.pageNum,
           pageSize: this.pagination.pageSize
         }
@@ -312,9 +322,9 @@ export default {
       console.log(formName)
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.queryTaskDetailForm.queryDate[1] = new
-          Date(new Date(format(this.queryTaskDetailForm.queryDate[1], 'yyyy/MM/dd')).getTime() + 3600 * 1000 * 24 - 1)
-          if (this.queryTaskDetailForm.inputTaskName && this.queryTaskDetailForm.inputTaskName.trim() !== '') {
+          this.queryTaskDetailsForm.queryDate[1] = new
+          Date(new Date(format(this.queryTaskDetailsForm.queryDate[1], 'yyyy/MM/dd')).getTime() + 3600 * 1000 * 24 - 1)
+          if (this.queryTaskDetailsForm.inputTaskName && this.queryTaskDetailsForm.inputTaskName.trim() !== '') {
             this.asyncQueryTaskList()
           }
         } else {

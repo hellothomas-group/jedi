@@ -35,24 +35,24 @@ public class ExecutorTaskController {
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/task-details")
-    public ApiResponse<PageResult<ExecutorTaskDetailResponse>> findTaskDetail(@PathVariable("namespaceName") String namespaceName,
-                                                                              @PathVariable("appId") String appId,
-                                                                              @PathVariable("executorName") String executorName,
-                                                                              @RequestParam(value = "taskName") String taskName,
-                                                                              @RequestParam(value = "taskExtraData",
-                                                                                      required = false) String taskExtraData,
-                                                                              @RequestParam(value = "isSuccess",
-                                                                                      required =
-                                                                                              false) Boolean isSuccess,
-                                                                              @RequestParam(value = "instanceIp",
-                                                                                      required =
-                                                                                              false) String instanceIp,
-                                                                              @RequestParam("startTime") @DateTimeFormat(pattern = "yyyy-MM-dd " +
-                                                                                      "HH:mm:ss") LocalDateTime startTime,
-                                                                              @RequestParam("endTime") @DateTimeFormat(pattern
-                                                                                      = "yyyy-MM-dd " +
-                                                                                      "HH:mm:ss") LocalDateTime endTime,
-                                                                              PageHelperRequest pageHelperRequest) {
+    public ApiResponse<PageResult<ExecutorTaskDetailResponse>> findTaskDetails(@PathVariable("namespaceName") String namespaceName,
+                                                                               @PathVariable("appId") String appId,
+                                                                               @PathVariable("executorName") String executorName,
+                                                                               @RequestParam(value = "taskName") String taskName,
+                                                                               @RequestParam(value = "taskExtraData",
+                                                                                       required = false) String taskExtraData,
+                                                                               @RequestParam(value = "isSuccess",
+                                                                                       required =
+                                                                                               false) Boolean isSuccess,
+                                                                               @RequestParam(value = "instanceIp",
+                                                                                       required =
+                                                                                               false) String instanceIp,
+                                                                               @RequestParam("startTime") @DateTimeFormat(pattern = "yyyy-MM-dd " +
+                                                                                       "HH:mm:ss") LocalDateTime startTime,
+                                                                               @RequestParam("endTime") @DateTimeFormat(pattern
+                                                                                       = "yyyy-MM-dd " +
+                                                                                       "HH:mm:ss") LocalDateTime endTime,
+                                                                               PageHelperRequest pageHelperRequest) {
         PageResult<ExecutorTaskMessage> taskMessagePageResult =
                 executorTaskMsgService.findByTaskNameAndRecordTime(namespaceName
                         , appId, executorName, taskName, taskExtraData, isSuccess, instanceIp, startTime, endTime,
@@ -61,6 +61,16 @@ public class ExecutorTaskController {
                 transform2PageResult(taskMessagePageResult);
 
         return ApiResponse.success(executorStatusResponsePageResult);
+    }
+
+    @GetMapping("/tasks/{taskId}")
+    public ApiResponse<ExecutorTaskDetailResponse> findTaskDetail(@PathVariable("taskId") String taskId) {
+        ExecutorTaskMessage executorTaskMessage =
+                executorTaskMsgService.findById(taskId);
+        ExecutorTaskDetailResponse executorTaskDetailResponse =
+                LocalBeanUtils.transform(ExecutorTaskDetailResponse.class, executorTaskMessage);
+
+        return ApiResponse.success(executorTaskDetailResponse);
     }
 
     @GetMapping("/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/task/{taskName}/statistics")
