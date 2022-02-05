@@ -96,11 +96,12 @@ export default {
       queueSize: [],
       poolActivation: [],
       rejectCount: [],
+      maxPoolSize: [],
       // 折线图echarts初始化选项
       echartsOption: {
         legend: {
           top: 10,
-          data: ['队列已使用容量', '线程池活跃度', '拒绝任务数']
+          data: ['队列已使用容量', '线程池活跃度', '拒绝任务数', '最大线程数']
         },
         grid: [
           {
@@ -201,6 +202,29 @@ export default {
             splitLine: {
               show: false
             }
+          },
+          {
+            gridIndex: 1,
+            // inverse: true,
+            show: true,
+            name: '最大线程数',
+            nameTextStyle: {
+              fontWeight: 'bolder',
+              fontSize: 12
+            },
+            type: 'value',
+            scale: true,
+            min: 0,
+            max: function (value) {
+              return value.max + 5
+            },
+            axisLabel: {
+              interval: 'auto',
+              formatter: '{value}'
+            },
+            splitLine: {
+              show: false
+            }
           }
         ],
         tooltip: {
@@ -257,6 +281,14 @@ export default {
             data: this.rejectCount, // 绑定实时数据数组
             xAxisIndex: 1,
             yAxisIndex: 2
+          },
+          {
+            name: '最大线程数',
+            type: 'line',
+            smooth: true,
+            data: this.rejectCount, // 绑定实时数据数组
+            xAxisIndex: 1,
+            yAxisIndex: 3
           }
         ]
       },
@@ -320,6 +352,7 @@ export default {
       this.queueSize = []
       this.poolActivation = []
       this.rejectCount = []
+      this.maxPoolSize = []
       this.pagination.total = 0
       this.pagination.pageNum = 1
 
@@ -394,12 +427,14 @@ export default {
         this.queueSize.push(this.buildDateAndValue(item.recordTime, item.queueSize))
         this.poolActivation.push(this.buildDateAndValue(item.recordTime, item.poolActivation))
         this.rejectCount.push(this.buildDateAndValue(item.recordTime, item.rejectCount))
+        this.maxPoolSize.push(this.buildDateAndValue(item.recordTime, item.maxPoolSize))
       })
 
       // 重新将数组赋值给echarts选项
       this.echartsOption.series[0].data = this.queueSize
       this.echartsOption.series[1].data = this.poolActivation
       this.echartsOption.series[2].data = this.rejectCount
+      this.echartsOption.series[3].data = this.maxPoolSize
       this.myChart.setOption(this.echartsOption)
     },
     asyncQueryInstance (namespaceName, appId, executorName) {

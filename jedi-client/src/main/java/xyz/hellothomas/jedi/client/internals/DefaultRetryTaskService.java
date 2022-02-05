@@ -130,6 +130,7 @@ public class DefaultRetryTaskService implements RetryTaskService, ApplicationCon
         taskProperty.setExitMessage(null);
         taskProperty.setByRetryer(true);
         taskProperty.setPreviousId(jediTaskExecution.getId());
+        taskProperty.setExecutedByParentTaskThread(false);
         taskProperty.setLastUpdatedUser(operator);
         taskProperty.setHost(host);
         taskProperty.setMachineId(host);

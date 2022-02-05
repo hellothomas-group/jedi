@@ -112,6 +112,7 @@ public abstract class AbstractNotificationService {
         executorTaskNotification.setIsByRetryer(taskProperty.isByRetryer());
         executorTaskNotification.setPreviousId(taskProperty.getPreviousId());
         executorTaskNotification.setParentId(taskProperty.getParentId());
+        executorTaskNotification.setIsExecutedByParentTaskThread(taskProperty.isExecutedByParentTaskThread());
         executorTaskNotification.setDataSourceName(taskProperty.getDataSourceName());
         executorTaskNotification.setIsPersistent(taskProperty.isPersistent());
         executorTaskNotification.setUpdateUser(taskProperty.getLastUpdatedUser());

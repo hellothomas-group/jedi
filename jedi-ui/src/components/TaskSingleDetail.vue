@@ -31,16 +31,16 @@
             <el-descriptions-item label="数据源名称">{{this.taskData.dataSourceName}}</el-descriptions-item>
           </el-descriptions>
           <el-descriptions style="margin-top:20px" class="margin-top" title="任务执行信息" border>
-            <el-descriptions-item label="任务等待时间" label-class-name="my-label" content-class-name="my-content">{{this.taskData.waitTime}}ms</el-descriptions-item>
-            <el-descriptions-item label="任务执行时间" label-class-name="my-label" content-class-name="my-content">{{this.taskData.executionTime}}ms</el-descriptions-item>
+            <el-descriptions-item label="任务等待时间(ms)" label-class-name="my-label" content-class-name="my-content">{{this.taskData.waitTime}}</el-descriptions-item>
+            <el-descriptions-item label="任务执行时间(ms)" label-class-name="my-label" content-class-name="my-content">{{this.taskData.executionTime}}</el-descriptions-item>
             <el-descriptions-item label="任务结束时间" label-class-name="my-label" content-class-name="my-content">{{this.taskData.endTime}}</el-descriptions-item>
             <el-descriptions-item label="任务状态">{{taskStatusFormatter(this.taskData.status)}}</el-descriptions-item>
             <el-descriptions-item label="返回码">{{this.taskData.exitCode}}</el-descriptions-item>
             <el-descriptions-item label="返回信息">{{this.taskData.exitMessage}}</el-descriptions-item>
-            <el-descriptions-item label="主机">{{this.taskData.host}}</el-descriptions-item>
-            <el-descriptions-item label="tracdId">{{this.taskData.traceId}}</el-descriptions-item>
-            <el-descriptions-item label="父任务ID">{{this.taskData.parentId}}</el-descriptions-item>
+            <el-descriptions-item label="是否在父任务线程执行">{{this.taskData.isExecutedByParentTaskThread}}</el-descriptions-item>
             <el-descriptions-item label="是否故障恢复触发">{{this.taskData.isRecovered}}</el-descriptions-item>
+            <el-descriptions-item label="tracdId">{{this.taskData.traceId}}</el-descriptions-item>
+            <el-descriptions-item label="主机">{{this.taskData.host}}</el-descriptions-item>
             <el-descriptions-item label="记录时间">{{this.taskData.recordTime}}</el-descriptions-item>
           </el-descriptions>
           <el-descriptions style="margin-top:20px" class="margin-top" title="重试信息" border>
@@ -80,8 +80,8 @@ export default {
       taskData: {
         id: undefined,
         taskName: undefined,
-        waitTime: 0,
-        executionTime: 0,
+        waitTime: undefined,
+        executionTime: undefined,
         status: undefined,
         exitCode: undefined,
         exitMessage: undefined,
@@ -94,6 +94,7 @@ export default {
         isByRetryer: undefined,
         previousId: undefined,
         parentId: undefined,
+        isExecutedByParentTaskThread: undefined,
         dataSourceName: undefined,
         isPersistent: undefined,
         recordTime: undefined,
@@ -110,7 +111,9 @@ export default {
       this.appId = this.$route.query.appId
       this.executorName = this.$route.query.executor
       this.queryTaskDetailForm.inputTaskId = this.$route.query.taskId
-      this.asyncQueryTaskDetail()
+      if (this.queryTaskDetailForm.inputTaskId && this.queryTaskDetailForm.inputTaskId.trim() !== '') {
+        this.asyncQueryTaskDetail()
+      }
     }
   },
   methods: {
@@ -142,12 +145,14 @@ export default {
       })
     },
     taskStatusFormatter (taskStatus) {
-      if (taskStatus === 2) {
-        return '成功'
-      } else if (taskStatus === 4) {
-        return '拒绝'
-      } else {
-        return '失败'
+      if (taskStatus) {
+        if (taskStatus === 2) {
+          return '成功'
+        } else if (taskStatus === 4) {
+          return '拒绝'
+        } else {
+          return '失败'
+        }
       }
     }
   }

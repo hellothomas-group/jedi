@@ -90,6 +90,11 @@ public class ExecutorTaskNotification extends AbstractNotification {
     private String parentId;
 
     /**
+     * 1: true, 0: false
+     */
+    private boolean isExecutedByParentTaskThread;
+
+    /**
      * dataSourceName
      */
     private String dataSourceName;
@@ -164,6 +169,10 @@ public class ExecutorTaskNotification extends AbstractNotification {
         return parentId;
     }
 
+    public boolean getIsExecutedByParentTaskThread() {
+        return isExecutedByParentTaskThread;
+    }
+
     public String getDataSourceName() {
         return this.dataSourceName;
     }
@@ -236,6 +245,10 @@ public class ExecutorTaskNotification extends AbstractNotification {
         this.parentId = parentId;
     }
 
+    public void setIsExecutedByParentTaskThread(boolean executedByParentTaskThread) {
+        isExecutedByParentTaskThread = executedByParentTaskThread;
+    }
+
     public void setDataSourceName(String dataSourceName) {
         this.dataSourceName = dataSourceName;
     }
@@ -251,6 +264,6 @@ public class ExecutorTaskNotification extends AbstractNotification {
     @Override
     public String toString() {
         return "ExecutorTaskNotification(taskName=" + this.getTaskName() + ", poolName=" + this.getPoolName() + ", " +
-                "waitTime=" + this.getWaitTime() + ", executionTime=" + this.getExecutionTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", taskExtraData=" + this.getTaskExtraData() + ", endTime=" + this.getEndTime() + ", isRecoverable=" + this.getIsRecoverable() + ", isRecovered=" + this.getIsRecovered() + ", traceId=" + this.getTraceId() + ", isByRetryer=" + this.getIsByRetryer() + ", previousId=" + this.getPreviousId() + ", parentId=" + this.getParentId() + ", dataSourceName=" + this.getDataSourceName() + ", isPersistent=" + this.getIsPersistent() + ", updateUser=" + this.getUpdateUser() + ")";
+                "waitTime=" + this.getWaitTime() + ", executionTime=" + this.getExecutionTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", taskExtraData=" + this.getTaskExtraData() + ", endTime=" + this.getEndTime() + ", isRecoverable=" + this.getIsRecoverable() + ", isRecovered=" + this.getIsRecovered() + ", traceId=" + this.getTraceId() + ", isByRetryer=" + this.getIsByRetryer() + ", previousId=" + this.getPreviousId() + ", parentId=" + this.getParentId() + ", isExecutedByParentTaskThread=" + this.getIsExecutedByParentTaskThread() + ", dataSourceName=" + this.getDataSourceName() + ", isPersistent=" + this.getIsPersistent() + ", updateUser=" + this.getUpdateUser() + ")";
     }
 }

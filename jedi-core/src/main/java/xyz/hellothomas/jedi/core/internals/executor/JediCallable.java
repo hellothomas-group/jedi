@@ -28,11 +28,21 @@ public class JediCallable<V> implements Callable<V> {
     public V call() throws Exception {
         if (taskProperty.getStartTime() == null) {
             // 任务开始
+            AsyncAttributes asyncAttributes = AsyncContextHolder.getAsyncAttributes();
+            if (asyncAttributes == null) {
+                asyncAttributes = new AsyncAttributes();
+            } else {
+                TaskProperty executedByParentTaskProperty =
+                        (TaskProperty) asyncAttributes.getAttribute(TaskProperty.class.getName());
+                if (executedByParentTaskProperty != null) {
+                    taskProperty.setExecutedByParentTaskThread(executedByParentTaskProperty.isExecutedByParentTaskThread());
+                }
+            }
+
             taskProperty.setStartTime(LocalDateTime.now());
             taskProperty.setStatus(TaskStatusEnum.DOING.getValue());
             LOGGER.trace("TaskProperty:{}", taskProperty);
 
-            AsyncAttributes asyncAttributes = new AsyncAttributes();
             asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
             AsyncContextHolder.setAsyncAttributes(asyncAttributes);
         }

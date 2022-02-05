@@ -6,19 +6,14 @@ import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorShutdownNotification;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTickerNotification;
-import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
 import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;
 import xyz.hellothomas.jedi.core.internals.message.NullNotificationService;
 import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
 import xyz.hellothomas.jedi.core.utils.SleepUtil;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
-
-import static xyz.hellothomas.jedi.core.constants.Constants.JEDI_DEFAULT_TASK_NAME;
 
 /**
  * @author Thomas
@@ -150,44 +145,14 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
     }
 
     @Override
-    protected void beforeExecute(Thread t, Runnable r) {
-        // 任务开始
-        TaskProperty taskProperty = initDefaultTaskProperty();
-        AsyncAttributes asyncAttributes = new AsyncAttributes();
-        asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
-        AsyncContextHolder.setAsyncAttributes(asyncAttributes);
-        super.beforeExecute(t, r);
-    }
-
-    @Override
     protected void afterExecute(Runnable r, Throwable t) {
-        TaskProperty taskProperty =
-                (TaskProperty) AsyncContextHolder.getAsyncAttributes().getAttribute(TaskProperty.class.getName());
-        if (taskProperty.getEndTime() == null) {
-            // support原生Callable/Runnable
-            taskProperty.setEndTime(LocalDateTime.now());
-            Throwable throwable = t;
-            if (r instanceof RunnableFuture) {
-                try {
-                    ((RunnableFuture) r).get();
-                } catch (Exception e) {
-                    throwable = e;
-                }
-            }
-            if (throwable == null) {
-                taskProperty.setStatus(TaskStatusEnum.SUCCESS.getValue());
-            } else {
-                LOGGER.error(String.format("taskId:%s, taskName：%s, 执行异常!", taskProperty.getId(),
-                        taskProperty.getTaskName()), throwable);
-                taskProperty.setStatus(TaskStatusEnum.FAIL.getValue());
-                String exceptionString = throwable.getMessage();
-                if (exceptionString != null) {
-                    exceptionString = exceptionString.length() > 300 ? exceptionString.substring(0,
-                            300) : exceptionString;
-                    taskProperty.setExitMessage(exceptionString);
-                }
-            }
-            LOGGER.trace("TaskProperty:{}", taskProperty);
+        AsyncAttributes asyncAttributes = AsyncContextHolder.getAsyncAttributes();
+        if (asyncAttributes == null) {
+            return;
+        }
+        TaskProperty taskProperty = (TaskProperty) asyncAttributes.getAttribute(TaskProperty.class.getName());
+        if (taskProperty == null) {
+            return;
         }
 
         if (!(notificationService instanceof NullNotificationService)) {
@@ -195,6 +160,12 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
                     this.notificationService.buildExecutorTaskNotification(taskProperty);
             this.notificationService.pushNotification(executorTaskNotification);
         }
+
+        // recover
+        if (taskProperty.getCountDownLatch() != null) {
+            taskProperty.getCountDownLatch().countDown();
+        }
+
         AsyncContextHolder.resetAsyncAttributes();
     }
 
@@ -232,20 +203,6 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
         LOGGER.debug("{} started!", tickerThread.getName());
     }
 
-    private TaskProperty initDefaultTaskProperty() {
-        TaskProperty taskProperty = new TaskProperty();
-        taskProperty.setId(UUID.randomUUID().toString());
-        taskProperty.setExecutorName(this.poolName);
-        taskProperty.setTaskName(JEDI_DEFAULT_TASK_NAME);
-        LocalDateTime currentTime = LocalDateTime.now();
-        taskProperty.setCreateTime(currentTime);
-        taskProperty.setStartTime(currentTime);
-        taskProperty.setStatus(TaskStatusEnum.DOING.getValue());
-        LOGGER.trace("TaskProperty:{}", taskProperty);
-
-        return taskProperty;
-    }
-
     public boolean isToStop() {
         return toStop;
     }
@@ -280,5 +237,81 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
 
     public void setLastRejectCount(long lastRejectCount) {
         this.lastRejectCount = lastRejectCount;
+    }
+
+    /**
+     * A handler for rejected tasks that runs the rejected task
+     * directly in the calling thread of the {@code execute} method,
+     * unless the executor has been shut down, in which case the task
+     * is discarded.
+     */
+    public static class JediCallerRunsPolicy implements RejectedExecutionHandler {
+        /**
+         * Creates a {@code JediCallerRunsPolicy}.
+         */
+        public JediCallerRunsPolicy() {
+        }
+
+        /**
+         * Executes task r in the caller's thread, unless the executor
+         * has been shut down, in which case the task is discarded.
+         *
+         * @param r the runnable task requested to be executed
+         * @param e the executor attempting to execute this task
+         */
+        public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+            if (!e.isShutdown()) {
+                try {
+                    // 任务开始
+                    TaskProperty contextTaskProperty =
+                            (TaskProperty) AsyncContextHolder.getAsyncAttributes().getAttribute(TaskProperty.class.getName());
+                    // parent
+                    if (!contextTaskProperty.isInitialized()) {
+                        TaskProperty taskProperty = new TaskProperty();
+                        taskProperty.setExecutedByParentTaskThread(true);
+                        AsyncAttributes asyncAttributes = new AsyncAttributes();
+                        asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
+                        AsyncContextHolder.setAsyncAttributes(asyncAttributes);
+                    }
+
+                    r.run();
+                } finally {
+                    AsyncAttributes asyncAttributes = AsyncContextHolder.getAsyncAttributes();
+                    if (asyncAttributes == null) {
+                        return;
+                    }
+                    TaskProperty taskProperty =
+                            (TaskProperty) asyncAttributes.getAttribute(TaskProperty.class.getName());
+                    if (taskProperty == null) {
+                        return;
+                    }
+
+                    AbstractNotificationService notificationService =
+                            ((JediThreadPoolExecutor) e).getNotificationService();
+                    if (!(notificationService instanceof NullNotificationService)) {
+                        ExecutorTaskNotification executorTaskNotification =
+                                notificationService.buildExecutorTaskNotification(taskProperty);
+                        notificationService.pushNotification(executorTaskNotification);
+                    }
+
+                    // recover
+                    if (taskProperty.getCountDownLatch() != null) {
+                        taskProperty.getCountDownLatch().countDown();
+                    }
+
+                    if (taskProperty.getParentTaskProperty() == null) {
+                        AsyncContextHolder.resetAsyncAttributes();
+                    } else {
+                        resumeAsyncAttributes(taskProperty.getParentTaskProperty());
+                    }
+                }
+            }
+        }
+
+        private AsyncAttributes resumeAsyncAttributes(TaskProperty parentTaskProperty) {
+            AsyncAttributes asyncAttributes = AsyncContextHolder.getAsyncAttributes();
+            asyncAttributes.setAttribute(TaskProperty.class.getName(), parentTaskProperty);
+            return asyncAttributes;
+        }
     }
 }

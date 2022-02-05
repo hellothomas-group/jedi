@@ -38,12 +38,42 @@ public class SampleController {
         return "提交成功";
     }
 
+    @ApiOperation("submit-no-persist-task")
+    @GetMapping("/submit-no-persist-task")
+    public String submitNoPersistTask(@RequestParam int counts) {
+        long currentTime = System.currentTimeMillis();
+        for (int i = 1; i <= counts; i++) {
+            taskService.runNoPersistTask(currentTime + "-" + i);
+        }
+        return "提交成功";
+    }
+
     @ApiOperation("submit-custom-task")
     @GetMapping("/submit-custom-task")
     public String submitCustomTask(@RequestParam int counts) {
         long currentTime = System.currentTimeMillis();
         for (int i = 1; i <= counts; i++) {
             taskService.runCustomTask(currentTime + "-" + i);
+        }
+        return "提交成功";
+    }
+
+    @ApiOperation("submit-exception-task")
+    @GetMapping("/submit-exception-task")
+    public String submitExceptionTask(@RequestParam int counts) {
+        long currentTime = System.currentTimeMillis();
+        for (int i = 1; i <= counts; i++) {
+            taskService.runExceptionTask(currentTime + "-" + i);
+        }
+        return "提交成功";
+    }
+
+    @ApiOperation("submit-parent-task")
+    @GetMapping("/submit-parent-task")
+    public String submitParentTask(@RequestParam int counts) {
+        long currentTime = System.currentTimeMillis();
+        for (int i = 1; i <= counts; i++) {
+            taskService.runParentTask(currentTime + "-" + i);
         }
         return "提交成功";
     }

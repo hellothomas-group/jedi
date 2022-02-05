@@ -39,9 +39,10 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                         "BEAN_NAME,BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES," +
                         "METHOD_ARGUMENTS,IS_RECOVERABLE,IS_RECOVERED,HOST," +
                         "MACHINE_ID,TRACE_ID,IS_BY_RETRYER,PREVIOUS_ID," +
-                        "PARENT_ID,DATA_SOURCE_NAME,LAST_UPDATED_USER," +
+                        "PARENT_ID,IS_EXECUTED_BY_PARENT_TASK_THREAD,DATA_SOURCE_NAME,LAST_UPDATED_USER," +
                         "LAST_UPDATED_TIME) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
+                        "?)",
                 taskProperty.getId(), taskProperty.getNamespaceName(), taskProperty.getAppId(),
                 taskProperty.getExecutorName(), taskProperty.getTaskName(), taskProperty.getTaskExtraData(),
                 DateTimeUtil.localDateTimeToPattern2(taskProperty.getCreateTime()),
@@ -52,7 +53,8 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                 taskProperty.getMethodParamTypes(), taskProperty.getMethodArguments(), taskProperty.isRecoverable(),
                 taskProperty.isRecovered(), taskProperty.getHost(), taskProperty.getMachineId(),
                 taskProperty.getTraceId(), taskProperty.isByRetryer(), taskProperty.getPreviousId(),
-                taskProperty.getParentId(), taskProperty.getDataSourceName(), taskProperty.getLastUpdatedUser(),
+                taskProperty.getParentId(), taskProperty.isExecutedByParentTaskThread(),
+                taskProperty.getDataSourceName(), taskProperty.getLastUpdatedUser(),
                 DateTimeUtil.getDateTimePattern2());
         log.trace("insert {} row: {}", row, taskProperty);
         return row;
@@ -63,11 +65,12 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         JdbcTemplate jdbcTemplate = getJdbcTemplate(taskProperty.getDataSourceName());
 
         int row = jdbcTemplate.update("UPDATE JEDI_TASK_EXECUTION SET START_TIME = ?, END_TIME = ?, status = ?, " +
-                        "EXIT_CODE = ?, EXIT_MESSAGE = ?, LAST_UPDATED_TIME = ? WHERE ID = ?",
+                        "EXIT_CODE = ?, EXIT_MESSAGE = ?, IS_EXECUTED_BY_PARENT_TASK_THREAD = ?," +
+                        " LAST_UPDATED_TIME = ? WHERE ID = ?",
                 DateTimeUtil.localDateTimeToPattern2(taskProperty.getStartTime()),
                 DateTimeUtil.localDateTimeToPattern2(taskProperty.getEndTime()),
                 taskProperty.getStatus(), taskProperty.getExitCode(), taskProperty.getExitMessage(),
-                DateTimeUtil.getDateTimePattern2(), taskProperty.getId());
+                taskProperty.isExecutedByParentTaskThread(), DateTimeUtil.getDateTimePattern2(), taskProperty.getId());
         log.trace("update {} row: {}", row, taskProperty);
         return row;
     }
@@ -89,7 +92,7 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                         "BEAN_NAME,BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES," +
                         "METHOD_ARGUMENTS,IS_RECOVERABLE,IS_RECOVERED,HOST," +
                         "MACHINE_ID,TRACE_ID,IS_BY_RETRYER,PREVIOUS_ID," +
-                        "PARENT_ID,DATA_SOURCE_NAME,LAST_UPDATED_USER," +
+                        "PARENT_ID,IS_EXECUTED_BY_PARENT_TASK_THREAD,DATA_SOURCE_NAME,LAST_UPDATED_USER," +
                         "LAST_UPDATED_TIME" +
                         " FROM JEDI_TASK_EXECUTION WHERE ID = ?",
                 (rs, rowNum) -> buildJediTaskExecution(rs), taskId);
@@ -114,20 +117,19 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                                                                    LocalDateTime appInitTime, int pageNum,
                                                                    int pageSize, String dataSourceName) {
         JdbcTemplate jdbcTemplate = getJdbcTemplate(dataSourceName);
-        int offset = (pageNum - 1) * pageSize;
         return jdbcTemplate.query("SELECT ID,NAMESPACE_NAME,APP_ID,EXECUTOR_NAME," +
                         "TASK_NAME,TASK_EXTRA_DATA,CREATE_TIME,START_TIME," +
                         "END_TIME,STATUS,EXIT_CODE,EXIT_MESSAGE," +
                         "BEAN_NAME,BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES," +
                         "METHOD_ARGUMENTS,IS_RECOVERABLE,IS_RECOVERED,HOST," +
                         "MACHINE_ID,TRACE_ID,IS_BY_RETRYER,PREVIOUS_ID," +
-                        "PARENT_ID,DATA_SOURCE_NAME,LAST_UPDATED_USER," +
+                        "PARENT_ID,IS_EXECUTED_BY_PARENT_TASK_THREAD,DATA_SOURCE_NAME,LAST_UPDATED_USER," +
                         "LAST_UPDATED_TIME" +
                         " FROM JEDI_TASK_EXECUTION " +
                         "WHERE STATUS = ? AND MACHINE_ID = ? AND IS_RECOVERABLE = ? AND CREATE_TIME <= ? " +
-                        "ORDER BY CREATE_TIME DESC LIMIT ?, ?",
+                        "ORDER BY CREATE_TIME DESC LIMIT ?",
                 (rs, rowNum) -> buildJediTaskExecution(rs), status, machineId, isRecoverable,
-                DateTimeUtil.localDateTimeToPattern2(appInitTime), offset, pageSize);
+                DateTimeUtil.localDateTimeToPattern2(appInitTime), pageSize);
     }
 
     @Override
@@ -207,6 +209,7 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         jediTaskExecution.setByRetryer(rs.getBoolean("IS_BY_RETRYER"));
         jediTaskExecution.setPreviousId(rs.getString("PREVIOUS_ID"));
         jediTaskExecution.setParentId(rs.getString("PARENT_ID"));
+        jediTaskExecution.setExecutedByParentTaskThread(rs.getBoolean("IS_EXECUTED_BY_PARENT_TASK_THREAD"));
         jediTaskExecution.setDataSourceName(rs.getString("DATA_SOURCE_NAME"));
         jediTaskExecution.setLastUpdatedUser(rs.getString("LAST_UPDATED_USER"));
         String lastUpdated = rs.getString("LAST_UPDATED_TIME");

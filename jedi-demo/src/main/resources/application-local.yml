@@ -1,6 +1,13 @@
 server:
   port: 8090
 
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/jedi_demo?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+      &serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+
 swagger:
   enable: true
   base-package: xyz.hellothomas.jedi.demo.api
@@ -25,9 +32,12 @@ jedi:
   namespace: dev #mode为0/1/2时必配置，环境
   app-id: jedi-demo #mode为0/1/2时必配置时必配置，应用名
   persistence:
-    enable: false
+    enable: true
     retryer:
       enable: true
-      path: /jedi/test
     recover:
       enable: true
+      executor: jedi-default-executor
+  executors: jedi-default-executor
+  jedi-default-executor:
+    rejected-execution-handler: xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor$JediCallerRunsPolicy

@@ -96,6 +96,11 @@ public class ExecutorTaskDetailResponse {
     private String parentId;
 
     /**
+     * 1: true, 0: false
+     */
+    private Boolean isExecutedByParentTaskThread;
+
+    /**
      * dataSourceName
      */
     private String dataSourceName;

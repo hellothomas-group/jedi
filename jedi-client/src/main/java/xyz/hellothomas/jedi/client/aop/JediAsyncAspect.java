@@ -96,14 +96,19 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         } else {
             contextTaskProperty =
                     (TaskProperty) AsyncContextHolder.getAsyncAttributes().getAttribute(TaskProperty.class.getName());
+            log.trace("ContextTaskProperty:{}", contextTaskProperty);
             // recover or retry
             if (contextTaskProperty.isInitialized()) {
                 taskProperty = contextTaskProperty.copy();
-                taskProperty.setInitialized(false);
+                // recover
+                taskProperty.setCountDownLatch(contextTaskProperty.getCountDownLatch());
+                log.trace("TaskProperty:{}", taskProperty);
             } else {
                 // parent
                 taskProperty = initTaskProperty(jediThreadPoolExecutor.getPoolName(), taskName, taskExtraData);
                 taskProperty.setParentId(contextTaskProperty.getId());
+                taskProperty.setParentTaskProperty(contextTaskProperty);
+                log.trace("TaskProperty:{}", taskProperty);
             }
         }
 
@@ -159,6 +164,10 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
                 ExecutorTaskNotification executorTaskNotification =
                         notificationService.buildExecutorTaskNotification(taskProperty);
                 notificationService.pushNotification(executorTaskNotification);
+            }
+
+            if (taskProperty.getCountDownLatch() != null) {
+                taskProperty.getCountDownLatch().countDown();
             }
 
             throw e;

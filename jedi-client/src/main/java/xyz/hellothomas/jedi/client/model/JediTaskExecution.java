@@ -136,6 +136,11 @@ public class JediTaskExecution {
     private String parentId;
 
     /**
+     * isExecutedByParentTaskThread
+     */
+    private boolean isExecutedByParentTaskThread;
+
+    /**
      * dataSourceName
      */
     private String dataSourceName;

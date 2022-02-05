@@ -21,6 +21,8 @@ public class ExecutorStatusResponse {
 
     private long rejectCount;
 
+    private int maxPoolSize;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime recordTime;
 }

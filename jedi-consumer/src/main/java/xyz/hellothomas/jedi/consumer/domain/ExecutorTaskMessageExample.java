@@ -1435,6 +1435,66 @@ public class ExecutorTaskMessageExample {
             return (Criteria) this;
         }
 
+        public Criteria andIsExecutedByParentTaskThreadIsNull() {
+            addCriterion("is_executed_by_parent_task_thread is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsExecutedByParentTaskThreadIsNotNull() {
+            addCriterion("is_executed_by_parent_task_thread is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsExecutedByParentTaskThreadEqualTo(Boolean value) {
+            addCriterion("is_executed_by_parent_task_thread =", value, "isExecutedByParentTaskThread");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsExecutedByParentTaskThreadNotEqualTo(Boolean value) {
+            addCriterion("is_executed_by_parent_task_thread <>", value, "isExecutedByParentTaskThread");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsExecutedByParentTaskThreadGreaterThan(Boolean value) {
+            addCriterion("is_executed_by_parent_task_thread >", value, "isExecutedByParentTaskThread");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsExecutedByParentTaskThreadGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("is_executed_by_parent_task_thread >=", value, "isExecutedByParentTaskThread");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsExecutedByParentTaskThreadLessThan(Boolean value) {
+            addCriterion("is_executed_by_parent_task_thread <", value, "isExecutedByParentTaskThread");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsExecutedByParentTaskThreadLessThanOrEqualTo(Boolean value) {
+            addCriterion("is_executed_by_parent_task_thread <=", value, "isExecutedByParentTaskThread");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsExecutedByParentTaskThreadIn(List<Boolean> values) {
+            addCriterion("is_executed_by_parent_task_thread in", values, "isExecutedByParentTaskThread");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsExecutedByParentTaskThreadNotIn(List<Boolean> values) {
+            addCriterion("is_executed_by_parent_task_thread not in", values, "isExecutedByParentTaskThread");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsExecutedByParentTaskThreadBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_executed_by_parent_task_thread between", value1, value2, "isExecutedByParentTaskThread");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsExecutedByParentTaskThreadNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("is_executed_by_parent_task_thread not between", value1, value2, "isExecutedByParentTaskThread");
+            return (Criteria) this;
+        }
+
         public Criteria andDataSourceNameIsNull() {
             addCriterion("data_source_name is null");
             return (Criteria) this;

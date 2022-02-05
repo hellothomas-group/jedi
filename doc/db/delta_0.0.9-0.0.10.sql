@@ -159,11 +159,11 @@ ALTER TABLE jedi_consumer.executor_task_message ADD is_recoverable bit(1) DEFAUL
 ALTER TABLE jedi_consumer.executor_task_message ADD is_recovered bit(1) DEFAULT b'0' NOT NULL comment '1: recovered, 0: no recovered' AFTER is_recoverable;
 ALTER TABLE jedi_consumer.executor_task_message ADD trace_id varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'traceId' AFTER host;
 ALTER TABLE jedi_consumer.executor_task_message ADD is_by_retryer bit(1) DEFAULT b'0' NOT NULL comment '1: byRetryer, 0: no byRetryer' AFTER trace_id;
-ALTER TABLE jedi_consumer.executor_task_message ADD previous_id varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'previousId' AFTER trace_id;
+ALTER TABLE jedi_consumer.executor_task_message ADD previous_id varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'previousId' AFTER is_by_retryer;
 ALTER TABLE jedi_consumer.executor_task_message ADD parent_id varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'parentId' AFTER previous_id;
-ALTER TABLE jedi_consumer.executor_task_message ADD data_source_name varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'dataSourceName' AFTER previous_id;
+ALTER TABLE jedi_consumer.executor_task_message ADD data_source_name varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'dataSourceName' AFTER parent_id;
 ALTER TABLE jedi_consumer.executor_task_message ADD is_persistent bit(1) DEFAULT b'0' NOT NULL comment '1: persistent, 0: no persistent' AFTER data_source_name;
 ALTER TABLE jedi_consumer.executor_task_message ADD is_retried bit(1) DEFAULT b'0' NOT NULL comment '1: retried, 0: no retried' AFTER record_time;
 ALTER TABLE jedi_consumer.executor_task_message ADD retry_id varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'retryId' AFTER is_retried;
-ALTER TABLE jedi_consumer.executor_task_message ADD update_user varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment '最后修改人' AFTER is_retried;
+ALTER TABLE jedi_consumer.executor_task_message ADD update_user varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment '最后修改人' AFTER retry_id;
 ALTER TABLE jedi_consumer.executor_task_message ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';

@@ -1,6 +1,7 @@
 package xyz.hellothomas.jedi.core.internals.executor;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CountDownLatch;
 
 public class TaskProperty {
     private String id;
@@ -28,11 +29,14 @@ public class TaskProperty {
     private boolean byRetryer;
     private String previousId;
     private String parentId;
+    private boolean isExecutedByParentTaskThread;
     private String dataSourceName;
     private String lastUpdatedUser;
 
     private boolean persistent;
     private boolean initialized;
+    private CountDownLatch countDownLatch;
+    private TaskProperty parentTaskProperty;
 
     public String getId() {
         return this.id;
@@ -134,6 +138,10 @@ public class TaskProperty {
         return parentId;
     }
 
+    public boolean isExecutedByParentTaskThread() {
+        return isExecutedByParentTaskThread;
+    }
+
     public String getDataSourceName() {
         return this.dataSourceName;
     }
@@ -148,6 +156,14 @@ public class TaskProperty {
 
     public boolean isInitialized() {
         return initialized;
+    }
+
+    public CountDownLatch getCountDownLatch() {
+        return countDownLatch;
+    }
+
+    public TaskProperty getParentTaskProperty() {
+        return parentTaskProperty;
     }
 
     public void setId(String id) {
@@ -250,6 +266,10 @@ public class TaskProperty {
         this.parentId = parentId;
     }
 
+    public void setExecutedByParentTaskThread(boolean executedByParentTaskThread) {
+        isExecutedByParentTaskThread = executedByParentTaskThread;
+    }
+
     public void setDataSourceName(String dataSourceName) {
         this.dataSourceName = dataSourceName;
     }
@@ -266,9 +286,17 @@ public class TaskProperty {
         this.initialized = initialized;
     }
 
+    public void setCountDownLatch(CountDownLatch countDownLatch) {
+        this.countDownLatch = countDownLatch;
+    }
+
+    public void setParentTaskProperty(TaskProperty parentTaskProperty) {
+        this.parentTaskProperty = parentTaskProperty;
+    }
+
     @Override
     public String toString() {
-        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodParamTypes=" + this.getMethodParamTypes() + ", methodArguments=" + this.getMethodArguments() + ", recoverable=" + this.isRecoverable() + ", isRecovered=" + this.isRecovered() + ", host=" + this.getHost() + ", traceId=" + this.getTraceId() + ", byRetryer=" + this.isByRetryer() + ", previousId=" + this.getPreviousId() + ", parentId=" + this.getParentId() + ", dataSourceName=" + this.getDataSourceName() + ", lastUpdatedUser=" + this.getLastUpdatedUser() + ", persistent=" + this.isPersistent() + ", initialized=" + this.isInitialized() + ")";
+        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodParamTypes=" + this.getMethodParamTypes() + ", methodArguments=" + this.getMethodArguments() + ", isRecoverable=" + this.isRecoverable() + ", isRecovered=" + this.isRecovered() + ", host=" + this.getHost() + ", traceId=" + this.getTraceId() + ", isByRetryer=" + this.isByRetryer() + ", previousId=" + this.getPreviousId() + ", parentId=" + this.getParentId() + ", isExecutedByParentTaskThread=" + this.isExecutedByParentTaskThread() + ", dataSourceName=" + this.getDataSourceName() + ", lastUpdatedUser=" + this.getLastUpdatedUser() + ", isPersistent=" + this.isPersistent() + ", isInitialized=" + this.isInitialized() + ", countDownLatch=" + this.getCountDownLatch() + ", parentTaskProperty=" + this.getParentTaskProperty() + ")";
     }
 
     public TaskProperty copy() {
@@ -298,10 +326,12 @@ public class TaskProperty {
         taskProperty.setByRetryer(this.byRetryer);
         taskProperty.setPreviousId(this.previousId);
         taskProperty.setParentId(this.parentId);
+        taskProperty.setExecutedByParentTaskThread(this.isExecutedByParentTaskThread);
         taskProperty.setDataSourceName(this.dataSourceName);
         taskProperty.setLastUpdatedUser(this.lastUpdatedUser);
         taskProperty.setPersistent(this.persistent);
-        taskProperty.setInitialized(this.initialized);
+        taskProperty.setCountDownLatch(this.countDownLatch);
+        taskProperty.setParentTaskProperty(this.parentTaskProperty);
 
         return taskProperty;
     }

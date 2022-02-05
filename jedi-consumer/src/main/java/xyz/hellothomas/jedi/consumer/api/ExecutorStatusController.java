@@ -57,6 +57,7 @@ public class ExecutorStatusController {
             executorStatusResponse.setQueueSize(tickerMessage.getQueueSize());
             executorStatusResponse.setRejectCount(tickerMessage.getRejectCount());
             executorStatusResponse.setPoolActivation(new BigDecimal(tickerMessage.getActiveCount()).divide(new BigDecimal(tickerMessage.getMaximumPoolSize()), 2, BigDecimal.ROUND_HALF_UP));
+            executorStatusResponse.setMaxPoolSize(tickerMessage.getMaximumPoolSize());
             executorStatusResponse.setRecordTime(tickerMessage.getRecordTime());
 
             executorStatusResponses.add(executorStatusResponse);

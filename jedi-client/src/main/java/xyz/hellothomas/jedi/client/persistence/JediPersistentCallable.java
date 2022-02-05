@@ -29,16 +29,27 @@ public class JediPersistentCallable<V> implements Callable<V> {
     public V call() throws Exception {
         if (taskProperty.getStartTime() == null) {
             // 任务开始
+            AsyncAttributes asyncAttributes = AsyncContextHolder.getAsyncAttributes();
+            if (asyncAttributes == null) {
+                asyncAttributes = new AsyncAttributes();
+            } else {
+                TaskProperty executedByParentTaskProperty =
+                        (TaskProperty) asyncAttributes.getAttribute(TaskProperty.class.getName());
+                if (executedByParentTaskProperty != null) {
+                    taskProperty.setExecutedByParentTaskThread(executedByParentTaskProperty.isExecutedByParentTaskThread());
+                }
+            }
+
             taskProperty.setStartTime(LocalDateTime.now());
             taskProperty.setStatus(TaskStatusEnum.DOING.getValue());
             log.trace("TaskProperty:{}", taskProperty);
 
-            AsyncAttributes asyncAttributes = new AsyncAttributes();
             asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
             AsyncContextHolder.setAsyncAttributes(asyncAttributes);
+
+            // 任务开始持久化
+            persistenceService.updateTaskExecution(taskProperty);
         }
-        // 任务开始持久化
-        persistenceService.updateTaskExecution(taskProperty);
 
         try {
             V result = callable.call();
@@ -47,9 +58,11 @@ public class JediPersistentCallable<V> implements Callable<V> {
                 taskProperty.setEndTime(LocalDateTime.now());
                 taskProperty.setStatus(TaskStatusEnum.SUCCESS.getValue());
                 log.trace("TaskProperty:{}", taskProperty);
+
+                // 任务成功持久化
+                persistenceService.deleteTaskExecution(taskProperty);
             }
-            // 任务成功持久化
-            persistenceService.deleteTaskExecution(taskProperty);
+
             return result;
         } catch (Exception e) {
             if (taskProperty.getEndTime() == null) {
@@ -65,9 +78,10 @@ public class JediPersistentCallable<V> implements Callable<V> {
                     taskProperty.setExitMessage(exceptionString);
                 }
                 log.trace("TaskProperty:{}", taskProperty);
+
+                // 任务异常持久化
+                persistenceService.updateTaskExecution(taskProperty);
             }
-            // 任务异常持久化
-            persistenceService.updateTaskExecution(taskProperty);
             throw e;
         }
     }
