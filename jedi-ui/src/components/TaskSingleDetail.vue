@@ -26,7 +26,9 @@
               .taskExtraData}}</el-descriptions-item>
             <el-descriptions-item label="是否需要故障恢复" label-class-name="my-label" content-class-name="my-content">{{this.taskData
               .isRecoverable}}</el-descriptions-item>
-            <el-descriptions-item label="父任务ID">{{this.taskData.parentId}}</el-descriptions-item>
+            <el-descriptions-item label="父任务ID">
+              <router-link :to="{path:'/task/single-detail', query:{namespace:namespaceName,appId:appId,executor:executorName,taskId:this.taskData.parentId}}">{{this.taskData.parentId}}</router-link>
+            </el-descriptions-item>
             <el-descriptions-item label="是否持久化">{{this.taskData.isPersistent}}</el-descriptions-item>
             <el-descriptions-item label="数据源名称">{{this.taskData.dataSourceName}}</el-descriptions-item>
           </el-descriptions>

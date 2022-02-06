@@ -8,6 +8,7 @@ import xyz.hellothomas.jedi.admin.api.dto.AppResponse;
 import xyz.hellothomas.jedi.admin.api.dto.PageHelperRequest;
 import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.application.AppService;
+import xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum;
 import xyz.hellothomas.jedi.admin.common.enums.RoleTypeEnum;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.PreAuthorize;
 import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
@@ -17,13 +18,15 @@ import xyz.hellothomas.jedi.biz.common.enums.SyncOperationEnum;
 import xyz.hellothomas.jedi.biz.common.enums.SyncTypeEnum;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.domain.monitor.App;
-import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
+import xyz.hellothomas.jedi.core.exception.BusinessException;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
 
@@ -34,7 +37,7 @@ import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
 @Api(value = "app", tags = "app")
 @RestController
 public class AppController {
-
+    private static final Pattern APP_PATTERN = Pattern.compile("^[A-Za-z][A-Za-z0-9-_.]{0,31}$");
     private final AppService appService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -48,12 +51,17 @@ public class AppController {
     public ApiResponse<AppResponse> create(@PathVariable("namespaceName") String namespaceName,
                                            @Valid @RequestBody AppRequest appRequest,
                                            @RequestAttribute(CLAIM_USER_NAME) String operator) {
+        // 命名检查
+        Matcher matcher = APP_PATTERN.matcher(appRequest.getAppId());
+        if (!matcher.matches()) {
+            throw new BusinessException(AdminErrorCodeEnum.APP_INVALID);
+        }
 
         App entity = LocalBeanUtils.transform(App.class, appRequest);
         App managedEntity = appService.findOne(entity.getNamespaceName(), entity.getAppId());
 
         if (managedEntity != null) {
-            throw new BadRequestException("app namespaces already exist.");
+            throw new BusinessException(AdminErrorCodeEnum.APP_EXIST);
         }
 
         entity = appService.save(entity, operator);
@@ -70,7 +78,7 @@ public class AppController {
                                       @RequestBody AppRequest request,
                                       @RequestAttribute(CLAIM_USER_NAME) String operator) {
         if (!Objects.equals(namespaceName, request.getNamespaceName())) {
-            throw new BadRequestException("The namespace name of path variable and request body is different");
+            throw new BusinessException(AdminErrorCodeEnum.APP_REQUEST_ERROR);
         }
 
         App entity = LocalBeanUtils.transform(App.class, request);
@@ -88,8 +96,7 @@ public class AppController {
                                       @RequestAttribute(CLAIM_USER_NAME) String operator) {
         App entity = appService.findOne(namespaceName, appId);
         if (entity == null) {
-            throw new BadRequestException("namespace app not found for namespace: " + namespaceName + " " +
-                    "appId: " + appId);
+            throw new BusinessException(AdminErrorCodeEnum.APP_NOT_EXIST);
         }
         appService.deleteApp(entity, operator);
 

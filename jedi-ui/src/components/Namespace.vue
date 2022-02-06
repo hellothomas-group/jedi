@@ -19,13 +19,13 @@
             <el-input v-model="newAppForm.namespaceName" autocomplete="off" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="应用名称" :label-width="formLabelWidth" prop="appId" >
-            <el-input v-model="newAppForm.appId" autocomplete="off" placeholder="1-50位字符"></el-input>
+            <el-input v-model="newAppForm.appId" autocomplete="off" placeholder="1-32位字符(a-z A-Z 0-9 - _)"></el-input>
           </el-form-item>
           <el-form-item label="应用描述" :label-width="formLabelWidth" prop="description">
-            <el-input v-model="newAppForm.description" autocomplete="off" placeholder="1-50位字符"></el-input>
+            <el-input v-model="newAppForm.description" autocomplete="off" placeholder="1-20位字符"></el-input>
           </el-form-item>
           <el-form-item label="应用负责人" :label-width="formLabelWidth" prop="ownerName">
-            <el-input v-model="newAppForm.ownerName" autocomplete="off" placeholder="1-50位字符"></el-input>
+            <el-input v-model="newAppForm.ownerName" autocomplete="off" placeholder="1-20位字符"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">

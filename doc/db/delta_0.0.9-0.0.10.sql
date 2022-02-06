@@ -167,3 +167,5 @@ ALTER TABLE jedi_consumer.executor_task_message ADD is_retried bit(1) DEFAULT b'
 ALTER TABLE jedi_consumer.executor_task_message ADD retry_id varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment 'retryId' AFTER is_retried;
 ALTER TABLE jedi_consumer.executor_task_message ADD update_user varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin comment '最后修改人' AFTER retry_id;
 ALTER TABLE jedi_consumer.executor_task_message ADD version int unsigned DEFAULT 1 NOT NULL COMMENT '版本号';
+
+update jedi_consumer.executor_task_message set status = 2, update_time = create_time;

@@ -27,7 +27,7 @@ public class ScheduledService {
     @Scheduled(fixedDelay = 1000 * SUBMIT_DEFAULT_TASK_CYCLE_SECONDS)
     public void submitDefaultTask() {
         long currentTime = System.currentTimeMillis();
-        for (int i = 1; i <= 50; i++) {
+        for (int i = 1; i <= 3; i++) {
             taskService.runDefaultTask(currentTime + "-" + i);
         }
         log.info("提交默认任务成功:{}", currentTime);
@@ -39,7 +39,7 @@ public class ScheduledService {
     @Scheduled(fixedDelay = 1000 * SUBMIT_CUSTOM_TASK_CYCLE_SECONDS)
     public void submitCustomTask() {
         long currentTime = System.currentTimeMillis();
-        for (int i = 1; i <= 20; i++) {
+        for (int i = 1; i <= 2; i++) {
             taskService.runCustomTask(currentTime + "-" + i);
         }
         log.info("提交自定义任务成功:{}", currentTime);

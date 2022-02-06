@@ -9,6 +9,7 @@ import xyz.hellothomas.jedi.admin.api.dto.PageResult;
 import xyz.hellothomas.jedi.admin.application.ExecutorService;
 import xyz.hellothomas.jedi.admin.application.ItemService;
 import xyz.hellothomas.jedi.admin.application.ReleaseService;
+import xyz.hellothomas.jedi.admin.common.enums.AdminErrorCodeEnum;
 import xyz.hellothomas.jedi.admin.common.enums.RoleTypeEnum;
 import xyz.hellothomas.jedi.admin.domain.Executor;
 import xyz.hellothomas.jedi.admin.domain.Item;
@@ -17,12 +18,14 @@ import xyz.hellothomas.jedi.admin.infrastructure.annotation.UserLoginToken;
 import xyz.hellothomas.jedi.admin.infrastructure.listener.PermissionInitEvent;
 import xyz.hellothomas.jedi.biz.common.utils.LocalBeanUtils;
 import xyz.hellothomas.jedi.biz.domain.config.Release;
-import xyz.hellothomas.jedi.biz.infrastructure.exception.BadRequestException;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.NotFoundException;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
+import xyz.hellothomas.jedi.core.exception.BusinessException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
 
@@ -30,7 +33,7 @@ import static xyz.hellothomas.jedi.admin.common.utils.JwtUtil.CLAIM_USER_NAME;
 @Api(value = "executor", tags = "executor")
 @RestController
 public class ExecutorController {
-
+    private static final Pattern EXECUTOR_PATTERN = Pattern.compile("^[a-z][a-z0-9-]{0,49}$");
     private final ExecutorService executorService;
     private final ReleaseService releaseService;
     private final ItemService itemService;
@@ -50,9 +53,15 @@ public class ExecutorController {
                                                 @PathVariable("appId") String appId,
                                                 @PathVariable("executorName") String executorName,
                                                 @RequestAttribute(CLAIM_USER_NAME) String operator) {
+        // 命名检查
+        Matcher matcher = EXECUTOR_PATTERN.matcher(executorName);
+        if (!matcher.matches()) {
+            throw new BusinessException(AdminErrorCodeEnum.EXECUTOR_INVALID);
+        }
+
         Executor managedEntity = executorService.findOne(namespaceName, appId, executorName);
         if (managedEntity != null) {
-            throw new BadRequestException("executor already exist.");
+            throw new BusinessException(AdminErrorCodeEnum.EXECUTOR_EXIST);
         }
 
         Executor executor = executorService.save(namespaceName, appId, executorName, operator);

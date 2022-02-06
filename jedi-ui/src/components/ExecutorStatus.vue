@@ -22,8 +22,8 @@
           type="datetimerange"
           :picker-options="pickerOptions"
           @change="changeQueryTime()"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期">
+          start-placeholder="开始时间"
+          end-placeholder="结束时间">
         </el-date-picker>
         <el-button
           type="primary"

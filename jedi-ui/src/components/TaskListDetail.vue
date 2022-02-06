@@ -3,15 +3,14 @@
     <el-header>
       <div class="block" style="text-align: left;margin-left: 20px">
         <el-form :inline="true" :model="queryTaskDetailsForm" class="demo-form-inline" :rules="queryTaskDetailRules" ref="queryTaskDetailsForm">
-          <el-form-item label="日期" prop="queryDate">
+          <el-form-item label="时间" prop="queryTime">
             <el-date-picker
-              v-model="queryTaskDetailsForm.queryDate"
-              type="daterange"
+              v-model="queryTaskDetailsForm.queryTime"
+              type="datetimerange"
               align="right"
-              unlink-panels
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              @change="changeQueryTime()"
+              start-placeholder="开始时间"
+              end-placeholder="结束时间"
               :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
@@ -41,6 +40,7 @@
             </el-button>
           </el-form-item>
           <div>
+
             <el-form-item label="任务附加信息" prop="inputTaskExtraData">
               <el-input v-model="queryTaskDetailsForm.inputTaskExtraData" placeholder="请输入任务附加信息" clearable></el-input>
             </el-form-item>
@@ -223,7 +223,7 @@ export default {
         }]
       },
       queryTaskDetailsForm: {
-        queryDate: [new Date(format(new Date(), 'yyyy/MM/dd')), new Date()],
+        queryTime: [new Date(format(new Date(), 'yyyy/MM/dd')), new Date()],
         inputTaskName: '',
         inputTaskExtraData: '',
         executeResult: undefined
@@ -271,9 +271,12 @@ export default {
       this.appId = this.$route.query.appId
       this.executorName = this.$route.query.executor
       if (this.$route.query.taskDate) {
-        this.queryTaskDetailsForm.queryDate[0] = new Date(this.$route.query.taskDate.replace(/-/g, '/'))
-        this.queryTaskDetailsForm.queryDate[1] = new Date(this.queryTaskDetailsForm.queryDate[0].getTime() + 3600 *
+        this.queryTaskDetailsForm.queryTime[0] = new Date(this.$route.query.taskDate.replace(/-/g, '/'))
+        this.queryTaskDetailsForm.queryTime[1] = new Date(this.queryTaskDetailsForm.queryTime[0].getTime() + 3600 *
           1000 * 24 - 1)
+        if (this.queryTaskDetailsForm.queryTime[1].getTime() - new Date().getTime() > 0) {
+          this.queryTaskDetailsForm.queryTime[1] = new Date()
+        }
       }
       if (this.$route.query.taskName) {
         this.queryTaskDetailsForm.inputTaskName = this.$route.query.taskName
@@ -292,9 +295,29 @@ export default {
     })
   },
   methods: {
+    // 变更查询时间
+    changeQueryTime: function () {
+      if (this.queryTaskDetailsForm.queryTime[1].getTime() - new Date().getTime() > 0) {
+        this.$message('截止时间不能晚于现在时间!')
+        this.queryTaskDetailsForm.queryTime[1] = new Date()
+        this.queryTaskDetailsForm.queryTime[0] = new Date(this.queryTaskDetailsForm.queryTime[1].getTime() - 600 * 1000)
+      }
+      if (new Date().getTime() - this.queryTaskDetailsForm.queryTime[0].getTime() > 3600 * 1000 * 24 * 11) {
+        this.$message('开始时间不能早于10天前!')
+        this.queryTaskDetailsForm.queryTime[1] = new Date()
+        this.queryTaskDetailsForm.queryTime[0] = new Date(this.queryTaskDetailsForm.queryTime[1].getTime() - 600 * 1000)
+      }
+      if (this.queryTaskDetailsForm.queryTime[1].getTime() - this.queryTaskDetailsForm.queryTime[0].getTime() > 3600 * 1000 * 24 * 10) {
+        this.$message('时间跨度最大10天!')
+        this.queryTaskDetailsForm.queryTime[1] = new Date()
+        this.queryTaskDetailsForm.queryTime[0] = new Date(this.queryTaskDetailsForm.queryTime[1].getTime() - 600 * 1000)
+      }
+    },
     asyncQueryTaskList () {
       console.log('asyncQueryTaskList')
       console.log(this.queryTaskDetailsForm.inputTaskName)
+      console.log(this.queryTaskDetailsForm.queryTime[0])
+      console.log(this.queryTaskDetailsForm.queryTime[1])
 
       this.axios.get('/consumer/namespaces/' + this.namespaceName + '/apps/' + this.appId + '/executors/' +
         this.executorName + '/task-details', {
@@ -303,8 +326,8 @@ export default {
           taskExtraData: (this.queryTaskDetailsForm.inputTaskExtraData === undefined ||
             this.queryTaskDetailsForm.inputTaskExtraData.trim() === '') ? undefined : this.queryTaskDetailsForm.inputTaskExtraData.trim(),
           isSuccess: this.queryTaskDetailsForm.executeResult === undefined ? undefined : this.queryTaskDetailsForm.executeResult,
-          startTime: format(this.queryTaskDetailsForm.queryDate[0], 'yyyy-MM-dd HH:mm:ss'),
-          endTime: format(this.queryTaskDetailsForm.queryDate[1], 'yyyy-MM-dd HH:mm:ss'),
+          startTime: format(this.queryTaskDetailsForm.queryTime[0], 'yyyy-MM-dd HH:mm:ss'),
+          endTime: format(this.queryTaskDetailsForm.queryTime[1], 'yyyy-MM-dd HH:mm:ss'),
           pageNum: this.pagination.pageNum,
           pageSize: this.pagination.pageSize
         }
@@ -322,8 +345,6 @@ export default {
       console.log(formName)
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.queryTaskDetailsForm.queryDate[1] = new
-          Date(new Date(format(this.queryTaskDetailsForm.queryDate[1], 'yyyy/MM/dd')).getTime() + 3600 * 1000 * 24 - 1)
           if (this.queryTaskDetailsForm.inputTaskName && this.queryTaskDetailsForm.inputTaskName.trim() !== '') {
             this.asyncQueryTaskList()
           }

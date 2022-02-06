@@ -41,7 +41,7 @@
                   <el-input v-model="newExecutorForm.appId" autocomplete="off" :disabled="true"></el-input>
                 </el-form-item>
                 <el-form-item label="线程池名称" :label-width="formLabelWidth" prop="newExecutor">
-                  <el-input v-model="newExecutorForm.newExecutor" autocomplete="off" placeholder="1-50位字符"></el-input>
+                  <el-input v-model="newExecutorForm.newExecutor" autocomplete="off" placeholder="1-50位字符(a-z 0-9 -)"></el-input>
                 </el-form-item>
               </el-form>
               <div slot="footer" class="dialog-footer">
