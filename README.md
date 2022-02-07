@@ -6,46 +6,46 @@
 
 # Screenshots
 
-线程池概览
-
-![线程池概览](https://images.gitee.com/uploads/images/2021/0905/170437_924750df_5057838.png)
-
 线程池实时状态监控
 
-![线程池实时状态监控](https://images.gitee.com/uploads/images/2021/0905/170551_292e2bc5_5057838.png)
+![线程池实时状态监控](README.assets/225301_79a51530_5057838.png)
 
-动态配置线程池参数
+动态维护线程池配置
 
-![动态配置线程池参数](https://images.gitee.com/uploads/images/2021/0905/170010_6be8758e_5057838.png)
+![动态配置线程池参数](README.assets/225442_e0da1bed_5057838.png)
 
 线程池任务监控
 
-![线程池任务汇总监控](https://images.gitee.com/uploads/images/2021/0905/170714_e8371566_5057838.png)
+![线程池任务监控](README.assets/225647_506e3f09_5057838.png)
 
-![线程池任务明细监控](https://images.gitee.com/uploads/images/2021/0905/170748_df7d6765_5057838.png)
+线程池任务重试
 
-线程池监控报警对接公司IM系统
-
-![线程池监控报警对接公司IM系统](https://images.gitee.com/uploads/images/2021/0812/075117_1327fb49_5057838.jpeg)
+![线程池任务重试](README.assets/225747_13f6ef81_5057838.png)
 
 # Features
 
-- ## 实时展示线程池状态
+- ### 实时监控异步调度（线程池和异步任务），故障预警
 
-- ## 线程池指标异常报警
+- ### 动态维护线程池配置，降低维护成本，及时规避故障或加速故障恢复
 
-- ## 线程池参数动态调整
+- ### 异步调度任务高可靠，默认与数据库可靠性级别一致，可自行扩展提高级别
 
-- ## 线程池及任务数据分析
+- ### 异步调度任务高可用，支持异步任务自恢复和重试，故障后快速补偿异常任务
+
+- ### 易扩展，业务系统可自行实现接口，替换默认实现
+
+- ### 易用，低侵入（只需注解，无需编码）
 
 # Usage
 
 - 服务端演示地址
 
   http://jedi.hellothomas.xyz:8080
-  
+
   username: admin
   password: 123456
+
+  <mark>请勿对jedi-demo示例应用做非查询操作</mark>
 
 - Java客户端使用指南
 
@@ -63,7 +63,7 @@
 
 # Release Notes
 
-first release(0.0.10) will come soon
+first release(1.0.0) will come soon
 
 # FAQ
 
