@@ -8,19 +8,19 @@
 
 线程池实时状态监控
 
-![线程池实时状态监控](README.assets/225301_79a51530_5057838.png)
+![线程池实时状态监控](https://images.gitee.com/uploads/images/2022/0207/230949_7fbeb3de_5057838.png)
 
 动态维护线程池配置
 
-![动态配置线程池参数](README.assets/225442_e0da1bed_5057838.png)
+![动态配置线程池参数](https://images.gitee.com/uploads/images/2022/0207/231106_46c28a98_5057838.png)
 
 线程池任务监控
 
-![线程池任务监控](README.assets/225647_506e3f09_5057838.png)
+![线程池任务监控](https://images.gitee.com/uploads/images/2022/0207/231125_51aa1ea5_5057838.png)
 
 线程池任务重试
 
-![线程池任务重试](README.assets/225747_13f6ef81_5057838.png)
+![线程池任务重试](https://images.gitee.com/uploads/images/2022/0207/231142_8e3b2cfe_5057838.png)
 
 # Features
 
