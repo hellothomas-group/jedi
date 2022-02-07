@@ -15,7 +15,7 @@
         <dependency>
             <groupId>xyz.hellothomas</groupId>
             <artifactId>jedi-client</artifactId>
-            <version>${jedi.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
