@@ -263,15 +263,17 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
             if (!e.isShutdown()) {
                 try {
                     // 任务开始
-                    TaskProperty contextTaskProperty =
-                            (TaskProperty) AsyncContextHolder.getAsyncAttributes().getAttribute(TaskProperty.class.getName());
-                    // parent
-                    if (!contextTaskProperty.isInitialized()) {
-                        TaskProperty taskProperty = new TaskProperty();
-                        taskProperty.setExecutedByParentTaskThread(true);
-                        AsyncAttributes asyncAttributes = new AsyncAttributes();
-                        asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
-                        AsyncContextHolder.setAsyncAttributes(asyncAttributes);
+                    AsyncAttributes asyncAttributes = AsyncContextHolder.getAsyncAttributes();
+                    if (asyncAttributes != null) {
+                        TaskProperty contextTaskProperty =
+                                (TaskProperty) asyncAttributes.getAttribute(TaskProperty.class.getName());
+                        // parent
+                        if (!contextTaskProperty.isInitialized()) {
+                            TaskProperty taskProperty = new TaskProperty();
+                            taskProperty.setExecutedByParentTaskThread(true);
+                            asyncAttributes.setAttribute(TaskProperty.class.getName(), taskProperty);
+                            AsyncContextHolder.setAsyncAttributes(asyncAttributes);
+                        }
                     }
 
                     r.run();

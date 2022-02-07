@@ -1,5 +1,7 @@
 package xyz.hellothomas.jedi.core.internals.executor;
 
+import xyz.hellothomas.jedi.core.utils.AsyncContextHolder;
+
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 
@@ -37,6 +39,14 @@ public class TaskProperty {
     private boolean initialized;
     private CountDownLatch countDownLatch;
     private TaskProperty parentTaskProperty;
+
+    public static TaskProperty current() {
+        AsyncAttributes asyncAttributes = AsyncContextHolder.getAsyncAttributes();
+        if (asyncAttributes == null) {
+            return null;
+        }
+        return (TaskProperty) asyncAttributes.getAttribute(TaskProperty.class.getName());
+    }
 
     public String getId() {
         return this.id;
