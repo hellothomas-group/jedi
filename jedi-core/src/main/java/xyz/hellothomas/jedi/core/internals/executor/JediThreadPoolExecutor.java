@@ -259,6 +259,7 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
          * @param r the runnable task requested to be executed
          * @param e the executor attempting to execute this task
          */
+        @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
             if (!e.isShutdown()) {
                 try {

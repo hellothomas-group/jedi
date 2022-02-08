@@ -50,6 +50,10 @@
 - Java客户端使用指南
 
   [客户端使用指南](https://github.com/hellothomas-group/jedi/wiki#%E4%B8%80-%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97)
+  
+  客户端演示地址，服务器最低配置，各位浅尝辄止
+  
+  http://jedi-demo.hellothomas.xyz:8090/swagger-ui.html
 
 # Design
 
