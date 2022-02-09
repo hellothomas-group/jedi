@@ -11,6 +11,10 @@ import xyz.hellothomas.jedi.core.internals.executor.AsyncAttributes;
 public class AsyncContextHolder {
 
     private static final ThreadLocal<AsyncAttributes> ASYNC_ATTRIBUTES_HOLDER = new ThreadLocal<>();
+    
+    private AsyncContextHolder() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Reset the AsyncAttributes for the current thread.

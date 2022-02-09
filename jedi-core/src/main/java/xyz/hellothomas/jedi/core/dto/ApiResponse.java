@@ -41,8 +41,8 @@ public class ApiResponse<T> {
         return response;
     }
 
-    public static ApiResponse fail(String msg) {
-        ApiResponse response = new ApiResponse<>();
+    public static <T> ApiResponse<T> fail(String msg) {
+        ApiResponse<T> response = new ApiResponse<>();
         response.setCode(CoreErrorCodeEnum.FAIL.getCode());
         response.setMessage(msg);
         return response;

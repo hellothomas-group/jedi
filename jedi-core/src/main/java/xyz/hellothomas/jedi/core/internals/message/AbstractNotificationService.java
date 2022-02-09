@@ -42,13 +42,13 @@ public abstract class AbstractNotificationService {
      */
     protected String machineId;
 
-    public AbstractNotificationService(String appId, String namespace) {
+    protected AbstractNotificationService(String appId, String namespace) {
         this.appId = appId;
         this.namespace = namespace;
         this.machineId = host;
     }
 
-    public AbstractNotificationService(String appId, String namespace, String machineId) {
+    protected AbstractNotificationService(String appId, String namespace, String machineId) {
         this.appId = appId;
         this.namespace = namespace;
         this.machineId = machineId;

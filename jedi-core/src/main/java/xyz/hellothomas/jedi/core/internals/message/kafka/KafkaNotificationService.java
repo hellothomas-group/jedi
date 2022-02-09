@@ -133,9 +133,7 @@ public class KafkaNotificationService extends AbstractNotificationService {
 
     private void pushFailMessage(AbstractNotification notification, MessageType messageType) {
         try {
-            retrySendNotificationExecutor.execute(() -> {
-                retrySendMessage(notification, messageType);
-            });
+            retrySendNotificationExecutor.execute(() -> retrySendMessage(notification, messageType));
         } catch (Exception e) {
             LOGGER.warn("失败消息{} push异常: {}", notification, e);
         }

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.core.enums.MessageType;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class KafkaProperty {
 
     private Map<String, Object> producerConfig = new HashMap();
 
-    private Map<MessageType, String> topics = new HashMap<>();
+    private EnumMap<MessageType, String> topics = new EnumMap<>(MessageType.class);
 
     public String getDefaultTopic() {
         return defaultTopic;

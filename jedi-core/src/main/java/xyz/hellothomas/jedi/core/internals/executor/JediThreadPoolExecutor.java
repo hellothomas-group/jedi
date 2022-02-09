@@ -191,7 +191,7 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
 
                     this.notificationService.pushNotification(executorTickerNotification);
                 } catch (Exception e) {
-                    LOGGER.error("打点线程异常: {}", e);
+                    LOGGER.error("打点线程异常", e);
                 } finally {
                     SleepUtil.sleep(this.tickerCycle);
                 }
@@ -279,33 +279,26 @@ public class JediThreadPoolExecutor extends ThreadPoolExecutor {
 
                     r.run();
                 } finally {
-                    AsyncAttributes asyncAttributes = AsyncContextHolder.getAsyncAttributes();
-                    if (asyncAttributes == null) {
-                        return;
-                    }
-                    TaskProperty taskProperty =
-                            (TaskProperty) asyncAttributes.getAttribute(TaskProperty.class.getName());
-                    if (taskProperty == null) {
-                        return;
-                    }
+                    TaskProperty taskProperty = TaskProperty.current();
+                    if (taskProperty != null) {
+                        AbstractNotificationService notificationService =
+                                ((JediThreadPoolExecutor) e).getNotificationService();
+                        if (!(notificationService instanceof NullNotificationService)) {
+                            ExecutorTaskNotification executorTaskNotification =
+                                    notificationService.buildExecutorTaskNotification(taskProperty);
+                            notificationService.pushNotification(executorTaskNotification);
+                        }
 
-                    AbstractNotificationService notificationService =
-                            ((JediThreadPoolExecutor) e).getNotificationService();
-                    if (!(notificationService instanceof NullNotificationService)) {
-                        ExecutorTaskNotification executorTaskNotification =
-                                notificationService.buildExecutorTaskNotification(taskProperty);
-                        notificationService.pushNotification(executorTaskNotification);
-                    }
+                        // recover
+                        if (taskProperty.getCountDownLatch() != null) {
+                            taskProperty.getCountDownLatch().countDown();
+                        }
 
-                    // recover
-                    if (taskProperty.getCountDownLatch() != null) {
-                        taskProperty.getCountDownLatch().countDown();
-                    }
-
-                    if (taskProperty.getParentTaskProperty() == null) {
-                        AsyncContextHolder.resetAsyncAttributes();
-                    } else {
-                        resumeAsyncAttributes(taskProperty.getParentTaskProperty());
+                        if (taskProperty.getParentTaskProperty() == null) {
+                            AsyncContextHolder.resetAsyncAttributes();
+                        } else {
+                            resumeAsyncAttributes(taskProperty.getParentTaskProperty());
+                        }
                     }
                 }
             }

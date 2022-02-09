@@ -1,7 +1,6 @@
 package xyz.hellothomas.jedi.core.enums;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 
 public enum KafkaMessageTopic {
     TOPIC_EXECUTOR_TICKER(MessageType.EXECUTOR_TICKER, "executor-ticker"),
@@ -10,7 +9,7 @@ public enum KafkaMessageTopic {
     TOPIC_CUSTOM(MessageType.CUSTOM_NOTIFICATION, "custom-notification"),
     ;
 
-    private static final Map<MessageType, String> PATH_MAP = new HashMap<>();
+    private static final EnumMap<MessageType, String> PATH_MAP = new EnumMap<>(MessageType.class);
 
     static {
         for (KafkaMessageTopic KafkaMessageTopic : KafkaMessageTopic.values()) {

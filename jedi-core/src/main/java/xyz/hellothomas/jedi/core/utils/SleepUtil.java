@@ -20,7 +20,7 @@ public class SleepUtil {
         try {
             Thread.sleep(millis);
         } catch (Exception e) {
-            LOGGER.error("休眠异常为: {}", e);
+            LOGGER.error("休眠异常", e);
         }
     }
 
@@ -28,7 +28,7 @@ public class SleepUtil {
         try {
             Thread.sleep(1000 * seconds);
         } catch (Exception e) {
-            LOGGER.error("休眠异常为: {}", e);
+            LOGGER.error("休眠异常", e);
         }
     }
 }
