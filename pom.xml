@@ -6,7 +6,7 @@
 
     <groupId>xyz.hellothomas</groupId>
     <artifactId>jedi</artifactId>
-    <version>0.0.11-SNAPSHOT</version>
+    <version>0.0.11</version>
     <packaging>pom</packaging>
     <name>jedi</name>
     <description>Dynamic Thread Pool Executor</description>
