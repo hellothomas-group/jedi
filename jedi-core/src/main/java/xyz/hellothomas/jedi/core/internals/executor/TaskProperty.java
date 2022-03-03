@@ -27,6 +27,7 @@ public class TaskProperty {
     private boolean recovered;
     private String host;
     private String machineId;
+    private boolean traceable;
     private String traceId;
     private boolean byRetryer;
     private String previousId;
@@ -130,6 +131,10 @@ public class TaskProperty {
 
     public String getMachineId() {
         return machineId;
+    }
+
+    public boolean isTraceable() {
+        return traceable;
     }
 
     public String getTraceId() {
@@ -260,6 +265,10 @@ public class TaskProperty {
         this.machineId = machineId;
     }
 
+    public void setTraceable(boolean traceable) {
+        this.traceable = traceable;
+    }
+
     public void setTraceId(String traceId) {
         this.traceId = traceId;
     }
@@ -306,7 +315,7 @@ public class TaskProperty {
 
     @Override
     public String toString() {
-        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodParamTypes=" + this.getMethodParamTypes() + ", methodArguments=" + this.getMethodArguments() + ", isRecoverable=" + this.isRecoverable() + ", isRecovered=" + this.isRecovered() + ", host=" + this.getHost() + ", traceId=" + this.getTraceId() + ", isByRetryer=" + this.isByRetryer() + ", previousId=" + this.getPreviousId() + ", parentId=" + this.getParentId() + ", isExecutedByParentTaskThread=" + this.isExecutedByParentTaskThread() + ", dataSourceName=" + this.getDataSourceName() + ", lastUpdatedUser=" + this.getLastUpdatedUser() + ", isPersistent=" + this.isPersistent() + ", isInitialized=" + this.isInitialized() + ", countDownLatch=" + this.getCountDownLatch() + ", parentTaskProperty=" + this.getParentTaskProperty() + ")";
+        return "TaskProperty(id=" + this.getId() + ", namespaceName=" + this.getNamespaceName() + ", appId=" + this.getAppId() + ", executorName=" + this.getExecutorName() + ", taskName=" + this.getTaskName() + ", taskExtraData=" + this.getTaskExtraData() + ", createTime=" + this.getCreateTime() + ", startTime=" + this.getStartTime() + ", endTime=" + this.getEndTime() + ", status=" + this.getStatus() + ", exitCode=" + this.getExitCode() + ", exitMessage=" + this.getExitMessage() + ", beanName=" + this.getBeanName() + ", beanTypeName=" + this.getBeanTypeName() + ", methodName=" + this.getMethodName() + ", methodParamTypes=" + this.getMethodParamTypes() + ", methodArguments=" + this.getMethodArguments() + ", isRecoverable=" + this.isRecoverable() + ", isRecovered=" + this.isRecovered() + ", host=" + this.getHost() + ", traceable=" + this.isTraceable() + ", traceId=" + this.getTraceId() + ", isByRetryer=" + this.isByRetryer() + ", previousId=" + this.getPreviousId() + ", parentId=" + this.getParentId() + ", isExecutedByParentTaskThread=" + this.isExecutedByParentTaskThread() + ", dataSourceName=" + this.getDataSourceName() + ", lastUpdatedUser=" + this.getLastUpdatedUser() + ", isPersistent=" + this.isPersistent() + ", isInitialized=" + this.isInitialized() + ", countDownLatch=" + this.getCountDownLatch() + ", parentTaskProperty=" + this.getParentTaskProperty() + ")";
     }
 
     public TaskProperty copy() {
@@ -332,6 +341,7 @@ public class TaskProperty {
         taskProperty.setRecovered(this.recovered);
         taskProperty.setHost(this.host);
         taskProperty.setMachineId(this.machineId);
+        taskProperty.setTraceable(this.traceable);
         taskProperty.setTraceId(this.traceId);
         taskProperty.setByRetryer(this.byRetryer);
         taskProperty.setPreviousId(this.previousId);

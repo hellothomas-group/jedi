@@ -92,7 +92,8 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         // support retry and recover
         if (AsyncContextHolder.getAsyncAttributes() == null) {
             // 任务注册
-            taskProperty = initTaskProperty(jediThreadPoolExecutor.getPoolName(), taskName, taskExtraData);
+            taskProperty = initTaskProperty(jediThreadPoolExecutor.getPoolName(), taskName, taskExtraData,
+                    jediAsync.traceable());
         } else {
             contextTaskProperty =
                     (TaskProperty) AsyncContextHolder.getAsyncAttributes().getAttribute(TaskProperty.class.getName());
@@ -105,7 +106,8 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
                 log.trace("TaskProperty:{}", taskProperty);
             } else {
                 // parent
-                taskProperty = initTaskProperty(jediThreadPoolExecutor.getPoolName(), taskName, taskExtraData);
+                taskProperty = initTaskProperty(jediThreadPoolExecutor.getPoolName(), taskName, taskExtraData,
+                        jediAsync.traceable());
                 taskProperty.setParentId(contextTaskProperty.getId());
                 taskProperty.setParentTaskProperty(contextTaskProperty);
                 log.trace("TaskProperty:{}", taskProperty);
@@ -115,9 +117,14 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         try {
             // 自恢复的直接提交
             if (taskProperty.isRecovered()) {
-                return doSubmit(asyncTraceFactory.getCallable(new JediPersistentCallable<>(task, taskProperty,
-                                persistenceService)),
-                        jediThreadPoolExecutor, methodSignature.getReturnType());
+                if (taskProperty.isTraceable()) {
+                    return doSubmit(asyncTraceFactory.getCallable(new JediPersistentCallable<>(task, taskProperty,
+                                    persistenceService)),
+                            jediThreadPoolExecutor, methodSignature.getReturnType());
+                } else {
+                    return doSubmit(new JediPersistentCallable<>(task, taskProperty, persistenceService),
+                            jediThreadPoolExecutor, methodSignature.getReturnType());
+                }
             }
 
             if (jediAsync.persistent()) {
@@ -139,12 +146,22 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
                     persistenceService.deleteTaskExecution(previousTaskProperty);
                 }
 
-                return doSubmit(asyncTraceFactory.getCallable(new JediPersistentCallable<>(task, taskProperty,
-                                persistenceService)),
-                        jediThreadPoolExecutor, methodSignature.getReturnType());
+                if (taskProperty.isTraceable()) {
+                    return doSubmit(asyncTraceFactory.getCallable(new JediPersistentCallable<>(task, taskProperty,
+                                    persistenceService)),
+                            jediThreadPoolExecutor, methodSignature.getReturnType());
+                } else {
+                    return doSubmit(new JediPersistentCallable<>(task, taskProperty, persistenceService),
+                            jediThreadPoolExecutor, methodSignature.getReturnType());
+                }
             } else {
-                return doSubmit(asyncTraceFactory.getCallable(new JediCallable<>(task, taskProperty)),
-                        jediThreadPoolExecutor, methodSignature.getReturnType());
+                if (taskProperty.isTraceable()) {
+                    return doSubmit(asyncTraceFactory.getCallable(new JediCallable<>(task, taskProperty)),
+                            jediThreadPoolExecutor, methodSignature.getReturnType());
+                } else {
+                    return doSubmit(new JediCallable<>(task, taskProperty),
+                            jediThreadPoolExecutor, methodSignature.getReturnType());
+                }
             }
         } catch (RejectedExecutionException e) {
             taskProperty.setStatus(TaskStatusEnum.REJECTED.getValue());
@@ -203,7 +220,8 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         log.trace("TaskProperty:{}", taskProperty);
     }
 
-    private TaskProperty initTaskProperty(String executorName, String taskName, String taskExtraData) {
+    private TaskProperty initTaskProperty(String executorName, String taskName, String taskExtraData,
+                                          boolean traceAble) {
         TaskProperty taskProperty = new TaskProperty();
         JediConfig jediConfig = this.applicationContext.getBean(JediConfig.class);
         taskProperty.setId(UUID.randomUUID().toString());
@@ -212,6 +230,8 @@ public class JediAsyncAspect implements ApplicationContextAware, InitializingBea
         taskProperty.setExecutorName(executorName);
         taskProperty.setTaskName(taskName);
         taskProperty.setTaskExtraData(taskExtraData);
+        taskProperty.setTraceable(traceAble);
+        taskProperty.setTraceId(asyncTraceFactory.currentTraceId());
         taskProperty.setCreateTime(LocalDateTime.now());
         taskProperty.setStatus(TaskStatusEnum.REGISTERED.getValue());
         log.trace("TaskProperty:{}", taskProperty);

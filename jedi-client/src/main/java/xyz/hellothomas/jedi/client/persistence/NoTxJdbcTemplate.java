@@ -8,6 +8,7 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+import xyz.hellothomas.jedi.client.util.DBUtil;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -21,6 +22,8 @@ import java.sql.*;
 @Slf4j
 public class NoTxJdbcTemplate extends JdbcTemplate {
 
+    private DBUtil.DBType dbType;
+
     public NoTxJdbcTemplate() {
     }
 
@@ -30,6 +33,16 @@ public class NoTxJdbcTemplate extends JdbcTemplate {
 
     public NoTxJdbcTemplate(DataSource dataSource, boolean lazyInit) {
         super(dataSource, lazyInit);
+    }
+
+    public NoTxJdbcTemplate(DataSource dataSource, DBUtil.DBType dbType) {
+        super(dataSource);
+        this.dbType = dbType;
+    }
+
+    public NoTxJdbcTemplate(DataSource dataSource, boolean lazyInit, DBUtil.DBType dbType) {
+        super(dataSource, lazyInit);
+        this.dbType = dbType;
     }
 
     /**
@@ -80,11 +93,16 @@ public class NoTxJdbcTemplate extends JdbcTemplate {
         Assert.notNull(action, "Callback object must not be null");
 
         Connection con = getConnection(obtainDataSource());
+        boolean autoCommitModified = false;
         try {
+            // 设置autoCommit
+            autoCommitModified = setupAutoCommit(con);
             // Create close-suppressing Connection proxy, also preparing returned Statements.
             Connection conToUse = createConnectionProxy(con);
             return action.doInConnection(conToUse);
         } catch (SQLException ex) {
+            // 重置autoCommit
+            resetAutoCommit(con, autoCommitModified);
             // Release Connection early, to avoid potential connection pool deadlock
             // in the case when the exception translator hasn't been initialized yet.
             String sql = getSql(action);
@@ -92,6 +110,8 @@ public class NoTxJdbcTemplate extends JdbcTemplate {
             con = null;
             throw translateException("ConnectionCallback", sql, ex);
         } finally {
+            // 重置autoCommit
+            resetAutoCommit(con, autoCommitModified);
             DataSourceUtils.releaseConnection(con, getDataSource());
         }
     }
@@ -102,8 +122,11 @@ public class NoTxJdbcTemplate extends JdbcTemplate {
         Assert.notNull(action, "Callback object must not be null");
 
         Connection con = getConnection(obtainDataSource());
+        boolean autoCommitModified = false;
         Statement stmt = null;
         try {
+            // 设置autoCommit
+            autoCommitModified = setupAutoCommit(con);
             stmt = con.createStatement();
             applyStatementSettings(stmt);
             T result = action.doInStatement(stmt);
@@ -115,11 +138,15 @@ public class NoTxJdbcTemplate extends JdbcTemplate {
             String sql = getSql(action);
             JdbcUtils.closeStatement(stmt);
             stmt = null;
+            // 重置autoCommit
+            resetAutoCommit(con, autoCommitModified);
             DataSourceUtils.releaseConnection(con, getDataSource());
             con = null;
             throw translateException("StatementCallback", sql, ex);
         } finally {
             JdbcUtils.closeStatement(stmt);
+            // 重置autoCommit
+            resetAutoCommit(con, autoCommitModified);
             DataSourceUtils.releaseConnection(con, getDataSource());
         }
     }
@@ -135,8 +162,11 @@ public class NoTxJdbcTemplate extends JdbcTemplate {
         }
 
         Connection con = getConnection(obtainDataSource());
+        boolean autoCommitModified = false;
         PreparedStatement ps = null;
         try {
+            // 设置autoCommit
+            autoCommitModified = setupAutoCommit(con);
             ps = psc.createPreparedStatement(con);
             applyStatementSettings(ps);
             T result = action.doInPreparedStatement(ps);
@@ -152,6 +182,8 @@ public class NoTxJdbcTemplate extends JdbcTemplate {
             psc = null;
             JdbcUtils.closeStatement(ps);
             ps = null;
+            // 重置autoCommit
+            resetAutoCommit(con, autoCommitModified);
             DataSourceUtils.releaseConnection(con, getDataSource());
             con = null;
             throw translateException("PreparedStatementCallback", sql, ex);
@@ -160,6 +192,8 @@ public class NoTxJdbcTemplate extends JdbcTemplate {
                 ((ParameterDisposer) psc).cleanupParameters();
             }
             JdbcUtils.closeStatement(ps);
+            // 重置autoCommit
+            resetAutoCommit(con, autoCommitModified);
             DataSourceUtils.releaseConnection(con, getDataSource());
         }
     }
@@ -175,8 +209,11 @@ public class NoTxJdbcTemplate extends JdbcTemplate {
         }
 
         Connection con = getConnection(obtainDataSource());
+        boolean autoCommitModified = false;
         CallableStatement cs = null;
         try {
+            // 设置autoCommit
+            autoCommitModified = setupAutoCommit(con);
             cs = csc.createCallableStatement(con);
             applyStatementSettings(cs);
             T result = action.doInCallableStatement(cs);
@@ -192,6 +229,8 @@ public class NoTxJdbcTemplate extends JdbcTemplate {
             csc = null;
             JdbcUtils.closeStatement(cs);
             cs = null;
+            // 重置autoCommit
+            resetAutoCommit(con, autoCommitModified);
             DataSourceUtils.releaseConnection(con, getDataSource());
             con = null;
             throw translateException("CallableStatementCallback", sql, ex);
@@ -200,8 +239,18 @@ public class NoTxJdbcTemplate extends JdbcTemplate {
                 ((ParameterDisposer) csc).cleanupParameters();
             }
             JdbcUtils.closeStatement(cs);
+            // 重置autoCommit
+            resetAutoCommit(con, autoCommitModified);
             DataSourceUtils.releaseConnection(con, getDataSource());
         }
+    }
+
+    public DBUtil.DBType getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(DBUtil.DBType dbType) {
+        this.dbType = dbType;
     }
 
     /**
@@ -216,6 +265,41 @@ public class NoTxJdbcTemplate extends JdbcTemplate {
             return ((SqlProvider) sqlProvider).getSql();
         } else {
             return null;
+        }
+    }
+
+    /**
+     * 设置自动提交
+     *
+     * @param connection
+     * @return autoCommitModified
+     * @throws SQLException
+     */
+    private boolean setupAutoCommit(Connection connection) throws SQLException {
+        boolean autoCommit = connection.getAutoCommit();
+
+        if (autoCommit) {
+            return false;
+        } else {
+            connection.setAutoCommit(true);
+            return true;
+        }
+    }
+
+    /**
+     * 重置自动提交
+     *
+     * @param connection
+     * @param autoCommitModified
+     */
+    private void resetAutoCommit(Connection connection, boolean autoCommitModified) {
+        if (connection == null || !autoCommitModified) {
+            return;
+        }
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            log.debug("resetAutoCommit error", e);
         }
     }
 }

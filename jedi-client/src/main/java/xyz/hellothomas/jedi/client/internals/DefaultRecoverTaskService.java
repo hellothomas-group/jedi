@@ -126,7 +126,7 @@ public class DefaultRecoverTaskService implements RecoverTaskService, Applicatio
 
     @SneakyThrows
     public void doRecover(JediTaskExecution jediTaskExecution, CountDownLatch countDownLatch) {
-        log.debug("taskId: {} is recovering", jediTaskExecution.getId());
+        log.info("taskId: {} is recovering", jediTaskExecution.getId());
         Class beanClazz = Class.forName(jediTaskExecution.getBeanTypeName());
 
         String[] methodParamTypesString = JsonUtil.deserialize(jediTaskExecution.getMethodParamTypes(), String[].class);
@@ -144,7 +144,7 @@ public class DefaultRecoverTaskService implements RecoverTaskService, Applicatio
 
         updateAttributes(jediTaskExecution, countDownLatch);
         method.invoke(this.applicationContext.getBean(jediTaskExecution.getBeanName(), beanClazz), methodArguments);
-        log.debug("taskId: {} is recovered", jediTaskExecution.getId());
+        log.info("taskId: {} is recovered", jediTaskExecution.getId());
     }
 
     private AsyncAttributes updateAttributes(JediTaskExecution jediTaskExecution, CountDownLatch countDownLatch) {
@@ -179,6 +179,7 @@ public class DefaultRecoverTaskService implements RecoverTaskService, Applicatio
         taskProperty.setTaskName("Jedi-Recover");
         taskProperty.setCreateTime(LocalDateTime.now());
         taskProperty.setStatus(TaskStatusEnum.REGISTERED.getValue());
+        taskProperty.setTraceable(false);
         log.trace("TaskProperty:{}", taskProperty);
 
         return taskProperty;

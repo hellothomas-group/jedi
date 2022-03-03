@@ -52,6 +52,12 @@ public @interface JediAsync {
     String taskExtraData() default "";
 
     /**
+     * 开启链路追踪
+     * @return
+     */
+    boolean traceable() default true;
+
+    /**
      * 需持久化
      * @return
      */

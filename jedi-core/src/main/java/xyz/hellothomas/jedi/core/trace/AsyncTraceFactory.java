@@ -13,4 +13,6 @@ public interface AsyncTraceFactory<V> {
     Runnable getRunnable(Runnable runnable);
 
     Callable<V> getCallable(Callable<V> callable);
+
+    String currentTraceId();
 }

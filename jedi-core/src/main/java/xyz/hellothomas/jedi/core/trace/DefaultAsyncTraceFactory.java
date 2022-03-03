@@ -18,4 +18,9 @@ public class DefaultAsyncTraceFactory<V> implements AsyncTraceFactory<V> {
     public Callable<V> getCallable(Callable<V> callable) {
         return callable;
     }
+
+    @Override
+    public String currentTraceId() {
+        return null;
+    }
 }

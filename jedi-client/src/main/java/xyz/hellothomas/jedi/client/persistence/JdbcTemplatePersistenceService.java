@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.core.JdbcTemplate;
 import xyz.hellothomas.jedi.client.model.JediTaskExecution;
+import xyz.hellothomas.jedi.client.util.DBUtil;
 import xyz.hellothomas.jedi.client.util.DateTimeUtil;
 import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
 
@@ -45,9 +46,9 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                         "?)",
                 taskProperty.getId(), taskProperty.getNamespaceName(), taskProperty.getAppId(),
                 taskProperty.getExecutorName(), taskProperty.getTaskName(), taskProperty.getTaskExtraData(),
-                DateTimeUtil.localDateTimeToPattern2(taskProperty.getCreateTime()),
-                DateTimeUtil.localDateTimeToPattern2(taskProperty.getStartTime()),
-                DateTimeUtil.localDateTimeToPattern2(taskProperty.getEndTime()),
+                taskProperty.getCreateTime(),
+                taskProperty.getStartTime(),
+                taskProperty.getEndTime(),
                 taskProperty.getStatus(), taskProperty.getExitCode(), taskProperty.getExitMessage(),
                 taskProperty.getBeanName(), taskProperty.getBeanTypeName(), taskProperty.getMethodName(),
                 taskProperty.getMethodParamTypes(), taskProperty.getMethodArguments(), taskProperty.isRecoverable(),
@@ -55,7 +56,7 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                 taskProperty.getTraceId(), taskProperty.isByRetryer(), taskProperty.getPreviousId(),
                 taskProperty.getParentId(), taskProperty.isExecutedByParentTaskThread(),
                 taskProperty.getDataSourceName(), taskProperty.getLastUpdatedUser(),
-                DateTimeUtil.getDateTimePattern2());
+                LocalDateTime.now());
         log.trace("insert {} row: {}", row, taskProperty);
         return row;
     }
@@ -67,10 +68,10 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         int row = jdbcTemplate.update("UPDATE JEDI_TASK_EXECUTION SET START_TIME = ?, END_TIME = ?, status = ?, " +
                         "EXIT_CODE = ?, EXIT_MESSAGE = ?, IS_EXECUTED_BY_PARENT_TASK_THREAD = ?," +
                         " LAST_UPDATED_TIME = ? WHERE ID = ?",
-                DateTimeUtil.localDateTimeToPattern2(taskProperty.getStartTime()),
-                DateTimeUtil.localDateTimeToPattern2(taskProperty.getEndTime()),
+                taskProperty.getStartTime(),
+                taskProperty.getEndTime(),
                 taskProperty.getStatus(), taskProperty.getExitCode(), taskProperty.getExitMessage(),
-                taskProperty.isExecutedByParentTaskThread(), DateTimeUtil.getDateTimePattern2(), taskProperty.getId());
+                taskProperty.isExecutedByParentTaskThread(), LocalDateTime.now(), taskProperty.getId());
         log.trace("update {} row: {}", row, taskProperty);
         return row;
     }
@@ -109,7 +110,7 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         JdbcTemplate jdbcTemplate = getJdbcTemplate(dataSourceName);
         return jdbcTemplate.queryForObject("SELECT COUNT(1) FROM JEDI_TASK_EXECUTION " +
                         "WHERE STATUS = ? AND MACHINE_ID = ? AND IS_RECOVERABLE = ? AND CREATE_TIME <= ?",
-                Long.class, status, machineId, isRecoverable, DateTimeUtil.localDateTimeToPattern2(appInitTime));
+                Long.class, status, machineId, isRecoverable, appInitTime);
     }
 
     @Override
@@ -117,19 +118,37 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
                                                                    LocalDateTime appInitTime, int pageNum,
                                                                    int pageSize, String dataSourceName) {
         JdbcTemplate jdbcTemplate = getJdbcTemplate(dataSourceName);
-        return jdbcTemplate.query("SELECT ID,NAMESPACE_NAME,APP_ID,EXECUTOR_NAME," +
-                        "TASK_NAME,TASK_EXTRA_DATA,CREATE_TIME,START_TIME," +
-                        "END_TIME,STATUS,EXIT_CODE,EXIT_MESSAGE," +
-                        "BEAN_NAME,BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES," +
-                        "METHOD_ARGUMENTS,IS_RECOVERABLE,IS_RECOVERED,HOST," +
-                        "MACHINE_ID,TRACE_ID,IS_BY_RETRYER,PREVIOUS_ID," +
-                        "PARENT_ID,IS_EXECUTED_BY_PARENT_TASK_THREAD,DATA_SOURCE_NAME,LAST_UPDATED_USER," +
-                        "LAST_UPDATED_TIME" +
-                        " FROM JEDI_TASK_EXECUTION " +
-                        "WHERE STATUS = ? AND MACHINE_ID = ? AND IS_RECOVERABLE = ? AND CREATE_TIME <= ? " +
-                        "ORDER BY CREATE_TIME DESC LIMIT ?",
-                (rs, rowNum) -> buildJediTaskExecution(rs), status, machineId, isRecoverable,
-                DateTimeUtil.localDateTimeToPattern2(appInitTime), pageSize);
+        if (DBUtil.DBType.ORACLE == ((NoTxJdbcTemplate) jdbcTemplate).getDbType()) {
+            return jdbcTemplate.query("SELECT ROWNUM ROW_NUM, t1.* FROM (" +
+                            "SELECT ID,NAMESPACE_NAME,APP_ID,EXECUTOR_NAME," +
+                            "TASK_NAME,TASK_EXTRA_DATA,CREATE_TIME,START_TIME," +
+                            "END_TIME,STATUS,EXIT_CODE,EXIT_MESSAGE," +
+                            "BEAN_NAME,BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES," +
+                            "METHOD_ARGUMENTS,IS_RECOVERABLE,IS_RECOVERED,HOST," +
+                            "MACHINE_ID,TRACE_ID,IS_BY_RETRYER,PREVIOUS_ID," +
+                            "PARENT_ID,IS_EXECUTED_BY_PARENT_TASK_THREAD,DATA_SOURCE_NAME,LAST_UPDATED_USER," +
+                            "LAST_UPDATED_TIME" +
+                            " FROM JEDI_TASK_EXECUTION " +
+                            "WHERE STATUS = ? AND MACHINE_ID = ? AND IS_RECOVERABLE = ? AND CREATE_TIME <= ? " +
+                            "ORDER BY CREATE_TIME DESC) t1 " +
+                            "WHERE ROWNUM <= ?",
+                    (rs, rowNum) -> buildJediTaskExecution(rs), status, machineId, isRecoverable,
+                    appInitTime, pageSize);
+        } else {
+            return jdbcTemplate.query("SELECT ID,NAMESPACE_NAME,APP_ID,EXECUTOR_NAME," +
+                            "TASK_NAME,TASK_EXTRA_DATA,CREATE_TIME,START_TIME," +
+                            "END_TIME,STATUS,EXIT_CODE,EXIT_MESSAGE," +
+                            "BEAN_NAME,BEAN_TYPE_NAME,METHOD_NAME,METHOD_PARAM_TYPES," +
+                            "METHOD_ARGUMENTS,IS_RECOVERABLE,IS_RECOVERED,HOST," +
+                            "MACHINE_ID,TRACE_ID,IS_BY_RETRYER,PREVIOUS_ID," +
+                            "PARENT_ID,IS_EXECUTED_BY_PARENT_TASK_THREAD,DATA_SOURCE_NAME,LAST_UPDATED_USER," +
+                            "LAST_UPDATED_TIME" +
+                            " FROM JEDI_TASK_EXECUTION " +
+                            "WHERE STATUS = ? AND MACHINE_ID = ? AND IS_RECOVERABLE = ? AND CREATE_TIME <= ? " +
+                            "ORDER BY CREATE_TIME DESC LIMIT ?",
+                    (rs, rowNum) -> buildJediTaskExecution(rs), status, machineId, isRecoverable,
+                    appInitTime, pageSize);
+        }
     }
 
     @Override
@@ -158,7 +177,8 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         JdbcTemplate jdbcTemplate = jdbcTemplateMap.get(dataSourceName);
         if (jdbcTemplate == null) {
             DataSource dataSource = this.applicationContext.getBean(dataSourceName, DataSource.class);
-            jdbcTemplate = new NoTxJdbcTemplate(dataSource);
+            DBUtil.DBType dbType = DBUtil.getDBType(dataSource);
+            jdbcTemplate = new NoTxJdbcTemplate(dataSource, dbType);
             jdbcTemplateMap.put(dataSourceName, jdbcTemplate);
             return jdbcTemplate;
         } else {
@@ -169,7 +189,8 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
     private synchronized JdbcTemplate buildDefaultJdbcTemplate() {
         if (this.jdbcTemplate == null) {
             DataSource dataSource = this.applicationContext.getBean(DataSource.class);
-            this.jdbcTemplate = new NoTxJdbcTemplate(dataSource);
+            DBUtil.DBType dbType = DBUtil.getDBType(dataSource);
+            this.jdbcTemplate = new NoTxJdbcTemplate(dataSource, dbType);
             return this.jdbcTemplate;
         } else {
             return this.jdbcTemplate;
