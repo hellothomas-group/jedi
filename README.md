@@ -26,19 +26,19 @@
 
 - ### 实时监控异步调度（线程池和异步任务），故障预警
 
-- ### 动态维护线程池配置，降低维护成本，及时规避故障或加速故障恢复
+- ### 动态维护线程池配置，及时规避故障或加速故障恢复
 
-- ### 异步调度任务高可靠，默认与数据库可靠性级别一致，可自行扩展提高级别
+- ### 异步调度任务高可靠，支持任务持久化
 
-- ### 异步调度任务高可用，支持异步任务自恢复和重试，故障后快速补偿异常任务
+- ### 异步调度任务高可用，支持异步任务自恢复和重试补偿
 
-- ### 易扩展，业务系统可自行实现接口，替换默认实现
+- ### 易扩展，业务系统可自行实现接口自定义功能
 
 - ### 易用，低侵入（只需注解，无需编码）
 
 # Usage
 
-- 服务端演示地址
+- 平台演示地址
 
   http://jedi.hellothomas.xyz:8080
 
@@ -47,9 +47,9 @@
 
   <mark>请勿对jedi-demo示例应用做非查询操作</mark>
 
-- Java客户端使用指南
+- 客户端使用指南
 
-  [客户端使用指南](https://github.com/hellothomas-group/jedi/wiki#%E4%B8%80-%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97)
+  [SDK使用指南](https://github.com/hellothomas-group/jedi/wiki#%E4%B8%80-%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97)
   
   客户端演示地址，服务器最低配置，各位浅尝辄止
   
@@ -57,17 +57,29 @@
 
 # Design
 
-[设计与实现](https://github.com/hellothomas-group/jedi/wiki#%E4%BA%8C-%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0)
+**功能设计**
+
+![功能设计图](https://user-images.githubusercontent.com/30972648/156911422-afb26a3f-a7e3-4d44-8099-c7a95f7170ab.png)
+
+**系统架构**
+
+![系统架构图](https://user-images.githubusercontent.com/30972648/156911221-973307c3-afe4-4e6b-8786-44760b4f4b61.png)
 
 # Development
 
+1.  下载最新源码。
+2. 数据库建表 doc/db目录下tables_jedi_config.sql、tables_jedi_consumer.sql。
+3. 调整jedi-config、jedi-consumer、jedi-admin模块中resources/application-local.yml的数据库配置，分别运行三个后端应用。
+4. 启动前端应用，cd jedi-ui，已安装npm，则执行npm run start。未安装则执行npm install。访问 http://localhost:8089登录，用户名/密码 admin/123456。
+5. 启动示例应用jedi-demo。数据库建表，db/init.sql。调整resources/application-local.yml的数据库配置，运行应用。访问http://127.0.0.1:8090/swagger-ui.html触发请求。
+
 # Deployment
 
-[服务端部署指南](https://github.com/hellothomas-group/jedi/wiki#%E4%B8%89-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97)
+[平台部署指南](https://github.com/hellothomas-group/jedi/wiki#%E4%B8%89-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2%E6%8C%87%E5%8D%97)
 
 # Release Notes
 
-first release(1.0.0) will come soon
+0.0.11 - first release version
 
 # FAQ
 
@@ -76,6 +88,8 @@ first release(1.0.0) will come soon
 [Apache 2 license](https://github.com/hellothomas-group/jedi/blob/main/LICENSE).
 
 # Known Users
+
+![招商银行](http://www.cmbchina.com/Images/header/app/icon_zsyh.png)招商银行
 
 # Stars
 Gitee Stars

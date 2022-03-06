@@ -264,3 +264,8 @@ CREATE TABLE IF NOT EXISTS  `role_permission` (
   KEY `IX_roleId` (`role_id`),
   KEY `IX_permissionId` (`permission_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色和权限的绑定表';
+
+-- 密码123456
+INSERT INTO jedi_config.`user`
+(id, user_name, real_name, password, email, is_manual, enabled, create_user, create_time, update_user, update_time, version)
+VALUES(1, 'admin', '管理员', 'MTIzNDU2', 'tyty2017@qq.com', 1, 1, 'default', '2021-12-26 17:49:46', '', '2021-12-26 17:49:47', 1);
