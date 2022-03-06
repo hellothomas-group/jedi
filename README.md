@@ -6,19 +6,19 @@
 
 # Screenshots
 
-线程池实时状态监控
+**线程池实时状态监控**
 
 ![线程池实时状态监控](https://images.gitee.com/uploads/images/2022/0207/230949_7fbeb3de_5057838.png)
 
-动态维护线程池配置
+**动态维护线程池配置**
 
 ![动态配置线程池参数](https://images.gitee.com/uploads/images/2022/0207/231106_46c28a98_5057838.png)
 
-线程池任务监控
+**线程池任务监控**
 
 ![线程池任务监控](https://images.gitee.com/uploads/images/2022/0207/231125_51aa1ea5_5057838.png)
 
-线程池任务重试
+**线程池任务重试**
 
 ![线程池任务重试](https://images.gitee.com/uploads/images/2022/0207/231142_8e3b2cfe_5057838.png)
 
@@ -92,6 +92,8 @@
 ![招商银行](http://www.cmbchina.com/Images/header/app/icon_zsyh.png)招商银行
 
 # Stars
+**_你的star是我继续前进的动力_**
+
 Gitee Stars
 [![Stargazers over time](https://whnb.wang/stars/hellothomas/jedi)](https://www.whnb.wang/hellothomas/jedi)
 
