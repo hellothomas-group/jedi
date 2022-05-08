@@ -8,7 +8,7 @@ spring:
       connection-test-query: SELECT 1
       connection-timeout: 10000
       idle-timeout: 30000
-      max-lifetime: 200000 # ACS容器平台存在“240s断开空闲连接”的特性,须小于240s
+      max-lifetime: 200000
       maximum-pool-size: 30
       minimum-idle: 10
   profiles:
