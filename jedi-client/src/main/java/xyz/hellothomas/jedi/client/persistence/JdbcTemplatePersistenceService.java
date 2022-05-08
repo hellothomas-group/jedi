@@ -8,13 +8,15 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.core.JdbcTemplate;
 import xyz.hellothomas.jedi.client.model.JediTaskExecution;
 import xyz.hellothomas.jedi.client.util.DBUtil;
-import xyz.hellothomas.jedi.client.util.DateTimeUtil;
 import xyz.hellothomas.jedi.core.internals.executor.TaskProperty;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -198,6 +200,7 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
     }
 
     private JediTaskExecution buildJediTaskExecution(ResultSet rs) throws SQLException {
+        ZoneId zone = ZoneId.systemDefault();
         JediTaskExecution jediTaskExecution = new JediTaskExecution();
         jediTaskExecution.setId(rs.getString("ID"));
         jediTaskExecution.setNamespaceName(rs.getString("NAMESPACE_NAME"));
@@ -205,15 +208,15 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         jediTaskExecution.setExecutorName(rs.getString("EXECUTOR_NAME"));
         jediTaskExecution.setTaskName(rs.getString("TASK_NAME"));
         jediTaskExecution.setTaskExtraData(rs.getString("TASK_EXTRA_DATA"));
-        String createTime = rs.getString("CREATE_TIME");
+        Timestamp createTime = rs.getTimestamp("CREATE_TIME");
         jediTaskExecution.setCreateTime(createTime == null ? null :
-                DateTimeUtil.pattern2ToLocalDateTime(createTime));
-        String startTime = rs.getString("START_TIME");
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(createTime.getTime()), zone));
+        Timestamp startTime = rs.getTimestamp("START_TIME");
         jediTaskExecution.setStartTime(startTime == null ? null :
-                DateTimeUtil.pattern2ToLocalDateTime(startTime));
-        String endTime = rs.getString("END_TIME");
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(startTime.getTime()), zone));
+        Timestamp endTime = rs.getTimestamp("END_TIME");
         jediTaskExecution.setEndTime(endTime == null ? null :
-                DateTimeUtil.pattern2ToLocalDateTime(endTime));
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(endTime.getTime()), zone));
         jediTaskExecution.setStatus(rs.getInt("STATUS"));
         jediTaskExecution.setExitCode(rs.getString("EXIT_CODE"));
         jediTaskExecution.setExitMessage(rs.getString("EXIT_MESSAGE"));
@@ -233,9 +236,9 @@ public class JdbcTemplatePersistenceService implements PersistenceService, Appli
         jediTaskExecution.setExecutedByParentTaskThread(rs.getBoolean("IS_EXECUTED_BY_PARENT_TASK_THREAD"));
         jediTaskExecution.setDataSourceName(rs.getString("DATA_SOURCE_NAME"));
         jediTaskExecution.setLastUpdatedUser(rs.getString("LAST_UPDATED_USER"));
-        String lastUpdated = rs.getString("LAST_UPDATED_TIME");
+        Timestamp lastUpdated = rs.getTimestamp("LAST_UPDATED_TIME");
         jediTaskExecution.setLastUpdatedTime(lastUpdated == null ? null :
-                DateTimeUtil.pattern2ToLocalDateTime(lastUpdated));
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(lastUpdated.getTime()), zone));
         return jediTaskExecution;
     }
 }
