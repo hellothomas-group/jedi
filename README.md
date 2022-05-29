@@ -68,8 +68,8 @@
 # Development
 
 1.  下载最新源码。
-2. 数据库建表 doc/db目录下tables_jedi_config.sql、tables_jedi_consumer.sql。
-3. 调整jedi-config、jedi-consumer、jedi-admin模块中resources/application-local.yml的数据库配置，分别运行三个后端应用。
+2. 数据库建表 doc/db目录下tables_jedi_config.sql、tables_jedi_collector.sql。
+3. 调整jedi-config、jedi-collector、jedi-admin模块中resources/application-local.yml的数据库配置，分别运行三个后端应用。
 4. 启动前端应用，cd jedi-ui，已安装npm，则执行npm run start。未安装则先执行npm install。访问 http://localhost:8089 登录，用户名/密码: admin/123456。
 5. 启动示例应用jedi-demo。数据库建表，db/init.sql。调整resources/application-local.yml的数据库配置，运行应用。访问http://127.0.0.1:8090/swagger-ui.html 触发请求。
 

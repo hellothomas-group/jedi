@@ -2,7 +2,7 @@ package xyz.hellothomas.jedi.core.utils;
 
 import org.junit.Test;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
-import xyz.hellothomas.jedi.core.dto.consumer.CustomNotification;
+import xyz.hellothomas.jedi.core.dto.collector.CustomNotification;
 
 public class GsonToolTest {
 

@@ -3,8 +3,8 @@ package xyz.hellothomas.jedi.core.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
-import xyz.hellothomas.jedi.core.dto.consumer.AbstractNotification;
-import xyz.hellothomas.jedi.core.dto.consumer.CustomNotification;
+import xyz.hellothomas.jedi.core.dto.collector.AbstractNotification;
+import xyz.hellothomas.jedi.core.dto.collector.CustomNotification;
 import xyz.hellothomas.jedi.core.enums.MessageType;
 
 import java.time.LocalDateTime;

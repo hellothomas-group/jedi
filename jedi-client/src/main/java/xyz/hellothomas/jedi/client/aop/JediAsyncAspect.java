@@ -24,7 +24,7 @@ import xyz.hellothomas.jedi.client.model.JediConfig;
 import xyz.hellothomas.jedi.client.persistence.JediPersistentCallable;
 import xyz.hellothomas.jedi.client.persistence.PersistenceService;
 import xyz.hellothomas.jedi.client.util.ExpressionUtil;
-import xyz.hellothomas.jedi.core.dto.consumer.ExecutorTaskNotification;
+import xyz.hellothomas.jedi.core.dto.collector.ExecutorTaskNotification;
 import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
 import xyz.hellothomas.jedi.core.internals.executor.JediCallable;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;

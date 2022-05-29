@@ -1,7 +1,7 @@
 package xyz.hellothomas.jedi.core.internals;
 
 import org.junit.Test;
-import xyz.hellothomas.jedi.core.dto.consumer.CustomNotification;
+import xyz.hellothomas.jedi.core.dto.collector.CustomNotification;
 import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
 import xyz.hellothomas.jedi.core.internals.executor.JediRunnable;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;

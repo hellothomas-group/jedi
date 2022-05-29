@@ -265,7 +265,14 @@ CREATE TABLE IF NOT EXISTS  `role_permission` (
   KEY `IX_permissionId` (`permission_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色和权限的绑定表';
 
--- 密码123456
-INSERT INTO jedi_config.`user`
-(id, user_name, real_name, password, email, is_manual, enabled, create_user, create_time, update_user, update_time, version)
-VALUES(1, 'admin', '管理员', 'MTIzNDU2', 'tyty2017@qq.com', 1, 1, 'default', '2021-12-26 17:49:46', '', '2021-12-26 17:49:47', 1);
+INSERT INTO `user`(id, user_name, real_name, password, email, is_manual) VALUES(1, 'admin', '管理员', 'MTIzNDU2',
+'admin@hellothomas.xyz', 1); --pwd'123456'
+
+INSERT INTO namespace (id, name, description, org_id, org_name, owner_name, owner_email) VALUES(1, 'dev', 'dev环境',
+'jedi', 'jedi', 'admin', 'admin@hellothomas.xyz');
+
+INSERT INTO namespace (id, name, description, org_id, org_name, owner_name, owner_email) VALUES(2, 'st', 'st环境',
+'jedi', 'jedi', 'admin', 'admin@hellothomas.xyz');
+
+INSERT INTO namespace (id, name, description, org_id, org_name, owner_name, owner_email) VALUES(3, 'uat', 'uat环境',
+'jedi', 'jedi', 'admin', 'admin@hellothomas.xyz');

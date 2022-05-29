@@ -4,7 +4,7 @@ import org.apache.kafka.common.security.auth.SecurityProtocol;
 import org.apache.kafka.common.security.plain.PlainLoginModule;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.Test;
-import xyz.hellothomas.jedi.core.dto.consumer.CustomNotification;
+import xyz.hellothomas.jedi.core.dto.collector.CustomNotification;
 import xyz.hellothomas.jedi.core.enums.TaskStatusEnum;
 import xyz.hellothomas.jedi.core.internals.executor.JediRunnable;
 import xyz.hellothomas.jedi.core.internals.executor.JediThreadPoolExecutor;

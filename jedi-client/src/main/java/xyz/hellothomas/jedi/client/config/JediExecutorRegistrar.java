@@ -22,9 +22,9 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import xyz.hellothomas.jedi.client.constants.Constants;
-import xyz.hellothomas.jedi.client.enums.ConsumerTypeEnum;
+import xyz.hellothomas.jedi.client.enums.CollectorTypeEnum;
 import xyz.hellothomas.jedi.client.enums.JediModeEnum;
-import xyz.hellothomas.jedi.client.model.ConsumerProperty;
+import xyz.hellothomas.jedi.client.model.CollectorProperty;
 import xyz.hellothomas.jedi.client.model.JediConfig;
 import xyz.hellothomas.jedi.client.model.JediProperty;
 import xyz.hellothomas.jedi.client.util.ExceptionUtil;
@@ -55,7 +55,7 @@ import java.util.List;
 @Slf4j
 public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, EnvironmentAware, BeanFactoryAware {
     private static final String NOTIFICATION_SERVICE_BEAN_NAME = "notificationService";
-    private static final String CONSUMER_HTTP_KEY = "url";
+    private static final String COLLECTOR_HTTP_KEY = "url";
     private static final Splitter EXECUTOR_SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
     private static final Joiner STRING_JOINER_PROPERTY = Joiner.on(".");
 
@@ -121,21 +121,21 @@ public class JediExecutorRegistrar implements ImportBeanDefinitionRegistrar, Env
         }
 
         try {
-            // 从远端获取consumerUrl或者kafkaProperty
-            String getConsumerEndpointUrl = String.format("%s/static-config/consumer/%s/%s", url, namespace, appId);
+            // 从远端获取collectorUrl或者kafkaProperty
+            String getCollectorEndpointUrl = String.format("%s/static-config/collector/%s/%s", url, namespace, appId);
 
-            HttpRequest request = new HttpRequest(getConsumerEndpointUrl);
+            HttpRequest request = new HttpRequest(getCollectorEndpointUrl);
             log.debug("request:{}", request);
 
-            Type responseType = new TypeToken<ConsumerProperty>() {
+            Type responseType = new TypeToken<CollectorProperty>() {
             }.getType();
-            HttpResponse<ConsumerProperty> response = HttpUtil.doGet(request, responseType);
+            HttpResponse<CollectorProperty> response = HttpUtil.doGet(request, responseType);
 
             // 实例化notificationService
-            if (ConsumerTypeEnum.HTTP.getEnumValue().equals(response.getBody().getType())) {
-                String notificationUrl = (String) response.getBody().getConfigDetails().get(CONSUMER_HTTP_KEY);
+            if (CollectorTypeEnum.HTTP.getEnumValue().equals(response.getBody().getType())) {
+                String notificationUrl = (String) response.getBody().getConfigDetails().get(COLLECTOR_HTTP_KEY);
                 return new HttpNotificationService(notificationUrl, appId, namespace);
-            } else if (ConsumerTypeEnum.KAFKA.getEnumValue().equals(response.getBody().getType())) {
+            } else if (CollectorTypeEnum.KAFKA.getEnumValue().equals(response.getBody().getType())) {
                 KafkaProperty kafkaProperty = new KafkaProperty();
                 response.getBody().getConfigDetails().forEach((k, v) -> {
                     // filter topic config

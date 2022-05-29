@@ -18,8 +18,8 @@ import static xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum.SUCCESS;
 @Slf4j
 @Component
 public class SyncListener {
-    @Value("${admin-service.consumer-url}")
-    private String consumerUrl;
+    @Value("${admin-service.collector-url}")
+    private String collectorUrl;
 
     private final RestTemplate restTemplate;
 
@@ -32,7 +32,7 @@ public class SyncListener {
     public void onSyncEvent(SyncEvent event) {
         try {
             HttpEntity<String> requestEntity = new HttpEntity(JsonUtil.serialize(event.getSource()));
-            ResponseEntity<ApiResponse<String>> responseEntity = restTemplate.exchange(consumerUrl +
+            ResponseEntity<ApiResponse<String>> responseEntity = restTemplate.exchange(collectorUrl +
                             "/sync/syncType/{syncType}/syncOperation/{syncOperation}", HttpMethod.POST, requestEntity,
                     new ParameterizedTypeReference<ApiResponse<String>>() {
                     }, event.getSyncTypeEnum(), event.getSyncOperationEnum());

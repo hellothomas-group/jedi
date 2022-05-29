@@ -6,7 +6,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.KafkaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.hellothomas.jedi.core.dto.consumer.AbstractNotification;
+import xyz.hellothomas.jedi.core.dto.collector.AbstractNotification;
 import xyz.hellothomas.jedi.core.enums.KafkaMessageTopic;
 import xyz.hellothomas.jedi.core.enums.MessageType;
 import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;

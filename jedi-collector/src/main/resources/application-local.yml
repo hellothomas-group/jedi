@@ -1,0 +1,80 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+    consumer:
+      auto:
+        commit:
+          interval:
+            ms: 1000
+      auto-offset-reset: latest #earliest #latest
+      enable-auto-commit: true
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        group:
+          id: defaultConsumerGroup1
+        request:
+          timeout:
+            ms: 180000
+        session:
+          timeout:
+            ms: 120000
+      max-poll-records: 200
+    listener:
+      missing-topics-fatal: false
+      type: batch
+      concurrency: 1
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/jedi_collector?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+      &serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+
+management:
+#  endpoint:
+#    beans:
+#      enabled: true
+  endpoints:
+#    enabled-by-default: false
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml,classpath*:mapper/monitor/*.xml
+
+swagger:
+  enable: true
+  base-package: xyz.hellothomas.jedi.collector.api
+  title: Jedi-Collector-Service
+  host: 127.0.0.1:8080
+  description: Jedi-Collector服务
+  version: 1.0.0
+  contact:
+    name: Thomas
+    url: https://www.hellothomas.xyz
+    email: tyty2017@qq.com
+
+collector:
+  type: HTTP
+  url: http://127.0.0.1:8080
+  executor-ticker-topic: executor-ticker
+  executor-task-topic: executor-task
+  executor-shutdown-topic: executor-shutdown
+  custom-notification-topic: custom-notification
+
+collector-service:
+  aspect.logging.enable: true
+
+logging:
+  level:
+    xyz:
+      hellothomas.jedi: debug

@@ -17,8 +17,8 @@ import static xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum.SUCCESS;
 @Slf4j
 @Component
 public class TaskListener {
-    @Value("${admin-service.consumer-url}")
-    private String consumerUrl;
+    @Value("${admin-service.collector-url}")
+    private String collectorUrl;
 
     private final RestTemplate restTemplate;
 
@@ -31,7 +31,7 @@ public class TaskListener {
     public void onSyncEvent(TaskEvent event) {
         try {
             RetriedTaskChange retriedTaskChange = (RetriedTaskChange) event.getSource();
-            ResponseEntity<ApiResponse<String>> responseEntity = restTemplate.exchange(consumerUrl +
+            ResponseEntity<ApiResponse<String>> responseEntity = restTemplate.exchange(collectorUrl +
                             "/tasks/{taskId}/retried?newTaskId={newTaskId}&operator={operator}", HttpMethod.POST,
                     null, new ParameterizedTypeReference<ApiResponse<String>>() {
                     }, retriedTaskChange.getTaskId(), retriedTaskChange.getNewTaskId(),

@@ -319,7 +319,7 @@ export default {
       console.log(this.queryTaskDetailsForm.queryTime[0])
       console.log(this.queryTaskDetailsForm.queryTime[1])
 
-      this.axios.get('/consumer/namespaces/' + this.namespaceName + '/apps/' + this.appId + '/executors/' +
+      this.axios.get('/collector/namespaces/' + this.namespaceName + '/apps/' + this.appId + '/executors/' +
         this.executorName + '/task-details', {
         params: {
           taskName: this.queryTaskDetailsForm.inputTaskName,

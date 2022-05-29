@@ -137,7 +137,7 @@ export default {
       console.log(this.queryTaskDetailForm.inputTaskId)
       let that = this
 
-      this.axios.get('/consumer/tasks/' + this.queryTaskDetailForm.inputTaskId).then(res => {
+      this.axios.get('/collector/tasks/' + this.queryTaskDetailForm.inputTaskId).then(res => {
         console.log(res)
         this.taskData = res.data
       }).catch(function (error) {

@@ -174,7 +174,8 @@ export default {
       console.log('asyncQueryStatisticsList')
       console.log(this.executorName)
 
-      this.axios.get('/consumer/namespaces/' + this.namespaceName + '/apps/' + this.appId + '/executors/' + this.executorName +
+      this.axios.get('/collector/namespaces/' + this.namespaceName + '/apps/' + this.appId + '/executors/' +
+        this.executorName +
         '/task-statistics-history/all', {
         params: {
           startDate: format(this.queryDate[0], 'yyyy-MM-dd'),

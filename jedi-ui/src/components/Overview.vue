@@ -130,7 +130,7 @@ export default {
       console.log('asyncQueryTaskSummary')
       console.log(executorName)
 
-      this.axios.get('/consumer/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
+      this.axios.get('/collector/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
         '/task-summary', {
         params: {
           statisticsDate: format(new Date(), 'yyyy-MM-dd')

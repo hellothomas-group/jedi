@@ -43,7 +43,7 @@ spring:
 
 config-service:
   cache-enabled: true
-  consumer-url: http://127.0.0.1:8080
+  collector-url: http://127.0.0.1:8080
   aspect.logging.enable: true
 
 logging:

@@ -118,7 +118,7 @@ export default {
       console.log(executorName)
       this.currentDate = new Date()
 
-      this.axios.get('/consumer/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
+      this.axios.get('/collector/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
         '/task-statistics/all', {
         params: {
           statisticsDate: format(this.currentDate, 'yyyy-MM-dd'),

@@ -3,7 +3,7 @@ package xyz.hellothomas.jedi.core.internals.message.http;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
-import xyz.hellothomas.jedi.core.dto.consumer.AbstractNotification;
+import xyz.hellothomas.jedi.core.dto.collector.AbstractNotification;
 import xyz.hellothomas.jedi.core.enums.HttpNotificationPath;
 import xyz.hellothomas.jedi.core.enums.MessageType;
 import xyz.hellothomas.jedi.core.internals.message.AbstractNotificationService;

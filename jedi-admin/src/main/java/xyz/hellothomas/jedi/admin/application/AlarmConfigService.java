@@ -21,8 +21,8 @@ import static xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum.SUCCESS;
 @Service
 public class AlarmConfigService {
 
-    @Value("${admin-service.consumer-url}")
-    private String consumerUrl;
+    @Value("${admin-service.collector-url}")
+    private String collectorUrl;
 
     private final RestTemplate restTemplate;
     private final ExecutorService executorService;
@@ -45,7 +45,7 @@ public class AlarmConfigService {
                     String.format("executor not found for %s %s %s", namespaceName, appId, executorName));
         }
 
-        ResponseEntity<ApiResponse<AlarmConfigResponse>> responseEntity = restTemplate.exchange(consumerUrl +
+        ResponseEntity<ApiResponse<AlarmConfigResponse>> responseEntity = restTemplate.exchange(collectorUrl +
                         "/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs" +
                         "?configuration={configuration}&operator={operator}", HttpMethod.POST, null,
                 new ParameterizedTypeReference<ApiResponse<AlarmConfigResponse>>() {
@@ -64,7 +64,7 @@ public class AlarmConfigService {
 
     public AlarmConfigResponse update(String namespaceName, String appId, String executorName, String configuration,
                                       String operator) {
-        ResponseEntity<ApiResponse<AlarmConfigResponse>> responseEntity = restTemplate.exchange(consumerUrl +
+        ResponseEntity<ApiResponse<AlarmConfigResponse>> responseEntity = restTemplate.exchange(collectorUrl +
                         "/namespaces/{namespaceName}/apps/{appId}/executors/{executorName}/alarm-configs" +
                         "?configuration={configuration}&operator={operator}", HttpMethod.PUT, null,
                 new ParameterizedTypeReference<ApiResponse<AlarmConfigResponse>>() {
@@ -82,14 +82,14 @@ public class AlarmConfigService {
     }
 
     public void delete(long alarmConfigId, String operator) {
-        restTemplate.delete(consumerUrl + "/alarm-configs/{alarmConfigId}?operator={operator}", alarmConfigId,
+        restTemplate.delete(collectorUrl + "/alarm-configs/{alarmConfigId}?operator={operator}", alarmConfigId,
                 operator);
 
         auditService.audit(AlarmConfig.class.getSimpleName(), alarmConfigId, Audit.OP.DELETE, operator);
     }
 
     public AlarmConfigResponse findOne(String namespaceName, String appId, String executorName) {
-        return restTemplate.getForObject(consumerUrl + "/namespaces/{namespaceName}/apps/{appId}/executors" +
+        return restTemplate.getForObject(collectorUrl + "/namespaces/{namespaceName}/apps/{appId}/executors" +
                 "/{executorName}/alarm-configs", AlarmConfigResponse.class, namespaceName, appId, executorName);
     }
 }

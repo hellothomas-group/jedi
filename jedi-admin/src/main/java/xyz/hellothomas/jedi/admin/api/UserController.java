@@ -2,6 +2,8 @@ package xyz.hellothomas.jedi.admin.api;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.SneakyThrows;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,10 +32,12 @@ public class UserController {
         this.userService = userService;
     }
 
+    @SneakyThrows
     @PostMapping(value = "/create")
     @ApiOperation("create")
     public ApiResponse<Long> create(@RequestBody UserRequest userRequest) {
         User user = LocalBeanUtils.transform(User.class, userRequest);
+        user.setPassword(Base64.encodeBase64String(user.getPassword().getBytes("UTF-8")));
         user.setIsManual(true);
         user.setCreateTime(LocalDateTime.now());
         user.setUpdateTime(user.getCreateTime());

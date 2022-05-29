@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import xyz.hellothomas.jedi.biz.infrastructure.exception.ServiceException;
-import xyz.hellothomas.jedi.config.domain.ConsumerProperty;
+import xyz.hellothomas.jedi.config.domain.pojo.CollectorProperty;
 import xyz.hellothomas.jedi.core.dto.ApiResponse;
 
 import static xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum.SUCCESS;
@@ -31,24 +31,43 @@ import static xyz.hellothomas.jedi.core.enums.CoreErrorCodeEnum.SUCCESS;
 public class StaticConfigController {
     private final RestTemplate restTemplate;
 
-    @Value("${config-service.consumer-url}")
-    private String consumerUrl;
+    @Value("${config-service.collector-url}")
+    private String collectorUrl;
 
     public StaticConfigController(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
+    @Deprecated
     @GetMapping(value = "/consumer/{namespace}/{appId}")
     @ApiOperation("consumer")
-    public ConsumerProperty consumer(@PathVariable String namespace,
-                                     @PathVariable String appId) {
+    public CollectorProperty consumer(@PathVariable String namespace,
+                                      @PathVariable String appId) {
         log.info("namespace:{}, appId:{}", namespace, appId);
-        ResponseEntity<ApiResponse<ConsumerProperty>> responseEntity = restTemplate.exchange(consumerUrl +
-                        "/static-config/consumer/{namespace}/{appId}", HttpMethod.GET, null,
-                new ParameterizedTypeReference<ApiResponse<ConsumerProperty>>() {
+        ResponseEntity<ApiResponse<CollectorProperty>> responseEntity = restTemplate.exchange(collectorUrl +
+                        "/static-config/collector/{namespace}/{appId}", HttpMethod.GET, null,
+                new ParameterizedTypeReference<ApiResponse<CollectorProperty>>() {
                 }, namespace, appId);
 
-        ApiResponse<ConsumerProperty> apiResponse = responseEntity.getBody();
+        ApiResponse<CollectorProperty> apiResponse = responseEntity.getBody();
+        if (!SUCCESS.getCode().equals(apiResponse.getCode())) {
+            throw new ServiceException(String.format("%s-%s", apiResponse.getCode(), apiResponse.getMessage()));
+        }
+
+        return apiResponse.getData();
+    }
+
+    @GetMapping(value = "/collector/{namespace}/{appId}")
+    @ApiOperation("collector")
+    public CollectorProperty collector(@PathVariable String namespace,
+                                      @PathVariable String appId) {
+        log.info("namespace:{}, appId:{}", namespace, appId);
+        ResponseEntity<ApiResponse<CollectorProperty>> responseEntity = restTemplate.exchange(collectorUrl +
+                        "/static-config/collector/{namespace}/{appId}", HttpMethod.GET, null,
+                new ParameterizedTypeReference<ApiResponse<CollectorProperty>>() {
+                }, namespace, appId);
+
+        ApiResponse<CollectorProperty> apiResponse = responseEntity.getBody();
         if (!SUCCESS.getCode().equals(apiResponse.getCode())) {
             throw new ServiceException(String.format("%s-%s", apiResponse.getCode(), apiResponse.getMessage()));
         }

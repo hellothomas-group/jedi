@@ -363,7 +363,7 @@ export default {
     asyncQueryExecutorStatus (namespaceName, appId, executorName, instanceIp, startTime, endTime) {
       console.log('asyncQueryExecutorStatus')
       console.log(executorName)
-      this.axios.get('/consumer/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
+      this.axios.get('/collector/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
         '/status', {
         params: {
           instanceIp: instanceIp,
@@ -441,7 +441,7 @@ export default {
       console.log('asyncQueryInstance')
       console.log(executorName)
 
-      this.axios.get('/consumer/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
+      this.axios.get('/collector/namespaces/' + namespaceName + '/apps/' + appId + '/executors/' + executorName +
         '/instances', {
         params: {
           pageNum: 1,
