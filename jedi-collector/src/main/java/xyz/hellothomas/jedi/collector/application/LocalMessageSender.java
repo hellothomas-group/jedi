@@ -1,7 +1,6 @@
 package xyz.hellothomas.jedi.collector.application;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import xyz.hellothomas.jedi.biz.domain.monitor.User;
 import xyz.hellothomas.jedi.biz.domain.monitor.UserExample;
 import xyz.hellothomas.jedi.biz.infrastructure.mapper.monitor.UserMapper;
@@ -17,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 1.0
  */
 @Slf4j
-@Service
 public class LocalMessageSender implements MessageSender {
     private final ConcurrentHashMap<String, String> emailMap = new ConcurrentHashMap<>();
     private final UserMapper userMapper;
