@@ -79,7 +79,11 @@
 
 # Release Notes
 
-0.0.11 - first release version
+| 版本   | 功能                                |
+| ------ | ----------------------------------- |
+| 0.0.11 | 首个正式版本                        |
+| 0.0.12 | 修复oracle部署bug                   |
+| 0.0.13 | jedi-consumer重命名为jedi-collector |
 
 # FAQ
 
@@ -104,3 +108,5 @@ Github Stars
 线程池监控思路参考 [Java线程池实现原理及其在美团业务中的实践](https://tech.meituan.com/2020/04/02/java-pooling-pratice-in-meituan.html)
 
 动态配置部分参考 [Apollo Config](https://github.com/ctripcorp/apollo)
+
+感谢 JetBrains 提供的免费开源 License <img src="https://images.gitee.com/uploads/images/2022/0716/213411_ef82203c_5057838.png" alt="输入图片说明" title="jb_beam.png" style="zoom:10%;" />
